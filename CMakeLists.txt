@@ -35,3 +35,6 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
   endif(CHECK_CXX_COMPILER_USED2)
 endif(CHECK_CXX_COMPILER_USED1)
+
+add_executable(main src/main.cpp ${LIB3DS_INCLUDE_DIRS})
+target_link_libraries(main ${LIB3DS_LIBRARIES})
