@@ -32,6 +32,16 @@ int main( int, char**)
     std::cout << "Segment to: " << file->segment_to << std::endl << std::flush;
     std::cout << "Current frame: " << file->current_frame << std::endl << std::flush;
 
+    std::cout << "Shadow: " << std::endl
+                            << "    Map size: " << file->shadow.map_size << std::endl
+                            << "    Low Bias: " << file->shadow.lo_bias << std::endl
+                            << "    High Bias: " << file->shadow.hi_bias << std::endl
+                            << "    Samples: " << file->shadow.samples << std::endl
+                            << "    Range: " << file->shadow.range << std::endl
+                            << "    Filter: " << file->shadow.filter << std::endl
+                            << "    Ray Bias: " << file->shadow.ray_bias << std::endl
+                            << std::flush;
+
     std::cout << "Background:" << std::endl 
                                 << "    Solid: " << std::endl 
                                 << "        Use: " << file->background.solid.use << std::endl
@@ -47,15 +57,30 @@ int main( int, char**)
                                 << "        name: " << file->background.bitmap.name << std::endl 
                                 << std::flush;
 
-    std::cout << "Shadow: " << std::endl
-                            << "    Map size: " << file->shadow.map_size << std::endl
-                            << "    Low Bias: " << file->shadow.lo_bias << std::endl
-                            << "    High Bias: " << file->shadow.hi_bias << std::endl
-                            << "    Samples: " << file->shadow.samples << std::endl
-                            << "    Range: " << file->shadow.range << std::endl
-                            << "    Filter: " << file->shadow.filter << std::endl
-                            << "    Ray Bias: " << file->shadow.ray_bias << std::endl
-                            << std::flush;
+    std::cout << "Atmosphere:" << std::endl 
+                                << "    Fog: " << std::endl 
+                                << "        Use: " << file->atmosphere.fog.use << std::endl
+                                << "        Color: " << to_string(file->atmosphere.fog.col, 3) << std::endl 
+                                << "        Fog Backgound: " << file->atmosphere.fog.fog_background << std::endl
+                                << "        Near Plane: " << file->atmosphere.fog.near_plane << std::endl 
+                                << "        Near Density: " << file->atmosphere.fog.near_density << std::endl
+                                << "        Far Plane: " << file->atmosphere.fog.far_plane << std::endl 
+                                << "        Far Density: " << file->atmosphere.fog.far_density << std::endl
+                                << "    Layer Fog: " << std::endl
+                                << "        Use: " << file->atmosphere.layer_fog.use << std::endl
+                                << "        Flag: " << file->atmosphere.layer_fog.flags << std::endl 
+                                << "        Color: " << to_string(file->atmosphere.layer_fog.col, 3) << std::endl
+                                << "        Near Y: " << file->atmosphere.layer_fog.near_y << std::endl
+                                << "        Far Y: " << file->atmosphere.layer_fog.far_y << std::endl 
+                                << "        Density: " << file->atmosphere.layer_fog.density << std::endl
+                                << "    Distance Cue: " << std::endl 
+                                << "        Use: " << file->atmosphere.dist_cue.use << std::endl
+                                << "        Cue Background: " << file->atmosphere.dist_cue.cue_background << std::endl 
+                                << "        Near Plane: " << file->atmosphere.dist_cue.near_plane << std::endl 
+                                << "        Near Dimming: " << file->atmosphere.dist_cue.near_dimming << std::endl
+                                << "        Far Plane: " << file->atmosphere.dist_cue.far_plane << std::endl 
+                                << "        Far Dimming: " << file->atmosphere.dist_cue.far_dimming << std::endl
+                                << std::flush;
 
     return EXIT_SUCCESS;
 }
