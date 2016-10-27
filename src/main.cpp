@@ -3,6 +3,7 @@
 #include <string>
 #include <array>
 #include <iostream>
+#include <sstream>
 #include <algorithm>
 
 #include <lib3ds/file.h>
@@ -11,25 +12,39 @@
 #include <lib3ds/camera.h>
 #include <lib3ds/light.h>
 
-std::string f_to_string(float* v, size_t size)
+std::string f_to_string(float v[], size_t size)
 {
-    std::string s("( ");
+    std::stringstream s;
+    s << "(";
     for( size_t it; it<size; ++it)
-        s + ", " + std::to_string(v[it]);
-    return s + ")";
+        s << ", " << v[it];
+    s << ")";
+    return s.str();
+}
+
+std::string matrix_to_string(float m[4][4])
+{
+    std::string s("4,4\n");
+    for( size_t i; i<4; ++i)
+    {
+        for(size_t j; j<4; ++j)
+            s + ", " + std::to_string(m[i][j]);
+        s + "\n";
+    }
+    return s;
 }
 
 int main( int, char**)
 {
-    std::string filename("/home/ethiy/Workspace/3DSceneModel/ressources/3dModels/3DS/house/dom1 - kopia.3ds");//watertower.3ds");
+    std::string filename("/home/ethiy/Workspace/3DSceneModel/ressources/3dModels/3DS/house/dom1 - kopia.3ds");//house/dom1 - kopia.3ds");
     Lib3dsFile *file = lib3ds_file_load( filename.c_str() );
 
     std::cout << "Mesh version: " << file->mesh_version << std::endl << std::flush;
     std::cout << "Key f revision: " << file->keyf_revision << std::endl << std::flush;
     std::cout << "Name: " << file->name << std::endl << std::flush;
     std::cout << "Master scale: " << file->master_scale << std::endl << std::flush;
-    std::cout << "Construction plane: " << f_to_string(file->construction_plane, 3) << std::endl << std::flush;
-    std::cout << "Ambient: " << f_to_string(file->ambient, 3) << std::endl << std::flush;
+    std::cout << "Construction plane: " << file->construction_plane[0] << ", " << file->construction_plane[1] << ", " << file->construction_plane[2] << std::endl << std::flush;
+    std::cout << "Ambient: " << file->ambient[0] << ", " << file->ambient[1] << ", " << file->ambient[2] << std::endl << std::flush;
 
     std::cout << "Frames: " << file->frames << std::endl << std::flush;
     std::cout << "Segment from: " << file->segment_from << std::endl << std::flush;
@@ -173,7 +188,22 @@ int main( int, char**)
         {
             std::cout << "    " << counter++ << ": " << std::endl
                                         << "        name: " << moche->name << std::endl
+                                        << "        Flags: " << moche->object_flags << std::endl
+                                        << "        Color: " << moche->color << std::endl
+                                        << "        Matrix: " << matrix_to_string(moche->matrix) << std::endl
+                                        << "        Points: " << moche->points << std::endl
                                         << std::flush;
+            if(moche->points)
+            {
+                Lib3dsPoint* points_list = moche->pointL;
+                for(size_t counter2 = 0; counter2<moche->points; ++counter2)
+                {
+                    std::cout << "          " << (counter2 + 1)  << ": " << points_list[counter2].pos[0] << ',' << points_list[counter2].pos[1] << ',' << points_list[counter2].pos[2] << std::endl << std::flush;
+                }
+            }
+            std::cout << "        Texels: " << moche->texels << std::endl
+                        << "        Faces: " << moche->faces << std::endl
+                        << std::flush;
             moche = moche->next;
         }
     }
