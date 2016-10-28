@@ -38,3 +38,6 @@ endif(CHECK_CXX_COMPILER_USED1)
 
 add_executable(main src/main.cpp ${LIB3DS_INCLUDE_DIRS})
 target_link_libraries(main ${LIB3DS_LIBRARIES})
+
+add_executable(3dslite src/main3dslite.cpp src/3dslite/lib3dslite.h ${LIB3DS_INCLUDE_DIRS})
+target_link_libraries(3dslite ${LIB3DS_LIBRARIES})
