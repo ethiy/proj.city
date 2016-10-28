@@ -8,7 +8,7 @@ list(APPEND LINKER_LIBS ${LIB3DS_LIBRARIES})
 
 # Find Boost
 
-FIND_PACKAGE(Boost REQUIRED filesystem)
+FIND_PACKAGE(Boost REQUIRED filesystem system)
 if(Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 else(Boost_FOUND)
@@ -26,5 +26,5 @@ set(Boost_USE_STATIC_RUNTIME     OFF)
 set(BOOST_ALL_DYN_LINK           OFF)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-list(APPEND LINKER_LIBS ${Boost_LIBRARIES})
+list(APPEND LINKER_LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
