@@ -12,11 +12,14 @@
 #include <lib3ds/camera.h>
 #include <lib3ds/light.h>
 
+std::string f_to_string(float[] , size_t);
+std::string matrix_to_string(float[4][4]);
+
 std::string f_to_string(float v[], size_t size)
 {
     std::stringstream s;
     s << "(";
-    for( size_t it; it<size; ++it)
+    for( size_t it=0; it<size; ++it)
         s << ", " << v[it];
     s << ")";
     return s.str();
@@ -25,9 +28,9 @@ std::string f_to_string(float v[], size_t size)
 std::string matrix_to_string(float m[4][4])
 {
     std::string s("4,4\n");
-    for( size_t i; i<4; ++i)
+    for( size_t i=0; i<4; ++i)
     {
-        for(size_t j; j<4; ++j)
+        for(size_t j=0; j<4; ++j)
             s + ", " + std::to_string(m[i][j]);
         s + "\n";
     }
@@ -36,7 +39,7 @@ std::string matrix_to_string(float m[4][4])
 
 int main( int, char**)
 {
-    std::string filename("/home/ethiy/Workspace/3DSceneModel/ressources/3dModels/3DS/house/dom1 - kopia.3ds");//house/dom1 - kopia.3ds");
+    std::string filename("/home/ethiy/Workspace/3DSceneModel/ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
     Lib3dsFile *file = lib3ds_file_load( filename.c_str() );
 
     std::cout << "Mesh version: " << file->mesh_version << std::endl << std::flush;
@@ -182,7 +185,7 @@ int main( int, char**)
     std::cout << "Meshes:" << std::endl << std::flush;
     if(file->meshes != NULL)
     {
-        counter = 1;
+        int counter = 1;
         Lib3dsMesh* moche = file->meshes;
         while(moche->next != NULL)
         {
