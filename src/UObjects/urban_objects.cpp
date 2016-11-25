@@ -16,7 +16,7 @@ UrbanObject::UrbanObject(Lib3dsMesh lib3ds_mesh)
     for(size_t it; it<lib3ds_mesh.points; ++it)
     {
         Lib3dsPoint current = *(lib3ds_mesh.pointL+it);
-        mesh_points[it] = current.pos;
+        mesh_points.insert(std::pair<size_t, Lib3dsVector>(it, current.pos));
     }
     std::vector<Lib3dsFace> faces( lib3ds_mesh.faceL, lib3ds_mesh.faceL + lib3ds_mesh.faces);
 
