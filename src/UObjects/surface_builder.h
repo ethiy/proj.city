@@ -50,6 +50,6 @@ public:
         incremental_builder.end_surface();
     }
 private:
-    std::array<Lib3dsFace> faces;
-    std::array<size_t,Lib3dsVector> points;
+    std::vector<Lib3dsFace> faces;
+    std::map<size_t,Lib3dsVector> points;
 };
