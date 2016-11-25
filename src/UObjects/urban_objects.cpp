@@ -1,7 +1,6 @@
 #include "urban_objects.h"
 #include "surface_builder.h"
 
-#include <map>
 #include <vector>
 
 #include <CGAL/IO/Polyhedron_iostream.h>
@@ -12,11 +11,11 @@ UrbanObject::UrbanObject(){}
 UrbanObject::UrbanObject(Lib3dsMesh lib3ds_mesh)
 {
     // Copy 3ds facets and points to cxx like structures
-    std::map<size_t, Lib3dsVector> mesh_points;
-    for(size_t it; it<lib3ds_mesh.points; ++it)
+    std::map<size_t, Point> mesh_points;
+    for(size_t it=0; it<lib3ds_mesh.points; ++it)
     {
         Lib3dsPoint current = *(lib3ds_mesh.pointL+it);
-        mesh_points.insert(std::pair<size_t, Lib3dsVector>(it, current.pos));
+        mesh_points[it] = Point(current.pos[0], current.pos[0], current.pos[0]);
     }
     std::vector<Lib3dsFace> faces( lib3ds_mesh.faceL, lib3ds_mesh.faceL + lib3ds_mesh.faces);
 

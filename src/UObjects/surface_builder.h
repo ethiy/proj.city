@@ -13,16 +13,16 @@ template <class HDS>
 class SurfaceBuilder: public CGAL::Modifier_base<HDS>
 {
 public:
-    SurfaceBuilder(std::vector<Lib3dsFace> mesh_faces, std::map<size_t,Lib3dsVector> mesh_points): faces(mesh_faces), points(mesh_points){}
+    SurfaceBuilder(std::vector<Lib3dsFace> mesh_faces, std::map<size_t,Point> mesh_points): faces(mesh_faces), points(mesh_points){}
     void operator()(HDS & target)
     {
         CGAL::Polyhedron_incremental_builder_3<HDS> incremental_builder( target, true);
         incremental_builder.begin_surface(points.size(), faces.size());
         std::for_each( std::begin(faces), std::end(faces), [&](Lib3dsFace face)
                                                             {
-                                                                Point point_0 = Point(points[face.points[0]][0], points[face.points[0]][1], points[face.points[0]][2]);
-                                                                Point point_1 = Point(points[face.points[1]][0], points[face.points[1]][1], points[face.points[1]][2]);
-                                                                Point point_2 = Point(points[face.points[2]][0], points[face.points[2]][1], points[face.points[2]][2]);
+                                                                Point point_0 = points[face.points[0]];
+                                                                Point point_1 = points[face.points[1]];
+                                                                Point point_2 = points[face.points[2]];
 
                                                                 incremental_builder.add_vertex( point_0);
                                                                 incremental_builder.add_vertex( point_1);
@@ -51,5 +51,5 @@ public:
     }
 private:
     std::vector<Lib3dsFace> faces;
-    std::map<size_t,Lib3dsVector> points;
+    std::map<size_t,Point> points;
 };
