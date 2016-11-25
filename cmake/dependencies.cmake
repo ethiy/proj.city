@@ -10,7 +10,7 @@ list(APPEND LINKER_LIBS ${LIB3DS_LIBRARIES})
 
 FIND_PACKAGE(Boost REQUIRED filesystem system)
 if(Boost_FOUND)
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    include_directories(${Boost_INCLUDE_DIR})
 else(Boost_FOUND)
     set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/local/boost_1_60_0/")
     set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/local/boost_1_60_0/lib64-msvc-14.0")
@@ -28,3 +28,8 @@ set(BOOST_ALL_DYN_LINK           OFF)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 list(APPEND LINKER_LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
+# Find CGAL
+
+FIND_PACKAGE(CGAL REQUIRED Core)
+include_directories(${CGAL_USE_FILE})
+list(APPEND LINKER_LIBS ${CGAL_LIBS})
