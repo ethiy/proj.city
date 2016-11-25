@@ -19,7 +19,8 @@ UrbanObject::UrbanObject(Lib3dsMesh lib3ds_mesh)
         mesh_points[it] = current.pos;
     }
     std::vector<Lib3dsFace> faces( lib3ds_mesh.faceL, lib3ds_mesh.faceL + lib3ds_mesh.faces);
-    // use Polyhedron_incremental_builder_3 and Modifier_base
+
+    // Build mesh in Polyhedron_3
     SurfaceBuilder<Polyhedron::HalfedgeDS> builder(faces, mesh_points);
     surface.delegate( builder);
 }
