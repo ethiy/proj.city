@@ -17,8 +17,8 @@ public:
     Reader(boost::filesystem::path, std::vector<std::string>);
     ~Reader();
 private:
+    structure* input;
     std::vector<std::string> flags;
-    structure input;
 };
 
 template<class structure>
@@ -29,8 +29,8 @@ public:
     Writer(boost::filesystem::path, std::vector<std::string>);
     ~Writer();
 private:
+    structure* output;
     std::vector<std::string> flags;
-    structure output;
 };
 
 template<> class Reader<Lib3dsFile>;
