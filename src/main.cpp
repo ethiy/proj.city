@@ -1,6 +1,5 @@
-#include <lib3ds/file.h>
 
-#include "UrbanObject/urban_objects.h"
+#include "UrbanObject/urban_object.h"
 
 int main(int, char**)
 {
