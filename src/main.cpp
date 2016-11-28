@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <iterator>
+#include <iostream>
 
 #include <boost/filesystem.hpp>
 
@@ -15,8 +16,10 @@ int main(int, char**)
     Reader<Lib3dsFile> reader(filepath, flags);
     Lib3dsMesh* meshes_p = reader.get_meshes();
     std::vector<UrbanObject> urban_objects;
+    size_t counter = 1;
     while(meshes_p)
     {
+        std::cout << "mesh: " << counter++ << std::endl;
         urban_objects.push_back( UrbanObject(*meshes_p));
         meshes_p = meshes_p->next;
     }
