@@ -6,7 +6,6 @@
 
 #include <string>
 #include <vector>
-#include <istream>
 
 template<class structure>
 class Reader
