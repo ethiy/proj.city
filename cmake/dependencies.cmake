@@ -1,10 +1,11 @@
-set(LINKER_LIBS "")
+set(LIBS "")
+set(LIBS_DIRS "")
 
 # Find Lib3ds
 include(cmake/modules/find_lib3ds.cmake)
 
 include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
-list(APPEND LINKER_LIBS ${LIB3DS_LIBRARIES})
+list(APPEND LIBS ${LIB3DS_LIBRARIES})
 
 # Find Boost
 
@@ -26,10 +27,10 @@ set(Boost_USE_STATIC_RUNTIME     OFF)
 set(BOOST_ALL_DYN_LINK           OFF)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-list(APPEND LINKER_LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
 # Find CGAL
 
-FIND_PACKAGE(CGAL REQUIRED Core)
-include_directories(${CGAL_USE_FILE})
-list(APPEND LINKER_LIBS ${CGAL_LIBS})
+FIND_PACKAGE(CGAL)
+include_directories(${CGAL_INCLUDE_DIRS})
+list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
