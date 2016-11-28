@@ -31,6 +31,3 @@ private:
     structure* output;
     std::vector<std::string> flags;
 };
-
-template<> class Reader<Lib3dsFile>;
-template<> class Writer<Lib3dsFile>;

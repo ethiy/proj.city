@@ -1,13 +1,21 @@
 #include "io_3ds.h"
 
-template<> class Reader<Lib3dsFile>::Reader(){}
-template<> class Reader<Lib3dsFile>::Reader(boost::filesystem::path filepath, std::vector<std::string> flags): flags(flags)
+template<>
+class Reader<Lib3dsFile>
 {
-    input = lib3ds_file_load(filepath.string().c_string());
-}
-template<> class Reader<Lib3dsFile>::~Reader(){}
+public:
+    Reader(){}
+    Reader(boost::filesystem::path filepath, std::vector<std::string> flags):flags(flags)
+    {
+    input = lib3ds_file_load( filepath.string().c_str());
+    }
+    ~Reader(){}
+    Lib3dsMesh* get_meshes()
+    {
+        return input->meshes;
+    }
 
-Lib3dsMesh template<> class Reader<Lib3dsFile>::get_meshes()
-{
-    return input->meshes;
-}
+private:
+    Lib3dsFile* input;
+    std::vector<std::string> flags;
+};
