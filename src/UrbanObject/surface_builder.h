@@ -31,6 +31,9 @@ public:
                                                                 Vector v1 = Vector(point_0, point_1);
                                                                 Vector v2 = Vector(point_1, point_2);
                                                                 Vector n = Vector(face.normal[0], face.normal[1], face.normal[2]);
+
+                                                                std::cout << CGAL::determinant(v1, v2, n) << std::endl;
+
                                                                 incremental_builder.begin_facet();
                                                                 if(CGAL::determinant(v1, v2, n)>0)
                                                                 {
@@ -40,9 +43,9 @@ public:
                                                                 }
                                                                 else
                                                                 {
+                                                                    incremental_builder.add_vertex_to_facet( 0);
                                                                     incremental_builder.add_vertex_to_facet( 2);
                                                                     incremental_builder.add_vertex_to_facet( 1);
-                                                                    incremental_builder.add_vertex_to_facet( 0);
                                                                 }
                                                                 incremental_builder.end_facet();
                                                             }
