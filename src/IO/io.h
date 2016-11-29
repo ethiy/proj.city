@@ -16,6 +16,7 @@ public:
     ~Reader();
 private:
     structure* input;
+    boost::filesystem::path filepath;
     std::vector<std::string> flags;
 };
 
@@ -29,4 +30,5 @@ public:
 private:
     structure* output;
     std::vector<std::string> flags;
+    boost::filesystem::path filepath;
 };
