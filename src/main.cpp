@@ -4,6 +4,7 @@
 #include "IO/io_3ds.h"
 
 #include <vector>
+#include <algorithm>
 #include <iterator>
 #include <iostream>
 
@@ -23,5 +24,6 @@ int main(int, char**)
         urban_objects.push_back( UrbanObject(*meshes_p));
         meshes_p = meshes_p->next;
     }
+    std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<UrbanObject>(std::cout, "\n"));
     return EXIT_SUCCESS;
 }
