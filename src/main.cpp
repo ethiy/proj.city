@@ -10,9 +10,11 @@
 
 #include <boost/filesystem.hpp>
 
+#include <CGAL/IO/Geomview_stream.h>
+
 int main(int, char**)
 {
-    boost::filesystem::path filepath("/home/ethiy/Workspace/GitHub/3DSceneModel/ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
+    boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
     std::vector<std::string> flags;
     Reader<Lib3dsFile> reader(filepath, flags);
     Lib3dsMesh* meshes_p = reader.get_meshes();
@@ -25,5 +27,12 @@ int main(int, char**)
         meshes_p = meshes_p->next;
     }
     std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<UrbanObject>(std::cout, "\n"));
+    CGAL::Geomview_stream geomview_stream;
+    std::for_each(std::begin(urban_objects), std::end(urban_objects), [&](UrbanObject obj)
+                                                                            {
+                                                                                geomview_stream << obj.surface;
+                                                                            }
+                );
+    geomview_stream.look_recenter();
     return EXIT_SUCCESS;
 }
