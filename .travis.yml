@@ -1,0 +1,17 @@
+sudo: required
+dist: trusty
+
+language: cpp
+
+git:
+    depth: 3
+
+branches:
+    only:
+    - master
+
+services:
+    - docker
+
+before_install:
+    - docker build .
