@@ -2,7 +2,7 @@
 
 #include <lib3ds/file.h>
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <string>
 #include <vector>
