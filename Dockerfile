@@ -1,4 +1,6 @@
 FROM ubuntu:16.04
+ENV http_proxy http://proxy.ign.fr:3128
+ENV https_proxy http://proxy.ign.fr:3128
 RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y \
@@ -7,7 +9,6 @@ RUN apt-get install -y \
             g++\
             cmake\
             git
-ENV CXX /usr/bin/gcc
 RUN apt-get install -y \
             libboost-filesystem-dev\
             libboost-system-dev\
