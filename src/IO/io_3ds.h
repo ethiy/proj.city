@@ -2,6 +2,9 @@
 
 #include "io.h"
 
+#include <boost/filesystem/operations.hpp>
+#include <iostream>
+
 template<> class Reader<Lib3dsFile>;
 template<> class Writer<Lib3dsFile>;
 
@@ -12,7 +15,15 @@ public:
     Reader(){}
     Reader(boost::filesystem::path filepath, std::vector<std::string> flags):filepath(filepath), flags(flags)
     {
-        input = lib3ds_file_load( filepath.string().c_str());
+        try
+        {
+            if(boost::filesystem::is_regular_file(filepath))
+                input = lib3ds_file_load( filepath.string().c_str());
+        }
+        catch (const boost::filesystem::filesystem_error& error)
+        {
+            std::cout << "is_regular( " << filepath << ") failed with: " << error.code().message() << std::endl;
+        }
     }
     ~Reader(){}
     Lib3dsMesh* get_meshes()
