@@ -9,19 +9,9 @@ namespace urban
 {
     UrbanObject::UrbanObject(void){}
 
-    UrbanObject::UrbanObject(Lib3dsMesh lib3ds_mesh)
+    UrbanObject::UrbanObject(_Mesh mesh)
     {
-        // Copy 3ds facets and points to cxx like structures
-        std::map<size_t, Point> mesh_points;
-        for(size_t it=0; it<lib3ds_mesh.points; ++it)
-        {
-            Lib3dsPoint current = *(lib3ds_mesh.pointL+it);
-            mesh_points[it] = Point(current.pos[0], current.pos[1], current.pos[2]);
-        }
-        std::vector<Lib3dsFace> faces( lib3ds_mesh.faceL, lib3ds_mesh.faceL + lib3ds_mesh.faces);
-
-        // Build mesh in Polyhedron_3
-        SurfaceBuilder<Polyhedron::HalfedgeDS> builder(faces, mesh_points);
+        SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh.get_triangles(), mesh.get_points());
         surface.delegate( builder);
     }
 
