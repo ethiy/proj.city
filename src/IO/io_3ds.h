@@ -22,10 +22,15 @@ public:
                 input = lib3ds_file_load( filepath.string().c_str());
                 meshes = input->meshes;
             }
+            else
+            {
+                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                throw boost::filesystem::filesystem_error(ec.message(), ec);
+            }
         }
         catch (const boost::filesystem::filesystem_error& error)
         {
-            std::cerr << "is_regular( " << filepath << ") failed with: " << error.code().message() << std::endl;
+            std::cerr << "Reader( " << filepath << ", ...) failed with: " << error.code().message() << std::endl;
         }
     }
     ~Reader(){}
