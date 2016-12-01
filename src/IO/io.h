@@ -2,8 +2,6 @@
 
 #include "../UrbanObject/_Mesh/_mesh.h"
 
-#include <lib3ds/file.h>
-
 #include <boost/filesystem/path.hpp>
 
 #include <string>

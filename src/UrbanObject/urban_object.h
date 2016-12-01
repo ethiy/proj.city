@@ -2,10 +2,7 @@
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
-#include <CGAL/Vector_3.h>
 
-#include <lib3ds/types.h>
-#include <lib3ds/mesh.h>
 
 #include <ostream>
 
@@ -26,7 +23,7 @@ namespace UrbanObject
         /*! UrbanObject copy constructor*/
         UrbanObject(const UrbanObject &);
         /*! UrbanObject constructor form 3ds meshes*/
-        UrbanObject(Lib3dsMesh );
+        UrbanObject(_Mesh );
         /*! UrbanObject default destructor*/
         ~UrbanObject(void);
     private:

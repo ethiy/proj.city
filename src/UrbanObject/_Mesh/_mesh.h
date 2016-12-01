@@ -3,6 +3,9 @@
 #include "../urban_object.h"
 #include "../Triangle/triangle.h"
 
+#include <lib3ds/types.h>
+#include <lib3ds/mesh.h>
+
 #include <map>
 
 namespace UrbanObject

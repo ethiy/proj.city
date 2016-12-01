@@ -2,6 +2,9 @@
 
 #include "io.h"
 
+#include <lib3ds/file.h>
+
+
 #include <boost/filesystem/operations.hpp>
 
 #include <iostream>
