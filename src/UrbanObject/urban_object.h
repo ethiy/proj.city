@@ -8,28 +8,31 @@
 
 #include <ostream>
 
-typedef CGAL::Simple_cartesian<double> Kernel;
-typedef Kernel::Point_3 Point;
-typedef Kernel::Vector_3 Vector;
-typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
-
-
-/*! Container class modelling urba objects using CGAL*/
-class UrbanObject
+namespace UrbanObject
 {
-public:
-    /*! UrbanObject default constructor*/
-    UrbanObject();
-    /*! UrbanObject copy constructor*/
-    UrbanObject(const UrbanObject &);
-    /*! UrbanObject constructor form 3ds meshes*/
-    UrbanObject(Lib3dsMesh );
-    /*! UrbanObject default destructor*/
-    ~UrbanObject();
-private:
-    /*! The surface describing 3d urban objects*/
-    Polyhedron surface;
+    typedef CGAL::Simple_cartesian<double> Kernel;
+    typedef Kernel::Point_3 Point;
+    typedef Kernel::Vector_3 Vector;
+    typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
 
-    /*! Outstreaming UrbanObject*/
-    friend std::ostream& operator<<(std::ostream &, const UrbanObject &);
-};
+
+    /*! Container class modelling urba objects using CGAL*/
+    class UrbanObject
+    {
+    public:
+        /*! UrbanObject default constructor*/
+        UrbanObject(void);
+        /*! UrbanObject copy constructor*/
+        UrbanObject(const UrbanObject &);
+        /*! UrbanObject constructor form 3ds meshes*/
+        UrbanObject(Lib3dsMesh );
+        /*! UrbanObject default destructor*/
+        ~UrbanObject(void);
+    private:
+        /*! The surface describing 3d urban objects*/
+        Polyhedron surface;
+
+        /*! Outstreaming UrbanObject*/
+        friend std::ostream& operator<<(std::ostream &, const UrbanObject &);
+    };
+}
