@@ -11,7 +11,7 @@ namespace urban
 
     UrbanObject::UrbanObject(_Mesh mesh)
     {
-        SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh.get_triangles(), mesh.get_points());
+        SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate( builder);
     }
 
