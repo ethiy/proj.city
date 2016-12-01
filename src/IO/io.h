@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../UrbanObject/_Mesh/_mesh.h"
+
 #include <lib3ds/file.h>
 
 #include <boost/filesystem/path.hpp>
@@ -14,6 +16,7 @@ public:
     Reader();
     Reader(boost::filesystem::path, std::vector<std::string>);
     ~Reader();
+    void get_facets(std::vector<UrbanObject::_Mesh> &);
 private:
     structure* input;
     boost::filesystem::path filepath;

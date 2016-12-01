@@ -3,7 +3,9 @@
 #include "io.h"
 
 #include <boost/filesystem/operations.hpp>
+
 #include <iostream>
+#include <vector>
 
 template<> class Reader<Lib3dsFile>;
 template<> class Writer<Lib3dsFile>;
@@ -34,6 +36,15 @@ public:
         }
     }
     ~Reader(){}
+
+    void get_facets(std::vector<UrbanObject::_Mesh> & _meshes)
+    {
+        while(meshes)
+        {
+            _meshes.push_back(UrbanObject::_Mesh(*meshes));
+            meshes = meshes->next;
+        }
+    }
 
 private:
     Lib3dsFile* input;
