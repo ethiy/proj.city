@@ -2,7 +2,7 @@
 
 #include <tuple>
 
-namespace UrbanObject
+namespace urban
 {
     class Triangle
     {

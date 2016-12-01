@@ -1,6 +1,6 @@
 #include "triangle.h"
 
-namespace UrbanObject
+namespace urban
 {
     Triangle::Triangle(void){}
     Triangle::Triangle(const Triangle & other):points(other.points){}

@@ -3,7 +3,7 @@
 #include <iterator>
 #include <algorithm>
 
-namespace UrbanObject
+namespace urban
 {
     _Mesh::_Mesh(void){}
     _Mesh::_Mesh(const _Mesh & other):points(other.points), triangles(other.triangles){}

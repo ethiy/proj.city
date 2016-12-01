@@ -3,10 +3,11 @@
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
 
+#include "_Mesh/_mesh.h"
 
 #include <ostream>
 
-namespace UrbanObject
+namespace urban
 {
     typedef CGAL::Simple_cartesian<double> Kernel;
     typedef Kernel::Point_3 Point;

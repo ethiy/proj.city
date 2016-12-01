@@ -5,7 +5,7 @@
 
 #include <CGAL/IO/Polyhedron_iostream.h>
 
-namespace UrbanObject
+namespace urban
 {
     UrbanObject::UrbanObject(void){}
 

@@ -8,7 +8,7 @@
 #include <iterator>
 
 
-namespace UrbanObject
+namespace urban
 {
     template <class HDS>
     class SurfaceBuilder: public CGAL::Modifier_base<HDS>

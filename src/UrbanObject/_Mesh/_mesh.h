@@ -8,7 +8,7 @@
 
 #include <map>
 
-namespace UrbanObject
+namespace urban
 {
     class _Mesh
     {
