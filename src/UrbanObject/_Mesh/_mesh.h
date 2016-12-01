@@ -14,8 +14,6 @@ namespace UrbanObject
         _Mesh(const _Mesh &);
         _Mesh(Lib3dsMesh);
         ~_Mesh(void);
-
-        void check_orientations(void);
     private:
         std::map<size_t, Point> points;
         std::map<size_t, Triangle> triangles;
