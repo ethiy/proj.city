@@ -17,6 +17,9 @@ namespace urban
         _Mesh(const _Mesh &);
         _Mesh(Lib3dsMesh);
         ~_Mesh(void);
+
+        std::map<size_t, Point> get_points(void);
+        std::map<size_t, Triangle> get_triangles(void);
     private:
         std::map<size_t, Point> points;
         std::map<size_t, Triangle> triangles;
