@@ -2,6 +2,7 @@
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
+#include <CGAL/Vector_3.h>
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
