@@ -4,7 +4,6 @@
 
 #include <lib3ds/file.h>
 
-
 #include <boost/filesystem/operations.hpp>
 
 #include <iostream>
@@ -33,7 +32,7 @@ public:
                 throw boost::filesystem::filesystem_error(ec.message(), ec);
             }
         }
-        catch (const boost::filesystem::filesystem_error& error)
+        catch(const boost::filesystem::filesystem_error& error)
         {
             std::cerr << "Reader( " << filepath << ", ...) failed with: " << error.code().message() << std::endl;
         }
