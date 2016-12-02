@@ -10,6 +10,10 @@
 
 namespace urban
 {
+    typedef CGAL::Simple_cartesian<double> Kernel;
+    typedef Kernel::Point_3 Point;
+    typedef Kernel::Vector_3 Vector;
+    
     class _Mesh
     {
     public:

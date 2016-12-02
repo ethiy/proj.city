@@ -28,12 +28,12 @@ namespace urban
                                                                         incremental_builder.add_vertex( p.second);
                                                                     }
                         );
-            std::for_each( std::begin(faces), std::end(faces), [&](Triangle face)
+            std::for_each( std::begin(faces), std::end(faces), [&](std::pair<size_t, Triangle> face)
                                                                 {
                                                                     incremental_builder.begin_facet();
-                                                                    incremental_builder.add_vertex_to_facet( face[0]);
-                                                                    incremental_builder.add_vertex_to_facet( face[1]);
-                                                                    incremental_builder.add_vertex_to_facet( face[2]);
+                                                                    incremental_builder.add_vertex_to_facet( face.second[0]);
+                                                                    incremental_builder.add_vertex_to_facet( face.second[1]);
+                                                                    incremental_builder.add_vertex_to_facet( face.second[2]);
                                                                     incremental_builder.end_facet();
                                                                 }
                         );
