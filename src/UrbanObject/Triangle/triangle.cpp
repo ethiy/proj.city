@@ -1,5 +1,8 @@
 #include "triangle.h"
 
+#include <algorithm>
+#include <iterator>
+
 namespace urban
 {
     Triangle::Triangle(void){}
@@ -15,5 +18,11 @@ namespace urban
     void Triangle::invert_orientation(void)
     {
         points = {points[0], points[2], points[1]};
+    }
+
+    std::ostream& operator<<(std::ostream & os, const Triangle & triangle)
+    {
+        std::copy(std::begin(triangle.points), std::end(triangle.points), std::ostream_iterator<size_t>(os, " "));
+        return os;
     }
 }

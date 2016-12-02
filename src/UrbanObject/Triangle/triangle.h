@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include <ostream>
 
 namespace urban
 {
@@ -17,5 +18,6 @@ namespace urban
         void invert_orientation(void);
     private:
         std::array<size_t, 3> points;
+        friend std::ostream& operator<<(std::ostream &, const Triangle &);
     };
 }
