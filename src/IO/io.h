@@ -14,9 +14,13 @@ public:
     Reader();
     Reader(boost::filesystem::path, std::vector<std::string>);
     ~Reader();
+
+    int get_exit_code(void);
     void get_facets(std::vector<urban::_Mesh> &);
 private:
     structure* input;
+    bool open;
+    int exit_code;
     boost::filesystem::path filepath;
     std::vector<std::string> flags;
 };
@@ -30,6 +34,8 @@ public:
     ~Writer();
 private:
     structure* output;
+    bool open;
+    int exit_code;
     std::vector<std::string> flags;
     boost::filesystem::path filepath;
 };
