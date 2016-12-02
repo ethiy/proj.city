@@ -32,15 +32,19 @@ int main(int, char**)
                                                             }
                 );
     std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::UrbanObject>(std::cout, "\n"));
-    CGAL::Geomview_stream geomview_stream;
-    std::for_each(std::begin(urban_objects), std::end(urban_objects), [&](urban::UrbanObject obj)
-                                                                            {
-                                                                                geomview_stream << obj;
-                                                                            }
-                );
-    geomview_stream.look_recenter();
-
-    getchar();
+    
+    if(!exit_code)
+    {
+        CGAL::Geomview_stream geomview_stream;
+        std::for_each(std::begin(urban_objects), std::end(urban_objects), [&](urban::UrbanObject obj)
+                                                                                {
+                                                                                    geomview_stream << obj;
+                                                                                }
+                    );
+        geomview_stream.look_recenter();
+        std::cout << "Enter any character to stop the program:" << std::endl;
+        getchar();
+    }
 
     return exit_code;
 }
