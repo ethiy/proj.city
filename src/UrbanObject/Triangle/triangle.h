@@ -16,6 +16,6 @@ namespace urban
 
         void invert_orientation(void);
     private:
-        std::tuple<size_t, size_t, size_t> points;
+        std::array<size_t, 3> points;
     };
 }
