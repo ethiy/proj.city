@@ -29,11 +29,11 @@ namespace urban
     }
     _Mesh::~_Mesh(void){}
 
-    std::map<size_t, Point> get_points(void)
+    std::map<size_t, Point> _Mesh::get_points(void)
     {
         return points;
     }
-    std::map<size_t, Triangle> get_triangles(void)
+    std::map<size_t, Triangle> _Mesh::get_triangles(void)
     {
         return triangles;
     }
