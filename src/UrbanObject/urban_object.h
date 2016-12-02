@@ -1,9 +1,10 @@
 #pragma once
 
+#include "_Mesh/_mesh.h"
+
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
-
-#include "_Mesh/_mesh.h"
+#include <CGAL/IO/Geomview_stream.h>
 
 #include <ostream>
 
@@ -33,5 +34,6 @@ namespace urban
 
         /*! Outstreaming UrbanObject*/
         friend std::ostream& operator<<(std::ostream &, const UrbanObject &);
+        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const UrbanObject &);
     };
 }

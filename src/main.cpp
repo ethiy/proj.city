@@ -4,14 +4,14 @@
 #include "IO/io.h"
 #include "IO/io_3ds.h"
 
+#include <CGAL/IO/Geomview_stream.h>
+
+#include <boost/filesystem.hpp>
+
 #include <vector>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
-
-#include <boost/filesystem.hpp>
-
-#include <CGAL/IO/Geomview_stream.h>
 
 int main(int, char**)
 {
@@ -33,12 +33,14 @@ int main(int, char**)
                 );
     std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::UrbanObject>(std::cout, "\n"));
     CGAL::Geomview_stream geomview_stream;
-    std::for_each(std::begin(urban_objects), std::end(urban_objects), [&](UrbanObject obj)
+    std::for_each(std::begin(urban_objects), std::end(urban_objects), [&](urban::UrbanObject obj)
                                                                             {
-                                                                                geomview_stream << obj.surface;
+                                                                                geomview_stream << obj;
                                                                             }
                 );
     geomview_stream.look_recenter();
+
+    getchar();
 
     return exit_code;
 }
