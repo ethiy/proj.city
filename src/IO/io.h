@@ -14,7 +14,7 @@ public:
     Reader();
     Reader(boost::filesystem::path, std::vector<std::string>);
     ~Reader();
-    void get_facets(std::vector<UrbanObject::_Mesh> &);
+    void get_facets(std::vector<urban::_Mesh> &);
 private:
     structure* input;
     boost::filesystem::path filepath;

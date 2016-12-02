@@ -40,11 +40,11 @@ public:
     }
     ~Reader(){}
 
-    void get_facets(std::vector<UrbanObject::_Mesh> & _meshes)
+    void get_facets(std::vector<urban::_Mesh> & _meshes)
     {
         while(meshes)
         {
-            _meshes.push_back(UrbanObject::_Mesh(*meshes));
+            _meshes.push_back(urban::_Mesh(*meshes));
             meshes = meshes->next;
         }
     }
