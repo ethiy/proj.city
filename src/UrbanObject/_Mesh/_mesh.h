@@ -8,6 +8,7 @@
 #include <lib3ds/mesh.h>
 
 #include <map>
+#include <ostream>
 
 namespace urban
 {
@@ -28,5 +29,7 @@ namespace urban
     private:
         std::map<size_t, Point> points;
         std::map<size_t, Triangle> triangles;
+        
+        friend std::ostream& operator<<(std::ostream &, const _Mesh &);
     };
 }

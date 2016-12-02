@@ -37,4 +37,21 @@ namespace urban
     {
         return triangles;
     }
+
+    std::ostream& operator<<(std::ostream &os, const _Mesh & mesh)
+    {
+        os << "Points: " << std::endl;
+        std::for_each(std::begin(mesh.points), std::end(mesh.points), [&](std::pair<size_t, Point> p)
+                                                                        {
+                                                                            os << "Point " << p.first << " : " << p.second << std::endl;
+                                                                        }
+                    );
+        os << "Triangles: " << std::endl;
+        std::for_each(std::begin(mesh.triangles), std::end(mesh.triangles), [&](std::pair<size_t, Triangle> t)
+                                                                                {
+                                                                                    os << "Triangle " << t.first << " : " << t.second << std::endl;
+                                                                                }
+                    );
+        return os;
+    }
 }
