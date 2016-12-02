@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../urban_object.h"
 #include "../Triangle/triangle.h"
+
+#include <CGAL/Simple_cartesian.h>
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
@@ -13,7 +14,7 @@ namespace urban
     typedef CGAL::Simple_cartesian<double> Kernel;
     typedef Kernel::Point_3 Point;
     typedef Kernel::Vector_3 Vector;
-    
+
     class _Mesh
     {
     public:
