@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tuple>
+#include <array>
 #include <ostream>
 
 namespace urban
