@@ -10,7 +10,7 @@ namespace urban
 {
     UrbanObject::UrbanObject(void){}
 
-    UrbanObject::UrbanObject(_Mesh mesh)
+    UrbanObject::UrbanObject(Mesh mesh)
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate( builder);

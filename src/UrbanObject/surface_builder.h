@@ -14,7 +14,7 @@ namespace urban
     class SurfaceBuilder: public CGAL::Modifier_base<HDS>
     {
     public:
-        SurfaceBuilder(_Mesh mesh): mesh(mesh){}
+        SurfaceBuilder(Mesh _mesh): mesh(_mesh){}
         void operator()(HDS & target)
         {
             std::map<size_t, Point> points = mesh.get_points();
@@ -40,6 +40,6 @@ namespace urban
             incremental_builder.end_surface();
         }
     private:
-        _Mesh mesh;
+        Mesh mesh;
     };
 }

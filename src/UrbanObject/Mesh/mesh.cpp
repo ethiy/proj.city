@@ -1,13 +1,13 @@
-#include "_mesh.h"
+#include "mesh.h"
 
 #include <iterator>
 #include <algorithm>
 
 namespace urban
 {
-    _Mesh::_Mesh(void){}
-    _Mesh::_Mesh(const _Mesh & other):points(other.points), triangles(other.triangles){}
-    _Mesh::_Mesh(Lib3dsMesh lib3ds_mesh)
+    Mesh::Mesh(void){}
+    Mesh::Mesh(const Mesh & other):points(other.points), triangles(other.triangles){}
+    Mesh::Mesh(Lib3dsMesh lib3ds_mesh)
     {
         for(size_t it=0; it<lib3ds_mesh.points; ++it)
             points[it] = Point((lib3ds_mesh.pointL+it)->pos[0], (lib3ds_mesh.pointL+it)->pos[1], (lib3ds_mesh.pointL+it)->pos[2]);
@@ -27,18 +27,18 @@ namespace urban
                 triangles[it] = Triangle((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
         }
     }
-    _Mesh::~_Mesh(void){}
+    Mesh::~Mesh(void){}
 
-    std::map<size_t, Point> _Mesh::get_points(void)
+    std::map<size_t, Point> Mesh::get_points(void)
     {
         return points;
     }
-    std::map<size_t, Triangle> _Mesh::get_triangles(void)
+    std::map<size_t, Triangle> Mesh::get_triangles(void)
     {
         return triangles;
     }
 
-    std::ostream& operator<<(std::ostream &os, const _Mesh & mesh)
+    std::ostream& operator<<(std::ostream &os, const Mesh & mesh)
     {
         os << "Points: " << std::endl;
         std::for_each(std::begin(mesh.points), std::end(mesh.points), [&](std::pair<size_t, Point> p)

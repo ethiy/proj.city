@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../UrbanObject/_Mesh/_mesh.h"
+#include "../UrbanObject/Mesh/mesh.h"
 
 #include <boost/filesystem/path.hpp>
 
@@ -16,7 +16,7 @@ public:
     ~Reader();
 
     int get_exit_code(void);
-    void get_facets(std::vector<urban::_Mesh> &);
+    void get_facets(std::vector<urban::Mesh> &);
 private:
     structure* input;
     bool open;

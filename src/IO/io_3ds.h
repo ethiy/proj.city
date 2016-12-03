@@ -47,14 +47,14 @@ public:
         return exit_code;
     }
 
-    void get_facets(std::vector<urban::_Mesh> & _meshes)
+    void get_facets(std::vector<urban::Mesh> & _meshes)
     {
         if(open)
         {
             Lib3dsMesh* meshes = input->meshes;
             while(meshes)
             {
-                _meshes.push_back(urban::_Mesh(*meshes));
+                _meshes.push_back(urban::Mesh(*meshes));
                 meshes = meshes->next;
             }
         }

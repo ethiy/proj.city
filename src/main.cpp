@@ -1,5 +1,5 @@
 
-#include "UrbanObject/_Mesh/_mesh.h"
+#include "UrbanObject/Mesh/mesh.h"
 #include "UrbanObject/urban_object.h"
 #include "IO/io.h"
 #include "IO/io_3ds.h"
@@ -17,16 +17,16 @@ int main(int, char**)
 {
     boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
     std::vector<std::string> flags;
-    std::vector<urban::_Mesh> meshes;
+    std::vector<urban::Mesh> meshes;
 
     Reader<Lib3dsFile> reader(filepath, flags);
     int exit_code = reader.get_exit_code();
     reader.get_facets(meshes);
 
-    std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::_Mesh>(std::cout, "\n"));
+    std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::Mesh>(std::cout, "\n"));
 
     std::vector<urban::UrbanObject> urban_objects;
-    std::for_each(std::begin(meshes), std::end(meshes), [&](urban::_Mesh mesh)
+    std::for_each(std::begin(meshes), std::end(meshes), [&](urban::Mesh mesh)
                                                             {
                                                                 urban_objects.push_back(urban::UrbanObject(mesh));
                                                             }

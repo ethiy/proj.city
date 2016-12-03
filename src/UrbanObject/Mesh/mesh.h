@@ -16,13 +16,13 @@ namespace urban
     typedef Kernel::Point_3 Point;
     typedef Kernel::Vector_3 Vector;
 
-    class _Mesh
+    class Mesh
     {
     public:
-        _Mesh(void);
-        _Mesh(const _Mesh &);
-        _Mesh(Lib3dsMesh);
-        ~_Mesh(void);
+        Mesh(void);
+        Mesh(const Mesh &);
+        Mesh(Lib3dsMesh);
+        ~Mesh(void);
 
         std::map<size_t, Point> get_points(void);
         std::map<size_t, Triangle> get_triangles(void);
@@ -30,6 +30,6 @@ namespace urban
         std::map<size_t, Point> points;
         std::map<size_t, Triangle> triangles;
         
-        friend std::ostream& operator<<(std::ostream &, const _Mesh &);
+        friend std::ostream& operator<<(std::ostream &, const Mesh &);
     };
 }

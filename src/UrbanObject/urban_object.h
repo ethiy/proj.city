@@ -1,6 +1,6 @@
 #pragma once
 
-#include "_Mesh/_mesh.h"
+#include "Mesh/mesh.h"
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
@@ -25,7 +25,7 @@ namespace urban
         /*! UrbanObject copy constructor*/
         UrbanObject(const UrbanObject &);
         /*! UrbanObject constructor form 3ds meshes*/
-        UrbanObject(_Mesh );
+        UrbanObject(Mesh);
         /*! UrbanObject default destructor*/
         ~UrbanObject(void);
     private:
