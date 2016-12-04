@@ -18,7 +18,7 @@ class Reader<Lib3dsFile>
 public:
     Reader(){}
 
-    Reader(boost::filesystem::path filepath, std::vector<std::string> flags):filepath(filepath), flags(flags)
+    Reader(boost::filesystem::path _filepath, std::vector<std::string> _flags):filepath(_filepath), flags(_flags)
     {
         try
         {
@@ -73,9 +73,9 @@ class Writer<Lib3dsFile>
 {
 public:
     Writer(){}
-    Writer(boost::filesystem::path filepath, std::vector<std::string> flags, Lib3dsMesh* meshes):filepath(filepath), flags(flags)
+    Writer(boost::filesystem::path _filepath, std::vector<std::string> _flags, Lib3dsMesh* _meshes):filepath(_filepath), flags(_flags)
     {
-        lib3ds_file_insert_mesh(output, meshes);
+        lib3ds_file_insert_mesh(output, _meshes);
     }
     ~Writer(){}
     void save()
