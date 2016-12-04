@@ -9,8 +9,26 @@
 #include <iostream>
 #include <vector>
 
-template<> class Reader<Lib3dsFile>;
-template<> class Writer<Lib3dsFile>;
+template<>
+class FileHandler<Lib3dsFile>
+{
+public:
+    FileHandler();
+    FileHandler(boost::filesystem::path, std::vector<std::string>);
+    FileHandler(boost::filesystem::path, std::vector<std::string>, Lib3dsMesh*);
+    ~FileHandler();
+
+    void read(void);
+    void write(void);
+
+    std::vector<urban::Mesh> & get_facets(void);
+private:
+    Lib3dsFile* file;
+    boost::filesystem::path filepath;
+    bool open = false;
+    int exit_code = EXIT_SUCCESS;
+    std::vector<std::string> modes;
+};
 
 template<>
 class Reader<Lib3dsFile>

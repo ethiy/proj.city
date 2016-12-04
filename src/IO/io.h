@@ -7,6 +7,10 @@
 #include <string>
 #include <vector>
 
+
+template<class structure>
+class FileHandler;
+
 template<class structure>
 class Reader
 {
