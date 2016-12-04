@@ -7,7 +7,7 @@
 #include <boost/filesystem/operations.hpp>
 
 #include <iostream>
-#include <vector>
+#include <map>
 
 template<>
 class FileHandler<Lib3dsFile>
@@ -27,7 +27,7 @@ private:
     boost::filesystem::path filepath;
     bool open = false;
     int exit_code = EXIT_SUCCESS;
-    std::vector<std::string> modes;
+    std::map<std::string, bool> modes;
 };
 
 template<>
