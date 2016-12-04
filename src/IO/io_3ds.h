@@ -13,19 +13,16 @@ template<>
 class FileHandler<Lib3dsFile>
 {
 public:
-    FileHandler();
-    FileHandler(boost::filesystem::path, std::vector<std::string>);
-    FileHandler(boost::filesystem::path, std::vector<std::string>, Lib3dsMesh*);
-    ~FileHandler();
+    FileHandler(void);
+    FileHandler(boost::filesystem::path, std::map<std::string, bool>);
+    ~FileHandler(void);
 
-    void read(void);
-    void write(void);
+    int read(std::vector<urban::Mesh> &);
+    int write(std::vector<urban::Mesh>);
 
-    std::vector<urban::Mesh> & get_facets(void);
 private:
     Lib3dsFile* file;
     boost::filesystem::path filepath;
-    bool open = false;
     int exit_code = EXIT_SUCCESS;
     std::map<std::string, bool> modes;
 };
