@@ -10,6 +10,18 @@ namespace urban
     Triangle::Triangle(size_t first, size_t second, size_t third):points{{first, second, third}}{}
     Triangle::~Triangle(void){}
 
+    void Triangle::swap(Triangle & other)
+    {
+        using std::swap;
+        swap(points, other.points);
+    }
+
+    Triangle & Triangle::operator=(Triangle other)
+    {
+        other.swap(*this);
+        return *this;
+    }
+
     size_t Triangle::operator[](size_t index)
     {
         return points[index];
@@ -24,5 +36,10 @@ namespace urban
     {
         std::copy(std::begin(triangle.points), std::end(triangle.points), std::ostream_iterator<size_t>(os, " "));
         return os;
+    }
+
+    void swap(Triangle & lhs, Triangle &rhs)
+    {
+        lhs.swap(rhs);
     }
 }
