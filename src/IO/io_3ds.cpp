@@ -70,7 +70,7 @@ int FileHandler<Lib3dsFile>::write(std::vector<urban::Mesh> meshes)
     }
     catch (const boost::filesystem::filesystem_error & error)
     {
-        
+        std::cerr << "Writing " << filepath << " failed with: " << error.code().message() << std::endl;
     }
     return exit_code;
 }
