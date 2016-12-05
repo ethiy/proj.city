@@ -28,6 +28,8 @@ namespace urban
         std::map<size_t, Point> get_points(void);
         size_t get_number_triangles(void);
         std::map<size_t, Triangle> get_triangles(void);
+
+        Lib3dsMesh* to_3ds(void);
     private:
         std::map<size_t, Point> points;
         std::map<size_t, Triangle> triangles;
