@@ -16,12 +16,12 @@
 int main(int, char**)
 {
     boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
-    std::vector<std::string> flags;
+    std::map<std::string,bool> modes;
+    modes.insert(std::pair<std::string, bool>("read", true));
     std::vector<urban::Mesh> meshes;
 
-    Reader<Lib3dsFile> reader(filepath, flags);
-    int exit_code = reader.get_exit_code();
-    reader.get_facets(meshes);
+    FileHandler<Lib3dsFile> handler(filepath, modes);
+    int exit_code = handler.read(meshes);
 
     std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::Mesh>(std::cout, "\n"));
 
