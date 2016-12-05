@@ -34,7 +34,7 @@ namespace urban
 
     Lib3dsFace* Triangle::to_3ds()
     {
-        Lib3dsFace* face = nullptr; //= malloc( 64 * sizeof char + 4 * sizeof(Lib3dsWord) + sizeof(Lib3dsDWord) + 3 * sizeof float );
+        Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace),1));
         for(size_t i=0; i<3; ++i)
             face->points[i] = static_cast<Lib3dsWord>(points[i]);
         return face;

@@ -56,7 +56,7 @@ namespace urban
         lib3ds_mesh_new_face_list(mesh, LIB3DS_FACE_FLAG_VIS_AB | LIB3DS_FACE_FLAG_VIS_BC | LIB3DS_FACE_FLAG_VIS_AC);
         for(Lib3dsDword it=0; it<mesh->points; ++it)
         {
-            Lib3dsPoint *point = nullptr;
+            Lib3dsPoint *point = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint),1));
             for( size_t i=0; i<3; ++i)
                 point->pos[i] = static_cast<float>(points[it][static_cast<int>(i)]);
                 *(mesh->pointL + it) = *point;
@@ -64,7 +64,7 @@ namespace urban
         mesh->faces = static_cast<Lib3dsDword>(triangles.size());
         for(Lib3dsDword it=0; it<mesh->faces; ++it)
             *(mesh->faceL + it) = *(triangles[it].to_3ds());
-        Lib3dsVector *normalL = nullptr;
+        Lib3dsVector *normalL = reinterpret_cast<Lib3dsVector*>(calloc(sizeof(Lib3dsVector),mesh->faces));
         lib3ds_mesh_calculate_normals(mesh, normalL);
         return mesh;
     }
