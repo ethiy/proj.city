@@ -50,24 +50,11 @@ int FileHandler<Lib3dsFile>::write(std::vector<urban::Mesh> meshes)
     {
         if(modes["write"] == true)
         {
-            Lib3dsMesh* p_meshes;// malloc !!
+            Lib3dsMesh* p_meshes = nullptr;// malloc !!
             Lib3dsMesh* cursor = p_meshes;
             std::for_each( std::begin(meshes), std::end(meshes), [&](urban::Mesh mesh)
                                                                     {
-                                                                        size_t points = mesh.get_number_points();
-                                                                        std::map<size_t, urban::Point> pointM = mesh.get_points();
-                                                                        Lib3dsPoint *pointL;
-                                                                        for(size_t it=0; it<points; ++it)
-                                                                            *(pointL + it) = pointM[it]; // Point != Lib3dsPoint
-                                                                        size_t faces = mesh.get_number_triangles();
-                                                                        std::map<size_t, urban::Triangle> faceM = mesh.get_triangles();
-                                                                        Lib3dsFace *faceL;
-                                                                        for(size_t it=0; it<faces; ++it)
-                                                                            *(faceL + it) = faceM[it];// Triangle != Lib3dsFacet
-                                                                        cursor->points = points;
-                                                                        cursor->pointL = pointL;
-                                                                        cursor->faces = faces;
-                                                                        cursor->faceL = faceL;
+                                                                        cursor = mesh.to_3ds();
                                                                         cursor = cursor->next;
                                                                     }
                         );
