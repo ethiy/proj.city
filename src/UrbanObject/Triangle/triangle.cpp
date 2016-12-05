@@ -32,6 +32,14 @@ namespace urban
         points = {{points[0], points[2], points[1]}};
     }
 
+    Lib3dsFace* Triangle::to_3ds()
+    {
+        Lib3dsFace* face = nullptr; //= malloc( 64 * sizeof char + 4 * sizeof(Lib3dsWord) + sizeof(Lib3dsDWord) + 3 * sizeof float );
+        for(size_t i=0; i<3; ++i)
+            face->points[i] = static_cast<Lib3dsWord>(points[i]);
+        return face;
+    }
+
     std::ostream& operator<<(std::ostream & os, const Triangle & triangle)
     {
         std::copy(std::begin(triangle.points), std::end(triangle.points), std::ostream_iterator<size_t>(os, " "));
