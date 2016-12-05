@@ -35,3 +35,7 @@ FIND_PACKAGE(CGAL)
 include( ${CGAL_USE_FILE} ) 
 include_directories(${CGAL_INCLUDE_DIRS})
 list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
+
+# Find Catch
+
+include(cmake/modules/catch.cmake)

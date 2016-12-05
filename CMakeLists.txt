@@ -6,6 +6,8 @@ project(3DSceneModel C CXX)
 include(cmake/compilers.cmake)
 include(cmake/dependencies.cmake)
 
+enable_testing(true)
+
 file(GLOB_RECURSE Mesh_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.h")
 file(GLOB_RECURSE Mesh_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.cpp")
 
