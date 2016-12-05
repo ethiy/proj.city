@@ -54,12 +54,11 @@ namespace urban
         Lib3dsMesh* mesh = lib3ds_mesh_new("");
         lib3ds_mesh_new_point_list(mesh, static_cast<Lib3dsDword>(points.size()));
         lib3ds_mesh_new_face_list(mesh, LIB3DS_FACE_FLAG_VIS_AB | LIB3DS_FACE_FLAG_VIS_BC | LIB3DS_FACE_FLAG_VIS_AC);
-        mesh->pointL;
         for(Lib3dsDword it=0; it<mesh->points; ++it)
         {
             Lib3dsPoint *point = nullptr;
             for( size_t i=0; i<3; ++i)
-                point->pos[i] = static_cast<float>(points[it][i]);
+                point->pos[i] = static_cast<float>(points[it][static_cast<int>(i)]);
                 *(mesh->pointL + it) = *point;
         }
         mesh->faces = static_cast<Lib3dsDword>(triangles.size());
