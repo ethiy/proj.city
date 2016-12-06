@@ -16,8 +16,6 @@ else()
       message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
   endif(COMPILER_SUPPORTS_CXX11)
 
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-
   if(CHECK_CXX_COMPILER_USED2)
   elseif("${CMAKE_CXX_COMPILER_ID}x" MATCHES "Clangx")
     # using Clang
