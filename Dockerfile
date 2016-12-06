@@ -20,3 +20,4 @@ RUN mkdir build && mkdir build/linux
 WORKDIR build/linux
 RUN cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
 RUN make -j2 all
+RUN ./test_exec -s
