@@ -35,4 +35,4 @@ file(GLOB_RECURSE TEST_SRC "${3DSceneModel_SOURCE_DIR}/src/Tests/*.cpp")
 
 add_executable(test_exec ${TEST_SRC} ${UObj_HEADERS} ${IO_HEADERS})
 target_link_libraries(test_exec Catch UrbanObject IO)
-add_test(NAME test COMMAND test_exec --success --force-color)
+add_test(NAME test COMMAND test_exec -r junit)
