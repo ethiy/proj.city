@@ -45,5 +45,14 @@ SCENARIO("Triangle manipulation:")
                 REQUIRE( auxilary.str() == "145 97 45 " );
             }
         }
+
+        WHEN( "the triangle is transformed to Lib3dsFace")
+        {
+            urban::Triangle facet(indexes[0], indexes[1], indexes[2]);
+            Lib3dsFace* face_3ds = facet.to_3ds();
+            std::ostringstream auxilary;
+            auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2];
+            REQUIRE( auxilary.str() == "145 45 97" );
+        }
     }
 }
