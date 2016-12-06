@@ -51,21 +51,24 @@ namespace urban
 
     Lib3dsMesh* Mesh::to_3ds()
     {
-        Lib3dsMesh* mesh = lib3ds_mesh_new("");
-        lib3ds_mesh_new_point_list(mesh, static_cast<Lib3dsDword>(points.size()));
-        lib3ds_mesh_new_face_list(mesh, LIB3DS_FACE_FLAG_VIS_AB | LIB3DS_FACE_FLAG_VIS_BC | LIB3DS_FACE_FLAG_VIS_AC);
-        for(Lib3dsDword it=0; it<mesh->points; ++it)
-        {
-            Lib3dsPoint *point = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint),1));
-            for( size_t i=0; i<3; ++i)
-                point->pos[i] = static_cast<float>(points[it][static_cast<int>(i)]);
-                *(mesh->pointL + it) = *point;
-        }
+        Lib3dsMesh* mesh = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), 1));
+        mesh->points = static_cast<Lib3dsWord>(points.size());
+        mesh->pointL = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint), mesh->points));
+        std::transform(std::begin(points), std::end(points), mesh->pointL, [&](std::pair<size_t, Point> p)
+                                                                                            {
+                                                                                                Lib3dsPoint point;
+                                                                                                auto init = std::initializer_list<double>({p.second[0], p.second[1], p.second[2]});
+                                                                                                std::copy(std::begin(init), std::end(init), point.pos);
+                                                                                                return point;
+                                                                                            }
+                    );
         mesh->faces = static_cast<Lib3dsDword>(triangles.size());
-        for(Lib3dsDword it=0; it<mesh->faces; ++it)
-            *(mesh->faceL + it) = *(triangles[it].to_3ds());
-        Lib3dsVector *normalL = reinterpret_cast<Lib3dsVector*>(calloc(sizeof(Lib3dsVector),mesh->faces));
-        lib3ds_mesh_calculate_normals(mesh, normalL);
+        mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces));
+        std::transform(std::begin(triangles), std::end(triangles), mesh->faceL, [&](std::pair<size_t, Triangle> t)
+                                                                                    {
+                                                                                        return *t.second.to_3ds();
+                                                                                    }
+                    );
         return mesh;
     }
 
