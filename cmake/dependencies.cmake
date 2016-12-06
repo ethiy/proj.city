@@ -8,7 +8,6 @@ include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
 list(APPEND LIBS ${LIB3DS_LIBRARIES})
 
 # Find Boost
-
 FIND_PACKAGE(Boost REQUIRED filesystem system)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
@@ -30,12 +29,11 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
 # Find CGAL
-
 FIND_PACKAGE(CGAL)
 include( ${CGAL_USE_FILE} ) 
 include_directories(${CGAL_INCLUDE_DIRS})
 list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
 
 # Find Catch
-
 include(cmake/modules/catch.cmake)
+enable_testing(true)

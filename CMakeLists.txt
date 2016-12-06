@@ -6,8 +6,7 @@ project(3DSceneModel C CXX)
 include(cmake/compilers.cmake)
 include(cmake/dependencies.cmake)
 
-enable_testing(true)
-
+# Targets
 file(GLOB_RECURSE Mesh_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.h")
 file(GLOB_RECURSE Mesh_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.cpp")
 
@@ -30,3 +29,10 @@ set(MAIN_SRC ${3DSceneModel_SOURCE_DIR}/src/main.cpp)
 add_executable(main ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS} ${Mesh_HEADERS})
 target_link_libraries(main UrbanObject IO ${LIBS})
 link_directories(main ${LIBS_DIRS})
+
+# Tests
+file(GLOB_RECURSE TEST_SRC "${3DSceneModel_SOURCE_DIR}/src/Tests/*.cpp")
+
+add_executable(test_exec ${TEST_SRC})
+target_link_libraries(test_exec Catch)
+add_test(NAME test COMMAND test_exec --success --force-color)
