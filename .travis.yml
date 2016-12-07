@@ -14,19 +14,24 @@ branches:
 matrix:
   include:
     - os: linux
+        services:
+            - docker
+        script:
+            -docker build .
+
 
     - os: osx
-      osx_image: xcode8
-      compiler: clang
-
-before_install:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew upgrade; brew install boost cgal lib3ds; mkdir build; mkdir build/darwin; fi
-
-install:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd build/darwin; cmake ../..; fi
-
-services:
-    - docker
-
-script:
-    - docker build .
+        osx_image: xcode8
+        compiler: clang
+        before_install:
+            - brew update
+            - brew upgrade
+            - brew install boost cgal lib3ds
+            - mkdir build
+            - mkdir build/darwin
+        install:
+            - cd build/darwin
+            - cmake ../..
+        script:
+            - make -j4 all
+            - ./test_exec -s
