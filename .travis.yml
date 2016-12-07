@@ -9,9 +9,30 @@ git:
 branches:
     only:
     - master
+    - osx-travis
 
-services:
-    - docker
+matrix:
+  include:
+    - os: linux
+      services:
+        - docker
+      script:
+        - docker build .
 
-script:
-    - docker build .
+
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      before_install:
+        - brew update
+        - brew outdated boost || brew upgrade boost
+        - brew outdated cgal || brew upgrade cgal
+        - brew install lib3ds
+        - mkdir build
+        - mkdir build/darwin
+      install:
+        - cd build/darwin
+        - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
+      script:
+        - make all
+        - ./test_exec -s
