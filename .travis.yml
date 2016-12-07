@@ -14,24 +14,24 @@ branches:
 matrix:
   include:
     - os: linux
-        services:
-            - docker
-        script:
-            -docker build .
+      services:
+        - docker
+      script:
+        -docker build .
 
 
     - os: osx
-        osx_image: xcode8
-        compiler: clang
-        before_install:
-            - brew update
-            - brew upgrade
-            - brew install boost cgal lib3ds
-            - mkdir build
-            - mkdir build/darwin
-        install:
-            - cd build/darwin
-            - cmake ../..
-        script:
-            - make -j4 all
-            - ./test_exec -s
+      osx_image: xcode8
+      compiler: clang
+      before_install:
+        - brew update
+        - brew upgrade
+        - brew install boost cgal lib3ds
+        - mkdir build
+        - mkdir build/darwin
+      install:
+        - cd build/darwin
+        - cmake ../..
+      script:
+        - make -j4 all
+        - ./test_exec -s
