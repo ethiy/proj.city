@@ -23,7 +23,7 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew upgrade; brew install boost cgal lib3ds; mkdir build; mkdir build/darwin; fi
 
 install:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake ../..; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cd build/darwin; cmake ../..; fi
 
 services:
     - docker
