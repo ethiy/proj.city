@@ -17,7 +17,7 @@ matrix:
       services:
         - docker
       script:
-        -docker build .
+        - docker build .
 
 
     - os: osx
@@ -31,7 +31,7 @@ matrix:
         - mkdir build/darwin
       install:
         - cd build/darwin
-        - cmake ../..
+        - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
-        - make -j4 all
+        - make all
         - ./test_exec -s
