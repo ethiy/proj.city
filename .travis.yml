@@ -1,5 +1,4 @@
 sudo: required
-dist: trusty
 
 language: cpp
 
@@ -9,9 +8,23 @@ git:
 branches:
     only:
     - master
+    - osx-travis
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
 
 services:
     - docker
 
+before_install:
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; brew upgrade; brew install boost cgal lib3ds; mkdir build; mkdir build/darwin; fi
+
+install:
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake ../..; fi
 script:
-    - docker build .
+    -if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then make -j4 all; ./test_exec -s
+    - else docker build .; fi
