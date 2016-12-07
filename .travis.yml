@@ -14,8 +14,6 @@ branches:
 matrix:
   include:
     - os: linux
-        services:
-            - docker
 
     - os: osx
       osx_image: xcode8
