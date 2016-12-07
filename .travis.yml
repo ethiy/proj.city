@@ -26,7 +26,7 @@ matrix:
       before_install:
         - brew update
         - brew outdated boost || brew upgrade boost
-        - brew outdated cgal || brew upgarde cgal
+        - brew outdated cgal || brew upgrade cgal
         - brew install lib3ds
         - mkdir build
         - mkdir build/darwin
