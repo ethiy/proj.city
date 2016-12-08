@@ -30,7 +30,7 @@ namespace urban
 
     void Face::invert_orientation(void)
     {
-        points = {{points[0], points[2], points[1]}};
+        points = ;
     }
 
     Lib3dsFace* Face::to_3ds()
@@ -40,9 +40,10 @@ namespace urban
         return face;
     }
 
-    std::ostream& operator<<(std::ostream & os, const Face & triangle)
+    std::ostream& operator<<(std::ostream & os, const Face & face)
     {
-        std::copy(std::begin(triangle.points), std::end(triangle.points), std::ostream_iterator<size_t>(os, " "));
+        os << face.vertices_number << " ";
+        std::copy(std::begin(face.points), std::end(face.points), std::ostream_iterator<size_t>(os, " "));
         return os;
     }
 
