@@ -16,7 +16,7 @@ SCENARIO("Face manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << facet;
-                REQUIRE( auxilary.str() == "145 45 97 " );
+                REQUIRE( auxilary.str() == "3 145 45 97 " );
             }
         }
 
@@ -29,7 +29,7 @@ SCENARIO("Face manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << facet;
-                REQUIRE( auxilary.str() == "145 45 97 " );
+                REQUIRE( auxilary.str() == "3 145 45 97 " );
             }
         }
 
@@ -42,7 +42,7 @@ SCENARIO("Face manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << facet;
-                REQUIRE( auxilary.str() == "145 97 45 " );
+                REQUIRE( auxilary.str() == "3 145 97 45 " );
             }
         }
 
