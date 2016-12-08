@@ -13,6 +13,7 @@ namespace urban
     public:
         Face(void);
         Face(const Face &);
+        Face(size_t*);
         Face(size_t, size_t, size_t);
         ~Face(void);
 
@@ -20,6 +21,8 @@ namespace urban
         
         Face & operator=(Face);
         size_t operator[](size_t);
+
+        std::vector<size_t> get_indexes(void);
 
         void invert_orientation(void);
         Lib3dsFace* to_3ds(void);

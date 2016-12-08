@@ -7,7 +7,7 @@ namespace urban
 {
     Face::Face(void){}
     Face::Face(const Face & other):points(other.points){}
-    Face::Face(size_t first, size_t second, size_t third):vertices_number(3), points{{first, second, third}}{}
+    Face::Face(size_t first, size_t second, size_t third): points{{first, second, third}}{}
     Face::~Face(void){}
 
     void Face::swap(Face & other)
@@ -28,15 +28,22 @@ namespace urban
         return points[index];
     }
 
+    std::vector<size_t> Face::get_indexes(void)
+    {
+        return points;
+    }
+
     void Face::invert_orientation(void)
     {
-        points = ;
+        std::vector<size_t> aux;
+        std::reverse_copy(std::begin(points) + 1, std::end(points), aux);
+        std::copy(std::begin(aux), std::end(aux), std::begin(points) +1 );
     }
 
     Lib3dsFace* Face::to_3ds()
     {
-        Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace),1));
-        std::copy(std::begin(points), std::end(points), face->points);
+        Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
+        std::copy(std::begin(points), std::end(points), face->points)
         return face;
     }
 
