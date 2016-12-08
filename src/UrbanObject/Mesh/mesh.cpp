@@ -63,7 +63,7 @@ namespace urban
                                                                                             }
                     );
         mesh->faces = static_cast<Lib3dsDword>(faces.size());
-        mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces));
+        mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces))
         std::transform(std::begin(faces), std::end(faces), mesh->faceL, [&](std::pair<size_t, Face> t)
                                                                                     {
                                                                                         return *t.second.to_3ds();
