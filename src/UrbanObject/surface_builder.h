@@ -18,7 +18,7 @@ namespace urban
         void operator()(HDS & target)
         {
             std::map<size_t, Point> points = mesh.get_points();
-            std::map<size_t, Triangle> faces = mesh.get_triangles();
+            std::map<size_t, Face> faces = mesh.get_faces();
 
             CGAL::Polyhedron_incremental_builder_3<HDS> incremental_builder( target, true);
             incremental_builder.begin_surface(points.size(), faces.size());
@@ -28,7 +28,7 @@ namespace urban
                                                                         incremental_builder.add_vertex( p.second);
                                                                     }
                         );
-            std::for_each( std::begin(faces), std::end(faces), [&](std::pair<size_t, Triangle> face)
+            std::for_each( std::begin(faces), std::end(faces), [&](std::pair<size_t, Face> face)
                                                                 {
                                                                     incremental_builder.begin_facet();
                                                                     incremental_builder.add_vertex_to_facet( face.second[0]);

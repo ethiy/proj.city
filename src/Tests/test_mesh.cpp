@@ -31,14 +31,14 @@ SCENARIO("Mesh manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << u_mesh;
-                REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nTriangles: \nTriangle 0 : 0 2 1 \n" );
+                REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 0 2 1 \n" );
             }
         }
-        WHEN( "mesh points and triangles are accessed:")
+        WHEN( "mesh points and faces are accessed:")
         {
             urban::Mesh u_mesh(*test_mesh);
             std::map<size_t, urban::Point> points = u_mesh.get_points();
-            std::map<size_t, urban::Triangle> triangles = u_mesh.get_triangles();
+            std::map<size_t, urban::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
             {
                 std::ostringstream auxilary, _auxilary;
@@ -49,10 +49,10 @@ SCENARIO("Mesh manipulation:")
                                                                                     _auxilary << "Point " << p.first << " : " << p.second << std::endl;
                                                                                 }
                             );
-                _auxilary << "Triangles: " << std::endl;
-                std::for_each(std::begin(triangles), std::end(triangles), [&](std::pair<size_t, urban::Triangle> t)
+                _auxilary << "Faces: " << std::endl;
+                std::for_each(std::begin(faces), std::end(faces), [&](std::pair<size_t, urban::Face> t)
                                                                                         {
-                                                                                            _auxilary << "Triangle " << t.first << " : " << t.second << std::endl;
+                                                                                            _auxilary << "Face " << t.first << " : " << t.second << std::endl;
                                                                                         }
                             );
                 REQUIRE( auxilary.str() == _auxilary.str() );
@@ -67,7 +67,7 @@ SCENARIO("Mesh manipulation:")
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::Mesh _u_mesh(*_mesh);
                 auxilary << _u_mesh;
-                REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nTriangles: \nTriangle 0 : 0 1 2 \n" );
+                REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 0 1 2 \n" );
             }
         }
     }

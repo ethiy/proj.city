@@ -10,8 +10,8 @@ include(cmake/dependencies.cmake)
 file(GLOB_RECURSE Mesh_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.h")
 file(GLOB_RECURSE Mesh_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.cpp")
 
-file(GLOB_RECURSE Trigl_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Triangle/*.h")
-file(GLOB_RECURSE Trigl_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Triangle/*.cpp")
+file(GLOB_RECURSE Face_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Face/*.h")
+file(GLOB_RECURSE Face_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Face/*.cpp")
 
 file(GLOB_RECURSE Line_HEADERS "${3DSceneModel_SOURCE_DIR}/src/IO/Line/*.h")
 file(GLOB_RECURSE Line_SRC "${3DSceneModel_SOURCE_DIR}/src/IO/Line/*.cpp")

@@ -6,7 +6,7 @@
 namespace urban
 {
     Mesh::Mesh(void){}
-    Mesh::Mesh(const Mesh & other):points(other.points), triangles(other.triangles){}
+    Mesh::Mesh(const Mesh & other):points(other.points), faces(other.faces){}
     Mesh::Mesh(Lib3dsMesh lib3ds_mesh)
     {
         for(size_t it=0; it<lib3ds_mesh.points; ++it)
@@ -22,9 +22,9 @@ namespace urban
             Vector n = Vector((lib3ds_mesh.faceL+it)->normal[0], (lib3ds_mesh.faceL+it)->normal[1], (lib3ds_mesh.faceL+it)->normal[2]);
 
             if(CGAL::determinant(v1, v2, n)>0)
-                triangles[it] = Triangle((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[1], (lib3ds_mesh.faceL+it)->points[2]);
+                faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[1], (lib3ds_mesh.faceL+it)->points[2]);
             else
-                triangles[it] = Triangle((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
+                faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
         }
     }
     Mesh::~Mesh(void){}
@@ -39,14 +39,14 @@ namespace urban
         return points;
     }
     
-    size_t Mesh::get_number_triangles(void)
+    size_t Mesh::get_number_faces(void)
     {
-        return triangles.size();
+        return faces.size();
     }
 
-    std::map<size_t, Triangle> Mesh::get_triangles(void)
+    std::map<size_t, Face> Mesh::get_faces(void)
     {
-        return triangles;
+        return faces;
     }
 
     Lib3dsMesh* Mesh::to_3ds()
@@ -62,9 +62,9 @@ namespace urban
                                                                                                 return point;
                                                                                             }
                     );
-        mesh->faces = static_cast<Lib3dsDword>(triangles.size());
+        mesh->faces = static_cast<Lib3dsDword>(faces.size());
         mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces));
-        std::transform(std::begin(triangles), std::end(triangles), mesh->faceL, [&](std::pair<size_t, Triangle> t)
+        std::transform(std::begin(faces), std::end(faces), mesh->faceL, [&](std::pair<size_t, Face> t)
                                                                                     {
                                                                                         return *t.second.to_3ds();
                                                                                     }
@@ -80,10 +80,10 @@ namespace urban
                                                                             os << "Point " << p.first << " : " << p.second << std::endl;
                                                                         }
                     );
-        os << "Triangles: " << std::endl;
-        std::for_each(std::begin(mesh.triangles), std::end(mesh.triangles), [&](std::pair<size_t, Triangle> t)
+        os << "Faces: " << std::endl;
+        std::for_each(std::begin(mesh.faces), std::end(mesh.faces), [&](std::pair<size_t, Face> t)
                                                                                 {
-                                                                                    os << "Triangle " << t.first << " : " << t.second << std::endl;
+                                                                                    os << "Face " << t.first << " : " << t.second << std::endl;
                                                                                 }
                     );
         return os;
