@@ -12,7 +12,7 @@
 #include <string>
 
 template<>
-class FileHandler<std::ifstream>
+class FileHandler<std::fstream>
 {
 public:
     FileHandler(void);
