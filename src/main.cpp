@@ -20,7 +20,7 @@ int main(int, char**)
     modes.insert(std::pair<std::string, bool>("read", true));
     std::vector<urban::Mesh> meshes;
 
-    FileHandler<Lib3dsFile> handler(filepath, modes);
+    urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
     int exit_code = handler.read(meshes);
 
     std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::Mesh>(std::cout, "\n"));

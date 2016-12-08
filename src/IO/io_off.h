@@ -11,20 +11,26 @@
 #include <map>
 #include <string>
 
-template<>
-class FileHandler<std::fstream>
+namespace urban
 {
-public:
-    FileHandler(void);
-    FileHandler(boost::filesystem::path, std::map<std::string, bool>);
-    ~FileHandler(void);
+    namespace io
+    {
+        template<>
+        class FileHandler<std::fstream>
+        {
+        public:
+            FileHandler(void);
+            FileHandler(boost::filesystem::path, std::map<std::string, bool>);
+            ~FileHandler(void);
 
-    int read(std::vector<urban::Mesh> &);
-    int write(std::vector<urban::Mesh>);
+            int read(std::vector<urban::Mesh> &);
+            int write(std::vector<urban::Mesh>);
 
-private:
-    std::fstream file;
-    boost::filesystem::path filepath;
-    int exit_code = EXIT_SUCCESS;
-    std::map<std::string, bool> modes;
-};
+        private:
+            std::fstream file;
+            boost::filesystem::path filepath;
+            int exit_code = EXIT_SUCCESS;
+            std::map<std::string, bool> modes;
+        };
+    }
+}
