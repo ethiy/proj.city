@@ -54,13 +54,12 @@ namespace urban
             {
                 if(modes["write"] == true)
                 {
-                    Lib3dsMesh* p_meshes = nullptr;// malloc !!
-                    Lib3dsMesh* cursor = p_meshes;
-                    std::for_each( std::begin(meshes), std::end(meshes), [&](urban::Mesh mesh)
-                                                                            {
-                                                                                cursor = mesh.to_3ds();
-                                                                                cursor = cursor->next;
-                                                                            }
+                    Lib3dsMesh* p_meshes = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), meshes.size()));
+                    std::transform( std::begin(meshes), std::end(meshes), p_meshes,
+                                [](urban::Mesh mesh)
+                                    {
+                                        return *(mesh.to_3ds());
+                                    }
                                 );
                     lib3ds_file_insert_mesh(file, p_meshes);
                     lib3ds_file_save(file, filepath.string().c_str());
