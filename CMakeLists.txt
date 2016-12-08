@@ -13,10 +13,13 @@ file(GLOB_RECURSE Mesh_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Mesh/*.cp
 file(GLOB_RECURSE Trigl_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Triangle/*.h")
 file(GLOB_RECURSE Trigl_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/Triangle/*.cpp")
 
+file(GLOB_RECURSE Line_HEADERS "${3DSceneModel_SOURCE_DIR}/src/IO/Line/*.h")
+file(GLOB_RECURSE Line_SRC "${3DSceneModel_SOURCE_DIR}/src/IO/Line/*.cpp")
+
 file(GLOB_RECURSE UObj_HEADERS "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/*.h")
 file(GLOB_RECURSE UObj_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/*.cpp")
 
-add_library(UrbanObject ${UObj_HEADERS} ${UObj_SRC} ${Mesh_HEADERS})
+add_library(UrbanObject ${UObj_HEADERS} ${UObj_SRC} ${Mesh_HEADERS} ${Line_HEADERS})
 target_link_libraries(UrbanObject ${LIBS})
 
 file(GLOB_RECURSE IO_HEADERS "${3DSceneModel_SOURCE_DIR}/src/IO/*.h")
