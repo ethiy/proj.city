@@ -1,6 +1,7 @@
 #include "io_off.h"
 
 #include "Line/line.h"
+#include "../UrbanObject/urban_object.h"
 
 #include <cassert>
 
@@ -101,6 +102,53 @@ namespace urban
             catch (const boost::filesystem::filesystem_error& error)
             {
                 std::cerr << "Reading " << filepath << " failed with: " << error.code().message() << std::endl;
+            }
+            return exit_code;
+        }
+
+        int FileHandler<std::fstream>::write(std::vector<urban::Mesh> meshes)
+        {
+            try
+            {
+                if(modes["write"])
+                {
+                    std::vector<UrbanObject> objs;
+                    if(modes["binary"])
+                    {
+                        file.open(filepath.string().c_str(), std::ios::out | std::ios::binary);
+                        CGAL::set_binary_mode(file);
+                    }
+                    else
+                    {
+                        if(modes["pretty"])
+                        {
+                            file.open(filepath.string().c_str(), std::ios::out);
+                            CGAL::set_pretty_mode(file);
+                        }
+                        else
+                        {
+                        file.open(filepath.string().c_str(), std::ios::out);
+                        CGAL::set_ascii_mode(file);
+                        }
+                    }
+                    std::for_each(std::begin(meshes), std::end(meshes), [&](urban::Mesh mesh)
+                                                                            {
+                                                                                objs.push_back(UrbanObject(mesh));
+                                                                            }
+                                );
+                    std::copy(std::begin(objs), std::end(objs), std::ostream_iterator<UrbanObject>(file, "\n"));
+                    file.close();
+                }
+                else
+                {
+                    boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                    exit_code = boost::system::errc::io_error;
+                    throw boost::filesystem::filesystem_error(ec.message(), ec);
+                }
+            }
+            catch (const boost::filesystem::filesystem_error & error)
+            {
+                std::cerr << "Writing " << filepath << " failed with: " << error.code().message() << std::endl;
             }
             return exit_code;
         }
