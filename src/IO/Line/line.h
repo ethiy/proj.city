@@ -22,5 +22,8 @@ namespace urban
             friend std::istream & operator>>(std::istream &, Line &);
             friend std::ostream & operator<<(std::ostream &, const Line &);
         };
+
+        template<class output_iterator>
+        void read_lines(std::istream& is, output_iterator destination_iterator);
     }
 }

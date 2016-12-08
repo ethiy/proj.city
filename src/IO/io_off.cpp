@@ -1,5 +1,7 @@
 #include "io_off.h"
 
+#include "Line/line.h"
+
 #include <cassert>
 
 namespace urban
