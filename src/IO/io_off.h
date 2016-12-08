@@ -23,7 +23,7 @@ public:
     int write(std::vector<urban::Mesh>);
 
 private:
-    std::ifstream file;
+    std::fstream file;
     boost::filesystem::path filepath;
     int exit_code = EXIT_SUCCESS;
     std::map<std::string, bool> modes;
