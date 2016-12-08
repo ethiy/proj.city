@@ -15,7 +15,7 @@ namespace urban
         {
             try
             {
-                if(modes["read"]==true)
+                if(modes["read"])
                 {
                     if(boost::filesystem::is_regular_file(filepath))
                     {
@@ -52,7 +52,7 @@ namespace urban
         {
             try
             {
-                if(modes["write"] == true)
+                if(modes["write"])
                 {
                     Lib3dsMesh* p_meshes = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), meshes.size()));
                     std::transform( std::begin(meshes), std::end(meshes), p_meshes,
