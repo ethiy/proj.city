@@ -3,7 +3,7 @@
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
 
-#include <array>
+#include <vector>
 #include <ostream>
 
 namespace urban
@@ -24,7 +24,8 @@ namespace urban
         void invert_orientation(void);
         Lib3dsFace* to_3ds(void);
     private:
-        std::array<size_t, 3> points;
+        size_t vertices_number = 3;
+        std::vector<size_t> points;
         friend std::ostream& operator<<(std::ostream &, const Face &);
     };
 
