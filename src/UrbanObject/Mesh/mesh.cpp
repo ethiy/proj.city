@@ -28,6 +28,7 @@ namespace urban
                 faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
         }
     }
+    Mesh::Mesh(std::map<size_t, Point>_points, std::map<size_t, Face> _faces):points(_points), faces(_faces){}
     Mesh::~Mesh(void){}
 
     size_t Mesh::get_number_points(void)

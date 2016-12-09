@@ -22,6 +22,7 @@ namespace urban
         Mesh(void);
         Mesh(const Mesh &);
         Mesh(Lib3dsMesh);
+        Mesh(std::map<size_t, Point>, std::map<size_t, Face>);
         ~Mesh(void);
 
         size_t get_number_points(void);
