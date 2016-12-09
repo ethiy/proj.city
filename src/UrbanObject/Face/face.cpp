@@ -44,8 +44,8 @@ namespace urban
 
     void Face::invert_orientation(void)
     {
-        std::vector<size_t> aux;
-        //std::reverse_copy(std::begin(points) + 1, std::end(points), aux);
+        std::vector<size_t> aux(vertices_number-1);
+        std::reverse_copy(std::begin(points) + 1, std::end(points), std::begin(aux));
         std::copy(std::begin(aux), std::end(aux), std::begin(points) +1 );
     }
 
