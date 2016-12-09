@@ -23,6 +23,7 @@ namespace urban
         size_t operator[](size_t);
 
         std::vector<size_t> get_indexes(void);
+        size_t size(void);
 
         void invert_orientation(void);
         Lib3dsFace* to_3ds(void);

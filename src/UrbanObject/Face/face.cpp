@@ -36,6 +36,11 @@ namespace urban
     {
         return points;
     }
+    
+    size_t Face::size(void)
+    {
+        return vertices_number;
+    }
 
     void Face::invert_orientation(void)
     {
