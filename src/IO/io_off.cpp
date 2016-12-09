@@ -3,6 +3,9 @@
 #include "Line/line.h"
 #include "../UrbanObject/urban_object.h"
 
+#include <boost/range/combine.hpp>
+#include <boost/foreach.hpp>
+
 #include <cassert>
 
 #include <string>
@@ -67,13 +70,20 @@ namespace urban
                                     assert(lines.size() == (2+sizes[0]+sizes[1])); // assuming the last empty line is not counted!!!
                                 }
                                 std::map<size_t, urban::Point> points;
-                                std::for_each(std::begin(lines) + 2, std::begin(lines) + sizes[0],
-                                                [&](std::string line)
-                                                {
-                                                    return;
-                                                } 
-                                            );
-                                
+                                {
+                                    std::vector<size_t> indexes(sizes[0]);
+                                    std::iota(std::begin(indexes), std::end(indexes), 0);
+                                    std::vector<std::string> point_lines(sizes[0]);
+                                    std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines) , 2 + sizes[0]), std::begin(point_lines));
+                                    
+                                    size_t idx;
+                                    std::string point_line;
+                                    BOOST_FOREACH(boost::tie(idx, point_line), boost::combine(indexes, point_lines))
+                                    {
+                                        std::istringstream _point_line(point_line);
+                                        std::copy(std::)
+                                    }
+                                }                                
                                 // Faces to parse
                             }
                             else
