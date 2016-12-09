@@ -1,5 +1,9 @@
 #include "face.h"
 
+#include <boost/range/sub_range.hpp>
+#include <boost/iterator/zip_iterator.hpp>
+#include <boost/tuple/tuple.hpp>
+
 #include <algorithm>
 #include <iterator>
 
@@ -43,7 +47,18 @@ namespace urban
     Lib3dsFace* Face::to_3ds()
     {
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
-        std::copy(std::begin(points), std::end(points), face->points)
+        {
+            boost::sub_range< std::vector<size_t> > twos(std::begin(points) + 1, std::end(points) - 1) , threes(std::begin(points) + 2, std::end(points));
+            std::for_each(
+                boost::make_zip_iterator(boost::make_tuple(std::begin(twos), std::begin(threes))),
+                boost::make_zip_iterator(boost::make_tuple(std::end(twos), std::end(threes))),
+                [&](boost::tuple<size_t, size_t> & two_three)
+                {
+                    face->points = reinterpret_cast<Lib3dsWord*>(calloc(sizeof(Lib3dWord), 3));
+                    face->points = {points.at(0), boost::get<0>(two_three), boost::get<1>(two_three)};
+                }
+            );
+        }
         return face;
     }
 
