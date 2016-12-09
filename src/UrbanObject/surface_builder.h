@@ -31,7 +31,7 @@ namespace urban
             std::for_each( std::begin(faces), std::end(faces), [&](std::pair<size_t, Face> face)
                                                                 {
                                                                     incremental_builder.begin_facet();
-                                                                    std::vector<size_t> indexes = face.get_indexes();
+                                                                    std::vector<size_t> indexes = face.second.get_indexes();
                                                                     std::for_each(std::begin(indexes), std::end(indexes), 
                                                                                 [&](size_t index)
                                                                                 {
