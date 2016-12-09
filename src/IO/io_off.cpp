@@ -13,9 +13,11 @@
 
 #include <map>
 #include <vector>
+#include <array>
 
 #include <algorithm>
 #include <iterator>
+#include <numeric>
 
 namespace urban
 {
@@ -78,13 +80,33 @@ namespace urban
                                     
                                     size_t idx;
                                     std::string point_line;
+                                    std::array<double, 3> coordinates;
                                     BOOST_FOREACH(boost::tie(idx, point_line), boost::combine(indexes, point_lines))
                                     {
                                         std::istringstream _point_line(point_line);
-                                        std::copy(std::)
+                                        std::copy(std::istream_iterator<double>(_point_line), std::istream_iterator<double>(), std::begin(coordinates));
+                                        points[idx] = Point(coordinates[0], coordinates[1], coordinates[2]);
                                     }
-                                }                                
-                                // Faces to parse
+                                }
+                                std::map<size_t, urban::Face> faces;
+                                {
+                                    std::vector<size_t> indexes(sizes[1]);
+                                    std::iota(std::begin(indexes), std::end(indexes), 0);
+                                    std::vector<std::string> face_lines(sizes[1]);
+                                    std::copy(std::next(std::begin(lines), 2 + sizes[0] ), std::next(std::begin(lines) , 2 + sizes[0] + sizes[1]), std::begin(face_lines));
+                                    
+                                    size_t idx;
+                                    std::string face_line;
+                                    std::vector<size_t> corners;
+                                    BOOST_FOREACH(boost::tie(idx, face_line), boost::combine(indexes, face_lines))
+                                    {
+                                        std::istringstream _face_line(face_line);
+                                        std::copy(std::istream_iterator<size_t>(_face_line), std::istream_iterator<size_t>(), std::begin(corners));
+                                        assert(corners.size() == 1 + corners[0]);
+                                        faces[idx] = Face(corners[0], corners[1:]); // to correct of course
+                                    }
+                                }
+                                meshes.push_back(urban::Mesh(points, faces));
                             }
                             else
                             {
