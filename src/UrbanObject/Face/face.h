@@ -13,7 +13,7 @@ namespace urban
     public:
         Face(void);
         Face(const Face &);
-        Face(size_t*);
+        Face(size_t, std::vector<size_t>);
         Face(size_t, size_t, size_t);
         ~Face(void);
 
