@@ -45,8 +45,8 @@ namespace urban
     void Face::invert_orientation(void)
     {
         std::vector<size_t> aux(vertices_number-1);
-        std::reverse_copy(std::begin(points) + 1, std::end(points), std::begin(aux));
-        std::copy(std::begin(aux), std::end(aux), std::begin(points) +1 );
+        std::reverse_copy( std::next(std::begin(points), 1), std::end(points), std::begin(aux));
+        std::copy(std::begin(aux), std::end(aux), std::next(std::begin(points), 1) );
     }
 
     Lib3dsFace* Face::to_3ds()
@@ -54,8 +54,8 @@ namespace urban
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
         {
             std::vector<size_t> twos , threes;
-            std::copy(std::begin(points) + 1, std::end(points) - 1, std::begin(twos));
-            std::copy(std::begin(points) + 2, std::end(points), std::begin(threes));
+            std::copy(std::next(std::begin(points), 1), std::prev(std::begin(points), 1), std::begin(twos));
+            std::copy(std::next(std::begin(points), 2), std::end(points), std::begin(threes));
             size_t two,three;
             BOOST_FOREACH( boost::tie(two, three), boost::combine(twos, threes))
             {
