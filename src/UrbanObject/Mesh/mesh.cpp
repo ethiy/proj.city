@@ -2,6 +2,7 @@
 
 #include <iterator>
 #include <algorithm>
+#include <numeric>
 
 namespace urban
 {
@@ -62,9 +63,19 @@ namespace urban
                                                                                                 return point;
                                                                                             }
                     );
-        mesh->faces = static_cast<Lib3dsDword>(faces.size());
-        mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces))
-        std::transform(std::begin(faces), std::end(faces), mesh->faceL, [&](std::pair<size_t, Face> t)
+        mesh->faces = static_cast<Lib3dsDword>(
+            std::accumulate(
+                std::begin(faces), 
+                std::end(faces),
+                0,
+                [](std::pair<size_t, Face> & first, std::pair<size_t, Face> & second)
+                {
+                    return first.second.size() + second.second.size() -4;
+                }
+                )
+            );
+        mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces));
+        std::transform(std::begin(faces), std::end(faces), mesh->faceL, [](std::pair<size_t, Face> t)
                                                                                     {
                                                                                         return *t.second.to_3ds();
                                                                                     }
