@@ -4,11 +4,11 @@
 
 SCENARIO("Face manipulation:")
 {
-    GIVEN( "Three indices:" )
+    GIVEN("Three indices:" )
     {
         size_t indexes[3] = {145,45,97};
 
-        WHEN( "the triangle is created")
+        WHEN("the triangle is created")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
 
@@ -20,7 +20,7 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN( "the triangle is copied")
+        WHEN("the triangle is copied")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
             urban::Face facet2 = facet;
@@ -33,7 +33,7 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN( "the triangle is inverted")
+        WHEN("the triangle is inverted")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
             facet.invert_orientation();
@@ -46,7 +46,21 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN( "the triangle is transformed to Lib3dsFace")
+        WHEN("the triangle is iterated throught")
+        {
+            urban::Face facet(indexes[0], indexes[1], indexes[2]);
+            std::ostringstream s_facet("");
+            s_facet << facet.size() << " ";
+            std::copy(std::begin(facet), std::end(facet), std::ostream_iterator<size_t>(s_facet));
+            THEN("the output checks")
+            {
+                std::ostringstream auxilary;
+                auxilary << facet;
+                REQUIRE( auxilary.str() == "3 145 45 97 " );
+            }
+        }
+
+        WHEN("the triangle is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
             Lib3dsFace* face_3ds = facet.to_3ds();
@@ -59,11 +73,11 @@ SCENARIO("Face manipulation:")
         }
     }
 
-    GIVEN( "Four indices:" )
+    GIVEN("Four indices:" )
     {
         std::vector<size_t> indexes{{145,45,97,85}};
 
-        WHEN( "the triangle is created")
+        WHEN("the triangle is created")
         {
             urban::Face facet(indexes.size(), indexes);
 
@@ -75,7 +89,7 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN( "the triangle is copied")
+        WHEN("the triangle is copied")
         {
             urban::Face facet(indexes.size(), indexes);
             urban::Face facet2 = facet;
@@ -88,7 +102,7 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN( "the triangle is inverted")
+        WHEN("the triangle is inverted")
         {
             urban::Face facet(indexes.size(), indexes);
             facet.invert_orientation();
@@ -101,7 +115,21 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN( "the triangle is transformed to Lib3dsFace")
+        WHEN("the triangle is iterated throught")
+        {
+            urban::Face facet(indexes.size(), indexes);
+            std::ostringstream s_facet("");
+            s_facet << facet.size() << " ";
+            std::copy(std::begin(facet), std::end(facet), std::ostream_iterator<size_t>(s_facet));
+            THEN("the output checks")
+            {
+                std::ostringstream auxilary;
+                auxilary << facet;
+                REQUIRE( auxilary.str() == "4 145 45 97 85 " );
+            }
+        }
+
+        WHEN("the triangle is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes.size(), indexes);
             Lib3dsFace* face_3ds = facet.to_3ds();
