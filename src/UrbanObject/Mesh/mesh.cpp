@@ -75,7 +75,7 @@ namespace urban
                 std::begin(faces), 
                 std::end(faces),
                 0,
-                [](size_t& size, std::pair<size_t, Face> & second)
+                [](int& size, std::pair<const size_t, Face> & second)
                 {
                     return size + second.second.size() - 2;
                 }
@@ -120,7 +120,7 @@ namespace urban
                 os << "Face " << t.first << " : " << t.second << std::endl;
             }
         );
-        
+
         return os;
     }
 }
