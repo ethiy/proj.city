@@ -25,14 +25,17 @@ target_link_libraries(UrbanObject ShadowMesh ${LIBS})
 file(GLOB_RECURSE Line_HEADERS "${3DSceneModel_SOURCE_DIR}/src/IO/Line/*.h")
 file(GLOB_RECURSE Line_SRC "${3DSceneModel_SOURCE_DIR}/src/IO/Line/*.cpp")
 
+add_library(Line ${Line_HEADERS} ${Line_SRC})
+target_link_libraries(Line ${LIBS})
+
 file(GLOB_RECURSE IO_HEADERS "${3DSceneModel_SOURCE_DIR}/src/IO/*.h")
 file(GLOB_RECURSE IO_SRC "${3DSceneModel_SOURCE_DIR}/src/IO/*.cpp")
 
-add_library(IO ${IO_HEADERS} ${IO_SRC} ${ShadowMesh_HEADERS} ${Line_HEADERS})
-target_link_libraries(IO ShadowMesh ${LIBS})
+add_library(IO ${IO_HEADERS} ${IO_SRC} ${ShadowMesh_HEADERS} ${UObj_HEADERS} ${Line_HEADERS})
+target_link_libraries(IO ShadowMesh Line UrbanObject ${LIBS})
 
 set(MAIN_SRC ${3DSceneModel_SOURCE_DIR}/src/main.cpp)
-add_executable(main ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS} ${Mesh_HEADERS})
+add_executable(main ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS})
 target_link_libraries(main ShadowMesh UrbanObject IO ${LIBS})
 link_directories(main ${LIBS_DIRS})
 
