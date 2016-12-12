@@ -97,13 +97,14 @@ namespace urban
                                     
                                     size_t idx;
                                     std::string face_line;
-                                    std::vector<size_t> corners;
+                                    std::vector<size_t> index_line, corners;
                                     BOOST_FOREACH(boost::tie(idx, face_line), boost::combine(indexes, face_lines))
                                     {
                                         std::istringstream _face_line(face_line);
-                                        std::copy(std::istream_iterator<size_t>(_face_line), std::istream_iterator<size_t>(), std::begin(corners));
-                                        assert(corners.size() == 1 + corners[0]);
-                                        faces[idx] = Face(corners[0], corners[1:]); // to correct of course
+                                        std::copy(std::istream_iterator<size_t>(_face_line), std::istream_iterator<size_t>(), std::begin(index_line));
+                                        assert(index_line.size() == 1 + index_line[0]);
+                                        std::copy(std::next(std::begin(index_line), 1), std::end(index_line), std::begin(corners));
+                                        faces[idx] = Face(index_line[0], corners); // to correct of course
                                     }
                                 }
                                 meshes.push_back(urban::Mesh(points, faces));
