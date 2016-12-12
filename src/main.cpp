@@ -2,29 +2,29 @@
 #include "UrbanObject/urban_object.h"
 #include "IO/io.h"
 #include "IO/io_3ds.h"
+#include "IO/io_off.h"
 
 #include <CGAL/IO/Geomview_stream.h>
 
 #include <boost/filesystem.hpp>
 
 #include <vector>
+#include <map>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
 
 int main(int, char**)
 {
-    boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
-    std::map<std::string,bool> modes;
-    modes.insert(std::pair<std::string, bool>("read", true));
+    boost::filesystem::path filepath("../../ressources/3dModels/OFF/hammerhead.off");
+    std::map<std::string,bool> modes{{"read", true}, {"binary", false}};
+    urban::io::FileHandler<std::fstream> handler(filepath, modes);
     std::vector<urban::ShadowMesh> meshes;
-
-    urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
     int exit_code = handler.read(meshes);
 
     std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
-    std::vector<urban::UrbanObject> urban_objects;
+    /*std::vector<urban::UrbanObject> urban_objects;
     std::for_each(
         std::begin(meshes),
         std::end(meshes),
@@ -53,5 +53,5 @@ int main(int, char**)
         getchar();
     }
 
-    return exit_code;
+    return exit_code;*/
 }
