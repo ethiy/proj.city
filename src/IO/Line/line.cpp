@@ -1,8 +1,5 @@
 #include "line.h"
 
-#include <iterator>
-#include <algorithm>
-
 namespace urban
 {
     namespace io
@@ -27,12 +24,6 @@ namespace urban
         {
             os << l.line << std::endl;
             return os;
-        }
-
-        template<class output_iterator>
-        void read_lines(std::istream& is, output_iterator destination_iterator)
-        {
-            std::copy(std::istream_iterator<Line>(is), std::istream_iterator<Line>(), destination_iterator);
         }
     }
 }
