@@ -25,10 +25,10 @@ namespace urban
         size_t size(void);
         typedef std::vector<size_t>::iterator iterator;
         typedef std::vector<size_t>::const_iterator const_iterator;
-        iterator begin(void);
-        iterator end(void);
-        const_iterator cbegin(void);
-        const_iterator cend(void);
+        iterator begin(void) noexcept;
+        iterator end(void) noexcept;
+        const_iterator cbegin(void) const noexcept;
+        const_iterator cend(void) const noexcept;
 
         void invert_orientation(void);
         Lib3dsFace* to_3ds(void);

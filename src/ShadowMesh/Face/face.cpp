@@ -44,19 +44,19 @@ namespace urban
         return vertices_number;
     }
 
-    Face::iterator Face::begin(void)
+    Face::iterator Face::begin(void) noexcept
     {
         return points.begin();
     }
-    Face::iterator Face::end(void)
+    Face::iterator Face::end(void) noexcept
     {
         return points.end();
     }
-    Face::const_iterator Face::cbegin(void)
+    Face::const_iterator Face::cbegin(void) const noexcept
     {
         return points.cbegin();
     }
-    Face::const_iterator Face::cend(void)
+    Face::const_iterator Face::cend(void) const noexcept
     {
         return points.cend();
     }
