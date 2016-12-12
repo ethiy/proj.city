@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <iterator>
 
+#include <cassert>
+
 namespace urban
 {
     Face::Face(void){}
