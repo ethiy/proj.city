@@ -42,7 +42,7 @@ namespace urban
                         std::end(face.second),
                         [&](size_t index)
                         {
-                            incremental_builder.add_vertex_to_facet(face.second[index]);
+                            incremental_builder.add_vertex_to_facet(index);
                         } 
                     );
                     incremental_builder.end_facet();
