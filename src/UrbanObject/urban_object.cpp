@@ -10,7 +10,7 @@ namespace urban
 {
     UrbanObject::UrbanObject(void){}
 
-    UrbanObject::UrbanObject(Mesh mesh)
+    UrbanObject::UrbanObject(ShadowMesh mesh)
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate( builder);
@@ -22,7 +22,6 @@ namespace urban
 
     std::ostream& operator<<(std::ostream & os, const UrbanObject & uobj)
     {
-        CGAL::set_pretty_mode( os);
         os << uobj.surface;
         return os;
     }

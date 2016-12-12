@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Triangle/triangle.h"
+#include "Face/face.h"
 
 #include <CGAL/Simple_cartesian.h>
 
@@ -16,24 +16,25 @@ namespace urban
     typedef Kernel::Point_3 Point;
     typedef Kernel::Vector_3 Vector;
 
-    class Mesh
+    class ShadowMesh
     {
     public:
-        Mesh(void);
-        Mesh(const Mesh &);
-        Mesh(Lib3dsMesh);
-        ~Mesh(void);
+        ShadowMesh(void);
+        ShadowMesh(const ShadowMesh &);
+        ShadowMesh(Lib3dsMesh);
+        ShadowMesh(std::map<size_t, Point>, std::map<size_t, Face>);
+        ~ShadowMesh(void);
 
         size_t get_number_points(void);
         std::map<size_t, Point> get_points(void);
-        size_t get_number_triangles(void);
-        std::map<size_t, Triangle> get_triangles(void);
+        size_t get_number_faces(void);
+        std::map<size_t, Face> get_faces(void);
 
         Lib3dsMesh* to_3ds(void);
     private:
         std::map<size_t, Point> points;
-        std::map<size_t, Triangle> triangles;
+        std::map<size_t, Face> faces;
         
-        friend std::ostream& operator<<(std::ostream &, const Mesh &);
+        friend std::ostream& operator<<(std::ostream &, const ShadowMesh &);
     };
 }
