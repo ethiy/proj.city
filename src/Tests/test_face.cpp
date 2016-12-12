@@ -57,6 +57,7 @@ SCENARIO("Face manipulation:")
                 REQUIRE( auxilary.str() == "145 45 97" );
             }
         }
+    }
 
     GIVEN( "Four indices:" )
     {

@@ -1,4 +1,3 @@
-
 #include "ShadowMesh/shadow_mesh.h"
 #include "UrbanObject/urban_object.h"
 #include "IO/io.h"
