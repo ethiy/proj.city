@@ -6,7 +6,6 @@ SCENARIO("UrbanObject manipulation:")
 {
     GIVEN("A urban::ShadowMesh object")
     {
-        urban::Mesh mesh;
-        mesh ;
+        urban::ShadowMesh shadow_mesh;
     }
 }
