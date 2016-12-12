@@ -55,13 +55,13 @@ namespace urban
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
         {
             std::vector<size_t> twos , threes;
-            std::copy(std::next(std::begin(points), 1), std::prev(std::begin(points), 1), std::begin(twos));
-            std::copy(std::next(std::begin(points), 2), std::end(points), std::begin(threes));
+            std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::back_inserter(twos));
+            std::copy(std::next(std::begin(points), 2), std::end(points), std::back_inserter(threes));
             size_t two,three;
             BOOST_FOREACH( boost::tie(two, three), boost::combine(twos, threes))
             {
                 auto init = std::initializer_list<size_t>({points.at(0), two, three});
-                std::copy(std::begin(init), std::end(init), face->points);;
+                std::copy(std::begin(init), std::end(init), face->points);
             }
         }
         return face;
