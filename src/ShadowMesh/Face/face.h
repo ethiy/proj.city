@@ -22,8 +22,13 @@ namespace urban
         Face & operator=(Face);
         size_t operator[](size_t);
 
-        std::vector<size_t> get_indexes(void);
         size_t size(void);
+        typedef std::vector<size_t>::iterator iterator;
+        typedef std::vector<size_t>::const_iterator const_iterator;
+        iterator begin(void);
+        iterator end(void);
+        const_iterator cbegin(void);
+        const_iterator cend(void);
 
         void invert_orientation(void);
         Lib3dsFace* to_3ds(void);

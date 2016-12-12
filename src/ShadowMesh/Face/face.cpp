@@ -12,7 +12,10 @@ namespace urban
     Face::Face(void){}
     Face::Face(const Face & other):points(other.points){}
     Face::Face(size_t first, size_t second, size_t third): points{{first, second, third}}{}
-    Face::Face(size_t _vertices_number, std::vector<size_t> _points):vertices_number(_vertices_number), points(_points){}
+    Face::Face(size_t _vertices_number, std::vector<size_t> _points):vertices_number(_vertices_number), points(_points)
+    {
+        assert(_vertices_number>2);
+    }
     Face::~Face(void){}
 
     void Face::swap(Face & other)
@@ -33,14 +36,27 @@ namespace urban
         return points[index];
     }
 
-    std::vector<size_t> Face::get_indexes(void)
-    {
-        return points;
-    }
     
     size_t Face::size(void)
     {
         return vertices_number;
+    }
+
+    Face::iterator Face::begin(void)
+    {
+        return points.begin();
+    }
+    Face::iterator Face::end(void)
+    {
+        return points.end();
+    }
+    Face::const_iterator Face::cbegin(void)
+    {
+        return points.cbegin();
+    }
+    Face::const_iterator Face::cend(void)
+    {
+        return points.cend();
     }
 
     void Face::invert_orientation(void)
