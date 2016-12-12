@@ -11,7 +11,7 @@ namespace urban
 
         FileHandler<Lib3dsFile>::~FileHandler(void){}
 
-        int FileHandler<Lib3dsFile>::read(std::vector<urban::Mesh> & meshes)
+        int FileHandler<Lib3dsFile>::read(std::vector<urban::ShadowMesh> & meshes)
         {
             try
             {
@@ -23,7 +23,7 @@ namespace urban
                         Lib3dsMesh* p_meshes = file->meshes;
                         while(p_meshes)
                         {
-                            meshes.push_back(urban::Mesh(*p_meshes));
+                            meshes.push_back(urban::ShadowMesh(*p_meshes));
                             p_meshes = p_meshes->next;
                         }
                     }
@@ -48,7 +48,7 @@ namespace urban
             return exit_code;
         }
 
-        int FileHandler<Lib3dsFile>::write(std::vector<urban::Mesh> meshes)
+        int FileHandler<Lib3dsFile>::write(std::vector<urban::ShadowMesh> meshes)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace urban
                 {
                     Lib3dsMesh* p_meshes = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), meshes.size()));
                     std::transform( std::begin(meshes), std::end(meshes), p_meshes,
-                                [](urban::Mesh mesh)
+                                [](urban::ShadowMesh mesh)
                                     {
                                         return *(mesh.to_3ds());
                                     }

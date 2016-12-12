@@ -30,7 +30,7 @@ namespace urban
 
         FileHandler<std::fstream>::~FileHandler(void){}
 
-        int FileHandler<std::fstream>::read(std::vector<urban::Mesh> & meshes)
+        int FileHandler<std::fstream>::read(std::vector<urban::ShadowMesh> & meshes)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace urban
                                         faces[idx] = Face(index_line[0], corners); // to correct of course
                                     }
                                 }
-                                meshes.push_back(urban::Mesh(points, faces));
+                                meshes.push_back(urban::ShadowMesh(points, faces));
                             }
                             else
                             {
@@ -139,7 +139,7 @@ namespace urban
             return exit_code;
         }
 
-        int FileHandler<std::fstream>::write(std::vector<urban::Mesh> meshes)
+        int FileHandler<std::fstream>::write(std::vector<urban::ShadowMesh> meshes)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace urban
                         CGAL::set_ascii_mode(file);
                         }
                     }
-                    std::for_each(std::begin(meshes), std::end(meshes), [&](urban::Mesh mesh)
+                    std::for_each(std::begin(meshes), std::end(meshes), [&](urban::ShadowMesh mesh)
                                                                             {
                                                                                 objs.push_back(UrbanObject(mesh));
                                                                             }

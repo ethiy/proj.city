@@ -8,7 +8,7 @@ include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
 list(APPEND LIBS ${LIB3DS_LIBRARIES})
 
 # Find Boost
-FIND_PACKAGE(Boost REQUIRED)
+FIND_PACKAGE(Boost REQUIRED filesystem system)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
 else(Boost_FOUND)

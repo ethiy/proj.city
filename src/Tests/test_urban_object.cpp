@@ -4,7 +4,7 @@
 
 SCENARIO("UrbanObject manipulation:")
 {
-    GIVEN("A urban::Mesh object")
+    GIVEN("A urban::ShadowMesh object")
     {
         
     }

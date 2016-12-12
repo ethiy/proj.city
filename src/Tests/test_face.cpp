@@ -1,4 +1,4 @@
-#include "../UrbanObject/Face/face.h"
+#include "../ShadowMesh/Face/face.h"
 
 #include "catch.hpp"
 
@@ -50,18 +50,21 @@ SCENARIO("Face manipulation:")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
             Lib3dsFace* face_3ds = facet.to_3ds();
-            std::ostringstream auxilary;
-            auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2];
-            REQUIRE( auxilary.str() == "145 45 97" );
+            THEN("the output checks")
+            {
+                std::ostringstream auxilary;
+                auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2];
+                REQUIRE( auxilary.str() == "145 45 97" );
+            }
         }
 
     GIVEN( "Four indices:" )
     {
-        size_t indexes[4] = {145,45,97,85};
+        std::vector<size_t> indexes{{145,45,97,85}};
 
         WHEN( "the triangle is created")
         {
-            urban::Face facet(indexes);
+            urban::Face facet(indexes.size(), indexes);
 
             THEN("the output checks")
             {
@@ -73,7 +76,7 @@ SCENARIO("Face manipulation:")
 
         WHEN( "the triangle is copied")
         {
-            urban::Face facet(indexes);
+            urban::Face facet(indexes.size(), indexes);
             urban::Face facet2 = facet;
 
             THEN("the output checks")
@@ -86,7 +89,7 @@ SCENARIO("Face manipulation:")
 
         WHEN( "the triangle is inverted")
         {
-            urban::Face facet(indexes);
+            urban::Face facet(indexes.size(), indexes);
             facet.invert_orientation();
 
             THEN("the output checks")
@@ -99,11 +102,15 @@ SCENARIO("Face manipulation:")
 
         WHEN( "the triangle is transformed to Lib3dsFace")
         {
-            urban::Face facet(indexes);
+            urban::Face facet(indexes.size(), indexes);
             Lib3dsFace* face_3ds = facet.to_3ds();
-            std::ostringstream auxilary;
-            auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2] << " and " << (face_3ds + 1)->points[0] << " " << (face_3ds + 1)->points[1] << " " << (face_3ds + 1)->points[2];
-            REQUIRE( auxilary.str() == "145 45 97 and 145 97 85" );
+            THEN("the output checks")
+            {
+                std::ostringstream auxilary;
+                auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2] << " and " << (face_3ds + 1)->points[0] << " " << (face_3ds + 1)->points[1] << " " << (face_3ds + 1)->points[2];
+                REQUIRE( auxilary.str() == "145 45 97 and 145 97 85" );
+            }
+
         }
     }
 }

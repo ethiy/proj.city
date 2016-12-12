@@ -2,7 +2,7 @@
 
 #include "io.h"
 
-#include "../UrbanObject/Mesh/mesh.h"
+#include "../ShadowMesh/shadow_mesh.h"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -23,8 +23,8 @@ namespace urban
             FileHandler(boost::filesystem::path, std::map<std::string, bool>);
             ~FileHandler(void);
 
-            int read(std::vector<urban::Mesh> &);
-            int write(std::vector<urban::Mesh>);
+            int read(std::vector<urban::ShadowMesh> &);
+            int write(std::vector<urban::ShadowMesh>);
 
         private:
             std::fstream file;

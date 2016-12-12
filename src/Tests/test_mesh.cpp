@@ -1,4 +1,4 @@
-#include "../UrbanObject/Mesh/mesh.h"
+#include "../ShadowMesh/shadow_mesh.h"
 
 #include "catch.hpp"
 
@@ -6,7 +6,7 @@
 #include <iterator>
 #include <algorithm>
 
-SCENARIO("Mesh manipulation:")
+SCENARIO("ShadowMesh manipulation:")
 {
     GIVEN( "A Lib3ds mesh:")
     {
@@ -26,7 +26,7 @@ SCENARIO("Mesh manipulation:")
 
         WHEN( "the mesh is created:")
         {
-            urban::Mesh u_mesh(*test_mesh);
+            urban::ShadowMesh u_mesh(*test_mesh);
             THEN("the output checks:")
             {
                 std::ostringstream auxilary;
@@ -36,7 +36,7 @@ SCENARIO("Mesh manipulation:")
         }
         WHEN( "mesh points and faces are accessed:")
         {
-            urban::Mesh u_mesh(*test_mesh);
+            urban::ShadowMesh u_mesh(*test_mesh);
             std::map<size_t, urban::Point> points = u_mesh.get_points();
             std::map<size_t, urban::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
@@ -58,14 +58,14 @@ SCENARIO("Mesh manipulation:")
                 REQUIRE( auxilary.str() == _auxilary.str() );
             }
         }
-        WHEN( "Mesh is converted back to lib3ds format and to \'urban::Mesh\' again: ")
+        WHEN( "ShadowMesh is converted back to lib3ds format and to \'urban::ShadowMesh\' again: ")
         {
-            urban::Mesh u_mesh(*test_mesh);
+            urban::ShadowMesh u_mesh(*test_mesh);
             THEN("the output checks:")
             {
                 std::ostringstream auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
-                urban::Mesh _u_mesh(*_mesh);
+                urban::ShadowMesh _u_mesh(*_mesh);
                 auxilary << _u_mesh;
                 REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 0 1 2 \n" );
             }

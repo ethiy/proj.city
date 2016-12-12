@@ -2,7 +2,7 @@
 
 #include "io.h"
 
-#include "../UrbanObject/Mesh/mesh.h"
+#include "../ShadowMesh/shadow_mesh.h"
 
 #include <lib3ds/file.h>
 
@@ -24,8 +24,8 @@ namespace urban
             FileHandler(boost::filesystem::path, std::map<std::string, bool>);
             ~FileHandler(void);
 
-            int read(std::vector<urban::Mesh> &);
-            int write(std::vector<urban::Mesh>);
+            int read(std::vector<urban::ShadowMesh> &);
+            int write(std::vector<urban::ShadowMesh>);
 
         private:
             Lib3dsFile* file;
