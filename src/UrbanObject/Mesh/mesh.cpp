@@ -56,48 +56,71 @@ namespace urban
         Lib3dsMesh* mesh = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), 1));
         mesh->points = static_cast<Lib3dsWord>(points.size());
         mesh->pointL = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint), mesh->points));
-        std::transform(std::begin(points), std::end(points), mesh->pointL, [&](std::pair<size_t, Point> p)
-                                                                                            {
-                                                                                                Lib3dsPoint point;
-                                                                                                auto init = std::initializer_list<double>({p.second[0], p.second[1], p.second[2]});
-                                                                                                std::copy(std::begin(init), std::end(init), point.pos);
-                                                                                                return point;
-                                                                                            }
-                    );
+
+        std::transform(
+            std::begin(points),
+            std::end(points),
+            mesh->pointL,
+            [&](std::pair<size_t, Point> p)
+            {
+                Lib3dsPoint point;
+                auto init = std::initializer_list<double>({p.second[0], p.second[1], p.second[2]});
+                std::copy(std::begin(init), std::end(init), point.pos);
+                return point;
+            }
+        );
+
         mesh->faces = static_cast<Lib3dsDword>(
             std::accumulate(
                 std::begin(faces), 
                 std::end(faces),
                 0,
-                [](std::pair<size_t, Face> & first, std::pair<size_t, Face> & second)
+                [](size_t& size, std::pair<size_t, Face> & second)
                 {
-                    return first.second.size() + second.second.size() -4;
+                    return size + second.second.size() - 2;
                 }
                 )
             );
+
         mesh->faceL = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), mesh->faces));
-        std::transform(std::begin(faces), std::end(faces), mesh->faceL, [](std::pair<size_t, Face> t)
-                                                                                    {
-                                                                                        return *t.second.to_3ds();
-                                                                                    }
-                    );
+
+        std::transform(
+            std::begin(faces),
+            std::end(faces),
+            mesh->faceL,
+            [](std::pair<size_t, Face> t)
+            {
+                return *t.second.to_3ds();
+            }
+        );
+
         return mesh;
     }
 
     std::ostream& operator<<(std::ostream &os, const Mesh & mesh)
     {
         os << "Points: " << std::endl;
-        std::for_each(std::begin(mesh.points), std::end(mesh.points), [&](std::pair<size_t, Point> p)
-                                                                        {
-                                                                            os << "Point " << p.first << " : " << p.second << std::endl;
-                                                                        }
-                    );
+
+        std::for_each(
+            std::begin(mesh.points),
+            std::end(mesh.points),
+            [&](std::pair<size_t, Point> p)
+            {
+                os << "Point " << p.first << " : " << p.second << std::endl;
+            }
+        );
+
         os << "Faces: " << std::endl;
-        std::for_each(std::begin(mesh.faces), std::end(mesh.faces), [&](std::pair<size_t, Face> t)
-                                                                                {
-                                                                                    os << "Face " << t.first << " : " << t.second << std::endl;
-                                                                                }
-                    );
+
+        std::for_each(
+            std::begin(mesh.faces),
+            std::end(mesh.faces),
+            [&](std::pair<size_t, Face> t)
+            {
+                os << "Face " << t.first << " : " << t.second << std::endl;
+            }
+        );
+        
         return os;
     }
 }
