@@ -3,9 +3,6 @@
 #include "Line/line.h"
 #include "../UrbanObject/urban_object.h"
 
-#include <boost/range/combine.hpp>
-#include <boost/foreach.hpp>
-
 #include <cassert>
 
 #include <string>
@@ -13,11 +10,9 @@
 
 #include <map>
 #include <vector>
-#include <array>
 
 #include <algorithm>
 #include <iterator>
-#include <numeric>
 
 namespace urban
 {
@@ -76,44 +71,52 @@ namespace urban
                                     assert(sizes[2] == 0);
                                     assert(lines.size() == (2+sizes[0]+sizes[1])); // assuming the last empty line is not counted!!!
                                 }
+
+                                std::vector<std::string> buffer_lines;
+                                std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines) , 2 + sizes[0]), std::back_inserter(buffer_lines));
+                                size_t idx(0);
+                                
                                 std::map<size_t, urban::Point> points;
-                                {
-                                    std::vector<size_t> indexes(sizes[0]);
-                                    std::iota(std::begin(indexes), std::end(indexes), 0);
-                                    std::vector<std::string> point_lines(sizes[0]);
-                                    std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines) , 2 + sizes[0]), std::back_inserter(point_lines));
-                                    
-                                    size_t idx;
-                                    std::string point_line;
-                                    std::vector<double> coordinates;
-                                    /*BOOST_FOREACH(boost::tie(idx, point_line), boost::combine(indexes, point_lines))
+                                std::vector<double> coordinates;
+                                std::istringstream sline;
+                                std::for_each(
+                                    std::begin(buffer_lines),
+                                    std::end(buffer_lines),
+                                    [&](std::string line)
                                     {
-                                        std::cout << idx << std::endl;
-                                        std::istringstream _point_line(static_cast<std::string>(point_line));
-                                        std::copy(std::istream_iterator<double>(_point_line), std::istream_iterator<double>(), std::back_inserter(coordinates));
-                                        points[idx] = Point(coordinates[0], coordinates[1], coordinates[2]);
-                                    }*/
-                                }
-                                /*std::map<size_t, urban::Face> faces;
-                                {
-                                    std::vector<size_t> indexes(sizes[1]);
-                                    std::iota(std::begin(indexes), std::end(indexes), 0);
-                                    std::vector<std::string> face_lines(sizes[1]);
-                                    std::copy(std::next(std::begin(lines), 2 + sizes[0] ), std::next(std::begin(lines) , 2 + sizes[0] + sizes[1]), std::back_inserter(face_lines));
-                                    
-                                    size_t idx;
-                                    std::string face_line;
-                                    std::vector<size_t> index_line, corners;
-                                    BOOST_FOREACH(boost::tie(idx, face_line), boost::combine(indexes, face_lines))
-                                    {
-                                        std::istringstream _face_line(face_line);
-                                        std::copy(std::istream_iterator<size_t>(_face_line), std::istream_iterator<size_t>(), std::back_inserter(index_line));
-                                        assert(index_line.size() == 1 + index_line[0]);
-                                        std::copy(std::next(std::begin(index_line), 1), std::end(index_line), std::back_inserter(corners));
-                                        faces[idx] = Face(index_line[0], corners); // to correct of course
+                                        sline.str(line);
+                                        std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
+                                        points[idx++] = Point(coordinates[0], coordinates[1], coordinates[2]);
+                                        coordinates.clear();
+                                        sline.clear();
                                     }
-                                }
-                                meshes.push_back(urban::ShadowMesh(points, faces));*/
+                                );
+
+                                idx = 0;
+                                buffer_lines.clear();
+                                sline.clear();
+
+                                std::map<size_t, urban::Face> faces;
+                                std::copy(std::next(std::begin(lines), 2 + sizes[0] ), std::next(std::begin(lines) , 2 + sizes[0] + sizes[1]), std::back_inserter(buffer_lines));
+                                
+                                std::vector<size_t> indexes;
+                                size_t n(0);
+                                std::for_each(
+                                    std::begin(buffer_lines),
+                                    std::end(buffer_lines),
+                                    [&](std::string line)
+                                    {
+                                        sline.str(line);
+                                        sline >> n;
+                                        std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::back_inserter(indexes));
+                                        assert(indexes.size() == n);
+                                        faces[idx++] = Face(n, indexes);
+                                        indexes.clear();
+                                        sline.clear();
+                                    }
+                                );
+                                
+                                meshes.push_back(urban::ShadowMesh(points, faces));
                             }
                             else
                             {
