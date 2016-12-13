@@ -63,12 +63,12 @@ namespace urban
                             if(lines[0] == "OFF")
                             {
                                 assert(!lines.empty());
-                                std::vector<size_t> sizes;
+                                std::vector<long> sizes;
                                 {
                                     std::istringstream _sizes(lines[1]);
                                     std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::back_inserter(sizes));
                                     assert(sizes.size()==3);
-                                    assert(sizes[2] == 0);
+                                    assert(sizes[2] == 0 && sizes[0] > 0 && sizes[1] > 0 );
                                     assert(lines.size() == (2+sizes[0]+sizes[1])); // assuming the last empty line is not counted!!!
                                 }
 
