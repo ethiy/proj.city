@@ -25,12 +25,13 @@ int main(int, char**)
     std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
     std::vector<urban::UrbanObject> urban_objects;
-    std::for_each(
+    std::transform(
         std::begin(meshes),
         std::end(meshes),
-        [&](urban::ShadowMesh mesh)
+        std::back_inserter(urban_objects),
+        [](urban::ShadowMesh mesh)
         {
-            urban_objects.push_back(urban::UrbanObject(mesh));
+            return urban::UrbanObject(mesh);
         }
     );
 
