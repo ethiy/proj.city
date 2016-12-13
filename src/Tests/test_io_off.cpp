@@ -8,13 +8,13 @@
 
 #include "catch.hpp"
 
-SCENARIO("Input/Output from 3dsMAX file:")
+SCENARIO("Input/Output from OFF file:")
 {
-    GIVEN("An existing 3dsMAX file")
+    GIVEN("An existing OFF file")
     {
         boost::filesystem::path filepath("../../ressources/3dModels/OFF/hammerhead.off");
         
-        WHEN("the reading mode is chosen")
+        WHEN("reading in text mode")
         {
             std::map<std::string,bool> modes{{"read", true}};
             urban::io::FileHandler<std::fstream> handler(filepath, modes);
