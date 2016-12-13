@@ -77,9 +77,9 @@ SCENARIO("Input/Output from 3dsMAX file:")
         }
     }
 
-    GIVEN("A A urban::ShadowMesh object")
+    /*GIVEN("A urban::ShadowMesh object")
     {
-        boost::filesystem::path _filepath("../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
+        boost::filesystem::path _filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         std::map<std::string,bool> _modes{{"read", true}};
         urban::io::FileHandler<Lib3dsFile> reader(_filepath, _modes);
         std::vector<urban::ShadowMesh> meshes;
@@ -113,5 +113,5 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             //Not specified!! The writer is not of interest for now
         }
-    }
+    }*/
 }
