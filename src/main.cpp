@@ -16,15 +16,15 @@
 
 int main(int, char**)
 {
-    boost::filesystem::path filepath("../../ressources/3dModels/OFF/hammerhead.off");
-    std::map<std::string,bool> modes{{"read", true}, {"binary", false}};
-    urban::io::FileHandler<std::fstream> handler(filepath, modes);
+    boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
+    std::map<std::string,bool> modes{{"read", true}};
+    urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
     std::vector<urban::ShadowMesh> meshes;
     int exit_code = handler.read(meshes);
 
     std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
-    /*std::vector<urban::UrbanObject> urban_objects;
+    std::vector<urban::UrbanObject> urban_objects;
     std::for_each(
         std::begin(meshes),
         std::end(meshes),
@@ -53,5 +53,5 @@ int main(int, char**)
         getchar();
     }
 
-    return exit_code;*/
+    return exit_code;
 }
