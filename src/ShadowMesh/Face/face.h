@@ -33,7 +33,7 @@ namespace urban
         void invert_orientation(void);
         Lib3dsFace* to_3ds(void);
     private:
-        size_t vertices_number = 3;
+        size_t vertices_number;
         std::vector<size_t> points;
         friend std::ostream& operator<<(std::ostream &, const Face &);
     };

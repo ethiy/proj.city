@@ -12,8 +12,8 @@
 namespace urban
 {
     Face::Face(void){}
-    Face::Face(const Face & other):points(other.points){}
-    Face::Face(size_t first, size_t second, size_t third): points{{first, second, third}}{}
+    Face::Face(const Face & other): vertices_number(other.vertices_number), points(other.points){}
+    Face::Face(size_t first, size_t second, size_t third): vertices_number(3), points{{first, second, third}}{}
     Face::Face(size_t _vertices_number, std::vector<size_t> _points):vertices_number(_vertices_number), points(_points)
     {
         assert(_vertices_number>2);
