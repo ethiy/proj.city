@@ -25,8 +25,9 @@ namespace urban
 
         FileHandler<std::fstream>::~FileHandler(void) {}
 
-        int FileHandler<std::fstream>::read(std::vector<urban::ShadowMesh> &meshes)
+        ShadowMesh FileHandler<std::fstream>::read(void)
         {
+            ShadowMesh mesh;
             if (modes["read"])
             {
                 if (boost::filesystem::is_regular_file(filepath))
@@ -107,12 +108,11 @@ namespace urban
                                     sline.clear();
                                 });
 
-                            meshes.push_back(urban::ShadowMesh(points, faces));
+                            mesh = ShadowMesh(points, faces);
                         }
                         else
                         {
                             boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                            exit_code = boost::system::errc::no_such_file_or_directory;
                             throw boost::filesystem::filesystem_error(ec.message(), ec);
                         }
                         file.close();
@@ -121,25 +121,22 @@ namespace urban
                 else
                 {
                     boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                    exit_code = boost::system::errc::no_such_file_or_directory;
                     throw boost::filesystem::filesystem_error(ec.message(), ec);
                 }
             }
             else
             {
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                exit_code = boost::system::errc::io_error;
                 throw boost::filesystem::filesystem_error(ec.message(), ec);
             }
 
-            return exit_code;
+            return mesh;
         }
 
-        int FileHandler<std::fstream>::write(std::vector<urban::ShadowMesh> meshes)
+        void FileHandler<std::fstream>::write(ShadowMesh mesh)
         {
             if (modes["write"])
             {
-                std::vector<UrbanObject> objs;
                 if (modes["binary"])
                 {
                     file.open(filepath.string().c_str(), std::ios::out | std::ios::binary);
@@ -158,19 +155,15 @@ namespace urban
                         CGAL::set_ascii_mode(file);
                     }
                 }
-                std::for_each(std::begin(meshes), std::end(meshes), [&](urban::ShadowMesh mesh) {
-                    objs.push_back(UrbanObject(mesh));
-                });
-                std::copy(std::begin(objs), std::end(objs), std::ostream_iterator<UrbanObject>(file, "\n"));
+                UrbanObject obj(mesh);
+                file << obj;
                 file.close();
             }
             else
             {
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                exit_code = boost::system::errc::io_error;
                 throw boost::filesystem::filesystem_error(ec.message(), ec);
             }
-            return exit_code;
         }
     }
 }

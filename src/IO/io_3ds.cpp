@@ -11,8 +11,9 @@ namespace urban
 
         FileHandler<Lib3dsFile>::~FileHandler(void) {}
 
-        int FileHandler<Lib3dsFile>::read(std::vector<urban::ShadowMesh> &meshes)
+        std::vector<urban::ShadowMesh> FileHandler<Lib3dsFile>::read(void)
         {
+            std::vector<urban::ShadowMesh> meshes;
             if (modes["read"])
             {
                 if (boost::filesystem::is_regular_file(filepath))
@@ -28,20 +29,18 @@ namespace urban
                 else
                 {
                     boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                    exit_code = boost::system::errc::no_such_file_or_directory;
                     throw boost::filesystem::filesystem_error(ec.message(), ec);
                 }
             }
             else
             {
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                exit_code = boost::system::errc::io_error;
                 throw boost::filesystem::filesystem_error(ec.message(), ec);
             }
-            return exit_code;
+            return meshes;
         }
 
-        int FileHandler<Lib3dsFile>::write(std::vector<urban::ShadowMesh> meshes)
+        void FileHandler<Lib3dsFile>::write(std::vector<urban::ShadowMesh> meshes)
         {
             if (modes["write"])
             {
@@ -60,10 +59,8 @@ namespace urban
             else
             {
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                exit_code = boost::system::errc::io_error;
                 throw boost::filesystem::filesystem_error(ec.message(), ec);
             }
-            return exit_code;
         }
     }
 }

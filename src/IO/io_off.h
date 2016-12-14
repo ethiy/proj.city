@@ -23,13 +23,12 @@ namespace urban
             FileHandler(boost::filesystem::path, std::map<std::string, bool>);
             ~FileHandler(void);
 
-            int read(std::vector<urban::ShadowMesh> &);
-            int write(std::vector<urban::ShadowMesh>);
+            ShadowMesh read(void);
+            void write(ShadowMesh);
 
         private:
             std::fstream file;
             boost::filesystem::path filepath;
-            int exit_code = EXIT_SUCCESS;
             std::map<std::string, bool> modes;
         };
     }
