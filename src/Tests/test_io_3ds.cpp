@@ -10,7 +10,7 @@
 
 SCENARIO("Input/Output from 3dsMAX file:")
 {
-    /*GIVEN("An existing 3dsMAX file")
+    GIVEN("An existing 3dsMAX file")
     {
         boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         
@@ -18,8 +18,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             std::map<std::string,bool> modes{{"read", true}};
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
-            std::vector<urban::ShadowMesh> meshes;
-            int exit_code = handler.read(meshes);
+            std::vector<urban::ShadowMesh> meshes = handler.read();
 
             THEN("the output checks")
             {
@@ -36,12 +35,10 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             std::map<std::string,bool> modes;
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
-            std::vector<urban::ShadowMesh> meshes;
-            int exit_code = handler.read(meshes);
 
-            THEN("the output checks")
+            THEN("the reader throws")
             {
-                REQUIRE( exit_code == boost::system::errc::io_error );
+                REQUIRE_THROWS( std::vector<urban::ShadowMesh> meshes = handler.read() );
             }
         }
     }
@@ -54,12 +51,10 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             std::map<std::string,bool> modes{{"read", true}};
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
-            std::vector<urban::ShadowMesh> meshes;
-            int exit_code = handler.read(meshes);
 
-            THEN("the output checks")
+            THEN("the reader throws")
             {
-                REQUIRE( exit_code == boost::system::errc::no_such_file_or_directory );
+                REQUIRE_THROWS( std::vector<urban::ShadowMesh> meshes = handler.read() );
             }
         }
         
@@ -67,12 +62,10 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             std::map<std::string,bool> modes;
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
-            std::vector<urban::ShadowMesh> meshes;
-            int exit_code = handler.read(meshes);
 
-            THEN("the output checks")
+            THEN("the reader throws")
             {
-                REQUIRE( exit_code == boost::system::errc::io_error );
+                REQUIRE_THROWS( std::vector<urban::ShadowMesh> meshes = handler.read() );
             }
         }
     }
