@@ -10,7 +10,7 @@
 
 SCENARIO("Input/Output from 3dsMAX file:")
 {
-    GIVEN("An existing 3dsMAX file")
+    /*GIVEN("An existing 3dsMAX file")
     {
         boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         
