@@ -77,7 +77,7 @@ namespace urban
                 0,
                 [](int& size, std::pair<const size_t, Face> & second)
                 {
-                    return size + second.second.size() - 2;
+                    return size + static_cast<int>(second.second.size()) - 2;
                 }
                 )
             );
