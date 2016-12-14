@@ -3,7 +3,7 @@
 #include "Line/line.h"
 #include "../UrbanObject/urban_object.h"
 
-#include <cassert>
+#include <stdexcept>
 
 #include <string>
 #include <sstream>
@@ -32,21 +32,20 @@ namespace urban
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
+                    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
                     if (modes["binary"])
                     {
                         file.open(filepath.string().c_str(), std::ios::in | std::ios::binary);
-                        // ERROR if file is not binary
                         std::cerr << "Binary reader not yet implemented!" << std::endl;
-                        assert(0);
                         file.close();
                     }
                     else
                     {
                         file.open(filepath.string().c_str(), std::ios::in);
-                        // ERROR not handled if file is binary
                         std::vector<std::string> lines;
                         read_lines(file, std::back_inserter(lines));
-                        assert(!lines.empty());
+                        if(lines.empty())
+                            throw new std::out_of_range("The file is empty!");
                         lines.erase(
                             std::remove_if(
                                 std::begin(lines),
@@ -55,18 +54,22 @@ namespace urban
                                     return line.at(0) == '#' || line.empty();
                                 }),
                             std::end(lines));
-                        assert(!lines.empty());
+                        if(lines.empty())
+                            throw new std::out_of_range("The file containes only comments!");
                         if (lines[0] == "OFF")
                         {
-                            assert(!lines.empty());
+                            if(lines.empty())
+                                throw new std::out_of_range("The file containes only the OFF header!");
+                            
                             std::vector<long> sizes;
-                            {
-                                std::istringstream _sizes(lines[1]);
-                                std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::back_inserter(sizes));
-                                assert(sizes.size() == 3);
-                                assert(sizes[2] == 0 && sizes[0] > 0 && sizes[1] > 0);
-                                assert(lines.size() == (2 + sizes[0] + sizes[1])); // assuming the last empty line is not counted!!!
-                            }
+                            std::istringstream _sizes(lines[1]);
+                            std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::back_inserter(sizes));
+                            if(sizes.size() != 3)
+                                throw new std::range_error("Error parsing the second line!");
+                            if(sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
+                                throw new std::range_error("Error parsing the second line!");
+                            if(static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
+                                throw new std::range_error("Error parsing the second line!");
 
                             std::vector<std::string> buffer_lines;
                             std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::back_inserter(buffer_lines));
@@ -78,13 +81,15 @@ namespace urban
                             std::for_each(
                                 std::begin(buffer_lines),
                                 std::end(buffer_lines),
-                                [&](std::string line) {
+                                [&](std::string line)
+                                {
                                     sline.str(line);
                                     std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
                                     points[idx++] = Point(coordinates[0], coordinates[1], coordinates[2]);
                                     coordinates.clear();
                                     sline.clear();
-                                });
+                                }
+                            );
 
                             idx = 0;
                             buffer_lines.clear();
@@ -98,22 +103,25 @@ namespace urban
                             std::for_each(
                                 std::begin(buffer_lines),
                                 std::end(buffer_lines),
-                                [&](std::string line) {
+                                [&](std::string line)
+                                {
                                     sline.str(line);
                                     sline >> n;
                                     std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::back_inserter(indexes));
-                                    assert(indexes.size() == n);
+                                    if(indexes.size() != n)
+                                        throw new std::range_error("Error parsing facet!");
                                     faces[idx++] = Face(n, indexes);
                                     indexes.clear();
                                     sline.clear();
-                                });
+                                }
+                            );
 
                             mesh = ShadowMesh(points, faces);
                         }
                         else
                         {
-                            boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                            throw boost::filesystem::filesystem_error(ec.message(), ec);
+                            boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                            throw boost::filesystem::filesystem_error("Not identified as OFF file!", ec);
                         }
                         file.close();
                     }
