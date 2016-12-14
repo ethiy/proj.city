@@ -1,0 +1,35 @@
+version: '{build}'
+
+branch:
+   only:
+   - master
+   - build-system-trial
+
+image: Visual Studio 2015
+os: Visual Studio 2015
+
+environment:
+  Configuration: Release
+  matrix:
+  - TARGET: msvc-2015
+    VS: 2015
+  - TARGET: msvc-2013
+    VS: 2013
+
+platform: x86
+
+init:
+   - appveyor DownloadFile https://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.7z
+   - cmd: 7z e boost_1_60_0.7z -oC:\local\
+   # Lib3ds-1.3.dll
+   - appveyor DownloadFile https://github.com/CGAL/cgal/releases/download/releases%2FCGAL-4.9/CGAL-4.9-Setup.exe
+   - cmd: ./CGAL-4.9-Setup.exe
+
+before_build:
+   - cmd: md build
+   - cmd: cmake ..
+
+build:
+   - cmd: msbuild.exe ALL
+
+test: off
