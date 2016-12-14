@@ -9,7 +9,7 @@ git:
 branches:
     only:
     - master
-    - osx-travis
+    - build-system-trial
 
 matrix:
   include:
