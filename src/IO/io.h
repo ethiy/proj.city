@@ -1,4 +1,10 @@
 #pragma once
 
-template<class structure>
-class FileHandler;
+namespace urban
+{
+    namespace io
+    {
+        template<class structure>
+        class FileHandler;
+    }
+}
