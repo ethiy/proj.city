@@ -32,7 +32,7 @@ namespace urban
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
-                    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+                    file.exceptions(std::ifstream::badbit);
                     if (modes["binary"])
                     {
                         file.open(filepath.string().c_str(), std::ios::in | std::ios::binary);
