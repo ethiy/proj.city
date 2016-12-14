@@ -25,6 +25,10 @@ namespace urban
         ShadowMesh(std::map<size_t, Point>, std::map<size_t, Face>);
         ~ShadowMesh(void);
 
+        void swap(ShadowMesh &);
+
+        ShadowMesh & operator=(ShadowMesh);
+
         size_t get_number_points(void);
         std::map<size_t, Point> get_points(void);
         size_t get_number_faces(void);
@@ -37,4 +41,6 @@ namespace urban
         
         friend std::ostream& operator<<(std::ostream &, const ShadowMesh &);
     };
+
+    void swap(ShadowMesh &, ShadowMesh &);
 }

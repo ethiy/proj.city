@@ -31,6 +31,19 @@ namespace urban
     ShadowMesh::ShadowMesh(std::map<size_t, Point>_points, std::map<size_t, Face> _faces):points(_points), faces(_faces){}
     ShadowMesh::~ShadowMesh(void){}
 
+    void ShadowMesh::swap(ShadowMesh & other)
+    {
+        using std::swap;
+        swap(points, other.points);
+        swap(faces, other.faces);
+    }
+
+    ShadowMesh & ShadowMesh::operator=(ShadowMesh other)
+    {
+        other.swap(*this);
+        return *this;
+    }
+
     size_t ShadowMesh::get_number_points(void)
     {
         return points.size();
@@ -122,5 +135,10 @@ namespace urban
         );
 
         return os;
+    }
+
+    void swap(ShadowMesh & lhs, ShadowMesh & rhs)
+    {
+        lhs.swap(rhs);
     }
 }
