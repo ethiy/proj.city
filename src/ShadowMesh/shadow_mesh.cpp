@@ -41,23 +41,6 @@ namespace urban
                     faces[it++] = Face(_face.points[0], _face.points[2], _face.points[1]);
             }
         );
-        /*for(size_t it=0; it<lib3ds_mesh.points; ++it)
-            points[it] = Point((lib3ds_mesh.pointL+it)->pos[0], (lib3ds_mesh.pointL+it)->pos[1], (lib3ds_mesh.pointL+it)->pos[2]);
-        for(size_t it=0; it<lib3ds_mesh.faces; ++it)
-        {
-            Point point_0 = points[(lib3ds_mesh.faceL+it)->points[0]];
-            Point point_1 = points[(lib3ds_mesh.faceL+it)->points[1]];
-            Point point_2 = points[(lib3ds_mesh.faceL+it)->points[2]];
-
-            Vector v1 = Vector(point_0, point_1);
-            Vector v2 = Vector(point_1, point_2);
-            Vector n = Vector((lib3ds_mesh.faceL+it)->normal[0], (lib3ds_mesh.faceL+it)->normal[1], (lib3ds_mesh.faceL+it)->normal[2]);
-
-            if(CGAL::determinant(v1, v2, n)>0)
-                faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[1], (lib3ds_mesh.faceL+it)->points[2]);
-            else
-                faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
-        }*/
     }
     ShadowMesh::ShadowMesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces){}
     ShadowMesh::~ShadowMesh(void){}
