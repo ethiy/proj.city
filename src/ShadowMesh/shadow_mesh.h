@@ -8,6 +8,7 @@
 #include <lib3ds/mesh.h>
 
 #include <map>
+#include <string>
 #include <ostream>
 
 namespace urban
