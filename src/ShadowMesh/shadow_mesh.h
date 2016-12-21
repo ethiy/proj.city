@@ -22,13 +22,14 @@ namespace urban
         ShadowMesh(void);
         ShadowMesh(const ShadowMesh &);
         ShadowMesh(Lib3dsMesh);
-        ShadowMesh(std::map<size_t, Point>, std::map<size_t, Face>);
+        ShadowMesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>);
         ~ShadowMesh(void);
 
         void swap(ShadowMesh &);
 
         ShadowMesh & operator=(ShadowMesh);
 
+        std::string get_name(void);
         size_t get_number_points(void);
         std::map<size_t, Point> get_points(void);
         size_t get_number_faces(void);
@@ -36,6 +37,7 @@ namespace urban
 
         Lib3dsMesh* to_3ds(void);
     private:
+        std::string name;
         std::map<size_t, Point> points;
         std::map<size_t, Face> faces;
         
