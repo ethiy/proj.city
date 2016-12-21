@@ -10,6 +10,7 @@ namespace urban
     ShadowMesh::ShadowMesh(const ShadowMesh & other):points(other.points), faces(other.faces){}
     ShadowMesh::ShadowMesh(Lib3dsMesh lib3ds_mesh)
     {
+        name = lib3ds_mesh.name;
         for(size_t it=0; it<lib3ds_mesh.points; ++it)
             points[it] = Point((lib3ds_mesh.pointL+it)->pos[0], (lib3ds_mesh.pointL+it)->pos[1], (lib3ds_mesh.pointL+it)->pos[2]);
         for(size_t it=0; it<lib3ds_mesh.faces; ++it)
@@ -28,12 +29,13 @@ namespace urban
                 faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
         }
     }
-    ShadowMesh::ShadowMesh(std::map<size_t, Point>_points, std::map<size_t, Face> _faces):points(_points), faces(_faces){}
+    ShadowMesh::ShadowMesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces){}
     ShadowMesh::~ShadowMesh(void){}
 
     void ShadowMesh::swap(ShadowMesh & other)
     {
         using std::swap;
+        swap(name, other.name);
         swap(points, other.points);
         swap(faces, other.faces);
     }
@@ -42,6 +44,11 @@ namespace urban
     {
         other.swap(*this);
         return *this;
+    }
+
+    std::string ShadowMesh::get_name(void)
+    {
+        return name;
     }
 
     size_t ShadowMesh::get_number_points(void)
