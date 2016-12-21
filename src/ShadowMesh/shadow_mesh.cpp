@@ -149,7 +149,8 @@ namespace urban
 
     std::ostream& operator<<(std::ostream &os, const ShadowMesh & mesh)
     {
-        os << "Points: " << std::endl;
+        os << "Name: " << mesh.name << std::endl
+           << "Points: " << std::endl;
 
         std::for_each(
             std::begin(mesh.points),
