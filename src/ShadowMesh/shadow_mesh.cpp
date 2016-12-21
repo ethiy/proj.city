@@ -11,7 +11,37 @@ namespace urban
     ShadowMesh::ShadowMesh(Lib3dsMesh lib3ds_mesh)
     {
         name = lib3ds_mesh.name;
-        for(size_t it=0; it<lib3ds_mesh.points; ++it)
+        size_t it(0);
+        std::for_each(
+            lib3ds_mesh.pointL,
+            lib3ds_mesh.pointL + lib3ds_mesh.points,
+            [&](Lib3dsPoint _point)
+            {
+                points[it++] = Point(_point.pos[0], _point.pos[1], _point.pos[2]);
+            }
+        );
+
+        it = 0;
+        std::for_each(
+            lib3ds_mesh.faceL,
+            lib3ds_mesh.faceL + lib3ds_mesh.faces,
+            [&](Lib3dsFace _face)
+            {
+                Point point_0 = points[_face.points[0]];
+                Point point_1 = points[_face.points[1]];
+                Point point_2 = points[_face.points[2]];
+
+                Vector v1 = Vector(point_0, point_1);
+                Vector v2 = Vector(point_1, point_2);
+                Vector n = Vector(_face.normal[0], _face.normal[1], _face.normal[2]);
+
+                if(CGAL::determinant(v1, v2, n)>0)
+                    faces[it++] = Face(_face.points[0], _face.points[1], _face.points[2]);
+                else
+                    faces[it++] = Face(_face.points[0], _face.points[2], _face.points[1]);
+            }
+        );
+        /*for(size_t it=0; it<lib3ds_mesh.points; ++it)
             points[it] = Point((lib3ds_mesh.pointL+it)->pos[0], (lib3ds_mesh.pointL+it)->pos[1], (lib3ds_mesh.pointL+it)->pos[2]);
         for(size_t it=0; it<lib3ds_mesh.faces; ++it)
         {
@@ -27,7 +57,7 @@ namespace urban
                 faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[1], (lib3ds_mesh.faceL+it)->points[2]);
             else
                 faces[it] = Face((lib3ds_mesh.faceL+it)->points[0], (lib3ds_mesh.faceL+it)->points[2], (lib3ds_mesh.faceL+it)->points[1]);
-        }
+        }*/
     }
     ShadowMesh::ShadowMesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces){}
     ShadowMesh::~ShadowMesh(void){}
