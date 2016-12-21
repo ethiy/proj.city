@@ -22,7 +22,7 @@ namespace urban
         Face & operator=(Face);
         size_t operator[](size_t);
 
-        size_t size(void);
+        size_t size(void) const noexcept;
         typedef std::vector<size_t>::iterator iterator;
         typedef std::vector<size_t>::const_iterator const_iterator;
         iterator begin(void) noexcept;

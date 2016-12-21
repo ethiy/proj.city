@@ -30,11 +30,11 @@ namespace urban
 
         ShadowMesh & operator=(ShadowMesh);
 
-        std::string get_name(void);
-        size_t get_number_points(void);
-        std::map<size_t, Point> get_points(void);
-        size_t get_number_faces(void);
-        std::map<size_t, Face> get_faces(void);
+        std::string get_name(void) const noexcept;
+        size_t get_number_points(void) const noexcept;
+        std::map<size_t, Point> get_points(void) const noexcept;
+        size_t get_number_faces(void) const noexcept;
+        std::map<size_t, Face> get_faces(void) const noexcept;
 
         Lib3dsMesh* to_3ds(void);
     private:

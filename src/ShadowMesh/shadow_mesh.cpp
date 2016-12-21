@@ -59,27 +59,27 @@ namespace urban
         return *this;
     }
 
-    std::string ShadowMesh::get_name(void)
+    std::string ShadowMesh::get_name(void) const noexcept
     {
         return name;
     }
 
-    size_t ShadowMesh::get_number_points(void)
+    size_t ShadowMesh::get_number_points(void) const noexcept
     {
         return points.size();
     }
 
-    std::map<size_t, Point> ShadowMesh::get_points(void)
+    std::map<size_t, Point> ShadowMesh::get_points(void) const noexcept
     {
         return points;
     }
     
-    size_t ShadowMesh::get_number_faces(void)
+    size_t ShadowMesh::get_number_faces(void) const noexcept
     {
         return faces.size();
     }
 
-    std::map<size_t, Face> ShadowMesh::get_faces(void)
+    std::map<size_t, Face> ShadowMesh::get_faces(void) const noexcept
     {
         return faces;
     }
