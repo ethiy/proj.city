@@ -12,6 +12,7 @@ namespace urban
 
     UrbanObject::UrbanObject(ShadowMesh mesh)
     {
+        name = mesh.get_name();
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate( builder);
     }
@@ -20,9 +21,15 @@ namespace urban
 
     UrbanObject::~UrbanObject(void){}
 
+    std::string UrbanObject::get_name(void) const noexcept
+    {
+        return name;
+    }
+
     std::ostream& operator<<(std::ostream & os, const UrbanObject & uobj)
     {
-        os << uobj.surface;
+        os << "Name: " << uobj.name << std::endl
+           << uobj.surface;
         return os;
     }
 
