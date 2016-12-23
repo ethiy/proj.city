@@ -42,10 +42,7 @@ namespace urban
                     else
                     {
                         file.open(filepath.string().c_str(), std::ios::in);
-<<<<<<< HEAD
-=======
                         std::string name = filepath.stem().string();
->>>>>>> tests
                         std::vector<std::string> lines;
                         read_lines(file, std::back_inserter(lines));
                         if(lines.empty())
@@ -120,11 +117,7 @@ namespace urban
                                 }
                             );
 
-<<<<<<< HEAD
-                            mesh = ShadowMesh(points, faces);
-=======
                             mesh = ShadowMesh(name, points, faces);
->>>>>>> tests
                         }
                         else
                         {

@@ -39,11 +39,7 @@ namespace urban
     }
 
     
-<<<<<<< HEAD
-    size_t Face::size(void)
-=======
     size_t Face::size(void) const noexcept
->>>>>>> tests
     {
         return vertices_number;
     }
