@@ -34,5 +34,5 @@ matrix:
         - cd build/darwin
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
-        - make all
+        - make rebuild_cache all
         - ./test_exec -s
