@@ -28,7 +28,7 @@ namespace urban
 
     std::ostream& operator<<(std::ostream & os, const UrbanObject & uobj)
     {
-        os << "Name: " << uobj.name << std::endl
+        os << "# Name: " << uobj.name << std::endl
            << uobj.surface;
         return os;
     }

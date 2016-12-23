@@ -31,7 +31,7 @@ SCENARIO("ShadowMesh manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << u_mesh;
-                REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1 \n" );
+                REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1 \n" );
             }
         }
         WHEN( "mesh points and faces are accessed:")
@@ -43,7 +43,8 @@ SCENARIO("ShadowMesh manipulation:")
             {
                 std::ostringstream auxilary, _auxilary;
                 auxilary << u_mesh;
-                _auxilary << "Points: " << std::endl;
+                _auxilary << "Name: " << std::endl
+                          << "Points: " << std::endl;
                 std::for_each(std::begin(points), std::end(points), [&](std::pair<size_t, urban::Point> p)
                                                                                 {
                                                                                     _auxilary << "Point " << p.first << " : " << p.second << std::endl;
@@ -67,7 +68,7 @@ SCENARIO("ShadowMesh manipulation:")
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::ShadowMesh _u_mesh(*_mesh);
                 auxilary << _u_mesh;
-                REQUIRE( auxilary.str() == "Points: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
+                REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
             }
         }
     }
