@@ -8,6 +8,10 @@
 #include <lib3ds/mesh.h>
 
 #include <map>
+<<<<<<< HEAD
+=======
+#include <string>
+>>>>>>> tests
 #include <ostream>
 
 namespace urban
@@ -22,13 +26,18 @@ namespace urban
         ShadowMesh(void);
         ShadowMesh(const ShadowMesh &);
         ShadowMesh(Lib3dsMesh);
+<<<<<<< HEAD
         ShadowMesh(std::map<size_t, Point>, std::map<size_t, Face>);
+=======
+        ShadowMesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>);
+>>>>>>> tests
         ~ShadowMesh(void);
 
         void swap(ShadowMesh &);
 
         ShadowMesh & operator=(ShadowMesh);
 
+<<<<<<< HEAD
         size_t get_number_points(void);
         std::map<size_t, Point> get_points(void);
         size_t get_number_faces(void);
@@ -36,6 +45,17 @@ namespace urban
 
         Lib3dsMesh* to_3ds(void);
     private:
+=======
+        std::string get_name(void) const noexcept;
+        size_t get_number_points(void) const noexcept;
+        std::map<size_t, Point> get_points(void) const noexcept;
+        size_t get_number_faces(void) const noexcept;
+        std::map<size_t, Face> get_faces(void) const noexcept;
+
+        Lib3dsMesh* to_3ds(void);
+    private:
+        std::string name;
+>>>>>>> tests
         std::map<size_t, Point> points;
         std::map<size_t, Face> faces;
         

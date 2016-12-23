@@ -6,6 +6,7 @@
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/IO/Geomview_stream.h>
 
+#include <string>
 #include <ostream>
 
 namespace urban
@@ -28,7 +29,10 @@ namespace urban
         UrbanObject(ShadowMesh);
         /*! UrbanObject default destructor*/
         ~UrbanObject(void);
+
+        std::string get_name(void) const noexcept;
     private:
+        std::string name;
         /*! The surface describing 3d urban objects*/
         Polyhedron surface;
 
