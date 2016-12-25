@@ -2,8 +2,8 @@ version: '{build}'
 
 branch:
   only:
-  - master
-  - build-system-trial
+    - master
+    - build-system-trial
 
 cache:
   - c:\cygwin-setup-cache
@@ -11,8 +11,8 @@ cache:
 environment:
   CYGWIN_NOWINPATH: yes
   matrix:
-  - cygwin_url: https://cygwin.com/setup-x86_64.exe
-  - cygwin_url: https://cygwin.com/setup-x86.exe
+    - cygwin_url: https://cygwin.com/setup-x86_64.exe
+    - cygwin_url: https://cygwin.com/setup-x86.exe
 
 init:
   - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
