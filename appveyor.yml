@@ -1,4 +1,4 @@
-version: '{build}'
+version: '0.0.0_{build}'
 
 branches:
   only:
@@ -10,19 +10,17 @@ cache:
 
 environment:
   CYGWIN_NOWINPATH: yes
-  matrix:
-    - cygwin_url: https://cygwin.com/setup-x86_64.exe
-    - cygwin_url: https://cygwin.com/setup-x86.exe
+  cygwin_url: https://cygwin.com/setup-x86_64.exe
 
 init:
   - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
   - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages automake, gcc-g++, make, pkg-config, unzip, wget, curl, zlib-devel,libboost-devel,libmpfr-devel,libgmp-devel
 install:
-  - c:\cygwin-root\bin\sh bash ./ci/install.sh
+  - c:\cygwin64\bin\sh ./ci/install.sh
 before_build:
-  - c:\cygwin-root\bin\sh bash ./ci/before_build.sh
+  - c:\cygwin64\bin\sh bash ./ci/before_build.sh
 build_script:
-  - c:\cygwin-root\bin\sh -lc "make -j4 all"
+  - c:\cygwin64\bin\sh -lc "make -j4 all"
 
 test_script:
-  - c:\cygwin-root\bin\sh -lc ".\test-exec -a"
+  - c:\cygwin64\bin\sh -lc ".\test-exec -a"
