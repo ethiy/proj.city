@@ -1,6 +1,6 @@
 version: '{build}'
 
-branch:
+branches:
   only:
     - master
     - build-system-trial
