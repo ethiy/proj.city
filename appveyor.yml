@@ -18,7 +18,7 @@ init:
 install:
   - c:\cygwin64\bin\sh ./ci/install.sh
 before_build:
-  - c:\cygwin64\bin\sh bash ./ci/before_build.sh
+  - c:\cygwin64\bin\sh ./ci/before_build.sh
 build_script:
   - c:\cygwin64\bin\sh -lc "make -j4 all"
 
