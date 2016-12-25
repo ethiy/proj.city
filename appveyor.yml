@@ -14,13 +14,13 @@ environment:
 
 init:
   - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
-  - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages automake, gcc-g++, make, pkg-config, unzip, wget, curl, zlib-devel,libboost-devel,libmpfr-devel,libgmp-devel
+  - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin_root --local-package-dir c:\cygwin-setup-cache --packages automake, gcc-g++, make, pkg-config, unzip, wget, curl, zlib-devel,libboost-devel,libmpfr-devel,libgmp-devel
 install:
-  - c:\cygwin64\bin\sh ./ci/install.sh
+  - c:\cygwin_root\bin\sh ./ci/install.sh
 before_build:
-  - c:\cygwin64\bin\sh ./ci/before_build.sh
+  - c:\cygwin_root\bin\sh ./ci/before_build.sh
 build_script:
-  - c:\cygwin64\bin\sh -lc "make -j4 all"
+  - c:\cygwin_root\bin\sh -lc "make -j4 all"
 
 test_script:
-  - c:\cygwin64\bin\sh -lc ".\test-exec -a"
+  - c:\cygwin_root\bin\sh -lc ".\test-exec -a"
