@@ -10,7 +10,7 @@ cache:
 
 environment:
   CYGWIN_NOWINPATH: yes
-  cygwin_url: https://cygwin.com/setup-x86_64.exe
+  cygwin_url: https://cygwin.com/setup-x86.exe
 
 init:
   - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
