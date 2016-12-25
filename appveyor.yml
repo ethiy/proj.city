@@ -1,33 +1,28 @@
 version: '{build}'
 
 branch:
-   only:
-   - master
-   - build-system-trial
+  only:
+  - master
+  - build-system-trial
 
-image: Visual Studio 2015
-os: Visual Studio 2015
+cache:
+  - c:\cygwin-setup-cache
 
 environment:
-  Configuration: Release
+  CYGWIN_NOWINPATH: yes
   matrix:
-  - TARGET: msvc-2015
-    VS: 2015
-  - TARGET: msvc-2013
-    VS: 2013
-
-platform: x86
+  - cygwin_url: https://cygwin.com/setup-x86_64.exe
+  - cygwin_url: https://cygwin.com/setup-x86.exe
 
 init:
-  - ps: .\appveyor\init.ps1
-
+  - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
+  - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin-root --local-package-dir c:\cygwin-setup-cache --packages automake, gcc-g++, make, pkg-config, unzip, wget, curl, zlib-devel,libboost-devel,libmpfr-devel,libgmp-devel
+install:
+  - c:\cygwin-root\bin\run $APPVEYOR_BUILD_FOLDER\ci\install.sh
 before_build:
-  - ps: New-Item -ItemType Directory -Path .\build
-  - ps: Set-Location build\
-  - ps: cmake ..
-
+  - c:\cygwin-root\bin\run $APPVEYOR_BUILD_FOLDER\ci\before_build.sh
 build:
-  - ps: msbuild.exe ALL
+  - c:\cygwin-root\bin\sh -lc "make -j4 all"
 
 test:
-  - ps: .\test-exec -a
+  - c:\cygwin-root\bin\sh -lc ".\test-exec -a"
