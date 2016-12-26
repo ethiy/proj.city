@@ -9,11 +9,12 @@ cache:
   - c:\cygwin-setup-cache
 
 environment:
+  CYGWIN_NOWINPATH: yes
   cygwin_url: https://cygwin.com/setup-x86.exe
 
 init:
   - ps: Invoke-WebRequest $env:cygwin_url -OutFile c:\cygwin-setup.exe
-  - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin_root --local-package-dir c:\cygwin-setup-cache --packages automake, libtool, gcc-g++, make, pkg-config, unzip, wget, curl, zlib-devel,libboost-devel,libmpfr-devel,libgmp-devel
+  - c:\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root c:\cygwin_root --local-package-dir c:\cygwin-setup-cache --packages automake, gcc-g++, make, pkg-config, unzip, wget, curl, zlib-devel,libboost-devel,libmpfr-devel,libgmp-devel
 install:
   - c:\cygwin_root\bin\sh ./ci/install.sh
 before_build:
