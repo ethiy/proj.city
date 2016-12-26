@@ -8,7 +8,6 @@ branches:
 install:
   - C:\cygwin\setup-x86.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root C:\cygwin --local-package-dir C:\cygwin\var\cache\setup -P autoconf -P automake -P bison -P gcc-core -P gcc-g++ -P mingw-runtime -P mingw-binutils -P mingw-gcc-core -P mingw-gcc-g++ -P mingw-pthreads -P mingw-w32api -P libtool -P make -P python -P gettext-devel -P gettext -P intltool -P libiconv -P pkg-config -P git -P wget -P curl
   - C:\cygwin\bin\bash --norc --noprofile ./ci/install.sh
-before_build:
   - C:\cygwin\bin\bash --norc --noprofile ./ci/before_build.sh
 build_script:
   - C:\cygwin\bin\bash -lc --norc --noprofile "make -j4 all"
