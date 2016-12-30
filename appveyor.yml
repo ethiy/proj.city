@@ -9,7 +9,7 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-toolchain"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-boost"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
-  - C:\msys64\usr\bin\bash.exe -lc ./ci/install.sh
+  - C:\msys64\usr\bin\bash.exe ./ci/install.sh
 build_script:
   - ps: New-Item -ItemType Directory -Path .\build\MinGW_64
   - ps: Set-Location .\build\MinGW_64\
