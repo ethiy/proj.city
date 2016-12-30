@@ -8,8 +8,6 @@ cache:
   - lib3ds-1.3.0
   - lib3ds-1.3.0.zip
 
-environment:
-
 install:
   - cmd: echo %PATH%
   - C:\msys64\usr\bin\bash.exe -lc "echo $PATH"
