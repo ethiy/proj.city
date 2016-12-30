@@ -2,15 +2,19 @@ version: '0.0.0_{build}'
 
 branches:
   only:
-    - master
     - build-system-trial
 
 install:
-  - C:\cygwin\setup-x86.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --only-site --site http://cygwin.mirror.constant.com/ --root C:\cygwin --local-package-dir C:\cygwin\var\cache\setup -P autoconf -P automake -P bison -P gcc-core -P gcc-g++ -P mingw-runtime -P mingw-binutils -P mingw-gcc-core -P mingw-gcc-g++ -P mingw-pthreads -P mingw-w32api -P libtool -P make -P python -P gettext-devel -P gettext -P intltool -P libiconv -P pkg-config -P git -P wget -P curl
-  - C:\cygwin\bin\bash --norc --noprofile ./ci/install.sh
-  - C:\cygwin\bin\bash --norc --noprofile ./ci/before_build.sh
+  - C:\msys64\usr\bin\bash.exe -lc "pacman -Syu pacman"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman -S mingw-w64-x86_64-toolchain"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman -S base-dev"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman -S mingw-w64-x86_64-boost"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman -S mingw-w64-x86_64-cgal"
+  - C:\msys64\usr\bin\bash.exe -lc .\ci\install.sh
 build_script:
-  - C:\cygwin\bin\bash -lc --norc --noprofile "make -j4 all"
-
+  - ps: New-Item -ItemType Directory -Path .\build\MinGW_64
+  - ps: Set-Location .\build\MinGW_64\
+  - cmake -G"MinGW Makefiles" -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ..\..
+  - C:\msys64\bin\mingw32-make.exe -j4 all
 test_script:
-  - C:\cygwin\bin\bash -lc --norc --noprofile ".\test-exec -a"
+  - .\test_exec -a

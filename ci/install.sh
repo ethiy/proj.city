@@ -8,12 +8,4 @@ cd lib3ds-1.3.0/
 ./configure
 make -j4 all && make install
 
-cd ..
-git clone https://github.com/CGAL/cgal.git
-cd cgal
-git checkout releases/CGAL-4.9
-mkdir build && cd build
-cmake ..
-make -j4 all
-make install && make install_FindCGAL
-cd ..
+cd ../..
