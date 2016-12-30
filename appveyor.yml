@@ -14,7 +14,7 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-boost"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
-  - C:\msys64\usr\bin\bash.exe -lc "curl -O https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lib3ds/lib3ds-1.3.0.zip"
+  - appveyor DownloadFile https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lib3ds/lib3ds-1.3.0.zip
   - 7z x lib3ds-1.3.0.zip
   - C:\msys64\usr\bin\bash.exe -lc "rm lib3ds-1.3.0.zip"
   - C:\msys64\usr\bin\bash.exe -lc "cd lib3ds-1.3.0/"
