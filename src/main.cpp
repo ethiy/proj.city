@@ -4,7 +4,9 @@
 #include "IO/io_3ds.h"
 #include "IO/io_off.h"
 
+#ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
+#endif // CGAL_USE_GEOMVIEW
 
 #include <boost/filesystem.hpp>
 
@@ -37,13 +39,16 @@ int main(int, char **)
         );
 
         std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::UrbanObject>(std::cout, "\n"));
+        #ifdef CGAL_USE_GEOMVIEW
         CGAL::Geomview_stream geomview_stream;
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&](urban::UrbanObject obj) {
+            [&](urban::UrbanObject obj)
+            {
                 geomview_stream << obj;
             });
+        #endif // CGAL_USE_GEOMVIEW
 
         geomview_stream.look_recenter();
         std::cout << "Enter any character to stop the program:" << std::endl;
