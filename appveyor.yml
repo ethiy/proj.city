@@ -13,7 +13,6 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make cmake"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-boost"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
-  - ps: Remove-Item lib3ds-1.3.0
   - appveyor DownloadFile https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lib3ds/lib3ds-1.3.0.zip
   - 7z x lib3ds-1.3.0.zip
   - C:\msys64\usr\bin\bash.exe -lc "export PATH=/mingw64/bin:$PATH; cd /C/projects/3dscenemodel/lib3ds-1.3.0/; ./configure; make -j4; make install"
