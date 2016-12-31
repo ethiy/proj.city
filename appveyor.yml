@@ -5,7 +5,6 @@ branches:
     - build-system-trial
 
 cache:
-  - lib3ds-1.3.0
   - lib3ds-1.3.0.zip
 
 install:
