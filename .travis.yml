@@ -34,10 +34,5 @@ matrix:
         - cd build/darwin
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
-<<<<<<< HEAD
-        - make all
-        - ./test_exec -s
-=======
         - make -j4 all
         - ./test_exec -a
->>>>>>> build-system-trial
