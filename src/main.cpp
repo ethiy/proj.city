@@ -4,6 +4,8 @@
 #include "IO/io_3ds.h"
 #include "IO/io_off.h"
 
+#include <lib3ds/file.h>
+
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
 #endif // CGAL_USE_GEOMVIEW
