@@ -48,9 +48,9 @@ int main(int, char **)
             {
                 geomview_stream << obj;
             });
-        #endif // CGAL_USE_GEOMVIEW
 
         geomview_stream.look_recenter();
+        #endif // CGAL_USE_GEOMVIEW
         std::cout << "Enter any character to stop the program:" << std::endl;
         getchar();
     }
