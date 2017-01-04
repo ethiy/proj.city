@@ -4,7 +4,10 @@
 
 #include <CGAL/Simple_cartesian.h>
 #include <CGAL/Polyhedron_3.h>
+
+#ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
+#endif // CGAL_USE_GEOMVIEW
 
 #include <string>
 #include <ostream>
@@ -38,6 +41,8 @@ namespace urban
 
         /*! Outstreaming UrbanObject*/
         friend std::ostream& operator<<(std::ostream &, const UrbanObject &);
+        #ifdef CGAL_USE_GEOMVIEW
         friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const UrbanObject &);
+        #endif // CGAL_USE_GEOMVIEW
     };
 }
