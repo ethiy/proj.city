@@ -48,6 +48,7 @@ int main(int, char **)
             {
                 geomview_stream << obj;
             });
+        #endif // CGAL_USE_GEOMVIEW
 
         geomview_stream.look_recenter();
         #endif // CGAL_USE_GEOMVIEW
