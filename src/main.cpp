@@ -24,13 +24,17 @@ int main(int, char **)
 {
     try
     {
+        LOG(INFO) << "Start up the program ...";
         el::Configurations default_conf("../../confs/default_conf.conf");
         el::Loggers::reconfigureAllLoggers(default_conf);
+
         boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         std::map<std::string, bool> modes{{"read", true}};
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
+        LOG(INFO) << "Starting to read \"" << filepath.string() << "\" ...";
         std::vector<urban::ShadowMesh> meshes = handler.read();
 
+        LOG(INFO) << "\""<< filepath.string() << "\” has been read.";
         std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
         std::vector<urban::UrbanObject> urban_objects;
@@ -46,6 +50,7 @@ int main(int, char **)
 
         std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::UrbanObject>(std::cout, "\n"));
         #ifdef CGAL_USE_GEOMVIEW
+        LOG(INFO) << "Starting up Geomview stream ...";
         CGAL::Geomview_stream geomview_stream;
         std::for_each(
             std::begin(urban_objects),
@@ -57,8 +62,10 @@ int main(int, char **)
 
         geomview_stream.look_recenter();
         #endif // CGAL_USE_GEOMVIEW
-        std::cout << "Enter any character to stop the program:" << std::endl;
+        LOG(INFO) << "Enter any character to stop the program:";
         getchar();
+        LOG(INFO) << "... end of Visualization.";
+        LOG(INFO) << "... end of program.";
     }
     catch (const std::exception& except)
     {
