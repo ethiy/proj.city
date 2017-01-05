@@ -36,7 +36,7 @@ target_link_libraries(IO ShadowMesh Line UrbanObject ${LIBS})
 
 set(MAIN_SRC ${3DSceneModel_SOURCE_DIR}/src/main.cpp)
 add_executable(main ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS})
-target_link_libraries(main ShadowMesh UrbanObject IO ${LIBS})
+target_link_libraries(main EasyLogging ShadowMesh UrbanObject IO ${LIBS})
 link_directories(main ${LIBS_DIRS})
 
 # Tests

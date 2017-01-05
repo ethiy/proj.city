@@ -8,6 +8,8 @@
 #include <CGAL/IO/Geomview_stream.h>
 #endif // CGAL_USE_GEOMVIEW
 
+#include <easylogging++.h>
+
 #include <boost/filesystem.hpp>
 
 #include <vector>
@@ -16,10 +18,14 @@
 #include <iterator>
 #include <iostream>
 
+INITIALIZE_EASYLOGGINGPP
+
 int main(int, char **)
 {
     try
     {
+        el::Configurations default_conf("../../confs/default_conf.conf");
+        el::Loggers::reconfigureAllLoggers(default_conf);
         boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         std::map<std::string, bool> modes{{"read", true}};
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
