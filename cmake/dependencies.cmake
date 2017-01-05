@@ -37,3 +37,6 @@ list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
 # Find Catch
 include(cmake/modules/catch.cmake)
 enable_testing(true)
+
+# Find EasyLogging
+include(cmake/modules/easyloggingpp.cmake)
