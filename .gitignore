@@ -6,3 +6,5 @@
 # Build files
 build
 
+# Configuration files
+*.swp
