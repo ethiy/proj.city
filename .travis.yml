@@ -12,7 +12,32 @@ branches:
     - build-system-trial
 
 matrix:
+  fast_finish: true
   include:
+    - os: linux
+      dist: trusty
+      compiler: gcc
+      language: cpp
+      sudo: required
+      cache:
+        apt: true
+        directories:
+          - ./external/Catch/src/Catch-External
+      before_install:
+        - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - sudo apt-get update -q && sudo apt-get upgrade -y
+        - sudo apt-get install g++-4.8 -y
+        - sudo apt-get install cmake -y
+        - sudo apt-get install libboost-filesystem-dev libboost-system-dev -y 
+        - sudo apt-get install lib3ds-dev -y
+        - sudo apt-get install libcgal-qt5-dev libcgal -y
+      script:
+        - mkdir build && mkdir build/trusty && cd build/trusty
+        - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
+        - make -j4 all
+        - test_exec -a
+        
+
     - os: linux
       services:
         - docker
