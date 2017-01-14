@@ -11,7 +11,7 @@ cache:
   - external\Catch\src\Catch-External
 
 install:
-  - ps: >-
+  - ps: |
         $local:MsysPath = "C:\msys64\bin;C:\msys64\usr\bin\"
         $local:GitPaths = ""
         foreach($item in ($env:Path.Split(";") | Group-Object { $_.Contains("Git") -or $_.Contains("cygwin") -or $_.Contains("mingw") -or $_.Contains("MinGW") })){
