@@ -11,6 +11,21 @@ cache:
   - external\Catch\src\Catch-External
 
 install:
+  - ps: $local:MsysPath = "C:\msys64\bin;C:\msys64\usr\bin\"
+        $local:GitPaths = ""
+        foreach($item in ($env:Path.Split(";") | Group-Object { $_.Contains("Git") -or $_.Contains("cygwin") -or $_.Contains("mingw") -or $_.Contains("MinGW") })){
+            if($item.Name -eq $true) {
+                $local:GitPaths = $item.Group -join ";"
+            }
+            else {
+                $env:Path = $item.Group -join ";"
+            }
+        }
+        foreach($item in @( $local:MsysPath, $local:GitPaths )){
+            if(-Not ($env:Path.Split(";") -contains $item)){
+                $env:Path = "$env:Path;$item"
+            }
+        }
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -Syu pacman"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-toolchain"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
