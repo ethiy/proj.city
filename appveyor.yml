@@ -22,7 +22,7 @@ install:
                 $env:Path = $item.Group -join ";"
             }
         }
-        foreach($item in @( $local:MsysPath, $local:GitPaths )){
+        foreach($item in @( $local:MsysPath )){
             if(-Not ($env:Path.Split(";") -contains $item)){
                 $env:Path = "$env:Path;$item"
             }

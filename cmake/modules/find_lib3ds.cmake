@@ -4,7 +4,7 @@
 #                      found
 # LIB3DS_LIBRARIES     - full path to the lib3ds library
 
-IF(UNIX)
+#IF(UNIX)
 	find_path(LIB3DS_INCLUDE_DIRS lib3ds/file.h
 		/usr/include
 		/usr/local/include
@@ -23,4 +23,4 @@ IF(UNIX)
 	else(LIB3DS_LIBRARIES)
 		message(STATUS "Could NOT find lib3ds library.")
 	endif(LIB3DS_LIBRARIES)
-ENDIF()
+#ENDIF()
