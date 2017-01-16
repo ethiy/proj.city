@@ -26,7 +26,7 @@ SCENARIO("ShadowMesh manipulation:")
 
         WHEN( "the mesh is created:")
         {
-            urban::ShadowMesh u_mesh(*test_mesh);
+            urban::ShadowMesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
                 std::ostringstream auxilary;
@@ -36,7 +36,7 @@ SCENARIO("ShadowMesh manipulation:")
         }
         WHEN( "mesh points and faces are accessed:")
         {
-            urban::ShadowMesh u_mesh(*test_mesh);
+            urban::ShadowMesh u_mesh(test_mesh);
             std::map<size_t, urban::Point> points = u_mesh.get_points();
             std::map<size_t, urban::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
@@ -61,12 +61,12 @@ SCENARIO("ShadowMesh manipulation:")
         }
         WHEN( "ShadowMesh is converted back to lib3ds format and to \'urban::ShadowMesh\' again: ")
         {
-            urban::ShadowMesh u_mesh(*test_mesh);
+            urban::ShadowMesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
                 std::ostringstream auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
-                urban::ShadowMesh _u_mesh(*_mesh);
+                urban::ShadowMesh _u_mesh(_mesh);
                 auxilary << _u_mesh;
                 REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
             }
