@@ -66,7 +66,9 @@ SCENARIO("ShadowMesh manipulation:")
             THEN("the output checks:")
             {
                 std::ostringstream auxilary;
-                urban::ShadowMesh _u_mesh(u_mesh.to_3ds());
+                Lib3dsMesh* _mesh = u_mesh.to_3ds();
+                urban::ShadowMesh _u_mesh(_mesh);
+                delete _mesh;
                 auxilary << _u_mesh;
                 REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
             }

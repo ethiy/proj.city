@@ -141,7 +141,7 @@ SCENARIO("Face manipulation:")
                 auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2] << " and " << (face_3ds + 1)->points[0] << " " << (face_3ds + 1)->points[1] << " " << (face_3ds + 1)->points[2];
                 REQUIRE( auxilary.str() == "145 45 97 and 145 97 85" );
             }
-
+            delete face_3ds;
         }
     }
 }
