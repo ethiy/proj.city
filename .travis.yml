@@ -39,8 +39,8 @@ matrix:
         - mkdir build && cd build
         - cmake ..
         - make -j4 all
-        - make install
-        - make install_FindCGAL
+        - sudo make install
+        - sudo make install_FindCGAL
         - cd ../../..
       script:
         - mkdir build && mkdir build/trusty && cd build/trusty
