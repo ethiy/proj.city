@@ -35,7 +35,7 @@ matrix:
       before_script:
         - mkdir 3rdParty && cd 3rdParty
         - git clone https://github.com/CGAL/cgal.git
-        - cd CGAL
+        - cd cgal
         - git checkout 4e50c9c138855075bb668cc3eceaa60bbbe05cdd
         - mkdir build && cd build
         - cmake ..
