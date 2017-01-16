@@ -44,7 +44,7 @@ int main(int, char **)
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&](urban::UrbanObject obj)
+            [&](urban::UrbanObject & obj)
             {
                 geomview_stream << obj;
             });
