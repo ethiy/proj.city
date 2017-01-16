@@ -1,5 +1,4 @@
 sudo: required
-dist: trusty
 
 language: cpp
 
@@ -17,7 +16,6 @@ matrix:
         - docker
       script:
         - docker build .
-
 
     - os: osx
       osx_image: xcode8
