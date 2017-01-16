@@ -32,7 +32,7 @@ int main(int, char **)
             std::begin(meshes),
             std::end(meshes),
             std::back_inserter(urban_objects),
-            [](urban::ShadowMesh mesh)
+            [](urban::ShadowMesh & mesh)
             {
                 return urban::UrbanObject(mesh);
             }
