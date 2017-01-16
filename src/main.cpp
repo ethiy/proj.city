@@ -1,5 +1,5 @@
 #include "ShadowMesh/shadow_mesh.h"
-#include "UrbanObject/urban_object.h"
+#include "UrbanObject/brick.h"
 #include "IO/io.h"
 #include "IO/io_3ds.h"
 #include "IO/io_off.h"
@@ -27,24 +27,24 @@ int main(int, char **)
 
         std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
-        std::vector<urban::UrbanObject> urban_objects;
+        std::vector<urban::Brick> urban_objects;
         std::transform(
             std::begin(meshes),
             std::end(meshes),
             std::back_inserter(urban_objects),
-            [](urban::ShadowMesh mesh)
+            [](urban::ShadowMesh & mesh)
             {
-                return urban::UrbanObject(mesh);
+                return urban::Brick(mesh);
             }
         );
 
-        std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::UrbanObject>(std::cout, "\n"));
+        std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::Brick>(std::cout, "\n"));
         #ifdef CGAL_USE_GEOMVIEW
         CGAL::Geomview_stream geomview_stream;
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&](urban::UrbanObject obj)
+            [&](urban::Brick & obj)
             {
                 geomview_stream << obj;
             });

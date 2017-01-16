@@ -28,7 +28,7 @@ namespace urban
             void write(std::vector<ShadowMesh>);
 
         private:
-            Lib3dsFile* file;
+            Lib3dsFile* file = NULL;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
         };

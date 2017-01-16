@@ -22,7 +22,7 @@ namespace urban
                     Lib3dsMesh *p_meshes = file->meshes;
                     while (p_meshes)
                     {
-                        meshes.push_back(urban::ShadowMesh(*p_meshes));
+                        meshes.push_back(urban::ShadowMesh(p_meshes));
                         p_meshes = p_meshes->next;
                     }
                 }

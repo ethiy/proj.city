@@ -8,13 +8,13 @@ namespace urban
 {
     ShadowMesh::ShadowMesh(void){}
     ShadowMesh::ShadowMesh(const ShadowMesh & other):points(other.points), faces(other.faces){}
-    ShadowMesh::ShadowMesh(Lib3dsMesh lib3ds_mesh)
+    ShadowMesh::ShadowMesh(Lib3dsMesh* lib3ds_mesh)
     {
-        name = lib3ds_mesh.name;
+        name = lib3ds_mesh->name;
         size_t it(0);
         std::for_each(
-            lib3ds_mesh.pointL,
-            lib3ds_mesh.pointL + lib3ds_mesh.points,
+            lib3ds_mesh->pointL,
+            lib3ds_mesh->pointL + lib3ds_mesh->points,
             [&](Lib3dsPoint _point)
             {
                 points[it++] = Point(_point.pos[0], _point.pos[1], _point.pos[2]);
@@ -23,8 +23,8 @@ namespace urban
 
         it = 0;
         std::for_each(
-            lib3ds_mesh.faceL,
-            lib3ds_mesh.faceL + lib3ds_mesh.faces,
+            lib3ds_mesh->faceL,
+            lib3ds_mesh->faceL + lib3ds_mesh->faces,
             [&](Lib3dsFace _face)
             {
                 Point point_0 = points[_face.points[0]];

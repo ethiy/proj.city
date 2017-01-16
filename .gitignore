@@ -6,3 +6,5 @@
 # Build files
 build
 
+# Urban 3d resources
+ressources/UrbanModels/*
