@@ -2,6 +2,8 @@
 
 #include "catch.hpp"
 
+# include <memory>
+
 SCENARIO("Face manipulation:")
 {
     GIVEN("Three indices:" )
@@ -63,7 +65,7 @@ SCENARIO("Face manipulation:")
         WHEN("the triangle is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
-            Lib3dsFace* face_3ds = facet.to_3ds();
+            std::shared_ptr<Lib3dsFace> face_3ds(facet.to_3ds());
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
