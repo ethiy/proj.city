@@ -11,6 +11,22 @@ cache:
   - external\Catch\src\Catch-External
 
 install:
+  - ps: |
+        $local:MsysPath = "C:\msys64\bin;C:\msys64\usr\bin\"
+        $local:GitPaths = ""
+        foreach($item in ($env:Path.Split(";") | Group-Object { $_.Contains("Git") -or $_.Contains("cygwin") -or $_.Contains("mingw") -or $_.Contains("MinGW") })){
+            if($item.Name -eq $true) {
+                $local:GitPaths = $item.Group -join ";"
+            }
+            else {
+                $env:Path = $item.Group -join ";"
+            }
+        }
+        foreach($item in @( $local:MsysPath )){
+            if(-Not ($env:Path.Split(";") -contains $item)){
+                $env:Path = "$env:Path;$item"
+            }
+        }
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -Syu pacman"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-toolchain"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
@@ -23,4 +39,4 @@ build_script:
   - ps: New-Item -ItemType Directory -Path .\build\MSYS2
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; /mingw64/bin/cmake -G'Unix Makefiles' -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../.. ; make -j4"
 test_script:
-  - C:\msys64\usr\bin\bash.exe -lc "/C/projects/3dscenemodel/build/MSYS2/test_exec -a"
+  - IF NOT "%APPVEYOR_REPO_BRANCH%" == "master" C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; ./test_exec -a"
