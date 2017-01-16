@@ -59,6 +59,7 @@ SCENARIO("ShadowMesh manipulation:")
                 REQUIRE( auxilary.str() == _auxilary.str() );
             }
         }
+
         WHEN( "ShadowMesh is converted back to lib3ds format and to \'urban::ShadowMesh\' again: ")
         {
             urban::ShadowMesh u_mesh(test_mesh);
@@ -71,5 +72,7 @@ SCENARIO("ShadowMesh manipulation:")
                 REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
             }
         }
+
+        delete test_mesh;
     }
 }
