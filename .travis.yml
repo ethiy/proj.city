@@ -30,7 +30,7 @@ matrix:
         - sudo apt-get update -qq
         - sudo apt-get install build-essential g++-4.8 -y
         - sudo apt-get install cmake -y
-        - sudo apt-get install libmpfr-dev libmpfrc++-dev libboost-filesystem-dev libboost-system-dev -y 
+        - sudo apt-get install libmpfr-dev libmpfrc++-dev libboost-filesystem-dev libboost-system-dev libboost-thread-dev -y 
         - sudo apt-get install lib3ds-dev -y
       before_script:
         - mkdir 3rdParty && cd 3rdParty
