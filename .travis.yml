@@ -25,6 +25,7 @@ matrix:
           - ./external/Catch/src/Catch-External
       before_install:
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        - cat /etc/apt/sources.list
         - sudo apt-get update -qq
         - sudo apt-get install build-essential g++-4.8 -y
         - sudo apt-get install cmake -y
