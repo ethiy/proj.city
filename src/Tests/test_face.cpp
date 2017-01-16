@@ -2,6 +2,8 @@
 
 #include "catch.hpp"
 
+# include <cstdlib>
+
 SCENARIO("Face manipulation:")
 {
     GIVEN("Three indices:" )
@@ -63,13 +65,14 @@ SCENARIO("Face manipulation:")
         WHEN("the triangle is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
-            Lib3dsFace* face_3ds = facet.to_3ds();
+            Lib3dsFace* face_3ds(facet.to_3ds());
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
                 auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2];
                 REQUIRE( auxilary.str() == "145 45 97" );
             }
+            std::free(face_3ds);
         }
     }
 
@@ -139,7 +142,7 @@ SCENARIO("Face manipulation:")
                 auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2] << " and " << (face_3ds + 1)->points[0] << " " << (face_3ds + 1)->points[1] << " " << (face_3ds + 1)->points[2];
                 REQUIRE( auxilary.str() == "145 45 97 and 145 97 85" );
             }
-
+            std::free(face_3ds);
         }
     }
 }

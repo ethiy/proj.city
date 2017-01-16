@@ -22,7 +22,7 @@ namespace urban
     public:
         ShadowMesh(void);
         ShadowMesh(const ShadowMesh &);
-        ShadowMesh(Lib3dsMesh);
+        ShadowMesh(Lib3dsMesh*);
         ShadowMesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>);
         ~ShadowMesh(void);
 

@@ -1,4 +1,4 @@
-#include "urban_object.h"
+#include "brick.h"
 #include "surface_builder.h"
 
 #include <CGAL/IO/Polyhedron_iostream.h>
@@ -11,25 +11,25 @@
 
 namespace urban
 {
-    UrbanObject::UrbanObject(void){}
+    Brick::Brick(void){}
 
-    UrbanObject::UrbanObject(ShadowMesh mesh)
+    Brick::Brick(ShadowMesh mesh)
     {
         name = mesh.get_name();
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate( builder);
     }
 
-    UrbanObject::UrbanObject(const UrbanObject & other): surface(other.surface){}
+    Brick::Brick(const Brick & other): surface(other.surface){}
 
-    UrbanObject::~UrbanObject(void){}
+    Brick::~Brick(void){}
 
-    std::string UrbanObject::get_name(void) const noexcept
+    std::string Brick::get_name(void) const noexcept
     {
         return name;
     }
 
-    std::ostream& operator<<(std::ostream & os, const UrbanObject & uobj)
+    std::ostream& operator<<(std::ostream & os, const Brick & uobj)
     {
         os << "# Name: " << uobj.name << std::endl
            << uobj.surface;
@@ -37,7 +37,7 @@ namespace urban
     }
 
     #ifdef CGAL_USE_GEOMVIEW
-    CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, const UrbanObject & uobj)
+    CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, const Brick & uobj)
     {
         gs << uobj.surface;
         return gs;

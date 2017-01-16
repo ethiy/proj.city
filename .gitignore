@@ -8,3 +8,6 @@ build
 
 # Configuration files
 *.swp
+
+# Urban 3d resources
+ressources/UrbanModels/*
