@@ -1,4 +1,4 @@
-#include "../UrbanObject/urban_object.h"
+#include "../UrbanObject/brick.h"
 #include "../IO/io_off.h"
 
 #include <boost/filesystem.hpp>
@@ -9,7 +9,7 @@
 
 #include "catch.hpp"
 
-SCENARIO("UrbanObject manipulation:")
+SCENARIO("Urban Brick manipulation:")
 {
     GIVEN("A urban::ShadowMesh object")
     {
@@ -18,9 +18,9 @@ SCENARIO("UrbanObject manipulation:")
         urban::io::FileHandler<std::fstream> handler(filepath, modes);
         urban::ShadowMesh mesh = handler.read();
 
-        WHEN("the UrbanObject is constructed")
+        WHEN("the urban Brick is constructed")
         {
-            urban::UrbanObject hammerhead(mesh);
+            urban::Brick hammerhead(mesh);
 
             THEN("the output checks")
             {

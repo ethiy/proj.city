@@ -1,6 +1,6 @@
 #pragma once
 
-#include "urban_object.h"
+#include "brick.h"
 
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 

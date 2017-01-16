@@ -1,7 +1,7 @@
 #include "io_off.h"
 
 #include "Line/line.h"
-#include "../UrbanObject/urban_object.h"
+#include "../UrbanObject/brick.h"
 
 #include <stdexcept>
 
@@ -164,7 +164,7 @@ namespace urban
                         CGAL::set_ascii_mode(file);
                     }
                 }
-                UrbanObject obj(mesh);
+                Brick obj(mesh);
                 file << obj;
                 file.close();
             }

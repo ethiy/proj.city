@@ -21,17 +21,17 @@ namespace urban
 
 
     /*! Container class modelling urba objects using CGAL*/
-    class UrbanObject
+    class Brick
     {
     public:
-        /*! UrbanObject default constructor*/
-        UrbanObject(void);
-        /*! UrbanObject copy constructor*/
-        UrbanObject(const UrbanObject &);
-        /*! UrbanObject constructor form 3ds meshes*/
-        UrbanObject(ShadowMesh);
-        /*! UrbanObject default destructor*/
-        ~UrbanObject(void);
+        /*! Brick default constructor*/
+        Brick(void);
+        /*! Brick copy constructor*/
+        Brick(const Brick &);
+        /*! Brick constructor form 3ds meshes*/
+        Brick(ShadowMesh);
+        /*! Brick default destructor*/
+        ~Brick(void);
 
         std::string get_name(void) const noexcept;
     private:
@@ -39,10 +39,10 @@ namespace urban
         /*! The surface describing 3d urban objects*/
         Polyhedron surface;
 
-        /*! Outstreaming UrbanObject*/
-        friend std::ostream& operator<<(std::ostream &, const UrbanObject &);
+        /*! Outstreaming Brick*/
+        friend std::ostream& operator<<(std::ostream &, const Brick &);
         #ifdef CGAL_USE_GEOMVIEW
-        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const UrbanObject &);
+        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const Brick &);
         #endif // CGAL_USE_GEOMVIEW
     };
 }
