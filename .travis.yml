@@ -1,4 +1,5 @@
 sudo: required
+dist: trusty
 
 language: cpp
 
@@ -11,11 +12,13 @@ branches:
     - build-system-trial
 
 matrix:
+  include:
     - os: linux
       services:
         - docker
       script:
         - docker build .
+
 
     - os: osx
       osx_image: xcode8
