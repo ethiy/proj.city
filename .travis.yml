@@ -43,10 +43,9 @@ matrix:
         - sudo make install_FindCGAL
         - cd ../../..
       script:
-        - pwd
-        - mkdir build && mkdir build/trusty && cd build/trusty
+        - mkdir -p build && mkdir -p build/trusty && cd build/trusty
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
-        - make -j4 all
+        - make clean && make -j4 all
         - test_exec -a
         
 
