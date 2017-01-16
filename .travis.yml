@@ -22,7 +22,8 @@ matrix:
       cache:
         apt: true
         directories:
-          - ./external/Catch/src/Catch-External
+          - ./build/external/Catch/src/Catch-External
+          - ./3rParty/CGAL
       before_install:
         - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         - cat /etc/apt/sources.list
@@ -31,7 +32,16 @@ matrix:
         - sudo apt-get install cmake -y
         - sudo apt-get install libboost-filesystem-dev libboost-system-dev -y 
         - sudo apt-get install lib3ds-dev -y
-        - sudo apt-get install libcgal-qt5-dev libcgal -y
+      before_script:
+        - mkdir 3rdParty && 3rdParty
+        - curl -O https://github.com/CGAL/cgal/releases/download/releases%2FCGAL-4.9/CGAL-4.9.zip
+        - unzip CGAL-4.9.zip -d ./CGAL
+        - mkdir CGAL/build && cd CGAL/build
+        - cmake ..
+        - make -j4 all
+        - make install
+        - make install_FindCGAL
+        - cd ../../..
       script:
         - mkdir build && mkdir build/trusty && cd build/trusty
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
