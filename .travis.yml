@@ -33,7 +33,7 @@ matrix:
         - sudo apt-get install libboost-filesystem-dev libboost-system-dev -y 
         - sudo apt-get install lib3ds-dev -y
       before_script:
-        - mkdir 3rdParty && 3rdParty
+        - mkdir 3rdParty && cd 3rdParty
         - curl -O https://github.com/CGAL/cgal/releases/download/releases%2FCGAL-4.9/CGAL-4.9.zip
         - unzip CGAL-4.9.zip -d ./CGAL
         - mkdir CGAL/build && cd CGAL/build
