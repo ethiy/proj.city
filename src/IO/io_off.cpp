@@ -153,7 +153,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
@@ -163,34 +163,53 @@ namespace urban
 
         void FileHandler<std::fstream>::write(ShadowMesh mesh)
         {
+            std::ostringstream error_message;
+
             if (modes["write"])
             {
                 if (modes["binary"])
                 {
                     file.open(filepath.string().c_str(), std::ios::out | std::ios::binary);
-                    CGAL::set_binary_mode(file);
                 }
                 else
                 {
-                    if (modes["pretty"])
-                    {
-                        file.open(filepath.string().c_str(), std::ios::out);
-                        CGAL::set_pretty_mode(file);
-                    }
-                    else
-                    {
-                        file.open(filepath.string().c_str(), std::ios::out);
-                        CGAL::set_ascii_mode(file);
-                    }
+                    file.open(filepath.string().c_str(), std::ios::out);
                 }
-                Brick obj(mesh);
-                file << obj;
+
+                /*Writing comments, header and sizes*/
+                file << "# Mesh: " << mesh.get_name() << std::endl
+                     << "OFF" << std::endl
+                     << mesh.get_number_points() << " " << mesh.get_number_faces() << " 0" << std::endl;
+                
+                /*Writing points*/
+                std::map<size_t, Point> points = mesh.get_points();
+                std::for_each(
+                    std::begin(points),
+                    std::end(points),
+                    [&](std::pair<size_t, Point> p)
+                    {
+                        file << p.second << std::endl;
+                    }
+                );
+                
+                /*Writing faces*/
+                std::map<size_t, Face> faces = mesh.get_faces();
+                std::for_each(
+                    std::begin(faces),
+                    std::end(faces),
+                    [&](std::pair<size_t, Face> p)
+                    {
+                        file << p.second << std::endl;
+                    }
+                );
+
                 file.close();
             }
             else
             {
+                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                throw boost::filesystem::filesystem_error(ec.message(), ec);
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
         }
     }
