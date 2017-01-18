@@ -41,12 +41,13 @@ int main(int, char **)
         std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::Brick>(std::cout, "\n"));
         #ifdef CGAL_USE_GEOMVIEW
         CGAL::Geomview_stream geomview_stream;
+        geomview_stream.set_bg_color(CGAL::Color(0, 127, 200));
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
             [&](urban::Brick & obj)
             {
-                geomview_stream << obj;
+                geomview_stream << CGAL::RED << obj;
             });
 
         geomview_stream.look_recenter();
