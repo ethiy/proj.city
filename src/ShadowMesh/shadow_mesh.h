@@ -2,7 +2,7 @@
 
 #include "Face/face.h"
 
-#include <CGAL/Simple_cartesian.h>
+#include "../UrbanObject/geometry_definitions.h"
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
@@ -13,16 +13,13 @@
 
 namespace urban
 {
-    typedef CGAL::Simple_cartesian<double> Kernel;
-    typedef Kernel::Point_3 Point;
-    typedef Kernel::Vector_3 Vector;
-
     class ShadowMesh
     {
     public:
         ShadowMesh(void);
         ShadowMesh(const ShadowMesh &);
         ShadowMesh(Lib3dsMesh*);
+        ShadowMesh(Polyhedron);
         ShadowMesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>);
         ~ShadowMesh(void);
 

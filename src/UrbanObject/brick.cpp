@@ -18,6 +18,14 @@ namespace urban
         name = mesh.get_name();
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate( builder);
+        std::for_each(
+            surface.facets_begin(),
+            surface.facets_end(),
+            [&](Facet & facet)
+            {
+                facet.set_color(CGAL::RED);
+            }
+        );
     }
 
     Brick::Brick(const Brick & other): surface(other.surface){}

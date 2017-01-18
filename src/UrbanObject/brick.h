@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../ShadowMesh/shadow_mesh.h"
+#include "geometry_definitions.h"
 
-#include <CGAL/Simple_cartesian.h>
-#include <CGAL/Polyhedron_3.h>
+#include "../ShadowMesh/shadow_mesh.h"
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
@@ -14,12 +13,6 @@
 
 namespace urban
 {
-    typedef CGAL::Simple_cartesian<double> Kernel;
-    typedef Kernel::Point_3 Point;
-    typedef Kernel::Vector_3 Vector;
-    typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
-
-
     /*! Container class modelling urba objects using CGAL*/
     class Brick
     {
