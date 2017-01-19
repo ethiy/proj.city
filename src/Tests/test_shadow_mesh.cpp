@@ -6,6 +6,9 @@
 #include <iterator>
 #include <algorithm>
 
+#include <fstream>
+#include <memory>
+
 #include <cstdlib>
 
 SCENARIO("ShadowMesh manipulation:")
@@ -47,17 +50,23 @@ SCENARIO("ShadowMesh manipulation:")
                 auxilary << u_mesh;
                 _auxilary << "Name: " << std::endl
                           << "Points: " << std::endl;
-                std::for_each(std::begin(points), std::end(points), [&](std::pair<size_t, urban::Point> p)
-                                                                                {
-                                                                                    _auxilary << "Point " << p.first << " : " << p.second << std::endl;
-                                                                                }
-                            );
+                std::for_each(
+                    std::begin(points),
+                    std::end(points),
+                    [&](std::pair<size_t, urban::Point> p)
+                    {
+                        _auxilary << "Point " << p.first << " : " << p.second << std::endl;
+                    }
+                );
                 _auxilary << "Faces: " << std::endl;
-                std::for_each(std::begin(faces), std::end(faces), [&](std::pair<size_t, urban::Face> t)
-                                                                                        {
-                                                                                            _auxilary << "Face " << t.first << " : " << t.second << std::endl;
-                                                                                        }
-                            );
+                std::for_each(
+                    std::begin(faces),
+                    std::end(faces),
+                    [&](std::pair<size_t, urban::Face> t)
+                    {
+                        _auxilary << "Face " << t.first << " : " << t.second << std::endl;
+                    }
+                );
                 REQUIRE( auxilary.str() == _auxilary.str() );
             }
         }
@@ -77,5 +86,11 @@ SCENARIO("ShadowMesh manipulation:")
         }
 
         std::free(test_mesh);
+    }
+
+    GIVEN("A Halfedge data structure CGAL::Polyhedron_3")
+    {
+        urban::Polyhedron hammerhead;
+        std::ifstream off_hammerhead("../../ressources/tests/hammerhead.off");
     }
 }
