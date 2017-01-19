@@ -29,5 +29,5 @@ namespace urban
     typedef Kernel::Vector_3 Vector;
     typedef CGAL::Polyhedron_3<Kernel, Polyhedron_items_colored> Polyhedron;
     typedef Polyhedron::Facet Facet;
-
+    typedef CGAL::Color Color;
 }

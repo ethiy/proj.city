@@ -27,6 +27,7 @@ namespace urban
         ~Brick(void);
 
         std::string get_name(void) const noexcept;
+        void set_color(Color);
     private:
         std::string name;
         /*! The surface describing 3d urban objects*/
