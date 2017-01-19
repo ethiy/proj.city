@@ -8,11 +8,10 @@
 
 namespace urban
 {
-    ShadowMesh::ShadowMesh(void){}
-    ShadowMesh::ShadowMesh(const ShadowMesh & other):points(other.points), faces(other.faces){}
-    ShadowMesh::ShadowMesh(Lib3dsMesh* lib3ds_mesh)
+    ShadowMesh::ShadowMesh(void):name("N/A"){}
+    ShadowMesh::ShadowMesh(const ShadowMesh & other):name(other.name), points(other.points), faces(other.faces){}
+    ShadowMesh::ShadowMesh(Lib3dsMesh* lib3ds_mesh):name(lib3ds_mesh->name)
     {
-        name = lib3ds_mesh->name;
         size_t it(0);
         std::for_each(
             lib3ds_mesh->pointL,
@@ -134,6 +133,7 @@ namespace urban
     Lib3dsMesh* ShadowMesh::to_3ds()
     {
         Lib3dsMesh* mesh = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), 1));
+        strcpy(mesh->name, const_cast<char*>(name.c_str()));
         mesh->points = static_cast<Lib3dsWord>(points.size());
         mesh->pointL = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint), mesh->points));
 
@@ -173,6 +173,8 @@ namespace urban
                 return *t.second.to_3ds();
             }
         );
+
+        mesh->next = NULL;
 
         return mesh;
     }
