@@ -69,4 +69,43 @@ SCENARIO("Input/Output from 3dsMAX file:")
             }
         }
     }
+
+    GIVEN("existing vector of urban::ShadowMesh")
+    {
+        boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
+        std::map<std::string,bool> _modes{{"read", true}};
+        urban::io::FileHandler<Lib3dsFile> reader(filepath, _modes);
+        std::vector<urban::ShadowMesh> meshes = reader.read();
+
+        WHEN("the writing mode is chosen")
+        {
+            std::map<std::string,bool> modes{{"write", true}};
+            urban::io::FileHandler<Lib3dsFile> handler("./santa.3ds", modes);
+            handler.write(meshes);
+
+            THEN("the output checks")
+            {
+                urban::io::FileHandler<Lib3dsFile> checker_handler("./santa.3ds", _modes);
+                std::vector<urban::ShadowMesh> written_meshes = checker_handler.read();
+
+                std::ostringstream auxilary;
+                std::copy(std::begin(written_meshes), std::end(written_meshes), std::ostream_iterator<urban::ShadowMesh>(auxilary, "\n"));
+
+                std::ifstream tmp("../../ressources/tests/santa_shadow_mesh.txt");
+                std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
+                REQUIRE( auxilary.str() == tmp_str );
+            }
+        }
+        
+        WHEN("the writing mode is not chosen")
+        {
+            std::map<std::string,bool> modes;
+            urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
+
+            THEN("the reader throws")
+            {
+                REQUIRE_THROWS_AS(handler.write(meshes), boost::filesystem::filesystem_error);
+            }
+        }
+    }
 }
