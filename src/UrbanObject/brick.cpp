@@ -29,6 +29,13 @@ namespace urban
         return name;
     }
 
+    Point Brick::barycenter(void)
+    {
+        Vector barycenter( 0.0, 0.0, 0.0);
+        std::cerr << "Nor yet implemented!" << std::endl;
+        return CGAL::ORIGIN + barycenter;
+    }
+
     void Brick::set_color(Color color)
     {
         std::for_each(

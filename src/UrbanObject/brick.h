@@ -27,6 +27,8 @@ namespace urban
         ~Brick(void);
 
         std::string get_name(void) const noexcept;
+        Point barycenter(void);
+
         void set_color(Color);
     private:
         std::string name;
