@@ -25,34 +25,10 @@ int main(int, char **)
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
         std::vector<urban::ShadowMesh> meshes = handler.read();
 
-        std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
-        std::vector<urban::Brick> urban_objects;
-        std::transform(
-            std::begin(meshes),
-            std::end(meshes),
-            std::back_inserter(urban_objects),
-            [](urban::ShadowMesh & mesh)
-            {
-                return urban::Brick(mesh);
-            }
-        );
-
-        std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::Brick>(std::cout, "\n"));
-        #ifdef CGAL_USE_GEOMVIEW
-        CGAL::Geomview_stream geomview_stream;
-        std::for_each(
-            std::begin(urban_objects),
-            std::end(urban_objects),
-            [&](urban::Brick & obj)
-            {
-                geomview_stream << obj;
-            });
-
-        geomview_stream.look_recenter();
-        #endif // CGAL_USE_GEOMVIEW
-        std::cout << "Enter any character to stop the program:" << std::endl;
-        getchar();
+            modes["write"] = true;
+            urban::io::FileHandler<Lib3dsFile> _handler("./santa.3ds", modes);
+            _handler.write(meshes);
     }
     catch (const std::exception& except)
     {

@@ -86,6 +86,7 @@ namespace urban
     Lib3dsMesh* ShadowMesh::to_3ds()
     {
         Lib3dsMesh* mesh = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), 1));
+        strcpy(mesh->name, const_cast<char*>(name.c_str()));
         mesh->points = static_cast<Lib3dsWord>(points.size());
         mesh->pointL = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint), mesh->points));
 

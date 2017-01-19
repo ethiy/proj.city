@@ -52,16 +52,25 @@ namespace urban
 
             if (modes["write"])
             {
-                file->meshes = reinterpret_cast<Lib3dsMesh *>(calloc(sizeof(Lib3dsMesh), 1));
+                file = reinterpret_cast<Lib3dsFile*>(calloc(sizeof(Lib3dsFace), 1));
+                file->meshes = meshes[0].to_3ds();
                 Lib3dsMesh *current = file->meshes;
-                std::for_each(
-                    std::begin(meshes),
-                    std::end(meshes),
-                    [&](urban::ShadowMesh mesh) {
-                        current = mesh.to_3ds();
-                        current->next = reinterpret_cast<Lib3dsMesh *>(calloc(sizeof(Lib3dsMesh), 1));
-                        current = current->next;
-                    });
+                size_t it(1);
+
+                do
+                {
+                    current->next = meshes[it++].to_3ds();
+                    current = current->next;
+                } while(it<meshes.size());
+              
+                // std::for_each(
+                //     std::begin(meshes),
+                //     std::end(meshes),
+                //     [&](urban::ShadowMesh mesh) {
+                //         current = mesh.to_3ds();
+                //         //current->next = current++;
+                //         current = current->next;
+                //     });
                 lib3ds_file_save(file, filepath.string().c_str());
             }
             else
