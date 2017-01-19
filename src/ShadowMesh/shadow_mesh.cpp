@@ -1,5 +1,7 @@
 #include "shadow_mesh.h"
 
+#include <stdexcept>
+
 #include <iterator>
 #include <algorithm>
 #include <numeric>
@@ -42,6 +44,51 @@ namespace urban
             }
         );
     }
+    ShadowMesh::ShadowMesh(Polyhedron polyhedron)
+    {
+        size_t it(0);
+        std::for_each(
+            polyhedron.points_begin(),
+            polyhedron.points_end(),
+            [&](Point & point)
+            {
+                points[it++] = point;
+            }
+        );
+
+        it = 0;
+        std::for_each(
+            polyhedron.facets_begin(),
+            polyhedron.facets_end(),
+            [&](Facet & facet)
+            {
+                size_t face_degree(facet.facet_degree());
+                std::vector<size_t> face_points;
+                std::transform(
+                    facet.facet_begin(),
+                    std::next(facet.facet_begin(), facet.facet_degree()),
+                    std::back_inserter(face_points),
+                    [&](Polyhedron::Halfedge & halfedge)
+                    {
+                        auto point_handle = std::find_if(
+                            std::begin(points),
+                            std::end(points),
+                            [&](const std::pair<size_t, Point> & p)
+                            {
+                                return p.second == halfedge.vertex()->point();
+                            }
+                        );
+                        if(point_handle!= std::end(points))
+                            return point_handle->first;
+                        else
+                            throw new std::out_of_range("The face contains a non listed point");
+                    }
+                );
+                faces[it++] = Face(face_degree, face_points);
+            }
+        );
+    }
+
     ShadowMesh::ShadowMesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces){}
     ShadowMesh::~ShadowMesh(void){}
 
