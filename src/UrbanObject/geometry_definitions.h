@@ -33,4 +33,5 @@ namespace urban
     typedef Polyhedron::Facet Facet;
     typedef CGAL::Color Color;
     typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation;
+    typedef CGAL::Bbox_3 Bbox;
 }
