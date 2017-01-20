@@ -144,7 +144,7 @@ namespace urban
             [&](std::pair<size_t, Point> p)
             {
                 Lib3dsPoint point;
-                auto init = std::initializer_list<double>({p.second[0], p.second[1], p.second[2]});
+                auto init = std::initializer_list<double>({to_double(p.second.x()), to_double(p.second.y()), to_double(p.second.z())});
                 std::copy(std::begin(init), std::end(init), point.pos);
                 return point;
             }

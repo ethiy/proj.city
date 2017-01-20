@@ -1,8 +1,10 @@
 #pragma once
 
-#include <CGAL/Simple_cartesian.h>
+#include <CGAL/Homogeneous.h>
 #include <CGAL/IO/Color.h>
 #include <CGAL/Polyhedron_3.h>
+
+#include <CGAL/Aff_transformation_3.h>
 
 
 namespace urban
@@ -24,10 +26,11 @@ namespace urban
         };
     };
 
-    typedef CGAL::Simple_cartesian<double> Kernel;
+    typedef CGAL::Homogeneous<double> Kernel;
     typedef Kernel::Point_3 Point;
     typedef Kernel::Vector_3 Vector;
     typedef CGAL::Polyhedron_3<Kernel, Polyhedron_items_colored> Polyhedron;
     typedef Polyhedron::Facet Facet;
     typedef CGAL::Color Color;
+    typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation;
 }
