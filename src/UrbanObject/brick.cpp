@@ -11,29 +11,73 @@
 
 namespace urban
 {
-    Brick::Brick(void){}
+    Brick::Brick(void) {}
 
     Brick::Brick(ShadowMesh mesh)
     {
         name = mesh.get_name();
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
-        surface.delegate( builder);
+        surface.delegate(builder);
     }
 
-    Brick::Brick(const Brick & other): surface(other.surface){}
+    Brick::Brick(const Brick &other) : surface(other.surface) {}
 
-    Brick::~Brick(void){}
+    Brick::~Brick(void) {}
 
     std::string Brick::get_name(void) const noexcept
     {
         return name;
     }
 
-    Point Brick::barycenter(void)
+    Brick::Facet_iterator Brick::facets_begin(void) noexcept
     {
-        Vector barycenter( 0.0, 0.0, 0.0);
-        std::cerr << "Nor yet implemented!" << std::endl;
-        return CGAL::ORIGIN + barycenter;
+        return surface.facets_begin();
+    }
+    Brick::Facet_iterator Brick::facets_end(void) noexcept
+    {
+        return surface.facets_end();
+    }
+    Brick::Facet_const_iterator Brick::facets_cbegin(void) const noexcept
+    {
+        return surface.facets_begin();
+    }
+    Brick::Facet_const_iterator Brick::facets_cend(void) const noexcept
+    {
+        return surface.facets_end();
+    }
+    
+    Brick::Halfedge_iterator Brick::halfedges_begin(void) noexcept
+    {
+        return surface.halfedges_begin();
+    }
+    Brick::Halfedge_iterator Brick::halfedges_end(void) noexcept
+    {
+        return surface.halfedges_end();
+    }
+    Brick::Halfedge_const_iterator Brick::halfedges_cbegin(void) const noexcept
+    {
+        return surface.halfedges_begin();
+    }
+    Brick::Halfedge_const_iterator Brick::halfedges_cend(void) const noexcept
+    {
+        return surface.halfedges_end();
+    }
+
+    Brick::Point_iterator Brick::points_begin(void) noexcept
+    {
+        return surface.points_begin();
+    }
+    Brick::Point_iterator Brick::points_end(void) noexcept
+    {
+        return surface.points_end();
+    }
+    Brick::Point_const_iterator Brick::points_cbegin(void) const noexcept
+    {
+        return surface.points_begin();
+    }
+    Brick::Point_const_iterator Brick::points_cend(void) const noexcept
+    {
+        return surface.points_end();
     }
 
     void Brick::set_color(Color color)
@@ -41,22 +85,20 @@ namespace urban
         std::for_each(
             surface.facets_begin(),
             surface.facets_end(),
-            [&](Facet & facet)
-            {
+            [&](Facet &facet) {
                 facet.set_color(color);
-            }
-        );
+            });
     }
 
-    std::ostream& operator<<(std::ostream & os, const Brick & uobj)
+    std::ostream &operator<<(std::ostream &os, const Brick &uobj)
     {
         os << "# Name: " << uobj.name << std::endl
-           << uobj.surface;
+        << uobj.surface;
         return os;
     }
 
     #ifdef CGAL_USE_GEOMVIEW
-    CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, const Brick & uobj)
+    CGAL::Geomview_stream &operator<<(CGAL::Geomview_stream &gs, const Brick &uobj)
     {
         gs << uobj.surface;
         return gs;

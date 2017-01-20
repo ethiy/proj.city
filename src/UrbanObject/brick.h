@@ -26,10 +26,36 @@ namespace urban
         /*! Brick default destructor*/
         ~Brick(void);
 
+        /*! Access brick name*/
         std::string get_name(void) const noexcept;
-        Point barycenter(void);
 
+        /*! Face iterators*/
+        typedef Polyhedron::Facet_iterator Facet_iterator;
+        typedef Polyhedron::Facet_const_iterator Facet_const_iterator;
+        Facet_iterator facets_begin(void) noexcept;
+        Facet_iterator facets_end(void) noexcept;
+        Facet_const_iterator facets_cbegin(void) const noexcept;
+        Facet_const_iterator facets_cend(void) const noexcept;
+
+        /*! Halfedge iterators*/
+        typedef Polyhedron::Halfedge_iterator Halfedge_iterator;
+        typedef Polyhedron::Halfedge_const_iterator Halfedge_const_iterator;
+        Halfedge_iterator halfedges_begin(void) noexcept;
+        Halfedge_iterator halfedges_end(void) noexcept;
+        Halfedge_const_iterator halfedges_cbegin(void) const noexcept;
+        Halfedge_const_iterator halfedges_cend(void) const noexcept;
+
+        /*! Points iterators*/
+        typedef Polyhedron::Point_iterator Point_iterator;
+        typedef Polyhedron::Point_const_iterator Point_const_iterator;
+        Point_iterator points_begin(void) noexcept;
+        Point_iterator points_end(void) noexcept;
+        Point_const_iterator points_cbegin(void) const noexcept;
+        Point_const_iterator points_cend(void) const noexcept;
+
+        /*! Set Brick color*/
         void set_color(Color);
+        
     private:
         std::string name;
         /*! The surface describing 3d urban objects*/
