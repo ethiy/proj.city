@@ -53,9 +53,17 @@ namespace urban
         Point_const_iterator points_cbegin(void) const noexcept;
         Point_const_iterator points_cend(void) const noexcept;
 
+        /*! Plane iterators*/
+        typedef Polyhedron::Plane_iterator Plane_iterator;
+        typedef Polyhedron::Plane_const_iterator Plane_const_iterator;
+        Plane_iterator planes_begin(void) noexcept;
+        Plane_iterator planes_end(void) noexcept;
+        Plane_const_iterator planes_cbegin(void) const noexcept;
+        Plane_const_iterator planes_cend(void) const noexcept;
+
         /*! Set Brick color*/
         void set_color(Color);
-        
+
     private:
         std::string name;
         /*! The surface describing 3d urban objects*/

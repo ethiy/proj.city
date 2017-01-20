@@ -45,7 +45,7 @@ namespace urban
     {
         return surface.facets_end();
     }
-    
+
     Brick::Halfedge_iterator Brick::halfedges_begin(void) noexcept
     {
         return surface.halfedges_begin();
@@ -78,6 +78,23 @@ namespace urban
     Brick::Point_const_iterator Brick::points_cend(void) const noexcept
     {
         return surface.points_end();
+    }
+
+    Brick::Plane_iterator Brick::planes_begin(void) noexcept
+    {
+        return surface.planes_begin();
+    }
+    Brick::Plane_iterator Brick::planes_end(void) noexcept
+    {
+        return surface.planes_end();
+    }
+    Brick::Plane_const_iterator Brick::planes_cbegin(void) const noexcept
+    {
+        return surface.planes_begin();
+    }
+    Brick::Plane_const_iterator Brick::planes_cend(void) const noexcept
+    {
+        return surface.planes_end();
     }
 
     void Brick::set_color(Color color)
