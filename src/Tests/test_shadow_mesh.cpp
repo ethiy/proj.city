@@ -7,7 +7,6 @@
 #include <algorithm>
 
 #include <fstream>
-#include <memory>
 
 #include <cstdlib>
 
@@ -92,5 +91,6 @@ SCENARIO("ShadowMesh manipulation:")
     {
         urban::Polyhedron hammerhead;
         std::ifstream off_hammerhead("../../ressources/tests/hammerhead.off");
+        std::cin >> hammerhead;
     }
 }
