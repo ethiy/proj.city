@@ -9,8 +9,8 @@
 
 namespace urban
 {
-    template <class T>
-    struct HalfedgeDS_face_colored : CGAL::HalfedgeDS_face_base<T> 
+    template <class Refs, class Tag, class Pln>
+    struct HalfedgeDS_face_colored : public CGAL::HalfedgeDS_face_base<Refs, Tag, Pln> 
     {
         void set_color(CGAL::Color _color) {color = _color;}
         CGAL::Color get_color(void) {return color;}
@@ -18,11 +18,12 @@ namespace urban
         CGAL::Color color;
     };
 
-    struct Polyhedron_items_colored : CGAL::Polyhedron_items_3 {
-        template <class T, class Traits>
+    struct Polyhedron_items_colored : public CGAL::Polyhedron_items_3
+    {
+        template <class Refs, class Traits>
         struct Face_wrapper
         {
-            typedef HalfedgeDS_face_colored<T> Face;
+            typedef HalfedgeDS_face_colored<Refs, CGAL::Tag_true, typename Traits::Plane_3> Face;
         };
     };
 
