@@ -8,9 +8,6 @@ namespace urban
     /*! Computes brick barycenter*/
     Point barycenter(Brick &);
 
-    /*! Returns Bounding Box*/
-    Bbox bound(Brick &);
-
     /*! Projects on camera view*/
     // CGAL::Polygon_2<Kernel> project(Brick &, Camera &);
 
@@ -24,7 +21,7 @@ namespace urban
     /*! Scale bricks*/
     void scale(Brick &, double);
     /*! Rotate bricks*/
-    void rotate(Brick &, double);
+    void rotate(Brick &, Vector &, double);
 
     /*! Computes plane equations*/
     void plane_equations(Brick &);
