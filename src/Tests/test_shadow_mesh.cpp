@@ -54,7 +54,7 @@ SCENARIO("ShadowMesh manipulation:")
                     std::end(points),
                     [&](std::pair<size_t, urban::Point> p)
                     {
-                        _auxilary << "Point " << p.first << " : " << p.second << std::endl;
+                        _auxilary << "Point " << p.first << " : " << to_double(p.second.x()) << " " << to_double(p.second.y()) << " " << to_double(p.second.z()) << std::endl;
                     }
                 );
                 _auxilary << "Faces: " << std::endl;

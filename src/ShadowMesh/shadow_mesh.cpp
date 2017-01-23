@@ -189,7 +189,7 @@ namespace urban
             std::end(mesh.points),
             [&](std::pair<size_t, Point> p)
             {
-                os << "Point " << p.first << " : " << p.second << std::endl;
+                os << "Point " << p.first << " : " << to_double(p.second.x()) << " " << to_double(p.second.y()) << " " << to_double(p.second.z()) << std::endl;
             }
         );
 
