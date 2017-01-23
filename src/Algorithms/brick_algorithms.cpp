@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <numeric>
 
+#include <cmath>
+
 namespace urban
 {
     Point barycenter(Brick & brick)
@@ -40,6 +42,24 @@ namespace urban
     {
         Affine_transformation scaling(CGAL::SCALING, scale);
         affine_transform(brick, scaling);
+    }
+
+    void rotate(Brick & brick, Vector & axis, double angle)
+    {
+        double norm(to_double(axis*axis));
+        norm = std::sqrt(norm);
+        Vector u(axis/norm);
+        double m00(std::cos(angle) + (1 - std::cos(angle)) * std::pow(to_double(u.x()), 2.));
+        double m01((1 - std::cos(angle)) * to_double(u.x()) * to_double(u.y()) - std::sin(angle) * to_double(u.z()));
+        double m02((1 - std::cos(angle)) * to_double(u.x()) * to_double(u.z()) + std::sin(angle) * to_double(u.y()));
+        double m10((1 - std::cos(angle)) * to_double(u.x()) * to_double(u.y()) + std::sin(angle) * to_double(u.z()));
+        double m11(std::cos(angle) + (1 - std::cos(angle)) * std::pow(to_double(u.y()), 2.));
+        double m12((1 - std::cos(angle)) * to_double(u.y()) * to_double(u.z()) - std::sin(angle) * to_double(u.x()));
+        double m20((1 - std::cos(angle)) * to_double(u.x()) * to_double(u.z()) - std::sin(angle) * to_double(u.y()));
+        double m21((1 - std::cos(angle)) * to_double(u.y()) * to_double(u.z()) + std::sin(angle) * to_double(u.x()));
+        double m22(std::cos(angle) + (1 - std::cos(angle)) * std::pow(to_double(u.z()), 2.));
+        Affine_transformation rotation(m00, m01, m02, m10, m11, m12, m20, m21, m22);
+        affine_transform(brick, rotation);
     }
 
     void plane_equations(Brick& brick)
