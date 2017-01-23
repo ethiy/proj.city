@@ -2,20 +2,20 @@
 
 namespace urban
 {
-    Plane FaceProjection::get_plane(void)
+    Plane FaceProjection::get_plane(void) const noexcept
     {
         return original_plane;
     }
 
-    Vector FaceProjection::get_normal(void)
+    Vector FaceProjection::get_normal(void) const noexcept
     {
         return Vector(original_plane.a(), original_plane.b(), original_plane.c());
     }
 
-    bool FaceProjection::is_inside(Point_2 & point)
+    bool FaceProjection::is_inside(const Point_2 & point)
     {
         bool inside(false);
-        switch (this->bounded_side(point))
+        switch (bounded_side(point))
         {
             case CGAL::ON_BOUNDED_SIDE:
                 inside = true; break;
@@ -27,12 +27,12 @@ namespace urban
         return inside;
     }
 
-    double FaceProjection::get_height(Point_2 & point)
+    double FaceProjection::get_height(const Point_2 & point)
     {
-        return to_double((original_plane.d() - original_plane.a() * point.x() - original_plane.b() * point.y()) / original_plane.c()) * this->is_inside(point) ;
+        return to_double((original_plane.d() - original_plane.a() * point.x() - original_plane.b() * point.y()) / original_plane.c()) * is_inside(point) ;
     }
 
-    void FaceProjection::set_plane(Plane & plane)
+    void FaceProjection::set_plane(const Plane & plane) noexcept
     {
         original_plane = plane;
     }
