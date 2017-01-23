@@ -2,7 +2,7 @@
 
 #include "Face/face.h"
 
-#include "../UrbanObject/geometry_definitions.h"
+#include "../geometry_definitions.h"
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../UrbanObject/geometry_definitions.h"
+#include "../geometry_definitions.h"
 #include "../UrbanObject/brick.h"
 
 namespace urban
@@ -9,7 +9,10 @@ namespace urban
     Point barycenter(Brick &);
 
     /*! Projects on camera view*/
-    // CGAL::Polygon_2<Kernel> project(Brick &, Camera &);
+    // std::vector<CGAL::Polygon_2<Traits>> project(Brick &, Camera &);
+
+    /* ! Projects on xy axis*/
+    // Projection project(Brick &);
 
     /*! Computes border length*/
     double border_length(Brick &);
