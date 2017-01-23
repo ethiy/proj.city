@@ -33,6 +33,7 @@ namespace urban
     typedef CGAL::Homogeneous<double> Kernel;
     typedef Kernel::Point_3 Point;
     typedef Kernel::Vector_3 Vector;
+    typedef Kernel::Plane_3 Plane;
     typedef CGAL::Polyhedron_3<Kernel, Polyhedron_items_colored> Polyhedron;
     typedef Polyhedron::Facet Facet;
     typedef CGAL::Color Color;
