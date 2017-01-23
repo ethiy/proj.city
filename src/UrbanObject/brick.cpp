@@ -13,20 +13,24 @@ namespace urban
 {
     Brick::Brick(void) {}
 
-    Brick::Brick(ShadowMesh mesh)
+    Brick::Brick(ShadowMesh mesh): name(mesh.get_name()), bounding_box(mesh.bbox())
     {
-        name = mesh.get_name();
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);
     }
 
-    Brick::Brick(const Brick &other) : surface(other.surface) {}
+    Brick::Brick(const Brick &other) : name(other.name), surface(other.surface), bounding_box(other.bounding_box) {}
 
     Brick::~Brick(void) {}
 
     std::string Brick::get_name(void) const noexcept
     {
         return name;
+    }
+
+    Bbox Brick::bbox(void) const noexcept
+    {
+        return bounding_box;
     }
 
     Brick::Facet_iterator Brick::facets_begin(void) noexcept

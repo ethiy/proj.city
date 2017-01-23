@@ -29,6 +29,9 @@ namespace urban
         /*! Access brick name*/
         std::string get_name(void) const noexcept;
 
+        /*! Access Bounding box*/
+        Bbox bbox(void) const noexcept;
+
         /*! Face iterators*/
         typedef Polyhedron::Facet_iterator Facet_iterator;
         typedef Polyhedron::Facet_const_iterator Facet_const_iterator;
@@ -65,9 +68,12 @@ namespace urban
         void set_color(Color);
 
     private:
+        /* ! Brick name*/
         std::string name;
         /*! The surface describing 3d urban objects*/
         Polyhedron surface;
+                /*! Bounding box*/
+        Bbox bounding_box;
 
         /*! Outstreaming Brick*/
         friend std::ostream& operator<<(std::ostream &, const Brick &);
