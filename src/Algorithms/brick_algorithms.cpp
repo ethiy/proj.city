@@ -19,6 +19,19 @@ namespace urban
         return CGAL::ORIGIN + barycenter;
     }
 
+    double border_length(Brick & brick)
+    {
+        return std::accumulate(
+            brick.halfedges_begin(),
+            brick.halfedges_end(),
+            .0,
+            [](double & length, Polyhedron::Halfedge halfedge)
+            {
+                return length + halfedge.is_border() * std::sqrt(to_double(Vector(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
+            }
+        );
+    }
+
     void affine_transform(Brick & brick, Affine_transformation & affine_transformation)
     {
         std::transform(
@@ -70,11 +83,11 @@ namespace urban
             brick.planes_begin(),
             [](Facet & facet)
             {
-                Facet::Halfedge_handle h = facet.halfedge();
+                Facet::Halfedge_handle halfedge = facet.halfedge();
                 return Facet::Plane_3(
-                    h->vertex()->point(),
-                    h->next()->vertex()->point(),
-                    h->next()->next()->vertex()->point()
+                    halfedge->vertex()->point(),
+                    halfedge->next()->vertex()->point(),
+                    halfedge->next()->next()->vertex()->point()
                 );
             }
         );
@@ -88,18 +101,17 @@ namespace urban
             .0,
             [](double & area, Facet & facet)
             {
-                double surface_area(0);
-                size_t order(0);
                 Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
                 Vector normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
-                do
-                {
-                    surface_area += to_double(CGAL::cross_product(h->vertex()->point() - CGAL::ORIGIN, h->next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);
-                    ++ order;
-                } while ( ++h != facet.facet_begin());
-                if(order < 3)
-                    throw new std::out_of_range("A Facet by construction must have at least 3 vertices.");
-                return area + surface_area;
+                return area + std::accumulate(
+                    facet.facet_begin(),
+                    std::next(facet.facet_begin(), facet.facet_degree()),
+                    .0,
+                    [normal](double & surface_area, Polyhedron::Halfedge halfedge)
+                    {
+                        return surface_area + to_double(CGAL::cross_product(halfedge.vertex()->point() - CGAL::ORIGIN, halfedge.next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);;
+                    }
+                );
             }
         );
     }
