@@ -8,8 +8,67 @@
 
 namespace urban
 {
+    void ShadowMesh::compute_box(void)
+    {
+        auto xmin_itr = std::min_element(
+            std::begin(points),
+            std::end(points),
+            [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
+            {
+                return to_double(p1.second.x()) < to_double(p2.second.x());
+            }
+        );
+
+        auto xmax_itr = std::max_element(
+            std::begin(points),
+            std::end(points),
+            [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
+            {
+                return to_double(p1.second.x()) < to_double(p2.second.x());
+            }
+        );
+
+        auto ymin_itr = std::min_element(
+            std::begin(points),
+            std::end(points),
+            [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
+            {
+                return to_double(p1.second.y()) < to_double(p2.second.y());
+            }
+        );
+
+        auto ymax_itr = std::max_element(
+            std::begin(points),
+            std::end(points),
+            [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
+            {
+                return to_double(p1.second.y()) < to_double(p2.second.y());
+            }
+        );
+
+        auto zmin_itr = std::min_element(
+            std::begin(points),
+            std::end(points),
+            [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
+            {
+                return to_double(p1.second.z()) < to_double(p2.second.z());
+            }
+        );
+
+        auto zmax_itr = std::max_element(
+            std::begin(points),
+            std::end(points),
+            [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
+            {
+                return to_double(p1.second.z()) < to_double(p2.second.z());
+            }
+        );
+
+        bounding_box = Bbox(to_double(xmin_itr->second.x()), to_double(xmax_itr->second.x()), to_double(ymin_itr->second.y()), to_double(ymax_itr->second.y()), to_double(zmin_itr->second.z()), to_double(zmax_itr->second.z()));
+    }
+
     ShadowMesh::ShadowMesh(void):name("N/A"){}
-    ShadowMesh::ShadowMesh(const ShadowMesh & other):name(other.name), points(other.points), faces(other.faces){}
+    ShadowMesh::ShadowMesh(const ShadowMesh & other):name(other.name), points(other.points), faces(other.faces), bounding_box(other.bounding_box){}
     ShadowMesh::ShadowMesh(Lib3dsMesh* lib3ds_mesh):name(lib3ds_mesh->name)
     {
         size_t it(0);
@@ -42,6 +101,7 @@ namespace urban
                     faces[it++] = Face(_face.points[0], _face.points[2], _face.points[1]);
             }
         );
+        compute_box();
     }
     ShadowMesh::ShadowMesh(Polyhedron polyhedron)
     {
@@ -86,9 +146,13 @@ namespace urban
                 faces[it++] = Face(face_degree, face_points);
             }
         );
+        compute_box();
     }
 
-    ShadowMesh::ShadowMesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces){}
+    ShadowMesh::ShadowMesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces)
+    {
+        compute_box();
+    }
     ShadowMesh::~ShadowMesh(void){}
 
     void ShadowMesh::swap(ShadowMesh & other)
@@ -97,6 +161,7 @@ namespace urban
         swap(name, other.name);
         swap(points, other.points);
         swap(faces, other.faces);
+        swap(bounding_box, other.bounding_box);
     }
 
     ShadowMesh & ShadowMesh::operator=(ShadowMesh other)
@@ -128,6 +193,11 @@ namespace urban
     std::map<size_t, Face> ShadowMesh::get_faces(void) const noexcept
     {
         return faces;
+    }
+
+    Bbox ShadowMesh::bbox(void) const noexcept
+    {
+        return bounding_box;
     }
 
     Lib3dsMesh* ShadowMesh::to_3ds()

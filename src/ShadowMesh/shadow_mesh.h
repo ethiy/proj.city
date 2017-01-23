@@ -32,12 +32,15 @@ namespace urban
         std::map<size_t, Point> get_points(void) const noexcept;
         size_t get_number_faces(void) const noexcept;
         std::map<size_t, Face> get_faces(void) const noexcept;
+        Bbox bbox(void) const noexcept;
 
         Lib3dsMesh* to_3ds(void);
     private:
         std::string name;
         std::map<size_t, Point> points;
         std::map<size_t, Face> faces;
+        Bbox bounding_box;
+        void compute_box(void);
         
         friend std::ostream& operator<<(std::ostream &, const ShadowMesh &);
     };
