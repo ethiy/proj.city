@@ -2,6 +2,7 @@
 
 #include "../geometry_definitions.h"
 #include "../UrbanObject/brick.h"
+#include "../Projection/brick_projection.h"
 
 namespace urban
 {
@@ -12,7 +13,7 @@ namespace urban
     // std::vector<CGAL::Polygon_2<Traits>> project(Brick &, Camera &);
 
     /* ! Projects on xy axis*/
-    // Projection project(Brick &);
+    BrickProjection project(Brick &);
 
     /*! Computes border length*/
     double border_length(Brick &);
