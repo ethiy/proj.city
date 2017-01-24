@@ -11,7 +11,8 @@ namespace urban
         Vector get_normal(void) const noexcept;
         double get_height(const Point_2 &); // problem: degenerate faces and intersections
 
-        bool is_inside(const Point_2 &);
+        bool contains(const Point_2 &);
+        bool contains(const FaceProjection &);
 
         void set_plane(const Plane & _plane) noexcept;
     private:
