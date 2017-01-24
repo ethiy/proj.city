@@ -10,6 +10,9 @@
 #include <CGAL/Projection_traits_xy_3.h>
 #include <CGAL/Polygon_2.h>
 
+#include <CGAL/intersections.h>
+
+
 namespace urban
 {
     template <class Refs, class Tag, class Pln>
@@ -44,5 +47,6 @@ namespace urban
     typedef CGAL::Polygon_2<Projective_traits> Polygon;
     typedef Projective_traits::Point_2 Point_2;
     typedef Projective_traits::Vector_2 Vector_2;
+    typedef Projective_traits::Intersect_2 Intersect_2;
     typedef CGAL::Bbox_2 Bbox_2;
 }
