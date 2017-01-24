@@ -4,6 +4,7 @@
 #include "face_projection.h"
 
 #include <string>
+#include <map>
 
 namespace urban
 {
