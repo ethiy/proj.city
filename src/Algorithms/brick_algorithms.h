@@ -10,7 +10,7 @@ namespace urban
     Point barycenter(Brick &);
 
     /*! Projects on camera view*/
-    // std::vector<CGAL::Polygon_2<Traits>> project(Brick &, Camera &);
+    BrickProjection project(Brick &, Camera &);
 
     /* ! Projects on xy axis*/
     BrickProjection project(Brick &);

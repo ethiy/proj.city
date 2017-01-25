@@ -48,5 +48,6 @@ namespace urban
     typedef Projective_traits::Point_2 Point_2;
     typedef Projective_traits::Vector_2 Vector_2;
     typedef Projective_traits::Intersect_2 Intersect_2;
+    typedef CGAL::Aff_transformation_2<Kernel> Affine_transformation_2;
     typedef CGAL::Bbox_2 Bbox_2;
 }
