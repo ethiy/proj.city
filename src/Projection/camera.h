@@ -2,7 +2,7 @@
 
 #include "../geometry_definitions.h"
 
-#include <vector>
+#include <map>
 
 namespace urban
 {
@@ -15,7 +15,7 @@ namespace urban
         Camera(const std::string &, const Affine_transformation_2 &, const Vector &, const std::map<double, Vector> &);
         Camera(const std::string &, const Affine_transformation_2 &, const Vector &, const Affine_transformation &);
         Camera(const std::string &, const Affine_transformation_2 &, const Affine_transformation &);
-        Camera(const std::string &, const CGAL::Matrix);
+        Camera(const std::string &, const Matrix &);
         Camera(const Camera &);
         ~Camera(void);
     private:
