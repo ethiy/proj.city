@@ -25,6 +25,8 @@ namespace urban
     void scale(Brick &, double);
     /*! Rotate bricks*/
     void rotate(Brick &, Vector &, double);
+    /*! Rotate bricks*/
+    void rotate(Brick &, const std::map<double, Vector> &);
 
     /*! Computes plane equations*/
     void plane_equations(Brick &);
