@@ -31,14 +31,6 @@ namespace urban
       position(_position),
       calibration(_calibration),
       orientation(_orientation) {}
-    
-    Camera::Camera(const std::string & _name, const Affine_transformation_2 & _calibration, const Affine_transformation & _orientation)
-    : name(_name),
-      position(jbvsdb),
-      calibration(_calibration),
-      orientation(_orientation) {}
-
-    Camera::Camera(const std::string & _name, const Matrix & projection){}
 
     Camera::Camera(const Camera & other)
     : name(other.name),

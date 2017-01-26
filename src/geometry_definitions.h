@@ -11,8 +11,6 @@
 #include <CGAL/Polygon_2.h>
 
 #include <CGAL/intersections.h>
-#include <CGAL/Eigen_matrix.h>
-
 
 namespace urban
 {
@@ -51,6 +49,4 @@ namespace urban
     typedef Projective_traits::Intersect_2 Intersect_2;
     typedef CGAL::Aff_transformation_2<Kernel> Affine_transformation_2;
     typedef CGAL::Bbox_2 Bbox_2;
-
-    typedef CGAL::Eigen_matrix<Kernel> Matrix;
 }
