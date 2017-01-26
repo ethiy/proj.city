@@ -63,7 +63,7 @@ namespace urban
             }
         );
         
-        return inside || (non_inside && contains(CGAL::centroid()));
+        return inside || (non_inside && contains(CGAL::centroid(facet_proj[0], facet_proj[1], facet_proj[2]))); // Not allways working needs triangulation
     }
 
     void FaceProjection::set_plane(const Plane & plane) noexcept
