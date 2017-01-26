@@ -92,7 +92,7 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             .0,
-            [](double & area, const Facet & facet)
+            [](double & area, Facet & facet)
             {
                 Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
                 Vector normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
