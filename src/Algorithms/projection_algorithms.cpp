@@ -12,7 +12,7 @@ namespace urban
     {
         std::vector<Affine_transformation> rotations;
         double norm(0);
-        Vector u();
+        Vector u(CGAL::NULL_VECTOR);
         std::transform(
             std::begin(_rotations),
             std::end(_rotations),
@@ -35,7 +35,7 @@ namespace urban
             }
         );
 
-        orientation = std::accumulate(
+        return std::accumulate(
             std::begin(rotations),
             std::end(rotations),
             Affine_transformation_2(CGAL::IDENTITY),
