@@ -3,6 +3,8 @@
 #include "../geometry_definitions.h"
 #include "../UrbanObject/brick.h"
 #include "../Projection/brick_projection.h"
+#include "../Projection/camera.h"
+
 
 namespace urban
 {
