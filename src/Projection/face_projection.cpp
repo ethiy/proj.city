@@ -38,11 +38,11 @@ namespace urban
         return inside;
     }
 
-    bool FaceProjection::contains(const FaceProjection & facet)
+    bool FaceProjection::contains(const FaceProjection & facet_proj)
     {
         bool inside = std::all_of(
-            facet.vertices_begin(),
-            facet.vertices_end(),
+            facet_proj.vertices_begin(),
+            facet_proj.vertices_end(),
             [this](const Point_2 & point)
             {
                 return contains(point);
@@ -50,14 +50,23 @@ namespace urban
         );
 
         bool non_inside = std::none_of(
-            facet.vertices_begin(),
-            facet.vertices_end(),
+            facet_proj.vertices_begin(),
+            facet_proj.vertices_end(),
             [this](const Point_2 & point)
             {
                 return contains(point);
             }
         );
-        return inside || (non_inside && contains(CGAL::centroid(facet(0), facet(1), facet(2)))); // prone to problems if centroid is on boundary!!
+
+        bool some_inside = std::any_of(
+            facet_proj.vertices_begin(),
+            facet_proj.vertices_end(),
+            [this](const Point_2 & point)
+            {
+                return contains(point);
+            }
+        );
+        return inside || (non_inside && some_inside);
     }
 
     void FaceProjection::set_plane(const Plane & plane) noexcept
