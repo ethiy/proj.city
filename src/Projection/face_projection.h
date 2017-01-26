@@ -16,8 +16,6 @@ namespace urban
 
         bool contains(const Point_2 &);
         bool contains(const FaceProjection &);
-        std::pair<std::vector<size_t>, std::vector<size_t> > overlap(const FaceProjection &);
-        Point_2 intersect(const Segment_2 &);
 
         void set_plane(const Plane & _plane) noexcept;
     private:
