@@ -38,8 +38,8 @@ namespace urban
         return std::accumulate(
             std::begin(rotations),
             std::end(rotations),
-            Affine_transformation_2(CGAL::IDENTITY),
-            [](Affine_transformation_2 & result, const Affine_transformation_2 & rotation)
+            Affine_transformation(CGAL::IDENTITY),
+            [](Affine_transformation & result, const Affine_transformation & rotation)
             {
                 return result * rotation;
             }
