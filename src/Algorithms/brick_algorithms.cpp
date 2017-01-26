@@ -12,20 +12,13 @@
 
 namespace urban
 {
-    Point barycenter(Brick & brick)
-    {
-        Vector barycenter(0.0, 0.0, 0.0);
-        std::cerr << "Nor yet implemented!" << std::endl;
-        return CGAL::ORIGIN + barycenter;
-    }
-
     double border_length(Brick & brick)
     {
         return std::accumulate(
             brick.halfedges_begin(),
             brick.halfedges_end(),
             .0,
-            [](double & length, Polyhedron::Halfedge halfedge)
+            [](double & length, const Polyhedron::Halfedge & halfedge)
             {
                 return length + halfedge.is_border() * std::sqrt(to_double(Vector(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
             }
@@ -99,7 +92,7 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             .0,
-            [](double & area, Facet & facet)
+            [](double & area, const Facet & facet)
             {
                 Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
                 Vector normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
@@ -107,7 +100,7 @@ namespace urban
                     facet.facet_begin(),
                     std::next(facet.facet_begin(), facet.facet_degree()),
                     .0,
-                    [normal](double & surface_area, Polyhedron::Halfedge halfedge)
+                    [normal](double & surface_area, const Polyhedron::Halfedge & halfedge)
                     {
                         return surface_area + to_double(CGAL::cross_product(halfedge.vertex()->point() - CGAL::ORIGIN, halfedge.next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);;
                     }

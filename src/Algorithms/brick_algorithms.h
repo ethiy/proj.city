@@ -6,9 +6,6 @@
 
 namespace urban
 {
-    /*! Computes brick barycenter*/
-    Point barycenter(Brick &);
-
     /*! Projects on camera view*/
     BrickProjection project(Brick &, Camera &);
 
