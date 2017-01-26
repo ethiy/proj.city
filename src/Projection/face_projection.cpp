@@ -23,6 +23,11 @@ namespace urban
     }
 
 
+    bool FaceProjection::is_degenerate(void) const
+    {
+        return area() == 0; // In our case, two edges are coinciding means that all edges should be!
+    }
+
     bool FaceProjection::contains(const Point_2 & point)
     {
         bool inside(false);
@@ -57,16 +62,8 @@ namespace urban
                 return contains(point);
             }
         );
-
-        bool some_inside = std::any_of(
-            facet_proj.vertices_begin(),
-            facet_proj.vertices_end(),
-            [this](const Point_2 & point)
-            {
-                return contains(point);
-            }
-        );
-        return inside || (non_inside && some_inside);
+        
+        return inside || (non_inside && contains(CGAL::centroid()));
     }
 
     void FaceProjection::set_plane(const Plane & plane) noexcept

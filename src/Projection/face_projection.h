@@ -14,6 +14,8 @@ namespace urban
         Vector get_normal(void) const noexcept;
         double get_height(const Point_2 &); // problem: degenerate faces
 
+        bool is_degenerate(void) const;
+
         bool contains(const Point_2 &);
         bool contains(const FaceProjection &);
 
