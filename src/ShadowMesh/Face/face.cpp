@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <iterator>
 
-#include <cassert>
+#include <stdexcept>
 
 namespace urban
 {
@@ -16,7 +16,8 @@ namespace urban
     Face::Face(size_t first, size_t second, size_t third): vertices_number(3), points{{first, second, third}}{}
     Face::Face(size_t _vertices_number, std::vector<size_t> _points):vertices_number(_vertices_number), points(_points)
     {
-        assert(_vertices_number>2);
+        if(_vertices_number<3)
+            throw new std::out_of_range("You must have at least three vertices to define a face!");
     }
     Face::~Face(void){}
 
