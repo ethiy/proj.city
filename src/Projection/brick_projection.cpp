@@ -21,6 +21,12 @@ namespace urban
     }
 
 
+    Bbox_2 BrickProjection::bbox(void)
+    {
+        return bounding_box;
+    }
+
+
     bool BrickProjection::in_domain(const Point_2 & point)
     {
         return to_double(point.x()) <= bounding_box.xmax() && to_double(point.x()) >= bounding_box.xmin() && to_double(point.y()) <= bounding_box.ymax() && to_double(point.y()) <= bounding_box.ymin();

@@ -20,6 +20,10 @@ namespace urban
         void set_name(const std::string &);
         void set_Bbox(const Bbox &);
 
+        Bbox_2 bbox(void);
+
+        void add_facet_projection(const FaceProjection & facet);
+
         bool in_domain(const Point_2 &);
         double get_height(const Point_2 &);
     private:

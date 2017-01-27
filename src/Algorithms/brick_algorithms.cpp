@@ -13,9 +13,18 @@
 
 namespace urban
 {
-    BrickProjection project(Brick & brick)
+    BrickProjection project(const Brick & brick)
     {
         BrickProjection projection(brick.get_name(), brick.bbox());
+        std::map<size_t, FaceProjection> projected_facets = project_xy(brick);
+        std::for_each(
+            std::begin(projected_facets),
+            std::end(projected_facets),
+            [&projection](const std::pair<size_t, FaceProjection> & p)
+            {
+                projection.add_facet_projection(p.second);
+            }
+        );
         return projection;
     }
 
@@ -32,7 +41,7 @@ namespace urban
         );
     }
 
-    void affine_transform(Brick & brick, Affine_transformation & affine_transformation)
+    void affine_transform(Brick & brick, const Affine_transformation & affine_transformation)
     {
         std::transform(
             brick.points_begin(),
@@ -57,7 +66,7 @@ namespace urban
         affine_transform(brick, scaling);
     }
 
-    void rotate(Brick & brick, Vector & axis, double angle)
+    void rotate(Brick & brick, const Vector & axis, double angle)
     {
         std::map<double, Vector> _rotation{{angle, axis}};
         Affine_transformation rotation(rotation_transform(_rotation));

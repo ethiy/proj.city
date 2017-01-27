@@ -9,22 +9,22 @@
 namespace urban
 {
     /*! Projects on camera view*/
-    BrickProjection project(Brick &, Camera &);
+    BrickProjection project(const Brick &, Camera &);
 
     /* ! Projects on xy axis*/
-    BrickProjection project(Brick &);
+    BrickProjection project(const Brick &);
 
     /*! Computes border length*/
     double border_length(Brick &);
 
     /*! Applies affine transformations to bricks*/
-    void affine_transform(Brick &, Affine_transformation &);
+    void affine_transform(Brick &, const Affine_transformation &);
     /*! Translate bricks*/
-    void translate(Brick &, Vector &);
+    void translate(Brick &, const Vector &);
     /*! Scale bricks*/
     void scale(Brick &, double);
     /*! Rotate bricks*/
-    void rotate(Brick &, Vector &, double);
+    void rotate(Brick &, const Vector &, double);
     /*! Rotate bricks*/
     void rotate(Brick &, const std::map<double, Vector> &);
 
