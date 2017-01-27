@@ -13,4 +13,7 @@ namespace urban
 
     /*! Project Face to XY*/
     std::map<size_t, FaceProjection> project_xy(Brick &);
+
+    /*! manage occlusions in two FaceProjection s*/
+    void occlusion(FaceProjection &, FaceProjection &);
 }

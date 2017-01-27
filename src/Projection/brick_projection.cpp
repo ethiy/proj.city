@@ -1,5 +1,7 @@
 #include "brick_projection.h"
 
+#include "../Algorithms/projection_algorithms.h"
+
 #include <stdexcept>
 
 namespace urban
@@ -24,6 +26,23 @@ namespace urban
     Bbox_2 BrickProjection::bbox(void)
     {
         return bounding_box;
+    }
+
+
+    void BrickProjection::add_facet_projection(const FaceProjection & facet)
+    {
+        std::for_each(
+            std::begin(facets_xy),
+            std::end(facets_xy),
+            [this, facet](const std::pair<size_t, FaceProjection> & p)
+            {
+                FaceProjection copy(p.second);
+                const_cast<FaceProjection>(&copy);
+                occlusion(facet, copy);
+                facets_xy.emplace(std::make_pair(facets_xy.size() + 1, facet));
+                facets_xy[p.first] = copy;
+            }
+        );
     }
 
 

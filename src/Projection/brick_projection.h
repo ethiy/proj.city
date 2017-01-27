@@ -22,7 +22,7 @@ namespace urban
 
         Bbox_2 bbox(void);
 
-        void add_facet_projection(const FaceProjection & facet);
+        void add_facet_projection(const FaceProjection &);
 
         bool in_domain(const Point_2 &);
         double get_height(const Point_2 &);
