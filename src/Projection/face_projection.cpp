@@ -7,6 +7,8 @@
 
 namespace urban
 {
+    FaceProjection::FaceProjection(const FaceProjection & other):Polygon(other), original_plane(other.original_plane){}
+
     Plane FaceProjection::get_plane(void) const noexcept
     {
         return original_plane;
