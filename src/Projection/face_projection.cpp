@@ -19,7 +19,7 @@ namespace urban
 
     double FaceProjection::get_height(const Point_2 & point)
     {
-        return to_double((original_plane.d() - original_plane.a() * point.x() - original_plane.b() * point.y()) / original_plane.c()) * contains(point) ;
+        return !is_degenerate() * contains(point) * to_double(( -1 * original_plane.d() - original_plane.a() * point.x() - original_plane.b() * point.y()) / original_plane.c()) ;
     }
 
 
@@ -41,29 +41,6 @@ namespace urban
                 break;
         }
         return inside;
-    }
-
-    bool FaceProjection::contains(const FaceProjection & facet_proj)
-    {
-        bool inside = std::all_of(
-            facet_proj.vertices_begin(),
-            facet_proj.vertices_end(),
-            [this](const Point_2 & point)
-            {
-                return contains(point);
-            }
-        );
-
-        bool non_inside = std::none_of(
-            facet_proj.vertices_begin(),
-            facet_proj.vertices_end(),
-            [this](const Point_2 & point)
-            {
-                return contains(point);
-            }
-        );
-        
-        return inside || (non_inside && contains(CGAL::centroid(facet_proj[0], facet_proj[1], facet_proj[2]))); // Not allways working needs triangulation
     }
 
     void FaceProjection::set_plane(const Plane & plane) noexcept
