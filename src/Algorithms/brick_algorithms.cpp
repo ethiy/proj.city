@@ -13,7 +13,7 @@
 
 namespace urban
 {
-    BrickProjection project(const Brick & brick)
+    BrickProjection project(Brick & brick)
     {
         BrickProjection projection(brick.get_name(), brick.bbox());
         std::map<size_t, FaceProjection> projected_facets = project_xy(brick);

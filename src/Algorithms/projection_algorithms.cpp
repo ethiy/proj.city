@@ -45,4 +45,19 @@ namespace urban
             }
         );
     }
+
+    std::map<size_t, FaceProjection> project_xy(Brick & brick)
+    {
+        std::map<size_t, FaceProjection> facets;
+        size_t index(0);
+        std::for_each(
+            brick.facets_begin(),
+            brick.facets_end(),
+            [&facets, index](Facet & facet) mutable
+            {
+                facets.insert(std::pair<size_t, FaceProjection>(index++, FaceProjection(facet.facet_begin(), std::next(facet.facet_begin(), facet.facet_degree()))));
+            }
+        );
+        return facets;
+    }
 }

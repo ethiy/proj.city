@@ -12,5 +12,5 @@ namespace urban
     Affine_transformation rotation_transform(const std::map<double, Vector> &);
 
     /*! Project Face to XY*/
-    std::map<size_t, FaceProjection> project_xy(const Brick &);
+    std::map<size_t, FaceProjection> project_xy(Brick &);
 }

@@ -9,10 +9,10 @@
 namespace urban
 {
     /*! Projects on camera view*/
-    BrickProjection project(const Brick &, Camera &);
+    BrickProjection project(Brick &, Camera &);
 
     /* ! Projects on xy axis*/
-    BrickProjection project(const Brick &);
+    BrickProjection project(Brick &);
 
     /*! Computes border length*/
     double border_length(Brick &);
