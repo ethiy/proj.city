@@ -13,6 +13,12 @@
 
 namespace urban
 {
+    BrickProjection project(Brick & brick)
+    {
+        BrickProjection projection(brick.get_name(), brick.bbox());
+        return projection;
+    }
+
     double border_length(Brick & brick)
     {
         return std::accumulate(

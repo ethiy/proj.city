@@ -12,12 +12,16 @@ namespace urban
     {
     public:
         BrickProjection(void);
-        BrickProjection(std::string, std::map<size_t, FaceProjection>, Bbox_2);
+        BrickProjection(const std::string &, const std::map<size_t, FaceProjection> &, const Bbox_2 &);
+        BrickProjection(const std::string &, const Bbox &);
         BrickProjection(BrickProjection &);
         ~BrickProjection(void);
 
-        bool in_domain(Point_2 &);
-        double get_height(Point_2 &);
+        void set_name(const std::string &);
+        void set_Bbox(const Bbox &);
+
+        bool in_domain(const Point_2 &);
+        double get_height(const Point_2 &);
     private:
         std::string name;
         std::map<size_t, FaceProjection> facets_xy;
