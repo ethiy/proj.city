@@ -110,7 +110,7 @@ namespace urban
                 Vector normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
                 return area + std::accumulate(
                     facet.facet_begin(),
-                    std::next(facet.facet_begin(), facet.facet_degree()),
+                    std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
                     .0,
                     [normal](double & surface_area, const Polyhedron::Halfedge & halfedge)
                     {

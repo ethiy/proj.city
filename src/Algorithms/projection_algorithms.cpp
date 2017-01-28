@@ -59,7 +59,7 @@ namespace urban
                 facet_points.clear();
                 std::transform(
                     facet.facet_begin(),
-                    std::next(facet.facet_begin(), facet.facet_degree()),
+                    std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
                     std::back_inserter(facet_points),
                     [](const Polyhedron::Halfedge & h)
                     {
