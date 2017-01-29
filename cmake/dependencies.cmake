@@ -2,7 +2,7 @@ set(LIBS "")
 set(LIBS_DIRS "")
 
 # Find Lib3ds
-include(cmake/modules/find_lib3ds.cmake)
+include(cmake/modules/free3ds.cmake)
 
 include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
 list(APPEND LIBS ${LIB3DS_LIBRARIES})
