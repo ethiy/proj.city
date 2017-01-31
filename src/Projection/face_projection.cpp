@@ -47,4 +47,10 @@ namespace urban
         }
         return inside;
     }
+
+    FaceProjection & FaceProjection::occlusion(const FaceProjection & other) const
+    {
+        FaceProjection result(other);
+        return result;
+    }
 }

@@ -15,6 +15,7 @@ namespace urban
         FaceProjection(const FaceProjection &);
         ~FaceProjection(void);
 
+        Polygon get_polygon(void) const noexcept;
         Plane get_plane(void) const noexcept;
         Vector get_normal(void) const noexcept;
         double get_height(const Point_2 &);
@@ -27,6 +28,8 @@ namespace urban
         bool is_degenerate(void) const;
 
         bool contains(const Point_2 &);
+
+        FaceProjection & occlusion(const FaceProjection &) const;
     private:
         Polygon projected_polygon;
         Plane supporting_plane;
