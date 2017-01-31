@@ -49,7 +49,7 @@ namespace urban
     std::map<size_t, FaceProjection> project_xy(Brick & brick)
     {
         std::map<size_t, FaceProjection> facets;
-        std::vector<Point> facet_points;
+        std::vector<Point> facet_points(brick.vertices_number());
         size_t index(0);
         std::for_each(
             brick.facets_begin(),
@@ -66,7 +66,16 @@ namespace urban
                         return h.vertex()->point();
                     }
                 );
-                facets.emplace(std::make_pair(index++, FaceProjection(std::begin(facet_points), std::end(facet_points))));
+                Facet::Halfedge_handle halfedge = facet.halfedge();
+                facets[index++] = FaceProjection(   Polygon(
+                                                                std::begin(facet_points),
+                                                                std::end(facet_points)
+                                                            ),
+                                                    Facet::Plane(   halfedge->vertex()->point(),
+                                                                    halfedge->next()->vertex()->point(),
+                                                                    halfedge->next()->next()->vertex()->point()
+                                                                )
+                                                );
             }
         );
         return facets;
