@@ -33,6 +33,11 @@ namespace urban
         return bounding_box;
     }
 
+    size_t Brick::vertices_number(void)
+    {
+        return surface.size_of_vertices();
+    }
+
     Brick::Facet_iterator Brick::facets_begin(void) noexcept
     {
         return surface.facets_begin();
