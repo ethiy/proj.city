@@ -1,6 +1,6 @@
 #include "brick_projection.h"
 
-#include "../Algorithms/projection_algorithms.h"
+#include "../Projection/face_projection.h"
 
 #include <stdexcept>
 
@@ -36,11 +36,9 @@ namespace urban
             std::end(facets_xy),
             [this, facet](const std::pair<size_t, FaceProjection> & p)
             {
-                FaceProjection copy(p.second);
-                const_cast<FaceProjection>(&copy);
-                occlusion(facet, copy);
+                FaceProjection current_facet = facet.occlusion(p.second);
                 facets_xy.emplace(std::make_pair(facets_xy.size() + 1, facet));
-                facets_xy[p.first] = copy;
+                facets_xy[p.first] = current_facet;
             }
         );
     }
@@ -65,6 +63,6 @@ namespace urban
                 }
             );
         else
-            throw new std::out_of_range("The point is not insinde the bounding box");
+            throw new std::out_of_range("The point is not inside the bounding box");
     }
 }

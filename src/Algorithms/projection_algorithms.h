@@ -11,9 +11,6 @@ namespace urban
     /*! Get the rotation transformation from a set of axis and angle couples*/
     Affine_transformation rotation_transform(const std::map<double, Vector> &);
 
-    /*! Project Face to XY*/
+    /*! Project Faces to XY*/
     std::map<size_t, FaceProjection> project_xy(Brick &);
-
-    /*! manage occlusions in two FaceProjection s*/
-    void occlusion(FaceProjection &, FaceProjection &);
 }
