@@ -1,5 +1,7 @@
 #include "face_projection.h"
 
+#include <CGAL/Boolean_set_operations_2.h>
+
 #include <algorithm>
 #include <iterator>
 
@@ -48,9 +50,13 @@ namespace urban
         return inside;
     }
 
-    FaceProjection & FaceProjection::occlusion(const FaceProjection & other) const
+    FaceProjection FaceProjection::occlusion(const FaceProjection & other) const
     {
         FaceProjection result(other);
+        if(CGAL::do_intersect(result.projected_polygon, projected_polygon))
+        {
+            // break;
+        }
         return result;
     }
 }
