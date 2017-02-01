@@ -1,6 +1,6 @@
 #include "brick_projection.h"
 
-#include "../Projection/face_projection.h"
+#include "../Algorithms/projection_algorithms.h"
 
 #include <stdexcept>
 
@@ -33,7 +33,7 @@ namespace urban
     {
         for(auto& p:facets_xy)
         {
-                facet.occlusion(p.second);
+                occlusion(p.second, facet);
                 facets_xy.emplace(std::make_pair(facets_xy.size() + 1, facet));
                 facets_xy[p.first] = p.second;            
         }

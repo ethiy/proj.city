@@ -11,14 +11,19 @@ namespace urban
     {
     public:
         FaceProjection(void);
-        FaceProjection(const Polygon &, const Plane &);
+        FaceProjection(const Polygon_with_holes &, const Plane &);
         FaceProjection(const FaceProjection &);
         ~FaceProjection(void);
 
-        Polygon get_polygon(void) const noexcept;
+        Polygon_with_holes get_polygon(void) const noexcept;
         Plane get_plane(void) const noexcept;
         Vector get_normal(void) const noexcept;
         double get_height(const Point_2 &);
+
+        typedef Polygon_with_holes::Hole_const_iterator Hole_const_iterator;
+        Hole_const_iterator holes_begin(void);
+        Hole_const_iterator holes_end(void);
+        Polygon outer_boundary(void);
         
         /*! In our case, two edges are coinciding means that all edges are so:
          *  - Due to the fact that all edges are supported by the same plane;
@@ -29,9 +34,8 @@ namespace urban
 
         bool contains(const Point_2 &);
 
-        void occlusion(const FaceProjection &);
     private:
-        Polygon projected_polygon;
+        Polygon_with_holes projected_polygon;
         Plane supporting_plane;
     };
 }

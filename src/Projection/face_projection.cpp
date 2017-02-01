@@ -1,7 +1,5 @@
 #include "face_projection.h"
 
-#include <CGAL/Boolean_set_operations_2.h>
-
 #include <algorithm>
 #include <iterator>
 
@@ -10,9 +8,14 @@
 namespace urban
 {
     FaceProjection::FaceProjection(void){}
-    FaceProjection::FaceProjection(const Polygon & _projected_polygon, const Plane & _supporting_plane):projected_polygon(_projected_polygon), supporting_plane(_supporting_plane){}
+    FaceProjection::FaceProjection(const Polygon_with_holes & _projected_polygon, const Plane & _supporting_plane):projected_polygon(_projected_polygon), supporting_plane(_supporting_plane){}
     FaceProjection::FaceProjection(const FaceProjection & other):projected_polygon(other.projected_polygon), supporting_plane(other.supporting_plane){}
     FaceProjection::~FaceProjection(void){}
+
+    Polygon_with_holes FaceProjection::get_polygon(void) const noexcept
+    {
+        return projected_polygon;
+    }
 
     Plane FaceProjection::get_plane(void) const noexcept
     {
@@ -29,32 +32,38 @@ namespace urban
         return !is_degenerate() * contains(point) * to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
     }
 
+     FaceProjection::Hole_const_iterator FaceProjection::holes_begin(void)
+    {
+        return projected_polygon.holes_begin();
+    }
+
+     FaceProjection::Hole_const_iterator FaceProjection::holes_end(void)
+    {
+        return  projected_polygon.holes_end();
+    }
+
+    Polygon FaceProjection::outer_boundary(void)
+    {
+        return projected_polygon.outer_boundary();
+    }
+
 
     bool FaceProjection::is_degenerate(void) const
     {
-        return projected_polygon.area() == 0;
+        return projected_polygon.outer_boundary().area() == 0;
     }
 
     bool FaceProjection::contains(const Point_2 & point)
     {
-        bool inside(false);
-        switch (projected_polygon.bounded_side(point))
-        {
-            case CGAL::ON_BOUNDED_SIDE:
-                inside = true; break;
-            case CGAL::ON_BOUNDARY:
-                break;
-            case CGAL::ON_UNBOUNDED_SIDE:
-                break;
-        }
-        return inside;
-    }
-
-    void FaceProjection::occlusion(const FaceProjection & other)
-    {
-        if(CGAL::do_intersect(other.projected_polygon, projected_polygon))
-        {
-            
-        }
+        return  projected_polygon.outer_boundary().bounded_side(point) != CGAL::ON_UNBOUNDED_SIDE
+                &&
+                std::all_of(
+                    projected_polygon.holes_begin(),
+                    projected_polygon.holes_end(),
+                    [point](Polygon hole)
+                    {
+                        return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
+                    }
+                );
     }
 }

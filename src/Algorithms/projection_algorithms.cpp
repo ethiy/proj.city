@@ -1,5 +1,7 @@
 #include "projection_algorithms.h"
 
+#include <CGAL/Boolean_set_operations_2.h>
+
 #include <vector>
 #include <iterator>
 #include <algorithm>
@@ -68,10 +70,10 @@ namespace urban
                     }
                 );
                 Facet::Halfedge_handle halfedge = facet.halfedge();
-                facets[index++] = FaceProjection(   Polygon(
-                                                                std::begin(facet_points),
-                                                                std::end(facet_points)
-                                                            ),
+                facets[index++] = FaceProjection(   Polygon_with_holes( Polygon(    std::begin(facet_points), // if all colinear just extreems!!
+                                                                                    std::end(facet_points)
+                                                                               )
+                                                                      ),
                                                     Facet::Plane(   halfedge->vertex()->point(),
                                                                     halfedge->next()->vertex()->point(),
                                                                     halfedge->next()->next()->vertex()->point()
@@ -80,5 +82,46 @@ namespace urban
             }
         );
         return facets;
+    }
+
+    double area(FaceProjection & facet)
+    {
+        return std::accumulate(
+                    facet.holes_begin(),
+                    facet.holes_end(),
+                    to_double(facet.outer_boundary().area()),
+                    [](double & holes_area, Polygon hole)
+                    {
+                        return holes_area - to_double(hole.area());
+                    }
+                );
+    }
+
+    void occlusion(FaceProjection & lhs, FaceProjection & rhs)
+    {
+        Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
+        if(CGAL::do_intersect(first, second))
+        {
+            std::vector<Polygon_with_holes> superposition;
+            CGAL::intersection(first, second, std::back_inserter(superposition));
+
+            Polygon_with_holes lhs_occlusion, rhs_occlusion;
+
+            std::for_each(
+                std::begin(superposition),
+                std::end(superposition),
+                [&](Polygon_with_holes intersection)
+                {
+                    Point_2 intersection_point; // to set 
+                    if(lhs.get_height(intersection_point) > rhs.get_height(intersection_point))
+                        CGAL::join(rhs_occlusion, intersection, rhs_occlusion);
+                    else
+                        CGAL::join(lhs_occlusion, intersection, lhs_occlusion);
+                }
+            );
+            
+            std::vector<Polygon_with_holes> _firsts;
+            CGAL::difference(first, lhs_occlusion, std::back_inserter(_firsts));
+        }
     }
 }

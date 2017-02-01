@@ -7,8 +7,8 @@
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Aff_transformation_3.h>
 
-#include <CGAL/Projection_traits_xy_3.h>
 #include <CGAL/Polygon_2.h>
+#include <CGAL/Polygon_with_holes_2.h>
 
 #include <CGAL/intersections.h>
 
@@ -43,6 +43,7 @@ namespace urban
     typedef CGAL::Bbox_3 Bbox;
 
     typedef CGAL::Polygon_2<Kernel> Polygon;
+    typedef CGAL::Polygon_with_holes_2<Kernel> Polygon_with_holes;
     typedef Kernel::Point_2 Point_2;
     typedef Kernel::Vector_2 Vector_2;
     typedef Kernel::Intersect_2 Intersect_2;
