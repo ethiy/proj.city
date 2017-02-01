@@ -29,7 +29,7 @@ namespace urban
 
         bool contains(const Point_2 &);
 
-        FaceProjection occlusion(const FaceProjection &) const;
+        void occlusion(const FaceProjection &);
     private:
         Polygon projected_polygon;
         Plane supporting_plane;

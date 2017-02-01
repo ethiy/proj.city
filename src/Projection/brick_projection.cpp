@@ -29,18 +29,14 @@ namespace urban
     }
 
 
-    void BrickProjection::add_facet_projection(const FaceProjection & facet)
+    void BrickProjection::add_facet_projection(FaceProjection & facet)
     {
-        std::for_each(
-            std::begin(facets_xy),
-            std::end(facets_xy),
-            [this, facet](const std::pair<size_t, FaceProjection> & p)
-            {
-                FaceProjection current_facet = facet.occlusion(p.second);
+        for(auto& p:facets_xy)
+        {
+                facet.occlusion(p.second);
                 facets_xy.emplace(std::make_pair(facets_xy.size() + 1, facet));
-                facets_xy[p.first] = current_facet;
-            }
-        );
+                facets_xy[p.first] = p.second;            
+        }
     }
 
 

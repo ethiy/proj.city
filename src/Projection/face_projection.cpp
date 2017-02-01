@@ -50,13 +50,11 @@ namespace urban
         return inside;
     }
 
-    FaceProjection FaceProjection::occlusion(const FaceProjection & other) const
+    void FaceProjection::occlusion(const FaceProjection & other)
     {
-        FaceProjection result(other);
-        if(CGAL::do_intersect(result.projected_polygon, projected_polygon))
+        if(CGAL::do_intersect(other.projected_polygon, projected_polygon))
         {
-            // break;
+            
         }
-        return result;
     }
 }

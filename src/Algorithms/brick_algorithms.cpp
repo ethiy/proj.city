@@ -17,14 +17,12 @@ namespace urban
     {
         BrickProjection projection(brick.get_name(), brick.bbox());
         std::map<size_t, FaceProjection> projected_facets = project_xy(brick);
-        std::for_each(
-            std::begin(projected_facets),
-            std::end(projected_facets),
-            [&projection](const std::pair<size_t, FaceProjection> & p)
-            {
-                projection.add_facet_projection(p.second);
-            }
-        );
+
+        for(auto & p : projected_facets)
+        {
+            projection.add_facet_projection(p.second);
+        }
+
         return projection;
     }
 
