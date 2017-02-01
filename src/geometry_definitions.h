@@ -42,11 +42,10 @@ namespace urban
     typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation;
     typedef CGAL::Bbox_3 Bbox;
 
-    typedef CGAL::Projection_traits_xy_3<Kernel> Projective_traits;
-    typedef CGAL::Polygon_2<Projective_traits> Polygon;
-    typedef Projective_traits::Point_2 Point_2;
-    typedef Projective_traits::Vector_2 Vector_2;
-    typedef Projective_traits::Intersect_2 Intersect_2;
+    typedef CGAL::Polygon_2<Kernel> Polygon;
+    typedef Kernel::Point_2 Point_2;
+    typedef Kernel::Vector_2 Vector_2;
+    typedef Kernel::Intersect_2 Intersect_2;
     typedef CGAL::Aff_transformation_2<Kernel> Affine_transformation_2;
     typedef CGAL::Bbox_2 Bbox_2;
 }
