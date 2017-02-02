@@ -2,12 +2,13 @@
 
 #include "../Algorithms/projection_algorithms.h"
 
+#include <iterator>
 #include <stdexcept>
 
 namespace urban
 {
     BrickProjection::BrickProjection(void){}
-    BrickProjection::BrickProjection(const std::string & _name, const std::map<size_t, FaceProjection> & _facets_xy, const Bbox_2 & _bounding_box):name(_name), facets_xy(_facets_xy), bounding_box(_bounding_box){}
+    BrickProjection::BrickProjection(const std::string & _name, const std::vector<FaceProjection> & _facets_xy, const Bbox_2 & _bounding_box):name(_name), facets_xy(_facets_xy), bounding_box(_bounding_box){}
     BrickProjection::BrickProjection(const std::string & _name, const Bbox & _bounding_box):name(_name), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
     BrickProjection::BrickProjection(BrickProjection & other):name(other.name), facets_xy(other.facets_xy), bounding_box(other.bounding_box){}
     BrickProjection::~BrickProjection(void){}
@@ -29,14 +30,20 @@ namespace urban
     }
 
 
-    void BrickProjection::add_facet_projection(FaceProjection & facet)
+    void BrickProjection::push_facet(FaceProjection & new_facet)
     {
-        for(auto& p:facets_xy)
-        {
-                occlusion(p.second, facet);
-                facets_xy.emplace(std::make_pair(facets_xy.size() + 1, facet));
-                facets_xy[p.first] = p.second;            
-        }
+        std::vector<FaceProjection> result;
+        std::for_each(
+            std::begin(facets_xy),
+            std::end(facets_xy),
+            [&result, &new_facet](FaceProjection & facet)
+            {
+                std::vector<FaceProjection> occlusion_result(occlusion(facet, new_facet));
+                result.insert(std::end(result), std::begin(occlusion_result), std::end(occlusion_result));
+
+            }
+        );
+        facets_xy = result;
     }
 
 
@@ -52,9 +59,8 @@ namespace urban
                 std::begin(facets_xy),
                 std::end(facets_xy),
                 .0,
-                [point](double & height, const std::pair<size_t, FaceProjection> & p)
+                [point](double & height, FaceProjection & facet)
                 {
-                    FaceProjection facet(p.second);
                     return height + facet.get_height(point);
                 }
             );

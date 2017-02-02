@@ -4,7 +4,7 @@
 #include "face_projection.h"
 
 #include <string>
-#include <map>
+#include <vector>
 
 namespace urban
 {
@@ -12,7 +12,7 @@ namespace urban
     {
     public:
         BrickProjection(void);
-        BrickProjection(const std::string &, const std::map<size_t, FaceProjection> &, const Bbox_2 &);
+        BrickProjection(const std::string &, const std::vector<FaceProjection> &, const Bbox_2 &);
         BrickProjection(const std::string &, const Bbox &);
         BrickProjection(BrickProjection &);
         ~BrickProjection(void);
@@ -22,13 +22,19 @@ namespace urban
 
         Bbox_2 bbox(void);
 
-        void add_facet_projection(FaceProjection &);
+        typedef std::vector<FaceProjection>::iterator iterator;
+        typedef std::vector<FaceProjection>::const_iterator const_iterator;
+        iterator begin(void);
+        iterator end(void);
+        const_iterator cbegin(void);
+        const_iterator cend(void);
+        void push_facet(FaceProjection &);
 
         bool in_domain(const Point_2 &);
         double get_height(const Point_2 &);
     private:
         std::string name;
-        std::map<size_t, FaceProjection> facets_xy;
+        std::vector<FaceProjection> facets_xy;
         Bbox_2 bounding_box;
     };
 }

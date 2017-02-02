@@ -27,9 +27,17 @@ namespace urban
         return Vector(supporting_plane.a(), supporting_plane.b(), supporting_plane.c());
     }
 
+    double FaceProjection::get_plane_height(const Point_2 & point)
+    {
+        if( supporting_plane.c() == 0)
+            throw new std::overflow_error("The supporting plane is vertical!");
+        return to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
+    }
+
+
     double FaceProjection::get_height(const Point_2 & point)
     {
-        return !is_degenerate() * contains(point) * to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
+        return !is_degenerate() * contains(point) * get_plane_height(point) ;
     }
 
      FaceProjection::Hole_const_iterator FaceProjection::holes_begin(void)
