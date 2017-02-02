@@ -1,5 +1,7 @@
 #include "face_projection.h"
 
+#include "../Algorithms/projection_algorithms.h"
+
 #include <algorithm>
 #include <iterator>
 
@@ -56,9 +58,14 @@ namespace urban
     }
 
 
-    bool FaceProjection::is_degenerate(void) const
+    bool FaceProjection::is_degenerate(void)
     {
-        return projected_polygon.outer_boundary().area() == 0;
+        return is_perpendicular() || area(*this) == 0;
+    }
+
+    bool FaceProjection::is_perpendicular(void) const
+    {
+        return supporting_plane.c() == 0;
     }
 
     bool FaceProjection::contains(const Point_2 & point)

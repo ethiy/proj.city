@@ -141,58 +141,73 @@ namespace urban
 
     std::vector<FaceProjection> occlusion(FaceProjection & lhs, FaceProjection & rhs)
     {
-        Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
         std::vector<FaceProjection> result;
-
-        if(CGAL::do_intersect(first, second))
+        
+        if(lhs.is_perpendicular() || rhs.is_perpendicular())
         {
-            std::vector<Polygon_with_holes> superposition;
-            CGAL::intersection(first, second, std::back_inserter(superposition));
-
-            Polygon_with_holes lhs_occlusion, rhs_occlusion;
-
-            std::for_each(
-                std::begin(superposition),
-                std::end(superposition),
-                [&](Polygon_with_holes intersection)
-                {
-                    Point_2 intersection_point; // to set 
-                    if(lhs.get_height(intersection_point) > rhs.get_height(intersection_point))
-                        CGAL::join(rhs_occlusion, intersection, rhs_occlusion);
-                    else
-                        CGAL::join(lhs_occlusion, intersection, lhs_occlusion);
-                }
-            );
-            
-            std::vector<Polygon_with_holes> _firsts;
-            CGAL::difference(first, lhs_occlusion, std::back_inserter(_firsts));
-            std::transform(
-                std::begin(_firsts),
-                std::end(_firsts),
-                std::back_inserter(result),
-                [&lhs](Polygon_with_holes part)
-                {
-                    return FaceProjection(part, lhs.get_plane());
-                }
-            );
-
-            std::vector<Polygon_with_holes> _seconds;
-            CGAL::difference(second, rhs_occlusion, std::back_inserter(_seconds));
-            std::transform(
-                std::begin(_seconds),
-                std::end(_seconds),
-                std::back_inserter(result),
-                [&rhs](Polygon_with_holes part)
-                {
-                    return FaceProjection(part, rhs.get_plane());
-                }
-            );
+            if(!lhs.is_perpendicular())
+                result.push_back(lhs);
+            if(!rhs.is_perpendicular())
+                result.push_back(rhs);
         }
         else
         {
-            result.push_back(lhs);
-            result.push_back(rhs);
+            Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
+
+            if(CGAL::do_intersect(first, second))
+            {
+                std::vector<Polygon_with_holes> superposition;
+                CGAL::intersection(first, second, std::back_inserter(superposition));
+
+                Polygon_with_holes lhs_occlusion, rhs_occlusion;
+
+                std::for_each(
+                    std::begin(superposition),
+                    std::end(superposition),
+                    [&](Polygon_with_holes intersection)
+                    {
+                        Point_2 A(intersection.outer_boundary()[0]),
+                                B(intersection.outer_boundary()[1]),
+                                C(intersection.outer_boundary()[2]);
+                        Point_2 intersection_point(CGAL::centroid(A, B, C)); 
+                        if(lhs.get_plane_height(intersection_point) > rhs.get_plane_height(intersection_point))
+                            CGAL::join(rhs_occlusion, intersection, rhs_occlusion);
+                        else
+                            CGAL::join(lhs_occlusion, intersection, lhs_occlusion);
+                    }
+                );
+                
+                std::vector<Polygon_with_holes> _firsts;
+                CGAL::difference(first, lhs_occlusion, std::back_inserter(_firsts));
+                std::transform(
+                    std::begin(_firsts),
+                    std::end(_firsts),
+                    std::back_inserter(result),
+                    [&lhs](Polygon_with_holes part)
+                    {
+                        return FaceProjection(part, lhs.get_plane());
+                    }
+                );
+
+                std::vector<Polygon_with_holes> _seconds;
+                CGAL::difference(second, rhs_occlusion, std::back_inserter(_seconds));
+                std::transform(
+                    std::begin(_seconds),
+                    std::end(_seconds),
+                    std::back_inserter(result),
+                    [&rhs](Polygon_with_holes part)
+                    {
+                        return FaceProjection(part, rhs.get_plane());
+                    }
+                );
+            }
+            else
+            {
+                result.push_back(lhs);
+                result.push_back(rhs);
+            }
         }
+
         return result;
     }
 }

@@ -18,6 +18,7 @@ namespace urban
         Polygon_with_holes get_polygon(void) const noexcept;
         Plane get_plane(void) const noexcept;
         Vector get_normal(void) const noexcept;
+
         double get_plane_height(const Point_2 &);
         double get_height(const Point_2 &);
 
@@ -31,7 +32,8 @@ namespace urban
          *  - This means that we should just check if the area is null to assert
          *      that the projection is degenarate.
          */
-        bool is_degenerate(void) const;
+        bool is_degenerate(void);
+        bool is_perpendicular(void) const;
 
         bool contains(const Point_2 &);
 

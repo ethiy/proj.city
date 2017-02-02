@@ -23,6 +23,6 @@ namespace urban
     /*! Compute FaceProjection area*/
     double area(FaceProjection &);
 
-    /*! Computes FaceProjection occlutions*/
+    /*! Computes FaceProjection occlutions and gets rid of all perpendicular facets*/
     std::vector<FaceProjection> occlusion(FaceProjection &, FaceProjection &);
 }
