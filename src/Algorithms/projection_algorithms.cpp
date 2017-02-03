@@ -160,7 +160,8 @@ namespace urban
         {
             Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
 
-            if(CGAL::do_intersect(first, second))
+            CGAL::do_intersect(first, second);
+            if(CGAL::do_overlap(first.bbox(), second.bbox()))
             {
                 std::vector<Polygon_with_holes> superposition;
                 CGAL::intersection(first, second, std::back_inserter(superposition));
