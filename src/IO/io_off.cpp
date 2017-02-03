@@ -51,7 +51,7 @@ namespace urban
                     if (lines.empty())
                     {
                         error_message << "This file: " << filepath.string() << " is empty!";
-                        throw new std::out_of_range(error_message.str());
+                        throw std::out_of_range(error_message.str());
                     }
 
                     /*Ignore Comments*/
@@ -66,7 +66,7 @@ namespace urban
                     if (lines.empty())
                     {
                         error_message << "This file: " << filepath.string() << " containes only comments!";
-                        throw new std::out_of_range(error_message.str());
+                        throw std::out_of_range(error_message.str());
                     }
 
                     /*Parsing file*/
@@ -75,7 +75,7 @@ namespace urban
                         if (lines.empty())
                         {
                             error_message << "This file: " << filepath.string() << " containes only the OFF header!";
-                            throw new std::out_of_range(error_message.str());
+                            throw std::out_of_range(error_message.str());
                         }
 
                         /*Parsing sizes*/
@@ -83,11 +83,11 @@ namespace urban
                         std::istringstream _sizes(lines[1]);
                         std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::back_inserter(sizes));
                         if (sizes.size() != 3)
-                            throw new std::range_error("Error parsing the second line! There should be 3 integers.");
+                            throw std::range_error("Error parsing the second line! There should be 3 integers.");
                         if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
-                            throw new std::range_error("Error parsing the second line! The first and second integers sould be positive and the third is always equal to 0.");
+                            throw std::range_error("Error parsing the second line! The first and second integers sould be positive and the third is always equal to 0.");
                         if (static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
-                            throw new std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
+                            throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
                         /*Parsing vertex points*/
                         std::vector<std::string> buffer_lines;
@@ -126,7 +126,7 @@ namespace urban
                                 sline >> n;
                                 std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::back_inserter(indexes));
                                 if (indexes.size() != n)
-                                    throw new std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
+                                    throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
                                 faces[idx++] = Face(n, indexes);
                                 indexes.clear();
                                 sline.clear();

@@ -65,6 +65,6 @@ namespace urban
                 }
             );
         else
-            throw new std::out_of_range("The point is not inside the bounding box");
+            throw std::out_of_range("The point is not inside the bounding box");
     }
 }

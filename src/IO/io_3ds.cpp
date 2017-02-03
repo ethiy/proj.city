@@ -32,7 +32,7 @@ namespace urban
                 }
                 else
                 {
-                    error_message << "This file: " << filepath.string() << " cannot be found! You should check the file path.";
+                    error_message << "This file \"" << filepath.string() << "\" cannot be found! You should check the file path";
                     boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
                     throw boost::filesystem::filesystem_error(error_message.str(), ec);
                 }

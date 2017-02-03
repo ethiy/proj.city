@@ -140,7 +140,7 @@ namespace urban
                         if(point_handle!= std::end(points))
                             return point_handle->first;
                         else
-                            throw new std::out_of_range("The face contains a non listed point");
+                            throw std::out_of_range("The face contains a non listed point");
                     }
                 );
                 faces[it++] = Face(face_degree, face_points);

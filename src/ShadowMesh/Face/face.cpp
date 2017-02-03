@@ -17,7 +17,7 @@ namespace urban
     Face::Face(size_t _vertices_number, std::vector<size_t> _points):vertices_number(_vertices_number), points(_points)
     {
         if(_vertices_number<3)
-            throw new std::out_of_range("You must have at least three vertices to define a face!");
+            throw std::out_of_range("You must have at least three vertices to define a face!");
     }
     Face::~Face(void){}
 

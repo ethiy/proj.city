@@ -53,7 +53,7 @@ namespace urban
     bool check_colinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last)
     {
         if(std::distance(first, last) < 3)
-            throw new std::out_of_range("There are less than 3 points the two iterators!");
+            throw std::out_of_range("There are less than 3 points between the two iterators!");
         
         /* It suffices to check the first three points*/
         return CGAL::collinear(*first, *(first + 1), *(first + 2));
