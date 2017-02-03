@@ -122,7 +122,7 @@ namespace urban
             [&](Facet & facet)
             {
                 size_t face_degree(facet.facet_degree());
-                std::vector<size_t> face_points;
+                std::vector<size_t> face_points(facet.facet_degree());
                 std::transform(
                     facet.facet_begin(),
                     std::next(facet.facet_begin(), facet.facet_degree()), // to be corrected

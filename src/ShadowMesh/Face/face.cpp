@@ -79,7 +79,7 @@ namespace urban
             //     std::next(std::begin(points), 2),
 
             // );
-            std::vector<size_t> twos , threes;
+            std::vector<size_t> twos(vertices_number-2) , threes(vertices_number-2);
             std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::back_inserter(twos));
             std::copy(std::next(std::begin(points), 2), std::end(points), std::back_inserter(threes));
             size_t two,three, it(0);

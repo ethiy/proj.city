@@ -79,7 +79,7 @@ namespace urban
                         }
 
                         /*Parsing sizes*/
-                        std::vector<long> sizes;
+                        std::vector<long> sizes(3);
                         std::istringstream _sizes(lines[1]);
                         std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::back_inserter(sizes));
                         if (sizes.size() != 3)
@@ -90,12 +90,12 @@ namespace urban
                             throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
                         /*Parsing vertex points*/
-                        std::vector<std::string> buffer_lines;
+                        std::vector<std::string> buffer_lines(sizes[0]);
                         std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::back_inserter(buffer_lines));
                         size_t idx(0);
 
                         std::map<size_t, urban::Point> points;
-                        std::vector<double> coordinates;
+                        std::vector<double> coordinates(3);
                         std::istringstream sline;
                         std::for_each(
                             std::begin(buffer_lines),
@@ -114,6 +114,7 @@ namespace urban
                         sline.clear();
 
                         std::map<size_t, urban::Face> faces;
+                        buffer_lines.resize(sizes[1]);
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::back_inserter(buffer_lines));
 
                         std::vector<size_t> indexes;
@@ -124,6 +125,7 @@ namespace urban
                             [&](std::string line) {
                                 sline.str(line);
                                 sline >> n;
+                                indexes.resize(n);
                                 std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::back_inserter(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");

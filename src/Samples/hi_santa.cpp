@@ -22,11 +22,11 @@ int main(int, char **)
         boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         std::map<std::string, bool> modes{{"read", true}};
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
-        std::vector<urban::ShadowMesh> meshes = handler.read();
+        std::vector<urban::ShadowMesh> meshes(handler.read());
 
         std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
 
-        std::vector<urban::Brick> urban_objects;
+        std::vector<urban::Brick> urban_objects(2);
         std::transform(
             std::begin(meshes),
             std::end(meshes),

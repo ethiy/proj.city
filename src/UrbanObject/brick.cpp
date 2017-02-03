@@ -40,7 +40,7 @@ namespace urban
 
     size_t Brick::facets_number(void) const
     {
-        return surface.size_of_faces();
+        return surface.size_of_facets();
     }
 
     Brick::Facet_iterator Brick::facets_begin(void) noexcept
