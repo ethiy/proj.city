@@ -33,16 +33,21 @@ namespace urban
     void BrickProjection::push_facet(FaceProjection & new_facet)
     {
         std::vector<FaceProjection> result;
-        std::for_each(
-            std::begin(facets_xy),
-            std::end(facets_xy),
-            [&result, &new_facet](FaceProjection & facet)
-            {
-                std::vector<FaceProjection> occlusion_result(occlusion(facet, new_facet));
-                result.insert(std::end(result), std::begin(occlusion_result), std::end(occlusion_result));
+        if(facets_xy.empty())
+            result.push_back(new_facet);
+        else
+        {
+            std::for_each(
+                std::begin(facets_xy),
+                std::end(facets_xy),
+                [&result, &new_facet](FaceProjection & facet)
+                {
+                    std::vector<FaceProjection> occlusion_result(occlusion(facet, new_facet));
+                    result.insert(std::end(result), std::begin(occlusion_result), std::end(occlusion_result));
 
-            }
-        );
+                }
+            );
+        }
         facets_xy = result;
     }
 
