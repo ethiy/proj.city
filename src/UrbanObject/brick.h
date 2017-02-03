@@ -30,7 +30,7 @@ namespace urban
         std::string get_name(void) const noexcept;
         
         /*! get the number of vertices*/
-        size_t vertices_number(void);
+        size_t vertices_number(void) const;
 
         /*! Access Bounding box*/
         Bbox bbox(void) const noexcept;

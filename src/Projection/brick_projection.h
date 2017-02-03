@@ -14,7 +14,7 @@ namespace urban
         BrickProjection(void);
         BrickProjection(const std::string &, const std::vector<FaceProjection> &, const Bbox_2 &);
         BrickProjection(const std::string &, const Bbox &);
-        BrickProjection(BrickProjection &);
+        BrickProjection(const BrickProjection &);
         ~BrickProjection(void);
 
         void set_name(const std::string &);

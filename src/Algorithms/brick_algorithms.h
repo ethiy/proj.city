@@ -12,7 +12,7 @@ namespace urban
     BrickProjection project(Brick &, Camera &);
 
     /* ! Projects on xy axis*/
-    BrickProjection project(Brick &);
+    BrickProjection project(const Brick &);
 
     /*! Computes border length*/
     double border_length(Brick &);

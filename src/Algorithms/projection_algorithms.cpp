@@ -85,15 +85,15 @@ namespace urban
         points.push_back(B);
     }
 
-    std::vector<FaceProjection> project_xy(Brick & brick)
+    std::vector<FaceProjection> project_xy(const Brick & brick)
     {
         std::vector<FaceProjection> facets;
         std::vector<Point_2> facet_points(brick.vertices_number());
         std::transform(
-            brick.facets_begin(),
-            brick.facets_end(),
+            brick.facets_cbegin(),
+            brick.facets_cend(),
             std::back_inserter(facets),
-            [facet_points](Facet & facet) mutable
+            [facet_points](const Facet & facet) mutable
             {
                 facet_points.clear();
                 std::transform(
@@ -111,7 +111,7 @@ namespace urban
                 if(check_colinearity(std::begin(facet_points), std::end(facet_points)))
                     extrem_points(facet_points);
 
-                Facet::Halfedge_handle halfedge = facet.halfedge();
+                auto halfedge = facet.halfedge();
                 return FaceProjection(   Polygon_with_holes( Polygon(    std::begin(facet_points),
                                                                          std::end(facet_points)
                                                                     )

@@ -33,7 +33,7 @@ namespace urban
         return bounding_box;
     }
 
-    size_t Brick::vertices_number(void)
+    size_t Brick::vertices_number(void) const
     {
         return surface.size_of_vertices();
     }

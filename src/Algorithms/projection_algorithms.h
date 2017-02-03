@@ -18,7 +18,7 @@ namespace urban
     void extrem_points(std::vector<Point_2> &);
 
     /*! Project Faces to XY*/
-    std::vector<FaceProjection> project_xy(Brick &);
+    std::vector<FaceProjection> project_xy(const Brick &);
 
     /*! Compute FaceProjection area*/
     double area(FaceProjection &);
