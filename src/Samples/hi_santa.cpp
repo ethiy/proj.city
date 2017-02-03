@@ -1,8 +1,8 @@
-#include "ShadowMesh/shadow_mesh.h"
-#include "UrbanObject/brick.h"
-#include "IO/io.h"
-#include "IO/io_3ds.h"
-#include "IO/io_off.h"
+#include "../ShadowMesh/shadow_mesh.h"
+#include "../UrbanObject/brick.h"
+#include "../IO/io.h"
+#include "../IO/io_3ds.h"
+#include "../IO/io_off.h"
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>

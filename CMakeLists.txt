@@ -45,14 +45,14 @@ file(GLOB_RECURSE IO_SRC "${3DSceneModel_SOURCE_DIR}/src/IO/*.cpp")
 add_library(IO ${IO_HEADERS} ${IO_SRC} ${ShadowMesh_HEADERS} ${UObj_HEADERS} ${Line_HEADERS})
 target_link_libraries(IO ShadowMesh Line UrbanObject ${LIBS})
 
-set(MAIN_SRC ${3DSceneModel_SOURCE_DIR}/src/main.cpp)
-add_executable(main ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS})
-target_link_libraries(main ShadowMesh UrbanObject IO ${LIBS})
-link_directories(main ${LIBS_DIRS})
+file(GLOB_RECURSE SAMPLES_SRC "${3DSceneModel_SOURCE_DIR}/src/Samples/*.cpp")
+add_executable(santa_sample ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS})
+target_link_libraries(santa_sample ShadowMesh UrbanObject IO ${LIBS})
+link_directories(santa_sample ${LIBS_DIRS})
 
 # Tests
 file(GLOB_RECURSE TEST_SRC "${3DSceneModel_SOURCE_DIR}/src/Tests/*.cpp")
 
-add_executable(test_exec ${TEST_SRC} ${UObj_HEADERS} ${IO_HEADERS})
-target_link_libraries(test_exec Catch UrbanObject IO)
-add_test(NAME test COMMAND test_exec -r junit)
+add_executable(tests ${TEST_SRC} ${UObj_HEADERS} ${IO_HEADERS})
+target_link_libraries(tests Catch UrbanObject IO)
+add_test(NAME test COMMAND tests -r junit)
