@@ -22,8 +22,6 @@ int main(int, char **)
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
         std::vector<urban::ShadowMesh> meshes = handler.read();
 
-        std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(std::cout, "\n"));
-
         std::vector<urban::Brick> urban_objects;
         std::transform(
             std::begin(meshes),
@@ -34,8 +32,8 @@ int main(int, char **)
                 return urban::Brick(mesh);
             }
         );
-        urban::Brick santa(urban_objects[0]);
-        urban::BrickProjection santa_projected = project(santa);
+
+        urban::BrickProjection staff_projected = project(urban_objects[1]);
     }
     catch (const std::exception& except)
     {

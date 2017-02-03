@@ -87,22 +87,29 @@ namespace urban
 
     std::vector<FaceProjection> project_xy(const Brick & brick)
     {
-        std::vector<FaceProjection> facets;
-        std::vector<Point_2> facet_points(brick.vertices_number());
+        std::vector<FaceProjection> facets(brick.facets_number());
+
+        std::vector<Point_2> facet_points;
         std::transform(
             brick.facets_cbegin(),
             brick.facets_cend(),
-            std::back_inserter(facets),
-            [facet_points](const Facet & facet) mutable
+            std::begin(facets),
+            [&facet_points](const Facet & facet)
             {
                 facet_points.clear();
+                facet_points.resize(facet.facet_degree());
+
+                /*! Start with the first point*/
+                auto halfedge = facet.halfedge();
+                Point vertex(halfedge->vertex()->point());
+                facet_points[0] = Point_2(to_double(vertex.x()), to_double(vertex.y()));
                 std::transform(
-                    facet.facet_begin(),
+                    std::next(facet.facet_begin(), 1),
                     std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
-                    std::back_inserter(facet_points),
-                    [](const Polyhedron::Halfedge & h)
+                    std::next(std::begin(facet_points), 1),
+                    [&vertex](const Polyhedron::Halfedge & h)
                     {
-                        Point vertex(h.vertex()->point());
+                        vertex = h.vertex()->point();
                         return Point_2(to_double(vertex.x()), to_double(vertex.y()));
                     }
                 );
@@ -111,7 +118,6 @@ namespace urban
                 if(check_colinearity(std::begin(facet_points), std::end(facet_points)))
                     extrem_points(facet_points);
 
-                auto halfedge = facet.halfedge();
                 return FaceProjection(   Polygon_with_holes( Polygon(    std::begin(facet_points),
                                                                          std::end(facet_points)
                                                                     )
