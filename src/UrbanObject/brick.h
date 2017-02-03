@@ -29,8 +29,11 @@ namespace urban
         /*! Access brick name*/
         std::string get_name(void) const noexcept;
         
-        /*! get the number of vertices*/
+        /*! Get the number of vertices*/
         size_t vertices_number(void) const;
+
+        /*! Get the number of faces*/
+        size_t facets_number(void) const;
 
         /*! Access Bounding box*/
         Bbox bbox(void) const noexcept;
