@@ -125,7 +125,7 @@ namespace urban
                 std::vector<size_t> face_points;
                 std::transform(
                     facet.facet_begin(),
-                    std::next(facet.facet_begin(), facet.facet_degree()),
+                    std::next(facet.facet_begin(), facet.facet_degree()), // to be corrected
                     std::back_inserter(face_points),
                     [&](Polyhedron::Halfedge & halfedge)
                     {
