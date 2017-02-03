@@ -46,7 +46,7 @@ add_library(IO ${IO_HEADERS} ${IO_SRC} ${ShadowMesh_HEADERS} ${UObj_HEADERS} ${L
 target_link_libraries(IO ShadowMesh Line UrbanObject ${LIBS})
 
 file(GLOB_RECURSE SAMPLES_SRC "${3DSceneModel_SOURCE_DIR}/src/Samples/*.cpp")
-add_executable(santa_sample ${MAIN_SRC} ${UObj_HEADERS} ${IO_HEADERS})
+add_executable(santa_sample ${SAMPLES_SRC} ${UObj_HEADERS} ${IO_HEADERS})
 target_link_libraries(santa_sample ShadowMesh UrbanObject IO ${LIBS})
 link_directories(santa_sample ${LIBS_DIRS})
 
