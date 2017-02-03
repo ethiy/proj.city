@@ -80,8 +80,8 @@ namespace urban
 
             // );
             std::vector<size_t> twos(vertices_number-2) , threes(vertices_number-2);
-            std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::back_inserter(twos));
-            std::copy(std::next(std::begin(points), 2), std::end(points), std::back_inserter(threes));
+            std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::begin(twos));
+            std::copy(std::next(std::begin(points), 2), std::end(points), std::begin(threes));
             size_t two,three, it(0);
             BOOST_FOREACH( boost::tie(two, three), boost::combine(twos, threes))
             {

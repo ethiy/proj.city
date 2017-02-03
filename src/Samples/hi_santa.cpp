@@ -30,7 +30,7 @@ int main(int, char **)
         std::transform(
             std::begin(meshes),
             std::end(meshes),
-            std::back_inserter(urban_objects),
+            std::begin(urban_objects),
             [](urban::ShadowMesh & mesh)
             {
                 return urban::Brick(mesh);

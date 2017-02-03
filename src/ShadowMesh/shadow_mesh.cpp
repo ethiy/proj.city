@@ -126,7 +126,7 @@ namespace urban
                 std::transform(
                     facet.facet_begin(),
                     std::next(facet.facet_begin(), facet.facet_degree()), // to be corrected
-                    std::back_inserter(face_points),
+                    std::begin(face_points),
                     [&](Polyhedron::Halfedge & halfedge)
                     {
                         auto point_handle = std::find_if(
