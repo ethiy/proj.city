@@ -108,13 +108,15 @@ namespace urban
             {
                 Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
                 Vector normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
-                return area + std::accumulate(
-                    facet.facet_begin(),
+                return area 
+                + to_double(CGAL::cross_product(h->vertex()->point() - CGAL::ORIGIN, h->next()->vertex()->point() - CGAL::ORIGIN) * normal/2.)
+                + std::accumulate(
+                    std::next(facet.facet_begin(), 1),
                     std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
                     .0,
                     [normal](double & surface_area, const Polyhedron::Halfedge & halfedge)
                     {
-                        return surface_area + to_double(CGAL::cross_product(halfedge.vertex()->point() - CGAL::ORIGIN, halfedge.next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);;
+                        return surface_area + to_double(CGAL::cross_product(halfedge.vertex()->point() - CGAL::ORIGIN, halfedge.next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);
                     }
                 );
             }
