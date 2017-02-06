@@ -80,7 +80,16 @@ namespace urban
         if(vertices_number == 3)
             convexity = true;
         else
-            throw std::logic_error("Not yet implemented for general facets");
+        {
+            convexity = std::all_of(
+                std::begin(points),
+                std::end(points), //circular !! at the last points you go back
+                [&coordinates](size_t index)
+                {
+                    return true; //check internal angle
+                }
+            );
+        }
         return convexity;
     }
 
