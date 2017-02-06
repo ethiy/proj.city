@@ -235,9 +235,9 @@ namespace urban
                 std::end(faces),
                 0,
                 [](int& size, const std::pair<const size_t, Face> & second)
-                {
-                    return size + static_cast<int>(second.second.size()) - 2;
-                }
+                    {
+                        return size + static_cast<int>(second.second.size()) - 2;
+                    }
                 )
             );
 
