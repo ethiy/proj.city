@@ -122,25 +122,15 @@ namespace urban
             [&](Facet & facet)
             {
                 size_t face_degree(facet.facet_degree());
-                std::vector<size_t> face_points(facet.facet_degree());
+                std::vector<size_t> face_points(face_degree);
+                face_points[0] = get_index(*(facet.facet_begin()));
                 std::transform(
-                    facet.facet_begin(),
-                    std::next(facet.facet_begin(), facet.facet_degree()), // to be corrected
-                    std::begin(face_points),
+                    std::next(facet.facet_begin(), 1),
+                    std::next(facet.facet_begin(), face_degree),
+                    std::next(std::begin(face_points), 1),
                     [&](Polyhedron::Halfedge & halfedge)
                     {
-                        auto point_handle = std::find_if(
-                            std::begin(points),
-                            std::end(points),
-                            [&](const std::pair<size_t, Point> & p)
-                            {
-                                return p.second == halfedge.vertex()->point();
-                            }
-                        );
-                        if(point_handle!= std::end(points))
-                            return point_handle->first;
-                        else
-                            throw std::out_of_range("The face contains a non listed point");
+                        return get_index(halfedge);
                     }
                 );
                 faces[it++] = Face(face_degree, face_points);
@@ -199,6 +189,25 @@ namespace urban
     {
         return bounding_box;
     }
+
+    size_t ShadowMesh::get_index(const Polyhedron::Halfedge & halfedge)
+    {
+        size_t index;
+        auto point_handle = std::find_if(
+            std::begin(points),
+            std::end(points),
+            [&](const std::pair<size_t, Point> & p)
+            {
+                return p.second == halfedge.vertex()->point();
+            }
+        );
+        if(point_handle!= std::end(points))
+            index = point_handle->first;
+        else
+            throw std::out_of_range("The face contains a non listed point");
+        return index;
+    }
+
 
     Lib3dsMesh* ShadowMesh::to_3ds()
     {

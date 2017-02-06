@@ -34,6 +34,8 @@ namespace urban
         std::map<size_t, Face> get_faces(void) const noexcept;
         Bbox bbox(void) const noexcept;
 
+        size_t get_index(const Polyhedron::Halfedge & h);
+
         Lib3dsMesh* to_3ds(void);
     private:
         std::string name;
