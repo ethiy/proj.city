@@ -1,3 +1,5 @@
+#include "../geometry_definitions.h"
+
 #include "../ShadowMesh/Face/face.h"
 
 #include "catch.hpp"
@@ -65,7 +67,8 @@ SCENARIO("Face manipulation:")
         WHEN("the triangle is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes[0], indexes[1], indexes[2]);
-            Lib3dsFace* face_3ds(facet.to_3ds());
+            std::map<size_t, urban::Point> coord;
+            Lib3dsFace* face_3ds(facet.to_3ds(coord));
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
@@ -135,7 +138,8 @@ SCENARIO("Face manipulation:")
         WHEN("the triangle is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes.size(), indexes);
-            Lib3dsFace* face_3ds = facet.to_3ds();
+            std::map<size_t, urban::Point> coord;
+            Lib3dsFace* face_3ds = facet.to_3ds(coord);
             THEN("the output checks")
             {
                 std::ostringstream auxilary;

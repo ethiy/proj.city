@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../geometry_definitions.h"
+
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
 
@@ -31,7 +33,8 @@ namespace urban
         const_iterator cend(void) const noexcept;
 
         void invert_orientation(void);
-        Lib3dsFace* to_3ds(void);
+        bool is_convex(std::map<size_t, Point> &) const;
+        Lib3dsFace* to_3ds(std::map<size_t, Point> &);
     private:
         size_t vertices_number;
         std::vector<size_t> points;

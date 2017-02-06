@@ -1,5 +1,9 @@
 #include "face.h"
 
+#include <CGAL/Projection_traits_xy_3.h>
+#include <CGAL/Projection_traits_xz_3.h>
+#include <CGAL/Projection_traits_yz_3.h>
+
 #include <boost/range/combine.hpp>
 #include <boost/range/sub_range.hpp>
 #include <boost/foreach.hpp>
@@ -69,26 +73,53 @@ namespace urban
         std::copy(std::begin(aux), std::end(aux), std::next(std::begin(points), 1) );
     }
 
-    Lib3dsFace* Face::to_3ds()
+    bool Face::is_convex(std::map<size_t, Point> & coordinates) const
+    {
+        bool convexity;
+
+        if(vertices_number == 3)
+            convexity = true;
+        else
+            throw std::logic_error("Not yet implemented for general facets");
+        return convexity;
+    }
+
+    Lib3dsFace* Face::to_3ds(std::map<size_t, Point> & coordinates)
     {
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
+        if(is_convex(coordinates))
         {
-            // std::transform(
-            //     std::next(std::begin(points), 1),
-            //     std::prev(std::end(points), 1),
-            //     std::next(std::begin(points), 2),
-
-            // );
-            std::vector<size_t> twos(vertices_number-2) , threes(vertices_number-2);
-            std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::begin(twos));
-            std::copy(std::next(std::begin(points), 2), std::end(points), std::begin(threes));
-            size_t two,three, it(0);
-            BOOST_FOREACH( boost::tie(two, three), boost::combine(twos, threes))
-            {
-                auto init = std::initializer_list<size_t>({points.at(0), two, three});
-                std::copy(std::begin(init), std::end(init), (face + it++)->points);
-            }
+            std::transform(
+                std::next(std::begin(points), 1),
+                std::prev(std::end(points), 1),
+                std::next(std::begin(points), 2),
+                face,
+                [this](size_t b, size_t c)
+                {
+                    Lib3dsFace current;
+                    auto init = std::initializer_list<size_t>({points.at(0), b, c});
+                    std::copy(std::begin(init), std::end(init), current.points);
+                    return current;
+                }
+            );
         }
+        // {
+        //     // std::transform(
+        //     //     std::next(std::begin(points), 1),
+        //     //     std::prev(std::end(points), 1),
+        //     //     std::next(std::begin(points), 2),
+
+        //     // );
+        //     std::vector<size_t> twos(vertices_number-2) , threes(vertices_number-2);
+        //     std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::begin(twos));
+        //     std::copy(std::next(std::begin(points), 2), std::end(points), std::begin(threes));
+        //     size_t two,three, it(0);
+        //     BOOST_FOREACH( boost::tie(two, three), boost::combine(twos, threes))
+        //     {
+        //         auto init = std::initializer_list<size_t>({points.at(0), two, three});
+        //         std::copy(std::begin(init), std::end(init), (face + it++)->points);
+        //     }
+        // }
         return face;
     }
 

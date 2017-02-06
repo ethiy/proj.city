@@ -247,9 +247,9 @@ namespace urban
             std::begin(faces),
             std::end(faces),
             mesh->faceL,
-            [](std::pair<size_t, Face> t)
+            [this](std::pair<size_t, Face> t)
             {
-                return *t.second.to_3ds();
+                return *t.second.to_3ds(points);
             }
         );
 
