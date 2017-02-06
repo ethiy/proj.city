@@ -95,14 +95,14 @@ namespace urban
                         size_t idx(0);
 
                         std::map<size_t, urban::Point> points;
-                        std::vector<double> coordinates(3);
+                        std::vector<double> coordinates;
                         std::istringstream sline;
                         std::for_each(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
                             [&](std::string line) {
                                 sline.str(line);
-                                std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::begin(coordinates));
+                                std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
                                 points[idx++] = Point(coordinates[0], coordinates[1], coordinates[2]);
                                 coordinates.clear();
                                 sline.clear();
