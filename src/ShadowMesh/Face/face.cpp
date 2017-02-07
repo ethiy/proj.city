@@ -18,7 +18,7 @@ namespace urban
     Face::Face(void): vertices_number(0){}
     Face::Face(const Face & other): vertices_number(other.vertices_number), points(other.points){}
     Face::Face(size_t first, size_t second, size_t third): vertices_number(3), points{{first, second, third}}{}
-    Face::Face(size_t _vertices_number, std::vector<size_t> _points):vertices_number(_vertices_number), points(_points)
+    Face::Face(size_t _vertices_number, const std::vector<size_t> & _points):vertices_number(_vertices_number), points(_points)
     {
         if(_vertices_number<3)
             throw std::out_of_range("You must have at least three vertices to define a face!");
@@ -75,6 +75,9 @@ namespace urban
 
     bool Face::is_convex(const std::map<size_t, Point> & coordinates) const
     {
+        if(coordinates.size() != vertices_number)
+            throw std::out_of_range("The coordinates map must have the same size as the indexes registry!");
+
         if(vertices_number < 3)
             throw std::out_of_range("You must have at least three vertices to define a face!");
 
@@ -109,8 +112,8 @@ namespace urban
                     }
                 }
                 Point A(coordinates.at(*circulator)), B(coordinates.at(*next_1)), C(coordinates.at(*next_2));
-                Vector internal_direction(CGAL::normal(B, B + normal, A));
-                convexity &= (internal_direction * Vector(B, C) > 0) ;
+                Vector external_direction(CGAL::normal(B, B + normal, A));
+                convexity &= (external_direction * Vector(B, C) < 0) ;
             } while(convexity && ++circulator != std::end(points));
         }
         return convexity;
