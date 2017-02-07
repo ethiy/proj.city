@@ -73,8 +73,8 @@ namespace urban
 
     bool Face::is_convex(const std::map<size_t, Point> & coordinates) const
     {
-        if(coordinates.size() != vertices_number)
-            throw std::out_of_range("The coordinates map must have the same size as the indexes registry!");
+        if(coordinates.size() < vertices_number)
+            throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry!");
 
         if(vertices_number < 3)
             throw std::out_of_range("You must have at least three vertices to define a face!");
@@ -119,8 +119,8 @@ namespace urban
 
     Lib3dsFace* Face::to_3ds(const std::map<size_t, Point> & coordinates)
     {
-        if(coordinates.size() != vertices_number)
-            throw std::out_of_range("The coordinates map must have the same size as the indexes registry!");
+        if(coordinates.size() < vertices_number)
+            throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry!");
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
         if(is_convex(coordinates))
         {
