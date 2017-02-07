@@ -1,17 +1,15 @@
 #include "face.h"
 
-#include <CGAL/Projection_traits_xy_3.h>
-#include <CGAL/Projection_traits_xz_3.h>
-#include <CGAL/Projection_traits_yz_3.h>
-
-#include <boost/range/combine.hpp>
-#include <boost/range/sub_range.hpp>
-#include <boost/foreach.hpp>
+#include <CGAL/squared_distance_3.h>
+#include <CGAL/Partition_traits_2.h>
+#include <CGAL/partition_2.h>
 
 #include <algorithm>
 #include <iterator>
 
 #include <stdexcept>
+
+#include <cmath>
 
 namespace urban
 {
@@ -74,7 +72,7 @@ namespace urban
     bool Face::is_convex(const std::map<size_t, Point> & coordinates) const
     {
         if(coordinates.size() < vertices_number)
-            throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry!");
+            throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
 
         if(vertices_number < 3)
             throw std::out_of_range("You must have at least three vertices to define a face!");
@@ -120,7 +118,7 @@ namespace urban
     Lib3dsFace* Face::to_3ds(const std::map<size_t, Point> & coordinates)
     {
         if(coordinates.size() < vertices_number)
-            throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry!");
+            throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
         if(is_convex(coordinates))
         {
@@ -138,7 +136,65 @@ namespace urban
                 }
             );
         }
+        else
+        {
+            std::
+        }
         return face;
+    }
+
+    std::vector<> Face::partition()
+    {
+        Vector z(CGAL::unit_normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0)))),
+               x(coordinates.at(points.at(1)) - coordinates.at(points.at(0)));
+        x = x/(std::sqrt(to_double(CGAL::squared_distance(coordinates.at(points.at(0)), coordinates.at(points.at(1))))));
+        Vector y(CGAL::cross_product(z, x));
+
+        std::vector<CGAL::Partition_traits_2<Kernel>::Point_2> buffer(vertices_number);
+        Point O(coordinates.at(points.at(0)));
+        buffer[0] = CGAL::Partition_traits_2<Kernel>::Point_2(.0, .0);
+        std::transform(
+            std::next(std::begin(points), 1),
+            std::end(points),
+            std::next(std::begin(buffer), 1),
+            [&x, &y, &z, &coordinates, &O](size_t index)
+            {
+                Vector v(coordinates.at(index) - O);
+                return CGAL::Partition_traits_2<Kernel>::Point_2(v * x, v * y);
+            }
+        );
+        
+        std::map<CGAL::Partition_traits_2<Kernel>::Point_2, size_t> dict;
+        size_t image(0);
+        for(auto const & point:buffer)
+            dict[point] = image++;
+
+        std::vector<CGAL::Partition_traits_2<Kernel>::Polygon_2> partition;
+        CGAL::approx_convex_partition_2(
+            std::begin(buffer),
+            std::end(buffer),
+            std::back_inserter(partition)
+        );
+
+        std::vector<std::vector<size_t>> partition_3(partition.size());
+        std::transform(
+            std::begin(partition),
+            std::end(partition),
+            std::begin(partition_3),
+            [&coordinates, &dict](CGAL::Partition_traits_2<Kernel>::Polygon_2 polygon)
+            {
+                std::transform(
+                    polygon.vertices_begin(),
+                    polygon.vertices_end(),
+                    [](GAL::Partition_traits_2<Kernel>::Point_2 point)
+                    {
+                        dict(point);
+                        return ;
+                    }
+                );
+                return ;
+            }
+        );
     }
 
     std::ostream& operator<<(std::ostream & os, const Face & face)
