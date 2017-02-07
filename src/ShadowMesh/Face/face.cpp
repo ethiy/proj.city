@@ -75,20 +75,44 @@ namespace urban
 
     bool Face::is_convex(std::map<size_t, Point> & coordinates) const
     {
-        bool convexity;
+        if(vertices_number < 3)
+            throw std::out_of_range("You must have at least three vertices to define a face!");
 
-        if(vertices_number == 3)
-            convexity = true;
-        else
+        bool convexity(true);
+
+        /*
+         * If the face is a triangle (i.e. 'vertices_number == 3') it is convex (strictly if non-degenerate)
+         */
+        if(vertices_number > 3)
         {
-            convexity = std::all_of(
-                std::begin(points),
-                std::end(points), //circular !! at the last points you go back
-                [&coordinates](size_t index)
+            Vector normal(CGAL::unit_normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0))));
+            using points_iterator = std::vector<size_t>::iterator;
+            points_iterator circulator(std::begin(points));
+            do
+            {
+                points_iterator next_1, next_2;
+                if(circulator == std::prev(std::end(points),2))
                 {
-                    return true; //check internal angle
+                    next_1 = std::next(circulator, 1);
+                    next_2 = std::begin(points);
                 }
-            );
+                else
+                {
+                    if(circulator == std::prev(std::end(points),1))
+                    {
+                        next_1 = std::begin(points);
+                        next_2 = std::next(next_1, 1);
+                    }
+                    else
+                    {
+                        next_1 = std::next(circulator, 1);
+                        next_2 = std::next(circulator, 2);
+                    }
+                }
+                Point A(coordinates[*circulator]), B(coordinates[*next_1]), C(coordinates[*next_2]);
+                Vector internal_direction(CGAL::normal(B, B + normal, A));
+                convexity &= (internal_normal * Vector(B, C) > 0) ;
+            } while(convexity && ++circulator != std::end(points));
         }
         return convexity;
     }
@@ -112,23 +136,6 @@ namespace urban
                 }
             );
         }
-        // {
-        //     // std::transform(
-        //     //     std::next(std::begin(points), 1),
-        //     //     std::prev(std::end(points), 1),
-        //     //     std::next(std::begin(points), 2),
-
-        //     // );
-        //     std::vector<size_t> twos(vertices_number-2) , threes(vertices_number-2);
-        //     std::copy(std::next(std::begin(points), 1), std::prev(std::end(points), 1), std::begin(twos));
-        //     std::copy(std::next(std::begin(points), 2), std::end(points), std::begin(threes));
-        //     size_t two,three, it(0);
-        //     BOOST_FOREACH( boost::tie(two, three), boost::combine(twos, threes))
-        //     {
-        //         auto init = std::initializer_list<size_t>({points.at(0), two, three});
-        //         std::copy(std::begin(init), std::end(init), (face + it++)->points);
-        //     }
-        // }
         return face;
     }
 
