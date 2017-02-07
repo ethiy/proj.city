@@ -86,10 +86,4 @@ SCENARIO("ShadowMesh manipulation:")
 
         std::free(test_mesh);
     }
-
-    GIVEN("A Halfedge data structure CGAL::Polyhedron_3")
-    {
-        urban::Polyhedron hammerhead;
-        std::ifstream off_hammerhead("../../ressources/tests/hammerhead.off");
-    }
 }
