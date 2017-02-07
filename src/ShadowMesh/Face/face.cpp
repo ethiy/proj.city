@@ -68,9 +68,7 @@ namespace urban
 
     void Face::invert_orientation(void)
     {
-        std::vector<size_t> aux(vertices_number-1);
-        std::reverse_copy( std::next(std::begin(points), 1), std::end(points), std::begin(aux));
-        std::copy(std::begin(aux), std::end(aux), std::next(std::begin(points), 1) );
+        std::reverse(std::next(std::begin(points)), std::end(points));
     }
 
     bool Face::is_convex(const std::map<size_t, Point> & coordinates) const

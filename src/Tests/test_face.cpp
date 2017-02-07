@@ -196,10 +196,10 @@ SCENARIO("Face manipulation:")
             }
         }
 
-        WHEN("the facet is transformed to Lib3dsFace")
+        WHEN("A convex facet is transformed to Lib3dsFace")
         {
             urban::Face facet(indexes.size(), indexes);
-            std::map<size_t, urban::Point> coord{{145, urban::Point(15.5343f, -13.4504f, 60.8789f)}, {45, urban::Point(15.7204f, -13.188f, 60.8789f)}, {97, urban::Point(15.7204f, -13.188f, 61.1764f)}};
+            std::map<size_t, urban::Point> coord{{145, urban::Point(15.5343f, -13.4504f, 60.8789f)}, {97, urban::Point(15.7204f, -13.188f, 60.8789f)}, {85, urban::Point(15.65f, -12.988f, 60.8789f)}, {45, urban::Point(15.65f, -14.325f, 60.8789f)}};
             Lib3dsFace* face_3ds = facet.to_3ds(coord);
             THEN("the output checks")
             {
