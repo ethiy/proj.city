@@ -33,8 +33,8 @@ namespace urban
         const_iterator cend(void) const noexcept;
 
         void invert_orientation(void);
-        bool is_convex(std::map<size_t, Point> &) const;
-        Lib3dsFace* to_3ds(std::map<size_t, Point> &);
+        bool is_convex(const std::map<size_t, Point> &) const;
+        Lib3dsFace* to_3ds(const std::map<size_t, Point> &);
     private:
         size_t vertices_number;
         std::vector<size_t> points;

@@ -73,7 +73,7 @@ namespace urban
         std::copy(std::begin(aux), std::end(aux), std::next(std::begin(points), 1) );
     }
 
-    bool Face::is_convex(std::map<size_t, Point> & coordinates) const
+    bool Face::is_convex(const std::map<size_t, Point> & coordinates) const
     {
         if(vertices_number < 3)
             throw std::out_of_range("You must have at least three vertices to define a face!");
@@ -108,7 +108,7 @@ namespace urban
                         next_2 = std::next(circulator, 2);
                     }
                 }
-                Point A(coordinates[*circulator]), B(coordinates[*next_1]), C(coordinates[*next_2]);
+                Point A(coordinates.at(*circulator)), B(coordinates.at(*next_1)), C(coordinates.at(*next_2));
                 Vector internal_direction(CGAL::normal(B, B + normal, A));
                 convexity &= (internal_direction * Vector(B, C) > 0) ;
             } while(convexity && ++circulator != std::end(points));
@@ -116,8 +116,10 @@ namespace urban
         return convexity;
     }
 
-    Lib3dsFace* Face::to_3ds(std::map<size_t, Point> & coordinates)
+    Lib3dsFace* Face::to_3ds(const std::map<size_t, Point> & coordinates)
     {
+        if(coordinates.size() != vertices_number)
+            throw std::out_of_range("The coordinates map must have the same size as the indexes registry!");
         Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
         if(is_convex(coordinates))
         {
