@@ -86,11 +86,10 @@ namespace urban
         if(vertices_number > 3)
         {
             Vector normal(CGAL::unit_normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0))));
-            using points_iterator = std::vector<size_t>::iterator;
-            points_iterator circulator(std::begin(points));
+            auto circulator = std::begin(points);
             do
             {
-                points_iterator next_1, next_2;
+                decltype(circulator) next_1, next_2;
                 if(circulator == std::prev(std::end(points),2))
                 {
                     next_1 = std::next(circulator, 1);
@@ -111,7 +110,7 @@ namespace urban
                 }
                 Point A(coordinates[*circulator]), B(coordinates[*next_1]), C(coordinates[*next_2]);
                 Vector internal_direction(CGAL::normal(B, B + normal, A));
-                convexity &= (internal_normal * Vector(B, C) > 0) ;
+                convexity &= (internal_direction * Vector(B, C) > 0) ;
             } while(convexity && ++circulator != std::end(points));
         }
         return convexity;
