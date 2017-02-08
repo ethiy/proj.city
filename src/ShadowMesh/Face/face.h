@@ -18,15 +18,13 @@
 
 namespace urban
 {
-
     namespace shadow
     {
         /** 
-         * \class Face
-         * \brief Face class representing a 3D facet.
+         * @ingroup shadow
+         * @brief Face class representing a 3D facet.
          * 
-         * Shadow Face is member class of Shadow Mesh. 
-         * Shadow Face is member class of Shadow Mesh. 
+         * Shadow Face is member class of Shadow Mesh. Shadow Face is member class of Shadow Mesh:
          *  - It stores indexes for points that define a face.
          *  - Point coordinates are stored in the Mesh class.
          */
@@ -115,7 +113,7 @@ namespace urban
              * @see operator=(Face &&)
              */
             Face & operator=(const Face &) noexcept;
-            
+
             /**
              * Move assignement operator.
              * @param other an other face to copy

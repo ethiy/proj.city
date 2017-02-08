@@ -22,10 +22,21 @@
 
 namespace urban
 {
+    /** @defgroup shadow_group Shadow Structures
+    *  This an interface to external structures
+    *  @{
+    */
+
+    /**
+    *  namespace shadow is in four groups
+    *  @see @link shadow_group The first group@endlink, group2, group3, group4 
+    *
+    *  Also see @ref mypage2
+    */
     namespace shadow
     {
         /** 
-         * Mesh class representing a 3D surface.
+         * @brief Mesh class representing a 3D surface.
          * Lightweight face-based data structure representing 3D surfaces. Its role is to interface between the input/output utility that depends on external datastructures and the internal objects.
          */
         class Mesh
@@ -212,6 +223,7 @@ namespace urban
             friend std::ostream& operator<<(std::ostream &, const Mesh &);
         };
     }
+    /** @} */ // end of shadow_group
 
     /**
      * Swaps two meshes.
