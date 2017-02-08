@@ -33,9 +33,11 @@ namespace urban
             swap(points, other.points);
         }
 
-        Face & Face::operator=(Face other) noexcept
+        Face & Face::operator=(const Face & other) noexcept
         {
-            other.swap(*this);
+            vertices_number = other.vertices_number;
+            points.resize(vertices_number);
+            std::copy(std::begin(other.points), std::begin(other.points), std::begin(points));
             return *this;
         }
 

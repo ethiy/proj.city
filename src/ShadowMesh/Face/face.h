@@ -34,7 +34,7 @@ namespace urban
             void swap(Face &);
             
             /*! Assignement operator*/
-            Face & operator=(Face) noexcept;
+            Face & operator=(const Face &) noexcept;
             /*! Move assignement operator*/
             Face & operator=(Face &&) noexcept;
             /*! Access operator*/
