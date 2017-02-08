@@ -25,9 +25,9 @@ namespace urban
 
         FileHandler<std::fstream>::~FileHandler(void) {}
 
-        ShadowMesh FileHandler<std::fstream>::read(void)
+        shadow::Mesh FileHandler<std::fstream>::read(void)
         {
-            ShadowMesh mesh;
+            shadow::Mesh mesh;
             std::ostringstream error_message;
 
             if (modes["read"])
@@ -113,7 +113,7 @@ namespace urban
                         buffer_lines.clear();
                         sline.clear();
 
-                        std::map<size_t, urban::Face> faces;
+                        std::map<size_t, urban::shadow::Face> faces;
                         buffer_lines.clear();
                         buffer_lines.resize(sizes[1]);
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
@@ -130,12 +130,12 @@ namespace urban
                                 std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                                faces.emplace(std::make_pair(idx++, std::move(Face(n, indexes))));
+                                faces.emplace(std::make_pair(idx++, std::move(shadow::Face(n, indexes))));
                                 indexes.clear();
                                 sline.clear();
                             });
                         /*Mesh to return*/
-                        mesh = ShadowMesh(name, points, faces);
+                        mesh = shadow::Mesh(name, points, faces);
                     }
                     else
                     {
@@ -164,7 +164,7 @@ namespace urban
             return mesh;
         }
 
-        void FileHandler<std::fstream>::write(ShadowMesh mesh)
+        void FileHandler<std::fstream>::write(shadow::Mesh mesh)
         {
             std::ostringstream error_message;
 
@@ -196,11 +196,11 @@ namespace urban
                 );
                 
                 /*Writing faces*/
-                std::map<size_t, Face> faces = mesh.get_faces();
+                std::map<size_t, shadow::Face> faces = mesh.get_faces();
                 std::for_each(
                     std::begin(faces),
                     std::end(faces),
-                    [&](std::pair<size_t, Face> p)
+                    [&](std::pair<size_t, shadow::Face> p)
                     {
                         file << p.second << std::endl;
                     }

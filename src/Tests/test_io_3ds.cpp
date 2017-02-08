@@ -18,12 +18,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             std::map<std::string,bool> modes{{"read", true}};
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
-            std::vector<urban::ShadowMesh> meshes = handler.read();
+            std::vector<urban::shadow::Mesh> meshes = handler.read();
 
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
-                std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::ShadowMesh>(auxilary, "\n"));
+                std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::shadow::Mesh>(auxilary, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/santa_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
@@ -38,7 +38,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( std::vector<urban::ShadowMesh> meshes = handler.read() );
+                REQUIRE_THROWS( std::vector<urban::shadow::Mesh> meshes = handler.read() );
             }
         }
     }
@@ -54,7 +54,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( std::vector<urban::ShadowMesh> meshes = handler.read() );
+                REQUIRE_THROWS( std::vector<urban::shadow::Mesh> meshes = handler.read() );
             }
         }
         
@@ -65,17 +65,17 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( std::vector<urban::ShadowMesh> meshes = handler.read() );
+                REQUIRE_THROWS( std::vector<urban::shadow::Mesh> meshes = handler.read() );
             }
         }
     }
 
-    GIVEN("existing vector of urban::ShadowMesh")
+    GIVEN("existing vector of urban::shadow::Mesh")
     {
         boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         std::map<std::string,bool> _modes{{"read", true}};
         urban::io::FileHandler<Lib3dsFile> reader(filepath, _modes);
-        std::vector<urban::ShadowMesh> meshes = reader.read();
+        std::vector<urban::shadow::Mesh> meshes = reader.read();
 
         WHEN("the writing mode is chosen")
         {
@@ -86,10 +86,10 @@ SCENARIO("Input/Output from 3dsMAX file:")
             THEN("the output checks")
             {
                 urban::io::FileHandler<Lib3dsFile> checker_handler("./santa.3ds", _modes);
-                std::vector<urban::ShadowMesh> written_meshes = checker_handler.read();
+                std::vector<urban::shadow::Mesh> written_meshes = checker_handler.read();
 
                 std::ostringstream auxilary;
-                std::copy(std::begin(written_meshes), std::end(written_meshes), std::ostream_iterator<urban::ShadowMesh>(auxilary, "\n"));
+                std::copy(std::begin(written_meshes), std::end(written_meshes), std::ostream_iterator<urban::shadow::Mesh>(auxilary, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/santa_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());

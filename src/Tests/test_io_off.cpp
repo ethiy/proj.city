@@ -18,7 +18,7 @@ SCENARIO("Input/Output from OFF file:")
         {
             std::map<std::string, bool> modes{{"read", true}};
             urban::io::FileHandler<std::fstream> handler(filepath, modes);
-            urban::ShadowMesh mesh = handler.read();
+            urban::shadow::Mesh mesh = handler.read();
 
             THEN("the output checks")
             {
@@ -38,7 +38,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::ShadowMesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
             }
         }
     }
@@ -54,7 +54,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::ShadowMesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
             }
         }
 
@@ -65,17 +65,17 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::ShadowMesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
             }
         }
     }
 
-    GIVEN("An existing a urban::ShadowMesh")
+    GIVEN("An existing a urban::shadow::Mesh")
     {
         boost::filesystem::path _filepath("../../ressources/3dModels/OFF/hammerhead.off");
         std::map<std::string, bool> _modes{{"read", true}};
         urban::io::FileHandler<std::fstream> _handler(_filepath, _modes);
-        urban::ShadowMesh mesh = _handler.read();
+        urban::shadow::Mesh mesh = _handler.read();
 
         WHEN("the writing mode is chosen")
         {
@@ -86,7 +86,7 @@ SCENARIO("Input/Output from OFF file:")
             THEN("the input should check")
             {
                 urban::io::FileHandler<std::fstream> checker_handler("./hammerhead.off", _modes);
-                urban::ShadowMesh written_mesh = checker_handler.read();
+                urban::shadow::Mesh written_mesh = checker_handler.read();
 
                 std::ostringstream auxilary;
                 auxilary << written_mesh;

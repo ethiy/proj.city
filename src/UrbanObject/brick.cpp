@@ -13,7 +13,7 @@ namespace urban
 {
     Brick::Brick(void) {}
 
-    Brick::Brick(ShadowMesh mesh): name(mesh.get_name()), bounding_box(mesh.bbox())
+    Brick::Brick(shadow::Mesh mesh): name(mesh.get_name()), bounding_box(mesh.bbox())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);

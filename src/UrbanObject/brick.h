@@ -22,7 +22,7 @@ namespace urban
         /*! Brick copy constructor*/
         Brick(const Brick &);
         /*! Brick constructor form 3ds meshes*/
-        Brick(ShadowMesh);
+        Brick(shadow::Mesh);
         /*! Brick default destructor*/
         ~Brick(void);
 
