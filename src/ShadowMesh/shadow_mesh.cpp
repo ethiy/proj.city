@@ -96,9 +96,9 @@ namespace urban
                 Vector n = Vector(_face.normal[0], _face.normal[1], _face.normal[2]);
 
                 if(CGAL::determinant(v1, v2, n)>0)
-                    faces[it++] = Face(_face.points[0], _face.points[1], _face.points[2]);
+                    faces.emplace(std::make_pair(it++, std::move(Face(_face.points[0], _face.points[1], _face.points[2]))));
                 else
-                    faces[it++] = Face(_face.points[0], _face.points[2], _face.points[1]);
+                    faces.emplace(std::make_pair(it++, std::move(Face(_face.points[0], _face.points[2], _face.points[1]))));
             }
         );
         compute_box();
@@ -133,7 +133,7 @@ namespace urban
                         return get_index(halfedge);
                     }
                 );
-                faces[it++] = Face(face_degree, face_points);
+                faces.emplace(std::make_pair(it++, std::move(Face(face_degree, face_points))));
             }
         );
         compute_box();

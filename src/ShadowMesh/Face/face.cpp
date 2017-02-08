@@ -15,6 +15,7 @@ namespace urban
 {
     Face::Face(void): vertices_number(0){}
     Face::Face(const Face & other): vertices_number(other.vertices_number), points(other.points){}
+    Face::Face(Face && other): vertices_number(std::move(other.vertices_number)), points(std::move(other.points)){}
     Face::Face(size_t first, size_t second, size_t third): vertices_number(3), points{{first, second, third}}{}
     Face::Face(size_t _vertices_number, const std::vector<size_t> & _points):vertices_number(_vertices_number), points(_points)
     {
@@ -30,9 +31,16 @@ namespace urban
         swap(points, other.points);
     }
 
-    Face & Face::operator=(Face other)
+    Face & Face::operator=(Face other) noexcept
     {
         other.swap(*this);
+        return *this;
+    }
+
+    Face & Face::operator=(Face && other) noexcept
+    {
+        vertices_number = std::move(other.vertices_number);
+        points = std::move(other.points);
         return *this;
     }
 
@@ -137,64 +145,8 @@ namespace urban
             );
         }
         else
-        {
-            std::
-        }
+            throw std::logic_error("Cannot convert non convex faces to 3ds for now");
         return face;
-    }
-
-    std::vector<> Face::partition()
-    {
-        Vector z(CGAL::unit_normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0)))),
-               x(coordinates.at(points.at(1)) - coordinates.at(points.at(0)));
-        x = x/(std::sqrt(to_double(CGAL::squared_distance(coordinates.at(points.at(0)), coordinates.at(points.at(1))))));
-        Vector y(CGAL::cross_product(z, x));
-
-        std::vector<CGAL::Partition_traits_2<Kernel>::Point_2> buffer(vertices_number);
-        Point O(coordinates.at(points.at(0)));
-        buffer[0] = CGAL::Partition_traits_2<Kernel>::Point_2(.0, .0);
-        std::transform(
-            std::next(std::begin(points), 1),
-            std::end(points),
-            std::next(std::begin(buffer), 1),
-            [&x, &y, &z, &coordinates, &O](size_t index)
-            {
-                Vector v(coordinates.at(index) - O);
-                return CGAL::Partition_traits_2<Kernel>::Point_2(v * x, v * y);
-            }
-        );
-        
-        std::map<CGAL::Partition_traits_2<Kernel>::Point_2, size_t> dict;
-        size_t image(0);
-        for(auto const & point:buffer)
-            dict[point] = image++;
-
-        std::vector<CGAL::Partition_traits_2<Kernel>::Polygon_2> partition;
-        CGAL::approx_convex_partition_2(
-            std::begin(buffer),
-            std::end(buffer),
-            std::back_inserter(partition)
-        );
-
-        std::vector<std::vector<size_t>> partition_3(partition.size());
-        std::transform(
-            std::begin(partition),
-            std::end(partition),
-            std::begin(partition_3),
-            [&coordinates, &dict](CGAL::Partition_traits_2<Kernel>::Polygon_2 polygon)
-            {
-                std::transform(
-                    polygon.vertices_begin(),
-                    polygon.vertices_end(),
-                    [](GAL::Partition_traits_2<Kernel>::Point_2 point)
-                    {
-                        dict(point);
-                        return ;
-                    }
-                );
-                return ;
-            }
-        );
     }
 
     std::ostream& operator<<(std::ostream & os, const Face & face)

@@ -13,15 +13,20 @@ namespace urban
     class Face
     {
     public:
+        /*! Empty Face constructor*/
         Face(void);
+        /*! Copy constructor*/
         Face(const Face &);
+        /*! Move */
+        Face(Face &&);
         Face(size_t, const std::vector<size_t> &);
         Face(size_t, size_t, size_t);
         ~Face(void);
 
         void swap(Face &);
         
-        Face & operator=(Face);
+        Face & operator=(Face) noexcept;
+        Face & operator=(Face &&) noexcept;
         size_t operator[](size_t);
 
         size_t size(void) const noexcept;
@@ -38,6 +43,7 @@ namespace urban
     private:
         size_t vertices_number;
         std::vector<size_t> points;
+
         friend std::ostream& operator<<(std::ostream &, const Face &);
     };
 

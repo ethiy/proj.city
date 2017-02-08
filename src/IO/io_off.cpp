@@ -130,7 +130,7 @@ namespace urban
                                 std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                                faces[idx++] = Face(n, indexes);
+                                faces.emplace(std::make_pair(idx++, std::move(Face(n, indexes))));
                                 indexes.clear();
                                 sline.clear();
                             });
