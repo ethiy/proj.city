@@ -18,8 +18,11 @@ namespace urban
         class Mesh
         {
         public:
+            /*! Empty constructor*/
             Mesh(void);
+            /*! Copy constructor*/
             Mesh(const Mesh &);
+            /*! Move constructor*/
             Mesh(Mesh &&);
             Mesh(Lib3dsMesh*);
             Mesh(const Polyhedron &);
@@ -28,7 +31,7 @@ namespace urban
 
             void swap(Mesh &);
 
-            Mesh & operator=(Mesh) noexcept;
+            Mesh & operator=(const Mesh &) noexcept;
             Mesh & operator=(Mesh &&) noexcept;
 
             std::string get_name(void) const noexcept;

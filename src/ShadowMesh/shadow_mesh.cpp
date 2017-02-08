@@ -158,9 +158,12 @@ namespace urban
             swap(bounding_box, other.bounding_box);
         }
 
-        Mesh & Mesh::operator=(Mesh other) noexcept
+        Mesh & Mesh::operator=(const Mesh & other) noexcept
         {
-            other.swap(*this);
+            name = other.name;
+            points = other.points;
+            faces = other.faces;
+            bounding_box = bounding_box;
             return *this;
         }
 
