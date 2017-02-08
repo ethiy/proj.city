@@ -85,13 +85,14 @@ namespace urban
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
 
             if(vertices_number < 3)
-                throw std::out_of_range("You must have at least three vertices to define a face!");
+                throw std::out_of_range("You must have at least three vertices to define a face");
 
             bool convexity(true);
 
             /*
             * If the face is a triangle (i.e. 'vertices_number == 3') it is convex (strictly if non-degenerate)
             */
+
             if(vertices_number > 3)
             {
                 Vector normal(CGAL::unit_normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0))));
