@@ -114,8 +114,8 @@ namespace urban
              * @param other an other face to copy
              * @see operator=(Face &&)
              */
-
             Face & operator=(const Face &) noexcept;
+            
             /**
              * Move assignement operator.
              * @param other an other face to copy
