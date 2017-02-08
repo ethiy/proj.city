@@ -4,7 +4,6 @@
  * \file shadow_mesh.h
  * \brief Shadow Mesh definition
  * \author Oussama Ennafii
- * \version 0.0.0
  * \date 8 february 2017
  */
 

@@ -4,7 +4,6 @@
  * \file face.h
  * \brief Shadow Face definition
  * \author Oussama Ennafii
- * \version 0.0.0
  * \date 8 february 2017
  */
 
