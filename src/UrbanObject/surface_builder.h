@@ -14,11 +14,11 @@ namespace urban
     class SurfaceBuilder: public CGAL::Modifier_base<HDS>
     {
     public:
-        SurfaceBuilder(ShadowMesh _shadow_mesh): shadow_mesh(_shadow_mesh){}
+        SurfaceBuilder(shadow::Mesh _shadow_mesh): shadow_mesh(_shadow_mesh){}
         void operator()(HDS & target)
         {
             std::map<size_t, Point> points = shadow_mesh.get_points();
-            std::map<size_t, Face> faces = shadow_mesh.get_faces();
+            std::map<size_t, shadow::Face> faces = shadow_mesh.get_faces();
 
             CGAL::Polyhedron_incremental_builder_3<HDS> incremental_builder( target, true);
             incremental_builder.begin_surface(points.size(), faces.size());
@@ -34,7 +34,7 @@ namespace urban
             std::for_each(
                 std::begin(faces),
                 std::end(faces),
-                [&](std::pair<size_t, Face> face)
+                [&](std::pair<size_t, shadow::Face> face)
                 {
                     incremental_builder.begin_facet();
                     std::for_each(
@@ -51,6 +51,6 @@ namespace urban
             incremental_builder.end_surface();
         }
     private:
-        ShadowMesh shadow_mesh;
+        shadow::Mesh shadow_mesh;
     };
 }

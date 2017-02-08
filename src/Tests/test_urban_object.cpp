@@ -11,12 +11,12 @@
 
 SCENARIO("Urban Brick manipulation:")
 {
-    GIVEN("A urban::ShadowMesh object")
+    GIVEN("A urban::shadow::Mesh object")
     {
         std::map<std::string,bool> modes{{"read", true}};
         boost::filesystem::path filepath("../../ressources/3dModels/OFF/hammerhead.off");
         urban::io::FileHandler<std::fstream> handler(filepath, modes);
-        urban::ShadowMesh mesh = handler.read();
+        urban::shadow::Mesh mesh = handler.read();
 
         WHEN("the urban Brick is constructed")
         {
