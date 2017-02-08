@@ -71,6 +71,7 @@ namespace urban
 
         Mesh::Mesh(void):name("N/A"){}
         Mesh::Mesh(const Mesh & other):name(other.name), points(other.points), faces(other.faces), bounding_box(other.bounding_box){}
+        Mesh::Mesh(Mesh && other):name(std::move(other.name)), points(std::move(other.points)), faces(std::move(other.faces)), bounding_box(std::move(other.bounding_box)){}
         Mesh::Mesh(Lib3dsMesh* lib3ds_mesh):name(lib3ds_mesh->name)
         {
             size_t it(0);
@@ -105,15 +106,16 @@ namespace urban
             );
             compute_box();
         }
-        Mesh::Mesh(Polyhedron polyhedron)
+
+        Mesh::Mesh(const Polyhedron & polyhedron)
         {
             size_t it(0);
             std::for_each(
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
-                [&](Point & point)
+                [&](const Point & point)
                 {
-                    points[it++] = point;
+                    points.emplace(std::make_pair(it++, point));
                 }
             );
 
@@ -121,7 +123,7 @@ namespace urban
             std::for_each(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
-                [&](Facet & facet)
+                [&](const Facet & facet)
                 {
                     size_t face_degree(facet.facet_degree());
                     std::vector<size_t> face_points(face_degree);
@@ -130,7 +132,7 @@ namespace urban
                         std::next(facet.facet_begin(), 1),
                         std::next(facet.facet_begin(), face_degree),
                         std::next(std::begin(face_points), 1),
-                        [&](Polyhedron::Halfedge & halfedge)
+                        [&](const Polyhedron::Halfedge & halfedge)
                         {
                             return get_index(halfedge);
                         }
@@ -156,9 +158,18 @@ namespace urban
             swap(bounding_box, other.bounding_box);
         }
 
-        Mesh & Mesh::operator=(Mesh other)
+        Mesh & Mesh::operator=(Mesh other) noexcept
         {
             other.swap(*this);
+            return *this;
+        }
+
+        Mesh & Mesh::operator=(Mesh && other) noexcept
+        {
+            name = std::move(other.name);
+            points = std::move(other.points);
+            faces = std::move(other.faces);
+            bounding_box = std::move(bounding_box);
             return *this;
         }
 

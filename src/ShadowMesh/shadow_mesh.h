@@ -20,14 +20,16 @@ namespace urban
         public:
             Mesh(void);
             Mesh(const Mesh &);
+            Mesh(Mesh &&);
             Mesh(Lib3dsMesh*);
-            Mesh(Polyhedron);
+            Mesh(const Polyhedron &);
             Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>);
             ~Mesh(void);
 
             void swap(Mesh &);
 
-            Mesh & operator=(Mesh);
+            Mesh & operator=(Mesh) noexcept;
+            Mesh & operator=(Mesh &&) noexcept;
 
             std::string get_name(void) const noexcept;
             size_t get_number_points(void) const noexcept;

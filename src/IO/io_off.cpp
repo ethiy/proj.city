@@ -27,7 +27,6 @@ namespace urban
 
         shadow::Mesh FileHandler<std::fstream>::read(void)
         {
-            shadow::Mesh mesh;
             std::ostringstream error_message;
 
             if (modes["read"])
@@ -135,7 +134,7 @@ namespace urban
                                 sline.clear();
                             });
                         /*Mesh to return*/
-                        mesh = shadow::Mesh(name, points, faces);
+                        return shadow::Mesh(name, points, faces);
                     }
                     else
                     {
@@ -161,7 +160,7 @@ namespace urban
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
 
-            return mesh;
+            return shadow::Mesh();
         }
 
         void FileHandler<std::fstream>::write(shadow::Mesh mesh)
