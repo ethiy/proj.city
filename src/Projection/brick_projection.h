@@ -12,7 +12,6 @@ namespace urban
     {
     public:
         BrickProjection(void);
-        BrickProjection(const std::string &, const std::vector<FaceProjection> &, const Polygon_with_holes &, const Bbox_2 &);
         BrickProjection(const std::string &, const Bbox &);
         BrickProjection(const BrickProjection &);
         ~BrickProjection(void);
