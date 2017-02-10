@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CGAL/Homogeneous.h>
+#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 
 #include <CGAL/IO/Color.h>
 
@@ -32,7 +32,7 @@ namespace urban
         };
     };
 
-    typedef CGAL::Homogeneous<double> Kernel;
+    typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
     typedef Kernel::Point_3 Point;
     typedef Kernel::Vector_3 Vector;
     typedef Kernel::Plane_3 Plane;

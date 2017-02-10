@@ -102,7 +102,7 @@ namespace urban
                 /*! Start with the first point*/
                 auto halfedge = facet.halfedge();
                 Point vertex(halfedge->vertex()->point());
-                facet_points[0] = Point_2(to_double(vertex.x()), to_double(vertex.y()));
+                facet_points[0] = Point_2(vertex.x(), vertex.y());
                 std::transform(
                     std::next(facet.facet_begin(), 1),
                     std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
@@ -110,13 +110,18 @@ namespace urban
                     [&vertex](const Polyhedron::Halfedge & h)
                     {
                         vertex = h.vertex()->point();
-                        return Point_2(to_double(vertex.x()), to_double(vertex.y()));
+                        return Point_2(vertex.x(), vertex.y());
                     }
                 );
 
                 /*! If projected points are colinear then we store only the extremal points*/
                 if(check_colinearity(std::begin(facet_points), std::end(facet_points)))
                     extrem_points(facet_points);
+                
+                if(Polygon(std::begin(facet_points), std::end(facet_points)).orientation() == CGAL::CLOCKWISE)
+                    std::reverse(std::begin(facet_points), std::end(facet_points));
+                Polygon p(std::begin(facet_points), std::end(facet_points));
+                bool debug(p.orientation() == CGAL::COUNTERCLOCKWISE);
 
                 return FaceProjection(   Polygon_with_holes( Polygon(    std::begin(facet_points),
                                                                          std::end(facet_points)
