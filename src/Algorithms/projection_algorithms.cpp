@@ -118,15 +118,12 @@ namespace urban
                 if(check_colinearity(std::begin(facet_points), std::end(facet_points)))
                     extrem_points(facet_points);
                 
-                if(Polygon(std::begin(facet_points), std::end(facet_points)).orientation() == CGAL::CLOCKWISE)
-                    std::reverse(std::begin(facet_points), std::end(facet_points));
-                Polygon p(std::begin(facet_points), std::end(facet_points));
-                bool debug(p.orientation() == CGAL::COUNTERCLOCKWISE);
+                Polygon outer_boundary(Polygon(std::begin(facet_points), std::end(facet_points)));
+                
+                if(outer_boundary.orientation() == CGAL::CLOCKWISE)
+                    outer_boundary.reverse_orientation();
 
-                return FaceProjection(   Polygon_with_holes( Polygon(    std::begin(facet_points),
-                                                                         std::end(facet_points)
-                                                                    )
-                                                           ),
+                return FaceProjection(   Polygon_with_holes(outer_boundary),
                                          Facet::Plane(   halfedge->vertex()->point(),
                                                          halfedge->next()->vertex()->point(),
                                                          halfedge->next()->next()->vertex()->point()
