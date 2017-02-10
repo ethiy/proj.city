@@ -109,8 +109,7 @@ namespace urban
                     std::next(std::begin(facet_points), 1),
                     [&vertex](const Polyhedron::Halfedge & h)
                     {
-                        vertex = h.vertex()->point();
-                        return Point_2(vertex.x(), vertex.y());
+                        return Point_2(h.vertex()->point().x(), h.vertex()->point().y());
                     }
                 );
 
@@ -131,16 +130,55 @@ namespace urban
                                      );
             }
         );
+
+        /* Heuristic in order to have the minimum number of occlusions to deal with
+         */
+        // struct
+        // {
+        //     bool operator()(const FaceProjection & facet_a, const FaceProjection & facet_b)
+        //     {
+        //         /* If one of the faces is perpendicular do not bother changing order
+        //          */
+        //         std::cout << "I iz:";
+        //         bool greater(true); 
+        //         if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
+        //         {
+        //             Point_2 point_a(
+        //                 CGAL::centroid(
+        //                     facet_a.outer_boundary()[0],
+        //                     facet_a.outer_boundary()[1],
+        //                     facet_a.outer_boundary()[2]
+        //                 )
+        //             );
+        //             Point_2 point_b(
+        //                 CGAL::centroid(
+        //                     facet_b.outer_boundary()[0],
+        //                     facet_b.outer_boundary()[1],
+        //                     facet_b.outer_boundary()[2]
+        //                 )
+        //             );
+        //             greater = facet_b.get_plane_height(point_b) < facet_a.get_plane_height(point_a);
+        //         }
+        //             std::cout << " : " << std::boolalpha <<greater  << std::endl;
+        //         return greater;
+        //     }
+        // } heuristic_plane_comparator;
+        // std::sort(
+        //     std::begin(facets),
+        //     std::end(facets),
+        //     heuristic_plane_comparator
+        // );
+
         return facets;
     }
 
-    double area(FaceProjection & facet)
+    double area(const FaceProjection & facet)
     {
         return std::accumulate(
                     facet.holes_begin(),
                     facet.holes_end(),
                     to_double(facet.outer_boundary().area()),
-                    [](double & holes_area, Polygon hole)
+                    [](double & holes_area, const Polygon & hole)
                     {
                         return holes_area - to_double(hole.area());
                     }
@@ -161,24 +199,27 @@ namespace urban
         else
         {
             Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
+            std::vector<Polygon_with_holes> superposition;
 
-            CGAL::do_intersect(first, second);
             if(CGAL::do_overlap(first.bbox(), second.bbox()))
-            {
-                std::vector<Polygon_with_holes> superposition;
                 CGAL::intersection(first, second, std::back_inserter(superposition));
 
+            if(!superposition.empty())
+            {
                 Polygon_with_holes lhs_occlusion, rhs_occlusion;
 
                 std::for_each(
                     std::begin(superposition),
                     std::end(superposition),
-                    [&](Polygon_with_holes intersection)
+                    [&lhs, &rhs, &lhs_occlusion, &rhs_occlusion](Polygon_with_holes intersection)
                     {
-                        Point_2 A(intersection.outer_boundary()[0]),
-                                B(intersection.outer_boundary()[1]),
-                                C(intersection.outer_boundary()[2]);
-                        Point_2 intersection_point(CGAL::centroid(A, B, C)); 
+                        Point_2 intersection_point(
+                            CGAL::centroid(
+                                intersection.outer_boundary()[0],
+                                intersection.outer_boundary()[1],
+                                intersection.outer_boundary()[2]
+                                )
+                        ); 
                         if(lhs.get_plane_height(intersection_point) > rhs.get_plane_height(intersection_point))
                             CGAL::join(rhs_occlusion, intersection, rhs_occlusion);
                         else

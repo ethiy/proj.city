@@ -29,7 +29,7 @@ namespace urban
         return Vector(supporting_plane.a(), supporting_plane.b(), supporting_plane.c());
     }
 
-    double FaceProjection::get_plane_height(const Point_2 & point)
+    double FaceProjection::get_plane_height(const Point_2 & point) const
     {
         if( supporting_plane.c() == 0)
             throw std::overflow_error("The supporting plane is vertical!");
@@ -37,30 +37,30 @@ namespace urban
     }
 
 
-    double FaceProjection::get_height(const Point_2 & point)
+    double FaceProjection::get_height(const Point_2 & point) const
     {
         return !is_degenerate() * contains(point) * get_plane_height(point) ;
     }
 
-     FaceProjection::Hole_const_iterator FaceProjection::holes_begin(void)
+     FaceProjection::Hole_const_iterator FaceProjection::holes_begin(void) const
     {
         return projected_polygon.holes_begin();
     }
 
-     FaceProjection::Hole_const_iterator FaceProjection::holes_end(void)
+     FaceProjection::Hole_const_iterator FaceProjection::holes_end(void) const
     {
         return  projected_polygon.holes_end();
     }
 
-    Polygon FaceProjection::outer_boundary(void)
+    Polygon FaceProjection::outer_boundary(void) const
     {
         return projected_polygon.outer_boundary();
     }
 
 
-    bool FaceProjection::is_degenerate(void)
+    bool FaceProjection::is_degenerate(void) const
     {
-        return is_perpendicular() || area(*this) == 0;
+        return is_perpendicular() || ( holes_begin() != holes_end() && area(*this) == 0); /* If it has no holes no need to check surface */
     }
 
     bool FaceProjection::is_perpendicular(void) const
@@ -68,7 +68,7 @@ namespace urban
         return supporting_plane.c() == 0;
     }
 
-    bool FaceProjection::contains(const Point_2 & point)
+    bool FaceProjection::contains(const Point_2 & point) const
     {
         return  projected_polygon.outer_boundary().bounded_side(point) != CGAL::ON_UNBOUNDED_SIDE
                 &&

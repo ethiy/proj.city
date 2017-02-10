@@ -29,10 +29,12 @@ namespace urban
         const_iterator cend(void);
 
         
+        bool contains(const Polygon_with_holes &) const;
+        bool is_under(const FaceProjection &) const;
         void push_facet(FaceProjection &);
 
-        bool in_domain(const Point_2 &);
-        double get_height(const Point_2 &);
+        bool in_domain(const Point_2 &) const;
+        double get_height(const Point_2 &) const;
     private:
         std::string name;
         std::vector<FaceProjection> facets_xy;

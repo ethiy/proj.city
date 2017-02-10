@@ -21,7 +21,7 @@ namespace urban
     std::vector<FaceProjection> project_xy(const Brick &);
 
     /*! Compute FaceProjection area*/
-    double area(FaceProjection &);
+    double area(const FaceProjection &);
 
     /*! Computes FaceProjection occlutions and gets rid of all perpendicular facets*/
     std::vector<FaceProjection> occlusion(FaceProjection &, FaceProjection &);
