@@ -12,7 +12,7 @@ namespace urban
     {
     public:
         BrickProjection(void);
-        BrickProjection(const std::string &, const std::vector<FaceProjection> &, const Bbox_2 &);
+        BrickProjection(const std::string &, const std::vector<FaceProjection> &, const Polygon_with_holes &, const Bbox_2 &);
         BrickProjection(const std::string &, const Bbox &);
         BrickProjection(const BrickProjection &);
         ~BrickProjection(void);
@@ -28,6 +28,8 @@ namespace urban
         iterator end(void);
         const_iterator cbegin(void);
         const_iterator cend(void);
+
+        
         void push_facet(FaceProjection &);
 
         bool in_domain(const Point_2 &);
@@ -35,6 +37,7 @@ namespace urban
     private:
         std::string name;
         std::vector<FaceProjection> facets_xy;
+        Polygon_with_holes projected_surface;
         Bbox_2 bounding_box;
     };
 }

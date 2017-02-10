@@ -8,9 +8,9 @@
 namespace urban
 {
     BrickProjection::BrickProjection(void){}
-    BrickProjection::BrickProjection(const std::string & _name, const std::vector<FaceProjection> & _facets_xy, const Bbox_2 & _bounding_box):name(_name), facets_xy(_facets_xy), bounding_box(_bounding_box){}
+    BrickProjection::BrickProjection(const std::string & _name, const std::vector<FaceProjection> & _facets_xy, const Polygon_with_holes & _projected_surface, const Bbox_2 & _bounding_box):name(_name), facets_xy(_facets_xy), projected_surface(_projected_surface), bounding_box(_bounding_box){}
     BrickProjection::BrickProjection(const std::string & _name, const Bbox & _bounding_box):name(_name), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
-    BrickProjection::BrickProjection(const BrickProjection & other):name(other.name), facets_xy(other.facets_xy), bounding_box(other.bounding_box){}
+    BrickProjection::BrickProjection(const BrickProjection & other):name(other.name), facets_xy(other.facets_xy), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
     BrickProjection::~BrickProjection(void){}
 
     void BrickProjection::set_name(const std::string & _name)
