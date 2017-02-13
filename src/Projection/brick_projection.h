@@ -12,12 +12,16 @@ namespace urban
     {
     public:
         BrickProjection(void);
-        BrickProjection(const std::string &, const Bbox &);
-        BrickProjection(const BrickProjection &);
+        BrickProjection(const std::string & _name, const Bbox & _bounding_box);
+        BrickProjection(const BrickProjection &other);
+        BrickProjection(BrickProjection && other);
         ~BrickProjection(void);
 
-        void set_name(const std::string &);
-        void set_Bbox(const Bbox &);
+        void swap(BrickProjection & other);
+        
+        BrickProjection operator=(const BrickProjection & other);
+
+        BrickProjection operator=(BrickProjection && other);
 
         Bbox_2 bbox(void);
 
@@ -41,4 +45,6 @@ namespace urban
         Polygon_with_holes projected_surface;
         Bbox_2 bounding_box;
     };
+
+    void swap(BrickProjection & lhs, BrickProjection & rhs);
 }

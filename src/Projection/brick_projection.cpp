@@ -14,16 +14,34 @@ namespace urban
     BrickProjection::BrickProjection(void):name("N/A"), projected_surface(), bounding_box(){}
     BrickProjection::BrickProjection(const std::string & _name, const Bbox & _bounding_box):name(_name), projected_surface(), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
     BrickProjection::BrickProjection(const BrickProjection & other):name(other.name), facets_xy(other.facets_xy), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
+    BrickProjection::BrickProjection(BrickProjection && other):name(std::move(other.name)), facets_xy(std::move(other.facets_xy)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
     BrickProjection::~BrickProjection(void){}
 
-    void BrickProjection::set_name(const std::string & _name)
+    void BrickProjection::swap(BrickProjection & other)
     {
-        name = _name;
+        using std::swap;
+        swap(name, other.name);
+        swap(facets_xy, other.facets_xy);
+        swap(projected_surface, other.projected_surface);
+        swap(bounding_box, other.bounding_box);
+    }
+        
+    BrickProjection BrickProjection::operator=(const BrickProjection & other)
+    {
+        name = other.name;
+        facets_xy = std::move(other.facets_xy);
+        projected_surface = std::move(other.projected_surface);
+        bounding_box = std::move(other.bounding_box);
+        return *this;
     }
 
-    void BrickProjection::set_Bbox(const Bbox & _bounding_box)
+    BrickProjection BrickProjection::operator=(BrickProjection && other)
     {
-        bounding_box = Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax());
+        name = std::move(other.name);
+        std::copy(std::begin(other.facets_xy), std::end(other.facets_xy), std::begin(facets_xy));
+        projected_surface = std::move(other.projected_surface);
+        bounding_box = std::move(other.bounding_box);
+        return *this;
     }
 
 
@@ -89,7 +107,7 @@ namespace urban
 
     double BrickProjection::get_height(const Point_2 & point) const
     {
-        if(in_domain(point))
+        if(true) // To be checked
             return std::accumulate(
                 std::begin(facets_xy),
                 std::end(facets_xy),
@@ -101,5 +119,10 @@ namespace urban
             );
         else
             throw std::out_of_range("The point is not inside the bounding box");
+    }
+
+    void swap(BrickProjection & lhs, BrickProjection & rhs)
+    {
+        lhs.swap(rhs);
     }
 }

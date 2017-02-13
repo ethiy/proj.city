@@ -12,7 +12,29 @@ namespace urban
     FaceProjection::FaceProjection(void){}
     FaceProjection::FaceProjection(const Polygon_with_holes & _projected_polygon, const Plane & _supporting_plane):projected_polygon(_projected_polygon), supporting_plane(_supporting_plane){}
     FaceProjection::FaceProjection(const FaceProjection & other):projected_polygon(other.projected_polygon), supporting_plane(other.supporting_plane){}
+    FaceProjection::FaceProjection(FaceProjection && other):projected_polygon(std::move(other.projected_polygon)), supporting_plane(std::move(other.supporting_plane)){}
     FaceProjection::~FaceProjection(void){}
+
+    void FaceProjection::swap(FaceProjection & other)
+    {
+        using std::swap;
+        swap(projected_polygon, other.projected_polygon);
+        swap(supporting_plane, other.supporting_plane);
+    }
+
+    FaceProjection & FaceProjection::operator=(const FaceProjection & other)
+    {
+        projected_polygon = other.projected_polygon;
+        supporting_plane = other.supporting_plane;
+        return *this;
+    }
+
+    FaceProjection & FaceProjection::operator=(FaceProjection && other)
+    {
+        projected_polygon = std::move(other.projected_polygon);
+        supporting_plane = std::move(other.supporting_plane);
+        return *this;
+    }
 
     Polygon_with_holes FaceProjection::get_polygon(void) const noexcept
     {
@@ -80,5 +102,10 @@ namespace urban
                         return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
                     }
                 );
+    }
+
+    void swap(FaceProjection & lhs, FaceProjection & rhs)
+    {
+        lhs.swap(rhs);
     }
 }

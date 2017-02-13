@@ -11,9 +11,16 @@ namespace urban
     {
     public:
         FaceProjection(void);
-        FaceProjection(const Polygon_with_holes &, const Plane &);
-        FaceProjection(const FaceProjection &);
+        FaceProjection(const Polygon_with_holes & _projected_polygon, const Plane & _supporting_plane);
+        FaceProjection(const FaceProjection & other);
+        FaceProjection(FaceProjection && other);
         ~FaceProjection(void);
+
+        void swap(FaceProjection & other);
+
+        FaceProjection & operator=(const FaceProjection & other);
+
+        FaceProjection & operator=(FaceProjection && other);
 
         Polygon_with_holes get_polygon(void) const noexcept;
         Plane get_plane(void) const noexcept;
@@ -35,10 +42,12 @@ namespace urban
         bool is_degenerate(void) const;
         bool is_perpendicular(void) const;
 
-        bool contains(const Point_2 &) const;
+        bool contains(const Point_2 & point) const;
 
     private:
         Polygon_with_holes projected_polygon;
         Plane supporting_plane;
     };
+
+    void swap(FaceProjection & lhs, FaceProjection & rhs);
 }
