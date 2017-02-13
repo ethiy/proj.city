@@ -94,7 +94,7 @@ namespace urban
     BrickProjection project(const Brick & brick)
     {
         BrickProjection projection(brick.get_name(), brick.bbox());
-        std::vector<FaceProjection> projected_facets = std::move(project_xy(brick, false)); /** Don't keep perpendicular faces*/
+        std::vector<FaceProjection> projected_facets = project_xy(brick, false); /** Don't keep perpendicular faces*/
         size_t it(0);
         std::for_each(
             std::begin(projected_facets),
@@ -151,16 +151,17 @@ namespace urban
                     if(outer_boundary.orientation() == CGAL::CLOCKWISE)
                         outer_boundary.reverse_orientation();
                     
-                    facets[it++] = std::move(
-                        FaceProjection(
+                    facets[it++] = 
+                        FaceProjection
+                        (
                             Polygon_with_holes(outer_boundary),
-                            Facet::Plane(
+                            Facet::Plane
+                            (
                                 halfedge->vertex()->point(),
                                 halfedge->next()->vertex()->point(),
                                 halfedge->next()->next()->vertex()->point()
                             )
-                        )
-                    );
+                        );
                 }
             }
         );
