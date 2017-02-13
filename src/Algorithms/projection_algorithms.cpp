@@ -167,14 +167,14 @@ namespace urban
 
         /* Heuristic in order to have the minimum number of occlusions to deal with
          */
-        // struct
-        // {
-        //     bool operator()(const FaceProjection & facet_a, const FaceProjection & facet_b)
+        // std::sort(
+        //     std::begin(facets),
+        //     std::end(facets),
+        //     [&it](const FaceProjection & facet_a, const FaceProjection & facet_b)
         //     {
         //         /* If one of the faces is perpendicular do not bother changing order
         //          */
-        //         std::cout << "I iz:";
-        //         bool greater(true); 
+        //         bool greater(false); 
         //         if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
         //         {
         //             Point_2 point_a(
@@ -193,14 +193,8 @@ namespace urban
         //             );
         //             greater = facet_b.get_plane_height(point_b) < facet_a.get_plane_height(point_a);
         //         }
-        //             std::cout << " : " << std::boolalpha <<greater  << std::endl;
         //         return greater;
         //     }
-        // } heuristic_plane_comparator;
-        // std::sort(
-        //     std::begin(facets),
-        //     std::end(facets),
-        //     heuristic_plane_comparator
         // );
 
         return facets;
