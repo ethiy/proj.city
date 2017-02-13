@@ -28,9 +28,8 @@ namespace urban
 
     /**
     *  namespace shadow is in four groups
-    *  @see @link shadow_group The first group@endlink, group2, group3, group4 
+    *  @see @link shadow_group The i/o interface @endlink
     *
-    *  Also see @ref mypage2
     */
     namespace shadow
     {
@@ -63,7 +62,7 @@ namespace urban
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            Mesh(const Mesh &);
+            Mesh(const Mesh & other);
 
             /**
              * Move constructor.
@@ -75,7 +74,7 @@ namespace urban
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            Mesh(Mesh &&);
+            Mesh(Mesh && other);
 
             /**
              * Constructor cconverting from Lib3dsMesh.
@@ -87,7 +86,7 @@ namespace urban
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            Mesh(Lib3dsMesh*);
+            Mesh(Lib3dsMesh* lib3ds_mesh);
 
             /**
              * General constructor. 
@@ -99,7 +98,7 @@ namespace urban
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            Mesh(const Polyhedron &);
+            Mesh(const Polyhedron & polyhedron);
 
             /**
              * General constructor. 
@@ -113,7 +112,7 @@ namespace urban
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>);
+            Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces);
 
             /** 
              * Destructor.
@@ -132,7 +131,7 @@ namespace urban
              * @param other an other mesh to swap with
              * @see swap(shadow::Mesh &, shadow::Mesh &)
              */
-            void swap(Mesh &);
+            void swap(Mesh & other);
 
 
             /**
@@ -140,7 +139,7 @@ namespace urban
              * @param other an other mesh to copy
              * @see operator=(Mesh &&)
              */
-            Mesh & operator=(const Mesh &) noexcept;
+            Mesh & operator=(const Mesh & other) noexcept;
 
 
             /**
@@ -148,7 +147,7 @@ namespace urban
              * @param other an other face to copy
              * @see operator=(const Mesh &)
              */
-            Mesh & operator=(Mesh &&) noexcept;
+            Mesh & operator=(Mesh && other) noexcept;
 
 
             /**
@@ -219,7 +218,7 @@ namespace urban
              * @param mesh the Mesh to write
              * @return the output stream
              */
-            friend std::ostream& operator<<(std::ostream &, const Mesh &);
+            friend std::ostream& operator<<(std::ostream & os, const Mesh & mesh);
         };
     }
     /** @} */ // end of shadow_group
@@ -229,5 +228,5 @@ namespace urban
      * @param lhs left-hand Mesh.
      * @param rhs right-hand Mesh.
      */
-    void swap(shadow::Mesh &, shadow::Mesh &);
+    void swap(shadow::Mesh & lhs, shadow::Mesh & rhs);
 }

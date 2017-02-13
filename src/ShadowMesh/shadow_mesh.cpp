@@ -99,9 +99,9 @@ namespace urban
                     Vector n = Vector(_face.normal[0], _face.normal[1], _face.normal[2]);
 
                     if(CGAL::determinant(v1, v2, n)>0)
-                        faces.emplace(std::make_pair(it++, std::move(Face(_face.points[0], _face.points[1], _face.points[2]))));
+                        faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[1], _face.points[2])));
                     else
-                        faces.emplace(std::make_pair(it++, std::move(Face(_face.points[0], _face.points[2], _face.points[1]))));
+                        faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[2], _face.points[1])));
                 }
             );
             compute_box();
@@ -130,20 +130,20 @@ namespace urban
                     face_points[0] = get_index(*(facet.facet_begin()));
                     std::transform(
                         std::next(facet.facet_begin(), 1),
-                        std::next(facet.facet_begin(), face_degree),
+                        std::next(facet.facet_begin(), static_cast<long>(face_degree)),
                         std::next(std::begin(face_points), 1),
                         [&](const Polyhedron::Halfedge & halfedge)
                         {
                             return get_index(halfedge);
                         }
                     );
-                    faces.emplace(std::make_pair(it++, std::move(Face(face_degree, face_points))));
+                    faces.emplace(std::make_pair(it++, Face(face_degree, face_points)));
                 }
             );
             compute_box();
         }
 
-        Mesh::Mesh(std::string _name, std::map<size_t, Point>_points, std::map<size_t, Face> _faces):name(_name), points(_points), faces(_faces)
+        Mesh::Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces):name(_name), points(_points), faces(_faces)
         {
             compute_box();
         }
@@ -172,7 +172,7 @@ namespace urban
             name = std::move(other.name);
             points = std::move(other.points);
             faces = std::move(other.faces);
-            bounding_box = std::move(bounding_box);
+            bounding_box = std::move(other.bounding_box);
             return *this;
         }
 
