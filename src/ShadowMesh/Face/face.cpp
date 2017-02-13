@@ -1,8 +1,6 @@
 #include "face.h"
 
 #include <CGAL/squared_distance_3.h>
-#include <CGAL/Partition_traits_2.h>
-#include <CGAL/partition_2.h>
 
 #include <algorithm>
 #include <iterator>
@@ -95,36 +93,36 @@ namespace urban
             * If the face is a triangle (i.e. 'vertices_number == 3') it is convex (strictly if non-degenerate)
             */
 
-            // if(vertices_number > 3)
-            // {
-            //     Vector normal(CGAL::unit_normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0))));
-            //     auto circulator = std::begin(points);
-            //     do
-            //     {
-            //         decltype(circulator) next_1, next_2;
-            //         if(circulator == std::prev(std::end(points),2))
-            //         {
-            //             next_1 = std::next(circulator, 1);
-            //             next_2 = std::begin(points);
-            //         }
-            //         else
-            //         {
-            //             if(circulator == std::prev(std::end(points),1))
-            //             {
-            //                 next_1 = std::begin(points);
-            //                 next_2 = std::next(next_1, 1);
-            //             }
-            //             else
-            //             {
-            //                 next_1 = std::next(circulator, 1);
-            //                 next_2 = std::next(circulator, 2);
-            //             }
-            //         }
-            //         Point A(coordinates.at(*circulator)), B(coordinates.at(*next_1)), C(coordinates.at(*next_2));
-            //         Vector external_direction(CGAL::normal(B, B + normal, A));
-            //         convexity &= (external_direction * Vector(B, C) < 0) ;
-            //     } while(convexity && ++circulator != std::end(points));
-            // }
+            if(vertices_number > 3)
+            {
+                Vector normal(CGAL::normal(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0))));
+                auto circulator = std::begin(points);
+                do
+                {
+                    decltype(circulator) next_1, next_2;
+                    if(circulator == std::prev(std::end(points),2))
+                    {
+                        next_1 = std::next(circulator, 1);
+                        next_2 = std::begin(points);
+                    }
+                    else
+                    {
+                        if(circulator == std::prev(std::end(points),1))
+                        {
+                            next_1 = std::begin(points);
+                            next_2 = std::next(next_1, 1);
+                        }
+                        else
+                        {
+                            next_1 = std::next(circulator, 1);
+                            next_2 = std::next(circulator, 2);
+                        }
+                    }
+                    Point A(coordinates.at(*circulator)), B(coordinates.at(*next_1)), C(coordinates.at(*next_2));
+                    Vector external_direction(CGAL::normal(B, B + normal, A));
+                    convexity &= (external_direction * Vector(B, C) < 0) ;
+                } while(convexity && ++circulator != std::end(points));
+            }
             return convexity;
         }
 
