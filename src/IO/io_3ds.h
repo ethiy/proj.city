@@ -24,8 +24,8 @@ namespace urban
             FileHandler(boost::filesystem::path, std::map<std::string, bool>);
             ~FileHandler(void);
 
-            std::vector<ShadowMesh> read(void);
-            void write(std::vector<ShadowMesh>);
+            std::vector<shadow::Mesh> read(void);
+            void write(std::vector<shadow::Mesh>);
 
         private:
             Lib3dsFile* file = NULL;
