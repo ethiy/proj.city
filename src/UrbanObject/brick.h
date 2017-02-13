@@ -20,11 +20,34 @@ namespace urban
         /*! Brick default constructor*/
         Brick(void);
         /*! Brick copy constructor*/
-        Brick(const Brick &);
+        Brick(const Brick & other);
+        /** Brick move constructor*/
+        Brick(Brick && other);
         /*! Brick constructor form 3ds meshes*/
-        Brick(shadow::Mesh);
+        Brick(shadow::Mesh mesh);
         /*! Brick default destructor*/
         ~Brick(void);
+
+        /**
+         * Swap `this` with `other`.
+         * @param other an other brick to swap with
+         * @see swap(Brick &, Brick &)
+         */
+        void swap(Brick &other);
+            
+        /**
+         * Copy assignement operator.
+         * @param other an other brick to copy
+         * @see operator=(Brick &&)
+         */
+        Brick & operator=(const Brick & other) noexcept;
+
+        /**
+         * Move assignement operator.
+         * @param other an other brick to move
+         * @see operator=(const Brick &)
+         */
+        Brick & operator=(Brick && other) noexcept;
 
         /*! Access brick name*/
         std::string get_name(void) const noexcept;
@@ -87,4 +110,11 @@ namespace urban
         friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const Brick &);
         #endif // CGAL_USE_GEOMVIEW
     };
+
+    /**
+     * Swaps two bricks.
+     * @param lhs left-hand Brick.
+     * @param rhs right-hand Brick.
+     */
+    void swap(Brick & lhs, Brick &rhs);
 }

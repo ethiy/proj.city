@@ -11,17 +11,39 @@
 
 namespace urban
 {
-    Brick::Brick(void) {}
-
+    Brick::Brick(void):name("N/A"){}
     Brick::Brick(shadow::Mesh mesh): name(mesh.get_name()), bounding_box(mesh.bbox())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);
     }
+    Brick::Brick(const Brick & other):name(other.name), surface(other.surface), bounding_box(other.bounding_box){}
+    Brick::Brick(Brick && other):name(std::move(other.name)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
+    Brick::~Brick(void){}
 
-    Brick::Brick(const Brick &other) : name(other.name), surface(other.surface), bounding_box(other.bounding_box) {}
+    void Brick::swap(Brick & other)
+    {
+        using std::swap;
+        swap(name, other.name);
+        swap(surface, other.surface);
+        swap(bounding_box, other.bounding_box);
+    }
 
-    Brick::~Brick(void) {}
+    Brick & Brick::operator=(const Brick & other) noexcept
+    {
+        name = other.name;
+        surface = other.surface;
+        bounding_box = other.bounding_box;
+        return *this;
+    }
+
+    Brick & Brick::operator=(Brick && other) noexcept
+    {
+        name = std::move(other.name);
+        surface = std::move(other.surface);
+        bounding_box = std::move(other.bounding_box);
+        return *this;
+    }
 
     std::string Brick::get_name(void) const noexcept
     {
@@ -135,4 +157,9 @@ namespace urban
         return gs;
     }
     #endif // CGAL_USE_GEOMVIEW
+
+    void swap(Brick & lhs, Brick &rhs)
+    {
+        lhs.swap(rhs);
+    }
 }
