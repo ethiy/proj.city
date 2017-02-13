@@ -50,7 +50,7 @@ namespace urban
              * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
              */
-            Face(const Face &);
+            Face(const Face & other);
             
             /**
              * Move constructor.
@@ -61,7 +61,7 @@ namespace urban
              * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
              */
-            Face(Face &&);
+            Face(Face && other);
             
             /**
              * General constructor. 
@@ -74,7 +74,7 @@ namespace urban
              * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
              */
-            Face(size_t, const std::vector<size_t> &);
+            Face(size_t _vertices_number, const std::vector<size_t> & _points);
             
             /**
              * Constructs a triagular face. 
@@ -87,7 +87,7 @@ namespace urban
              * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
              */
-            Face(size_t, size_t, size_t);
+            Face(size_t first, size_t second, size_t third);
             
             /** 
              * Destructor.
@@ -104,27 +104,27 @@ namespace urban
              * @param other an other face to swap with
              * @see swap(shadow::Face &, shadow::Face &)
              */
-            void swap(Face &);
+            void swap(Face & other);
             
             /**
              * Copy assignement operator.
-             * @param other an other face to copy
+             * @param other an other face to move
              * @see operator=(Face &&)
              */
-            Face & operator=(const Face &) noexcept;
+            Face & operator=(const Face & other) noexcept;
 
             /**
              * Move assignement operator.
              * @param other an other face to copy
              * @see operator=(const Face &)
              */
-            Face & operator=(Face &&) noexcept;
+            Face & operator=(Face && other) noexcept;
             
             /**
              * Access operator[].
              * @param index point index to access
              */
-            size_t operator[](size_t);
+            size_t operator[](size_t index);
 
             /**
              * Access Face size.
@@ -176,7 +176,7 @@ namespace urban
              * @param coordinates map associating point indexes to their coordinates
              * @return facet convexity
              */
-            bool is_convex(const std::map<size_t, Point> &) const;
+            bool is_convex(const std::map<size_t, Point> & coordinates) const;
 
             /**
              * Returns 3ds face structure.
@@ -184,7 +184,7 @@ namespace urban
              * @return pointer to `Lib3dsFace`
              * @throws std::logic_error
              */
-            Lib3dsFace* to_3ds(const std::map<size_t, Point> &);
+            Lib3dsFace* to_3ds(const std::map<size_t, Point> & coordinates);
         private:
             size_t vertices_number;     /**< Face degree */
             std::vector<size_t> points; /**< Points array */
@@ -195,7 +195,7 @@ namespace urban
              * @param face the facet to write
              * @return the output stream
              */
-            friend std::ostream& operator<<(std::ostream &, const Face &);
+            friend std::ostream& operator<<(std::ostream & os, const Face & face);
         };
     }
 
@@ -204,5 +204,5 @@ namespace urban
      * @param lhs left-hand Face.
      * @param rhs right-hand Face.
      */
-    void swap(shadow::Face &, shadow::Face &);
+    void swap(shadow::Face & lhs, shadow::Face & rhs);
 }
