@@ -90,7 +90,7 @@ namespace urban
                             throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
                         /*Parsing vertex points*/
-                        std::vector<std::string> buffer_lines(sizes[0]);
+                        std::vector<std::string> buffer_lines(static_cast<size_t>(sizes[0]));
                         std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::begin(buffer_lines));
                         size_t idx(0);
 
@@ -115,7 +115,7 @@ namespace urban
 
                         std::map<size_t, urban::shadow::Face> faces;
                         buffer_lines.clear();
-                        buffer_lines.resize(sizes[1]);
+                        buffer_lines.resize(static_cast<size_t>(sizes[1]));
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
 
                         std::vector<size_t> indexes;
@@ -130,7 +130,7 @@ namespace urban
                                 std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                                faces.emplace(std::make_pair(idx++, std::move(shadow::Face(n, indexes))));
+                                faces.emplace(std::make_pair(idx++, shadow::Face(n, indexes)));
                                 indexes.clear();
                                 sline.clear();
                             });
