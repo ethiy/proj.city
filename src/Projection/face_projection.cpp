@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <iterator>
 
+#include <cmath>
+#include <limits>
+
 #include <stdexcept>
 
 namespace urban
@@ -95,7 +98,7 @@ namespace urban
 
     bool FaceProjection::is_degenerate(void) const
     {
-        return is_perpendicular() || ( holes_begin() != holes_end() && area() == 0); /* If it has no holes no need to check surface */
+        return is_perpendicular() || ( holes_begin() != holes_end() && std::abs(area()) < std::numeric_limits<double>::epsilon() ); /* If it has no holes no need to check surface */
     }
 
     bool FaceProjection::is_perpendicular(void) const
