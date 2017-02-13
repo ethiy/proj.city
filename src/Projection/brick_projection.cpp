@@ -38,6 +38,7 @@ namespace urban
     BrickProjection BrickProjection::operator=(BrickProjection && other)
     {
         name = std::move(other.name);
+        facets_xy.resize(other.facets_xy.size());
         std::copy(std::begin(other.facets_xy), std::end(other.facets_xy), std::begin(facets_xy));
         projected_surface = std::move(other.projected_surface);
         bounding_box = std::move(other.bounding_box);
