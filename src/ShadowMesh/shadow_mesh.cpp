@@ -17,7 +17,7 @@ namespace urban
                 std::end(points),
                 [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
                 {
-                    return p1.second.x() < p2.second.x();
+                    return to_double(p1.second.x()) < to_double(p2.second.x());
                 }
             );
 
@@ -26,7 +26,7 @@ namespace urban
                 std::end(points),
                 [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
                 {
-                    return p1.second.x() < p2.second.x();
+                    return to_double(p1.second.x()) < to_double(p2.second.x());
                 }
             );
 
@@ -35,7 +35,7 @@ namespace urban
                 std::end(points),
                 [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
                 {
-                    return p1.second.y() < p2.second.y();
+                    return to_double(p1.second.y()) < to_double(p2.second.y());
                 }
             );
 
@@ -44,7 +44,7 @@ namespace urban
                 std::end(points),
                 [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
                 {
-                    return p1.second.y() < p2.second.y();
+                    return to_double(p1.second.y()) < to_double(p2.second.y());
                 }
             );
 
@@ -53,7 +53,7 @@ namespace urban
                 std::end(points),
                 [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
                 {
-                    return p1.second.z() < p2.second.z();
+                    return to_double(p1.second.z()) < to_double(p2.second.z());
                 }
             );
 
@@ -62,11 +62,11 @@ namespace urban
                 std::end(points),
                 [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
                 {
-                    return p1.second.z() < p2.second.z();
+                    return to_double(p1.second.z()) < to_double(p2.second.z());
                 }
             );
 
-            bounding_box = Bbox(xmin_itr->second.x(), xmax_itr->second.x(), ymin_itr->second.y(), ymax_itr->second.y(), zmin_itr->second.z(), zmax_itr->second.z());
+            bounding_box = Bbox(to_double(xmin_itr->second.x()), to_double(xmax_itr->second.x()), to_double(ymin_itr->second.y()), to_double(ymax_itr->second.y()), to_double(zmin_itr->second.z()), to_double(zmax_itr->second.z()));
         }
 
         Mesh::Mesh(void):name("N/A"){}
@@ -239,7 +239,7 @@ namespace urban
                 [&](std::pair<size_t, Point> p)
                 {
                     Lib3dsPoint point;
-                    auto init = std::initializer_list<double>({p.second.x(), p.second.y(), p.second.z()});
+                    auto init = std::initializer_list<double>({to_double(p.second.x()), to_double(p.second.y()), to_double(p.second.z())});
                     std::copy(std::begin(init), std::end(init), point.pos);
                     return point;
                 }
@@ -284,7 +284,7 @@ namespace urban
                 std::end(mesh.points),
                 [&](std::pair<size_t, Point> p)
                 {
-                    os << "Point " << p.first << " : " << p.second.x() << " " << p.second.y() << " " << p.second.z() << std::endl;
+                    os << "Point " << p.first << " : " << to_double(p.second.x()) << " " << to_double(p.second.y()) << " " << to_double(p.second.z()) << std::endl;
                 }
             );
 
