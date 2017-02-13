@@ -61,20 +61,28 @@ namespace urban
 
     bool BrickProjection::is_under(const FaceProjection & facet) const
     {
-        Point_2 point(
-            CGAL::centroid(
-                facet.outer_boundary()[0],
-                facet.outer_boundary()[1],
-                facet.outer_boundary()[2]
-            )
-        );
-        return contains(facet.get_polygon()) && facet.get_height(point) < get_height(point);
+        bool under(false);
+
+        if(facet.is_perpendicular() || facet.is_degenerate())
+            under = true;
+        else
+        {
+            Point_2 point(
+                CGAL::centroid(
+                    facet.outer_boundary()[0],
+                    facet.outer_boundary()[1],
+                    facet.outer_boundary()[2]
+                )
+            );
+            under = contains(facet.get_polygon()) && facet.get_height(point) < get_height(point);
+        }
+        return under;
     }
     
 
     void BrickProjection::push_facet(FaceProjection & new_facet)
     {
-        std::vector<FaceProjection> result;
+        std::list <FaceProjection> result;
         if(facets_xy.empty())
         {
             if(projected_surface.outer_boundary().is_empty())
@@ -91,8 +99,8 @@ namespace urban
                     std::end(facets_xy),
                     [&result, &new_facet](FaceProjection & facet)
                     {
-                        std::vector<FaceProjection> occlusion_result(occlusion(facet, new_facet));
-                        result.insert(std::end(result), std::begin(occlusion_result), std::end(occlusion_result));
+                        std::list<FaceProjection> occlusion_result(occlusion(facet, new_facet));
+                        result.splice(std::end(result), occlusion_result);
 
                     }
                 );

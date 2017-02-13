@@ -64,6 +64,19 @@ namespace urban
         return !is_degenerate() * contains(point) * get_plane_height(point) ;
     }
 
+    double FaceProjection::area(void) const
+    {
+        return std::accumulate(
+                    projected_polygon.holes_begin(),
+                    projected_polygon.holes_end(),
+                    to_double(projected_polygon.outer_boundary().area()),
+                    [](double & holes_area, const Polygon & hole)
+                    {
+                        return holes_area - to_double(hole.area());
+                    }
+                );
+    }
+
      FaceProjection::Hole_const_iterator FaceProjection::holes_begin(void) const
     {
         return projected_polygon.holes_begin();
@@ -82,7 +95,7 @@ namespace urban
 
     bool FaceProjection::is_degenerate(void) const
     {
-        return is_perpendicular() || ( holes_begin() != holes_end() && area(*this) == 0); /* If it has no holes no need to check surface */
+        return is_perpendicular() || ( holes_begin() != holes_end() && area() == 0); /* If it has no holes no need to check surface */
     }
 
     bool FaceProjection::is_perpendicular(void) const

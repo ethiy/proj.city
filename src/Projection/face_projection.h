@@ -28,6 +28,7 @@ namespace urban
 
         double get_plane_height(const Point_2 &) const;
         double get_height(const Point_2 &) const;
+        double area(void) const;
 
         typedef Polygon_with_holes::Hole_const_iterator Hole_const_iterator;
         Hole_const_iterator holes_begin(void) const;

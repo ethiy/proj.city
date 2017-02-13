@@ -2,18 +2,10 @@
 
 #include "../geometry_definitions.h"
 #include "../UrbanObject/brick.h"
-#include "../Projection/brick_projection.h"
-#include "../Projection/camera.h"
 
 
 namespace urban
 {
-    /*! Projects on camera view*/
-    BrickProjection project(Brick &, Camera &);
-
-    /* ! Projects on xy axis*/
-    BrickProjection project(const Brick &);
-
     /*! Computes border length*/
     double border_length(Brick &);
 

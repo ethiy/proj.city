@@ -85,16 +85,40 @@ namespace urban
         points.push_back(B);
     }
 
-    std::vector<FaceProjection> project_xy(const Brick & brick)
+    double area(const FaceProjection & facet)
+    {
+        return facet.area();
+    }
+
+
+    BrickProjection project(const Brick & brick)
+    {
+        BrickProjection projection(brick.get_name(), brick.bbox());
+        std::vector<FaceProjection> projected_facets = std::move(project_xy(brick, false)); /** Don't keep perpendicular faces*/
+        size_t it(0);
+        std::for_each(
+            std::begin(projected_facets),
+            std::end(projected_facets),
+            [&projection, &it](FaceProjection facet)
+            {
+                std::cout << ">> Face projection number: " << it++ << std::endl;
+                projection.push_facet(facet);
+            }
+        );
+        return projection;
+    }
+
+
+    std::vector<FaceProjection> project_xy(const Brick & brick, bool keep_all)
     {
         std::vector<FaceProjection> facets(brick.facets_number());
+        size_t it(0);
 
         std::vector<Point_2> facet_points;
-        std::transform(
+        std::for_each(
             brick.facets_cbegin(),
             brick.facets_cend(),
-            std::begin(facets),
-            [&facet_points](const Facet & facet)
+            [&facets, &facet_points, &it, keep_all](const Facet & facet)
             {
                 facet_points.clear();
                 facet_points.resize(facet.facet_degree());
@@ -113,21 +137,31 @@ namespace urban
                     }
                 );
 
-                /*! If projected points are colinear then we store only the extremal points*/
-                if(check_colinearity(std::begin(facet_points), std::end(facet_points)))
-                    extrem_points(facet_points);
-                
-                Polygon outer_boundary(Polygon(std::begin(facet_points), std::end(facet_points)));
-                
-                if(outer_boundary.orientation() == CGAL::CLOCKWISE)
-                    outer_boundary.reverse_orientation();
-
-                return FaceProjection(   Polygon_with_holes(outer_boundary),
-                                         Facet::Plane(   halfedge->vertex()->point(),
-                                                         halfedge->next()->vertex()->point(),
-                                                         halfedge->next()->next()->vertex()->point()
-                                                     )
-                                     );
+                if(!check_colinearity(std::begin(facet_points), std::end(facet_points)) /* Non colinear points are always */
+                    ||
+                   (keep_all && check_colinearity(std::begin(facet_points), std::end(facet_points))) /* in case keep_all == true we keep colinear points also */
+                  )
+                {
+                    /*! If projected points are colinear then we store only the extremal points*/
+                    if(check_colinearity(std::begin(facet_points), std::end(facet_points))) // => keep_all == true
+                        extrem_points(facet_points);
+                    
+                    Polygon outer_boundary(Polygon(std::begin(facet_points), std::end(facet_points)));
+                    
+                    if(outer_boundary.orientation() == CGAL::CLOCKWISE)
+                        outer_boundary.reverse_orientation();
+                    
+                    facets[it++] = std::move(
+                        FaceProjection(
+                            Polygon_with_holes(outer_boundary),
+                            Facet::Plane(
+                                halfedge->vertex()->point(),
+                                halfedge->next()->vertex()->point(),
+                                halfedge->next()->next()->vertex()->point()
+                            )
+                        )
+                    );
+                }
             }
         );
 
@@ -172,22 +206,9 @@ namespace urban
         return facets;
     }
 
-    double area(const FaceProjection & facet)
+    std::list<FaceProjection> occlusion(FaceProjection & lhs, FaceProjection & rhs)
     {
-        return std::accumulate(
-                    facet.holes_begin(),
-                    facet.holes_end(),
-                    to_double(facet.outer_boundary().area()),
-                    [](double & holes_area, const Polygon & hole)
-                    {
-                        return holes_area - to_double(hole.area());
-                    }
-                );
-    }
-
-    std::vector<FaceProjection> occlusion(FaceProjection & lhs, FaceProjection & rhs)
-    {
-        std::vector<FaceProjection> result;
+        std::list<FaceProjection> result;
         
         if(lhs.is_perpendicular() || rhs.is_perpendicular())
         {
@@ -199,19 +220,19 @@ namespace urban
         else
         {
             Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
-            std::vector<Polygon_with_holes> superposition;
+            std::list<Polygon_with_holes> superposition;
 
             if(CGAL::do_overlap(first.bbox(), second.bbox()))
                 CGAL::intersection(first, second, std::back_inserter(superposition));
 
             if(!superposition.empty())
             {
-                Polygon_with_holes lhs_occlusion, rhs_occlusion;
+                Polygon_with_holes first_parts_occluded, second_parts_occluded;
 
                 std::for_each(
                     std::begin(superposition),
                     std::end(superposition),
-                    [&lhs, &rhs, &lhs_occlusion, &rhs_occlusion](Polygon_with_holes intersection)
+                    [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes intersection)
                     {
                         Point_2 intersection_point(
                             CGAL::centroid(
@@ -221,14 +242,14 @@ namespace urban
                                 )
                         ); 
                         if(lhs.get_plane_height(intersection_point) > rhs.get_plane_height(intersection_point))
-                            CGAL::join(rhs_occlusion, intersection, rhs_occlusion);
+                            CGAL::join(second_parts_occluded, intersection, second_parts_occluded);
                         else
-                            CGAL::join(lhs_occlusion, intersection, lhs_occlusion);
+                            CGAL::join(first_parts_occluded, intersection, first_parts_occluded);
                     }
                 );
                 
-                std::vector<Polygon_with_holes> _firsts;
-                CGAL::difference(first, lhs_occlusion, std::back_inserter(_firsts));
+                std::list<Polygon_with_holes> _firsts;
+                CGAL::difference(first, first_parts_occluded, std::back_inserter(_firsts));
                 std::transform(
                     std::begin(_firsts),
                     std::end(_firsts),
@@ -240,7 +261,7 @@ namespace urban
                 );
 
                 std::vector<Polygon_with_holes> _seconds;
-                CGAL::difference(second, rhs_occlusion, std::back_inserter(_seconds));
+                CGAL::difference(second, second_parts_occluded, std::back_inserter(_seconds));
                 std::transform(
                     std::begin(_seconds),
                     std::end(_seconds),

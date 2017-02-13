@@ -4,7 +4,7 @@
 #include "face_projection.h"
 
 #include <string>
-#include <vector>
+#include <list>
 
 namespace urban
 {
@@ -25,8 +25,8 @@ namespace urban
 
         Bbox_2 bbox(void);
 
-        typedef std::vector<FaceProjection>::iterator iterator;
-        typedef std::vector<FaceProjection>::const_iterator const_iterator;
+        typedef std::list<FaceProjection>::iterator iterator;
+        typedef std::list<FaceProjection>::const_iterator const_iterator;
         iterator begin(void);
         iterator end(void);
         const_iterator cbegin(void);
@@ -41,7 +41,7 @@ namespace urban
         double get_height(const Point_2 &) const;
     private:
         std::string name;
-        std::vector<FaceProjection> facets_xy;
+        std::list<FaceProjection> facets_xy;
         Polygon_with_holes projected_surface;
         Bbox_2 bounding_box;
     };
