@@ -55,7 +55,7 @@ namespace urban
     {
         if( supporting_plane.c() == 0)
             throw std::overflow_error("The supporting plane is vertical!");
-        return to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
+        return ( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c() ;
     }
 
 
@@ -69,10 +69,10 @@ namespace urban
         return std::accumulate(
                     projected_polygon.holes_begin(),
                     projected_polygon.holes_end(),
-                    to_double(projected_polygon.outer_boundary().area()),
+                    projected_polygon.outer_boundary().area(),
                     [](double & holes_area, const Polygon & hole)
                     {
-                        return holes_area - to_double(hole.area());
+                        return holes_area - hole.area();
                     }
                 );
     }

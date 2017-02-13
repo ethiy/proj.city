@@ -10,13 +10,13 @@ namespace urban
 
         Camera::Camera(const std::string & _name, double focal_distance, double scale_factor_x, double scale_factor_y, const Vector_2 & principal_point, const Vector & _position, const std::map<double, Vector> & _rotations)
         : name(_name),
-        calibration(Affine_transformation_2(focal_distance * scale_factor_x, .0, to_double(principal_point.x()), .0, focal_distance * scale_factor_y, to_double(principal_point.y()))),
+        calibration(Affine_transformation_2(focal_distance * scale_factor_x, .0, principal_point.x(), .0, focal_distance * scale_factor_y, principal_point.y())),
         position(_position),
         orientation(rotation_transform(_rotations)) {}
 
         Camera::Camera(const std::string & _name, double focal_distance, const Vector_2 & principal_point, const Vector & _position, const std::map<double, Vector> & _rotations)
         : name(_name),
-        calibration(Affine_transformation_2(focal_distance, .0, to_double(principal_point.x()), .0, focal_distance, to_double(principal_point.y()))),
+        calibration(Affine_transformation_2(focal_distance, .0, principal_point.x(), .0, focal_distance, principal_point.y())),
         position(_position),
         orientation(rotation_transform(_rotations)) {}
 
