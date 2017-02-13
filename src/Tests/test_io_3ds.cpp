@@ -1,6 +1,9 @@
 #include "../IO/io_3ds.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp> 
 
 #include <string>
 #include <fstream>
@@ -79,13 +82,18 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
         WHEN("the writing mode is chosen")
         {
+            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
+            std::ostringstream file_name;
+            file_name << unique_name << ".3ds";
+
+
             std::map<std::string,bool> modes{{"write", true}};
-            urban::io::FileHandler<Lib3dsFile> handler("./santa.3ds", modes);
+            urban::io::FileHandler<Lib3dsFile> handler(file_name.str(), modes);
             handler.write(meshes);
 
             THEN("the output checks")
             {
-                urban::io::FileHandler<Lib3dsFile> checker_handler("./santa.3ds", _modes);
+                urban::io::FileHandler<Lib3dsFile> checker_handler(file_name.str(), _modes);
                 std::vector<urban::shadow::Mesh> written_meshes = checker_handler.read();
 
                 std::ostringstream auxilary;

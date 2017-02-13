@@ -1,6 +1,9 @@
 #include "../IO/io_off.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp> 
 
 #include <string>
 #include <fstream>
@@ -79,13 +82,17 @@ SCENARIO("Input/Output from OFF file:")
 
         WHEN("the writing mode is chosen")
         {
+            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
+            std::ostringstream file_name;
+            file_name << unique_name << ".off";
+
             std::map<std::string, bool> modes{{"write", true}};
-            urban::io::FileHandler<std::fstream> handler("./hammerhead.off", modes);
+            urban::io::FileHandler<std::fstream> handler(file_name.str(), modes);
             handler.write(mesh);
 
             THEN("the input should check")
             {
-                urban::io::FileHandler<std::fstream> checker_handler("./hammerhead.off", _modes);
+                urban::io::FileHandler<std::fstream> checker_handler(file_name.str(), _modes);
                 urban::shadow::Mesh written_mesh = checker_handler.read();
 
                 std::ostringstream auxilary;
