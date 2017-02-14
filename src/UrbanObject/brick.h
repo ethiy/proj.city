@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../ShadowMesh/shadow_mesh.h"
+#include "../geometry_definitions.h"
 
-#include <CGAL/Simple_cartesian.h>
-#include <CGAL/Polyhedron_3.h>
+#include "../ShadowMesh/shadow_mesh.h"
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
@@ -14,12 +13,6 @@
 
 namespace urban
 {
-    typedef CGAL::Simple_cartesian<double> Kernel;
-    typedef Kernel::Point_3 Point;
-    typedef Kernel::Vector_3 Vector;
-    typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
-
-
     /*! Container class modelling urba objects using CGAL*/
     class Brick
     {
@@ -27,17 +20,89 @@ namespace urban
         /*! Brick default constructor*/
         Brick(void);
         /*! Brick copy constructor*/
-        Brick(const Brick &);
+        Brick(const Brick & other);
+        /** Brick move constructor*/
+        Brick(Brick && other);
         /*! Brick constructor form 3ds meshes*/
-        Brick(ShadowMesh);
+        Brick(shadow::Mesh mesh);
         /*! Brick default destructor*/
         ~Brick(void);
 
+        /**
+         * Swap `this` with `other`.
+         * @param other an other brick to swap with
+         * @see swap(Brick &, Brick &)
+         */
+        void swap(Brick &other);
+            
+        /**
+         * Copy assignement operator.
+         * @param other an other brick to copy
+         * @see operator=(Brick &&)
+         */
+        Brick & operator=(const Brick & other) noexcept;
+
+        /**
+         * Move assignement operator.
+         * @param other an other brick to move
+         * @see operator=(const Brick &)
+         */
+        Brick & operator=(Brick && other) noexcept;
+
+        /*! Access brick name*/
         std::string get_name(void) const noexcept;
+        
+        /*! Get the number of vertices*/
+        size_t vertices_number(void) const;
+
+        /*! Get the number of faces*/
+        size_t facets_number(void) const;
+
+        /*! Access Bounding box*/
+        Bbox bbox(void) const noexcept;
+
+        /*! Face iterators*/
+        typedef Polyhedron::Facet_iterator Facet_iterator;
+        typedef Polyhedron::Facet_const_iterator Facet_const_iterator;
+        Facet_iterator facets_begin(void) noexcept;
+        Facet_iterator facets_end(void) noexcept;
+        Facet_const_iterator facets_cbegin(void) const noexcept;
+        Facet_const_iterator facets_cend(void) const noexcept;
+
+        /*! Halfedge iterators*/
+        typedef Polyhedron::Halfedge_iterator Halfedge_iterator;
+        typedef Polyhedron::Halfedge_const_iterator Halfedge_const_iterator;
+        Halfedge_iterator halfedges_begin(void) noexcept;
+        Halfedge_iterator halfedges_end(void) noexcept;
+        Halfedge_const_iterator halfedges_cbegin(void) const noexcept;
+        Halfedge_const_iterator halfedges_cend(void) const noexcept;
+
+        /*! Points iterators*/
+        typedef Polyhedron::Point_iterator Point_iterator;
+        typedef Polyhedron::Point_const_iterator Point_const_iterator;
+        Point_iterator points_begin(void) noexcept;
+        Point_iterator points_end(void) noexcept;
+        Point_const_iterator points_cbegin(void) const noexcept;
+        Point_const_iterator points_cend(void) const noexcept;
+
+        /*! Plane iterators*/
+        typedef Polyhedron::Plane_iterator Plane_iterator;
+        typedef Polyhedron::Plane_const_iterator Plane_const_iterator;
+        Plane_iterator planes_begin(void) noexcept;
+        Plane_iterator planes_end(void) noexcept;
+        Plane_const_iterator planes_cbegin(void) const noexcept;
+        Plane_const_iterator planes_cend(void) const noexcept;
+
+        /*! Set Brick color*/
+        void set_color(Color);
+
     private:
+        /* ! Brick name*/
         std::string name;
         /*! The surface describing 3d urban objects*/
         Polyhedron surface;
+                /*! Bounding box*/
+        Bbox bounding_box;
 
         /*! Outstreaming Brick*/
         friend std::ostream& operator<<(std::ostream &, const Brick &);
@@ -45,4 +110,11 @@ namespace urban
         friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const Brick &);
         #endif // CGAL_USE_GEOMVIEW
     };
+
+    /**
+     * Swaps two bricks.
+     * @param lhs left-hand Brick.
+     * @param rhs right-hand Brick.
+     */
+    void swap(Brick & lhs, Brick &rhs);
 }

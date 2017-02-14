@@ -23,8 +23,8 @@ namespace urban
             FileHandler(boost::filesystem::path, std::map<std::string, bool>);
             ~FileHandler(void);
 
-            ShadowMesh read(void);
-            void write(ShadowMesh);
+            shadow::Mesh read(void);
+            void write(shadow::Mesh);
 
         private:
             std::fstream file;
