@@ -50,12 +50,13 @@ namespace urban
         );
     }
 
-    bool check_colinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last)
+    bool check_collinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last)
     {
         if(std::distance(first, last) < 3)
             throw std::out_of_range("There are less than 3 points between the two iterators!");
-        
-        /* It suffices to check the first three points*/
+        /**
+         * It suffices to check the first three points;
+         */
         return CGAL::collinear(*first, *(first + 1), *(first + 2));
     }
 
@@ -94,7 +95,7 @@ namespace urban
     BrickProjection project(const Brick & brick)
     {
         BrickProjection projection(brick.get_name(), brick.bbox());
-        std::vector<FaceProjection> projected_facets = project_xy(brick, false); /** Don't keep perpendicular faces*/
+        std::vector<FaceProjection> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
         size_t it(0);
         std::for_each(
             std::begin(projected_facets),
@@ -109,21 +110,25 @@ namespace urban
     }
 
 
-    std::vector<FaceProjection> project_xy(const Brick & brick, bool keep_all)
+    std::vector<FaceProjection> project_xy(const Brick & brick)
     {
         std::vector<FaceProjection> facets(brick.facets_number());
-        size_t it(0);
 
         std::vector<Point_2> facet_points;
-        std::for_each(
+        std::transform(
             brick.facets_cbegin(),
             brick.facets_cend(),
-            [&facets, &facet_points, &it, keep_all](const Facet & facet)
+            std::begin(facets),
+            [&facet_points](const Facet & facet)
             {
+                FaceProjection projected_facet;
+                /**
+                 * >> Copying 3D points to 2D Point vector
+                 */
                 facet_points.clear();
                 facet_points.resize(facet.facet_degree());
 
-                /*! Start with the first point*/
+                /** Start with the first point*/
                 auto halfedge = facet.halfedge();
                 Point vertex(halfedge->vertex()->point());
                 facet_points[0] = Point_2(vertex.x(), vertex.y());
@@ -137,66 +142,54 @@ namespace urban
                     }
                 );
 
-                if(!check_colinearity(std::begin(facet_points), std::end(facet_points)) /* Non colinear points are always */
-                    ||
-                   (keep_all && check_colinearity(std::begin(facet_points), std::end(facet_points))) /* in case keep_all == true we keep colinear points also */
-                  )
-                {
-                    /*! If projected points are colinear then we store only the extremal points*/
-                    if(check_colinearity(std::begin(facet_points), std::end(facet_points))) // => keep_all == true
-                        extrem_points(facet_points);
-                    
+                /**
+                 * >> Plane equation
+                 */
+                Plane plane_equation(
+                    halfedge->vertex()->point(),
+                    halfedge->next()->vertex()->point(),
+                    halfedge->next()->next()->vertex()->point()
+                );
+
+                /**
+                 * Only non (Numerically) perpendicular faces are kept;
+                 */
+                if(plane_equation.c() != 0)
+                {                    
                     Polygon outer_boundary(Polygon(std::begin(facet_points), std::end(facet_points)));
                     
                     if(outer_boundary.orientation() == CGAL::CLOCKWISE)
                         outer_boundary.reverse_orientation();
                     
-                    facets[it++] = 
-                        FaceProjection
-                        (
-                            Polygon_with_holes(outer_boundary),
-                            Facet::Plane
-                            (
-                                halfedge->vertex()->point(),
-                                halfedge->next()->vertex()->point(),
-                                halfedge->next()->next()->vertex()->point()
-                            )
-                        );
+                    projected_facet = FaceProjection(Polygon_with_holes(outer_boundary), plane_equation);
                 }
+
+                return projected_facet;
             }
         );
 
-        /* Heuristic in order to have the minimum number of occlusions to deal with
+        /**
+         * >> Filter null elements
          */
-        // std::sort(
-        //     std::begin(facets),
-        //     std::end(facets),
-        //     [&it](const FaceProjection & facet_a, const FaceProjection & facet_b)
-        //     {
-        //         /* If one of the faces is perpendicular do not bother changing order
-        //          */
-        //         bool greater(false); 
-        //         if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
-        //         {
-        //             Point_2 point_a(
-        //                 CGAL::centroid(
-        //                     facet_a.outer_boundary()[0],
-        //                     facet_a.outer_boundary()[1],
-        //                     facet_a.outer_boundary()[2]
-        //                 )
-        //             );
-        //             Point_2 point_b(
-        //                 CGAL::centroid(
-        //                     facet_b.outer_boundary()[0],
-        //                     facet_b.outer_boundary()[1],
-        //                     facet_b.outer_boundary()[2]
-        //                 )
-        //             );
-        //             greater = facet_b.get_plane_height(point_b) < facet_a.get_plane_height(point_a);
-        //         }
-        //         return greater;
-        //     }
-        // );
+        facets.erase(
+            std::remove_if(
+                std::begin(facets),
+                std::end(facets),
+                [](const FaceProjection & facet)
+                {
+                    return facet.is_perpendicular();
+                }
+            ),
+            std::end(facets)
+        );
+
+        /** 
+         * >> Heuristic sorting in order to have the minimum number of occlusions to deal with;
+         */
+        SimpleHeuristic heuristic;
+        std::sort(std::begin(facets), std::end(facets), heuristic);
+
+        std::copy(std::begin(facets), std::end(facets), std::ostream_iterator<FaceProjection>(std::cout, " \n"));
 
         return facets;
     }
