@@ -60,16 +60,16 @@ target_link_libraries(IO ShadowMesh Line UrbanObject ${LIBS})
 ##
 
 # Santa
-set(SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/Samples/hi_santa.cpp")
-add_executable(santa_sample ${SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS})
-target_link_libraries(santa_sample ShadowMesh UrbanObject IO ${LIBS})
-link_directories(santa_sample ${LIBS_DIRS})
+set(SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/Samples/hello_santa.cpp")
+add_executable(hello_santa ${SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS})
+target_link_libraries(hello_santa ShadowMesh UrbanObject IO ${LIBS})
+link_directories(hello_santa ${LIBS_DIRS})
 
 # Project Santa
-set(Proj_XY_SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/Samples/project_santa.cpp")
-add_executable(project_xy_santa ${Proj_HEADERS} ${Proj_XY_SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS} ${Algorithms_HEADERS})
-target_link_libraries(project_xy_santa Projection Algorithms ShadowMesh UrbanObject IO ${LIBS})
-link_directories(project_xy_santa ${LIBS_DIRS})
+set(Proj_XY_SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/Samples/project_santa_xy.cpp")
+add_executable(project_santa_xy ${Proj_HEADERS} ${Proj_XY_SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS} ${Algorithms_HEADERS})
+target_link_libraries(project_santa_xy Projection Algorithms ShadowMesh UrbanObject IO ${LIBS})
+link_directories(project_santa_xy ${LIBS_DIRS})
 
 ##
 # ____________________________________________________ Tests _____________________________________________________
