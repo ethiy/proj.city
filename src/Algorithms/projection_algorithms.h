@@ -31,12 +31,14 @@ namespace urban
     struct Heuristic
     {
         inline Heuristic(void){}
+        inline virtual ~Heuristic(void){}
         virtual bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b) = 0;
     };
 
     struct SimpleHeuristic : public Heuristic
     {
         inline SimpleHeuristic(void){}
+        inline ~SimpleHeuristic(void){}
         inline bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
         {
             /* If one of the faces is perpendicular do not bother changing order
@@ -68,6 +70,7 @@ namespace urban
     struct NaiveHeuristic : public Heuristic
     {
         inline NaiveHeuristic(void){}
+        inline ~NaiveHeuristic(void){}
         inline bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
         {
             bool greater(false); 
