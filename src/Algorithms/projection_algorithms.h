@@ -108,5 +108,5 @@ namespace urban
     std::vector<FaceProjection> project_xy(const Brick & brick);
 
     /** Computes FaceProjection occlutions and gets rid of all perpendicular facets*/
-    std::list<FaceProjection> occlusion(FaceProjection & lhs, FaceProjection & rhs);
+    std::list<FaceProjection> occlusion(const FaceProjection & lhs, std::list<FaceProjection> & rhs);
 }

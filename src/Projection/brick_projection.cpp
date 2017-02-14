@@ -84,6 +84,7 @@ namespace urban
     void BrickProjection::push_facet(FaceProjection & new_facet)
     {
         std::list<FaceProjection> result(0);
+        size_t it(0);
         if(projected_facets.empty())
         {
             if(projected_surface.outer_boundary().is_empty())
@@ -95,37 +96,21 @@ namespace urban
         {
             /* If new_facet is under the surface we loose it*/
             if(!is_under(new_facet))
-            // {
-            //     std::vector< std::list<FaceProjection> > occlusion_results(projected_facets.size());
-            //     std::transform(
-            //         std::begin(projected_facets),
-            //         std::end(projected_facets),
-            //         std::begin(occlusion_results),
-            //         [&new_facet](FaceProjection & facet)
-            //         {
-            //             return occlusion(facet, new_facet);
-            //         }
-            //     );
-            //     result = std::accumulate(
-            //         std::begin(occlusion_results),
-            //         std::end(occlusion_results),
-            //         result,
-            //         [](std::list<FaceProjection> & concat_result, std::list<FaceProjection> & occlusion_result)
-            //         {
-            //             return concat_result.splice(std::end(concat_result), occlusion_result);
-            //         }
-            //     );
-            // }
+            {
+                std::cout << "Faces to be treated:" << projected_facets.size() << std::endl;
+                std::list<FaceProjection> new_facets{new_facet};
                 std::for_each(
                     std::begin(projected_facets),
                     std::end(projected_facets),
-                    [&result, &new_facet](FaceProjection & facet)
+                    [&result, &new_facets, &it](FaceProjection & facet)
                     {
-                        std::list<FaceProjection> occlusion_result(occlusion(facet, new_facet));
-                        result.splice(std::end(result), occlusion_result);
-
+                        std::list<FaceProjection> occlusion_results(occlusion(facet, new_facets));
+                        result.splice(std::end(result), occlusion_results);
+                        std::cout << "Treated Facet : " << it++ << std::endl;
                     }
                 );
+                result.splice(std::end(result), new_facets);
+            }
         }
         projected_facets = std::move(result);
     }

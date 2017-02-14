@@ -194,99 +194,94 @@ namespace urban
         return facets;
     }
 
-    std::list<FaceProjection> occlusion(FaceProjection & lhs, FaceProjection & rhs)
+    std::list<FaceProjection> occlusion(const FaceProjection & lhs, std::list<FaceProjection> & rhss)
     {
-        std::list<FaceProjection> result;
-        
-        /**
-         * >> Checking that faces are not degenerate;
-         *      - Loose degenerate faces on the way.
-         */
-        if(lhs.is_degenerate() || rhs.is_degenerate())
-        {
-            if(!lhs.is_degenerate())
-                result.push_back(lhs);
-            if(!rhs.is_degenerate())
-                result.push_back(rhs);
-        }
-        else
-        {
-            Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
-            std::list<Polygon_with_holes> superposition(0);
-
-            /**
-             * >> Checking bounding box overlap before intersection computation;
-             *      - Bounding box checking is faster than Intersection predicate
-             */
-            if(CGAL::do_overlap(first.bbox(), second.bbox()))
-                CGAL::intersection(first, second, std::back_inserter(superposition));
-            
-            /**
-             * >> Checking Intersection
-             */
-            if(!superposition.empty())
-            {
-                Polygon_with_holes first_parts_occluded, second_parts_occluded;
-
-                /**
-                 * >> Assign Intersection to corresponding facet
-                 */
-                std::for_each(
-                    std::begin(superposition),
-                    std::end(superposition),
-                    [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes intersection)
-                    {
-                        Point_2 intersection_point(
-                            CGAL::centroid(
-                                intersection.outer_boundary()[0],
-                                intersection.outer_boundary()[1],
-                                intersection.outer_boundary()[2]
-                                )
-                        ); 
-                        if(lhs.get_plane_height(intersection_point) > rhs.get_plane_height(intersection_point))
-                            CGAL::join(second_parts_occluded, intersection, second_parts_occluded);
-                        else
-                            CGAL::join(first_parts_occluded, intersection, first_parts_occluded);
-                    }
-                );
-
-                /**
-                 * >> Compute ooclusion for each facet
-                 */
-                std::list<Polygon_with_holes> _firsts;
-                CGAL::difference(first, first_parts_occluded, std::back_inserter(_firsts));
-                std::transform(
-                    std::begin(_firsts),
-                    std::end(_firsts),
-                    std::back_inserter(result),
-                    [&lhs](Polygon_with_holes part)
-                    {
-                        return FaceProjection(part, lhs.get_plane());
-                    }
-                );
-
-                std::vector<Polygon_with_holes> _seconds;
-                CGAL::difference(second, second_parts_occluded, std::back_inserter(_seconds));
-                std::transform(
-                    std::begin(_seconds),
-                    std::end(_seconds),
-                    std::back_inserter(result),
-                    [&rhs](Polygon_with_holes part)
-                    {
-                        return FaceProjection(part, rhs.get_plane());
-                    }
-                );
-            }
-            else
+        std::list<FaceProjection> l_result;
+        std::list<FaceProjection> r_result;
+        std::for_each(
+            std::begin(rhss),
+            std::end(rhss),
+            [&r_result, &l_result, &lhs](const FaceProjection & rhs)
             {
                 /**
-                 * >> No occlusion
+                 * >> Checking that faces are not degenerate;
+                 *      - Loose degenerate faces on the way.
                  */
-                result.push_back(lhs);
-                result.push_back(rhs);
-            }
-        }
+                if(!rhs.is_degenerate())
+                {
+                    Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
+                    std::list<Polygon_with_holes> superposition(0);
+                    /**
+                     * >> Checking bounding box overlap before intersection computation;
+                     *      - Bounding box checking is faster than Intersection predicate
+                     */
+                    if(CGAL::do_overlap(first.bbox(), second.bbox()))
+                        CGAL::intersection(first, second, std::back_inserter(superposition));
 
-        return result;
+                    /**
+                     * >> Checking Intersection
+                     */
+                    if(!superposition.empty())
+                    {
+                        Polygon_with_holes first_parts_occluded, second_parts_occluded;
+                        /**
+                         * >> Assign Intersection to corresponding facet
+                         */
+                        std::for_each(
+                            std::begin(superposition),
+                            std::end(superposition),
+                            [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes intersection)
+                            {
+                                Point_2 intersection_point(
+                                    CGAL::centroid(
+                                        intersection.outer_boundary()[0],
+                                        intersection.outer_boundary()[1],
+                                        intersection.outer_boundary()[2]
+                                        )
+                                ); 
+                                if(lhs.get_plane_height(intersection_point) > rhs.get_plane_height(intersection_point))
+                                    CGAL::join(second_parts_occluded, intersection, second_parts_occluded);
+                                else
+                                    CGAL::join(first_parts_occluded, intersection, first_parts_occluded);
+                            }
+                        );
+                        /**
+                         * >> Compute oclusion for each facet
+                         */
+                        std::list<Polygon_with_holes> _firsts;
+                        CGAL::difference(first, first_parts_occluded, std::back_inserter(_firsts));
+                        std::transform(
+                            std::begin(_firsts),
+                            std::end(_firsts),
+                            std::back_inserter(l_result),
+                            [&lhs](Polygon_with_holes part)
+                            {
+                                return FaceProjection(part, lhs.get_plane());
+                            }
+                        );
+
+                        std::vector<Polygon_with_holes> _seconds;
+                        CGAL::difference(second, second_parts_occluded, std::back_inserter(_seconds));
+                        std::transform(
+                            std::begin(_seconds),
+                            std::end(_seconds),
+                            std::back_inserter(r_result),
+                            [&rhs](Polygon_with_holes part)
+                            {
+                                return FaceProjection(part, rhs.get_plane());
+                            }
+                        );
+                    }
+                    else
+                    {
+                        r_result.push_back(rhs);
+                        l_result.push_back(lhs);
+                    }
+                }
+            }
+        );
+
+        rhss = std::move(r_result);
+        return l_result;
     }
 }
