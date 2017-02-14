@@ -5,6 +5,8 @@
 #include <vector>
 #include <utility>
 
+#include <ostream>
+
 namespace urban
 {
     class FaceProjection
@@ -48,6 +50,8 @@ namespace urban
     private:
         Polygon_with_holes projected_polygon;
         Plane supporting_plane;
+
+        friend std::ostream & operator<<(std::ostream & os, const FaceProjection & facet);
     };
 
     void swap(FaceProjection & lhs, FaceProjection & rhs);

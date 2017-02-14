@@ -120,6 +120,12 @@ namespace urban
                 );
     }
 
+    std::ostream & operator<<(std::ostream & os, const FaceProjection & facet)
+    {
+        return os << "The Polygon describing borders :" << facet.projected_polygon << std::endl
+                  << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
+    }
+
     void swap(FaceProjection & lhs, FaceProjection & rhs)
     {
         lhs.swap(rhs);
