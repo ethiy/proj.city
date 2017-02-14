@@ -22,18 +22,27 @@ int main(int, char **)
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
         std::vector<urban::shadow::Mesh> meshes = handler.read();
 
-        std::vector<urban::Brick> urban_objects;
+        std::vector<urban::Brick> urban_objects(meshes.size());
         std::transform(
             std::begin(meshes),
             std::end(meshes),
-            std::back_inserter(urban_objects),
-            [](urban::shadow::Mesh & mesh)
+            std::begin(urban_objects),
+            [](const urban::shadow::Mesh & mesh)
             {
                 return urban::Brick(mesh);
             }
         );
 
-        urban::projection::BrickPrint staff_projected = project(urban_objects[1]);
+        std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
+        std::transform(
+            std::begin(meshes),
+            std::end(meshes),
+            std::begin(projections_xy),
+            [](const urban::Brick & brick)
+            {
+                return urban::project(brick);
+            }
+        );
     }
     catch (const std::exception& except)
     {
