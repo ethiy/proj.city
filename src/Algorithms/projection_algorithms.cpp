@@ -86,21 +86,21 @@ namespace urban
         points.push_back(B);
     }
 
-    double area(const FaceProjection & facet)
+    double area(const projection::FacePrint & facet)
     {
         return facet.area();
     }
 
 
-    BrickProjection project(const Brick & brick)
+    projection::BrickPrint project(const Brick & brick)
     {
-        BrickProjection projection(brick.get_name(), brick.bbox());
-        std::vector<FaceProjection> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
+        projection::BrickPrint projection(brick.get_name(), brick.bbox());
+        std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
         size_t it(0);
         std::for_each(
             std::begin(projected_facets),
             std::end(projected_facets),
-            [&projection, &it](FaceProjection facet)
+            [&projection, &it](projection::FacePrint facet)
             {
                 std::cout << ">> Face projection number: " << it++ << std::endl;
                 projection.push_facet(facet);
@@ -110,9 +110,9 @@ namespace urban
     }
 
 
-    std::vector<FaceProjection> project_xy(const Brick & brick)
+    std::vector<projection::FacePrint> project_xy(const Brick & brick)
     {
-        std::vector<FaceProjection> facets(brick.facets_number());
+        std::vector<projection::FacePrint> facets(brick.facets_number());
 
         std::vector<Point_2> facet_points;
         std::transform(
@@ -121,7 +121,7 @@ namespace urban
             std::begin(facets),
             [&facet_points](const Facet & facet)
             {
-                FaceProjection projected_facet;
+                projection::FacePrint projected_facet;
                 /**
                  * >> Copying 3D points to 2D Point vector
                  */
@@ -161,7 +161,7 @@ namespace urban
                     if(outer_boundary.orientation() == CGAL::CLOCKWISE)
                         outer_boundary.reverse_orientation();
                     
-                    projected_facet = FaceProjection(Polygon_with_holes(outer_boundary), plane_equation);
+                    projected_facet = projection::FacePrint(Polygon_with_holes(outer_boundary), plane_equation);
                 }
 
                 return projected_facet;
@@ -175,7 +175,7 @@ namespace urban
             std::remove_if(
                 std::begin(facets),
                 std::end(facets),
-                [](const FaceProjection & facet)
+                [](const projection::FacePrint & facet)
                 {
                     return facet.is_perpendicular();
                 }
@@ -189,19 +189,19 @@ namespace urban
         SimpleHeuristic heuristic;
         std::sort(std::begin(facets), std::end(facets), heuristic);
 
-        std::copy(std::begin(facets), std::end(facets), std::ostream_iterator<FaceProjection>(std::cout, " \n"));
+        std::copy(std::begin(facets), std::end(facets), std::ostream_iterator<projection::FacePrint>(std::cout, " \n"));
 
         return facets;
     }
 
-    std::list<FaceProjection> occlusion(const FaceProjection & lhs, std::list<FaceProjection> & rhss)
+    std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhss)
     {
-        std::list<FaceProjection> l_result;
-        std::list<FaceProjection> r_result;
+        std::list<projection::FacePrint> l_result;
+        std::list<projection::FacePrint> r_result;
         std::for_each(
             std::begin(rhss),
             std::end(rhss),
-            [&r_result, &l_result, &lhs](const FaceProjection & rhs)
+            [&r_result, &l_result, &lhs](const projection::FacePrint & rhs)
             {
                 /**
                  * >> Checking that faces are not degenerate;
@@ -256,7 +256,7 @@ namespace urban
                             std::back_inserter(l_result),
                             [&lhs](Polygon_with_holes part)
                             {
-                                return FaceProjection(part, lhs.get_plane());
+                                return projection::FacePrint(part, lhs.get_plane());
                             }
                         );
 
@@ -268,7 +268,7 @@ namespace urban
                             std::back_inserter(r_result),
                             [&rhs](Polygon_with_holes part)
                             {
-                                return FaceProjection(part, rhs.get_plane());
+                                return projection::FacePrint(part, rhs.get_plane());
                             }
                         );
                     }

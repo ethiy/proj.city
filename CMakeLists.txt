@@ -29,7 +29,7 @@ file(GLOB_RECURSE UObj_SRC "${3DSceneModel_SOURCE_DIR}/src/UrbanObject/*.cpp")
 add_library(UrbanObject ${UObj_HEADERS} ${UObj_SRC} ${ShadowMesh_HEADERS})
 target_link_libraries(UrbanObject ShadowMesh ${LIBS})
 
-# Porjections
+# Projections
 file(GLOB_RECURSE Proj_HEADERS "${3DSceneModel_SOURCE_DIR}/src/Projection/*.h")
 file(GLOB_RECURSE Proj_SRC "${3DSceneModel_SOURCE_DIR}/src/Projection/*.cpp")
 

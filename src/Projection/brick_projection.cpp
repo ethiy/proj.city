@@ -11,133 +11,136 @@
 
 namespace urban
 {
-    BrickProjection::BrickProjection(void):name("N/A"), projected_surface(), bounding_box(){}
-    BrickProjection::BrickProjection(const std::string & _name, const Bbox & _bounding_box):name(_name), projected_surface(), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
-    BrickProjection::BrickProjection(const BrickProjection & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
-    BrickProjection::BrickProjection(BrickProjection && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
-    BrickProjection::~BrickProjection(void){}
-
-    void BrickProjection::swap(BrickProjection & other)
+    namespace projection
     {
-        using std::swap;
-        swap(name, other.name);
-        swap(projected_facets, other.projected_facets);
-        swap(projected_surface, other.projected_surface);
-        swap(bounding_box, other.bounding_box);
-    }
-        
-    BrickProjection BrickProjection::operator=(const BrickProjection & other)
-    {
-        name = other.name;
-        projected_facets = std::move(other.projected_facets);
-        projected_surface = std::move(other.projected_surface);
-        bounding_box = std::move(other.bounding_box);
-        return *this;
-    }
+        BrickPrint::BrickPrint(void):name("N/A"), projected_surface(), bounding_box(){}
+        BrickPrint::BrickPrint(const std::string & _name, const Bbox & _bounding_box):name(_name), projected_surface(), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
+        BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
+        BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
+        BrickPrint::~BrickPrint(void){}
 
-    BrickProjection BrickProjection::operator=(BrickProjection && other)
-    {
-        name = std::move(other.name);
-        projected_facets.resize(other.projected_facets.size());
-        std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::begin(projected_facets));
-        projected_surface = std::move(other.projected_surface);
-        bounding_box = std::move(other.bounding_box);
-        return *this;
-    }
-
-
-    Bbox_2 BrickProjection::bbox(void)
-    {
-        return bounding_box;
-    }
-
-
-    bool BrickProjection::contains(const Polygon_with_holes & facet) const
-    {
-        std::list<Polygon_with_holes> _inter(0);
-        if(CGAL::do_overlap(projected_surface.bbox(), facet.bbox()))
-            CGAL::intersection(projected_surface, facet, std::back_inserter(_inter));
-        return _inter.size() == 1 && _inter.front() == facet;
-    }
-
-    bool BrickProjection::is_under(const FaceProjection & facet) const
-    {
-        bool under(false);
-
-        if(facet.is_perpendicular() || facet.is_degenerate())
-            under = true;
-        else
+        void BrickPrint::swap(BrickPrint & other)
         {
-            Point_2 point(
-                CGAL::centroid(
-                    facet.outer_boundary()[0],
-                    facet.outer_boundary()[1],
-                    facet.outer_boundary()[2]
-                )
-            );
-            under = contains(facet.get_polygon()) && facet.get_height(point) < get_height(point);
+            using std::swap;
+            swap(name, other.name);
+            swap(projected_facets, other.projected_facets);
+            swap(projected_surface, other.projected_surface);
+            swap(bounding_box, other.bounding_box);
         }
-        return under;
-    }
-    
-
-    void BrickProjection::push_facet(FaceProjection & new_facet)
-    {
-        std::list<FaceProjection> result(0);
-        size_t it(0);
-        if(projected_facets.empty())
+            
+        BrickPrint BrickPrint::operator=(const BrickPrint & other)
         {
-            if(projected_surface.outer_boundary().is_empty())
-                result.push_back(new_facet);
+            name = other.name;
+            projected_facets = std::move(other.projected_facets);
+            projected_surface = std::move(other.projected_surface);
+            bounding_box = std::move(other.bounding_box);
+            return *this;
+        }
+
+        BrickPrint BrickPrint::operator=(BrickPrint && other)
+        {
+            name = std::move(other.name);
+            projected_facets.resize(other.projected_facets.size());
+            std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::begin(projected_facets));
+            projected_surface = std::move(other.projected_surface);
+            bounding_box = std::move(other.bounding_box);
+            return *this;
+        }
+
+
+        Bbox_2 BrickPrint::bbox(void)
+        {
+            return bounding_box;
+        }
+
+
+        bool BrickPrint::contains(const Polygon_with_holes & facet) const
+        {
+            std::list<Polygon_with_holes> _inter(0);
+            if(CGAL::do_overlap(projected_surface.bbox(), facet.bbox()))
+                CGAL::intersection(projected_surface, facet, std::back_inserter(_inter));
+            return _inter.size() == 1 && _inter.front() == facet;
+        }
+
+        bool BrickPrint::is_under(const FacePrint & facet) const
+        {
+            bool under(false);
+
+            if(facet.is_perpendicular() || facet.is_degenerate())
+                under = true;
             else
-                std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
-        }
-        else
-        {
-            /* If new_facet is under the surface we loose it*/
-            if(!is_under(new_facet))
             {
-                std::cout << "Faces to be treated:" << projected_facets.size() << std::endl;
-                std::list<FaceProjection> new_facets{new_facet};
-                std::for_each(
+                Point_2 point(
+                    CGAL::centroid(
+                        facet.outer_boundary()[0],
+                        facet.outer_boundary()[1],
+                        facet.outer_boundary()[2]
+                    )
+                );
+                under = contains(facet.get_polygon()) && facet.get_height(point) < get_height(point);
+            }
+            return under;
+        }
+        
+
+        void BrickPrint::push_facet(FacePrint & new_facet)
+        {
+            std::list<FacePrint> result(0);
+            size_t it(0);
+            if(projected_facets.empty())
+            {
+                if(projected_surface.outer_boundary().is_empty())
+                    result.push_back(new_facet);
+                else
+                    std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
+            }
+            else
+            {
+                /* If new_facet is under the surface we loose it*/
+                if(!is_under(new_facet))
+                {
+                    std::cout << "Faces to be treated:" << projected_facets.size() << std::endl;
+                    std::list<FacePrint> new_facets{new_facet};
+                    std::for_each(
+                        std::begin(projected_facets),
+                        std::end(projected_facets),
+                        [&result, &new_facets, &it](FacePrint & facet)
+                        {
+                            std::list<FacePrint> occlusion_results(occlusion(facet, new_facets));
+                            result.splice(std::end(result), occlusion_results);
+                            std::cout << "Treated Facet : " << it++ << std::endl;
+                        }
+                    );
+                    result.splice(std::end(result), new_facets);
+                }
+            }
+            projected_facets = std::move(result);
+        }
+
+
+        bool BrickPrint::in_domain(const Point_2 & point) const
+        {
+            return point.x() <= bounding_box.xmax() && point.x() >= bounding_box.xmin() && point.y() <= bounding_box.ymax() && point.y() <= bounding_box.ymin();
+        }
+
+        double BrickPrint::get_height(const Point_2 & point) const
+        {
+            if(true) // To be checked
+                return std::accumulate(
                     std::begin(projected_facets),
                     std::end(projected_facets),
-                    [&result, &new_facets, &it](FaceProjection & facet)
+                    .0,
+                    [point](double & height, const FacePrint & facet)
                     {
-                        std::list<FaceProjection> occlusion_results(occlusion(facet, new_facets));
-                        result.splice(std::end(result), occlusion_results);
-                        std::cout << "Treated Facet : " << it++ << std::endl;
+                        return height + facet.get_height(point);
                     }
                 );
-                result.splice(std::end(result), new_facets);
-            }
+            else
+                throw std::out_of_range("The point is not inside the bounding box");
         }
-        projected_facets = std::move(result);
     }
 
-
-    bool BrickProjection::in_domain(const Point_2 & point) const
-    {
-        return point.x() <= bounding_box.xmax() && point.x() >= bounding_box.xmin() && point.y() <= bounding_box.ymax() && point.y() <= bounding_box.ymin();
-    }
-
-    double BrickProjection::get_height(const Point_2 & point) const
-    {
-        if(true) // To be checked
-            return std::accumulate(
-                std::begin(projected_facets),
-                std::end(projected_facets),
-                .0,
-                [point](double & height, const FaceProjection & facet)
-                {
-                    return height + facet.get_height(point);
-                }
-            );
-        else
-            throw std::out_of_range("The point is not inside the bounding box");
-    }
-
-    void swap(BrickProjection & lhs, BrickProjection & rhs)
+    void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs)
     {
         lhs.swap(rhs);
     }

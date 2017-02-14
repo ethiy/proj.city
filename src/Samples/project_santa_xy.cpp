@@ -33,7 +33,7 @@ int main(int, char **)
             }
         );
 
-        urban::BrickProjection staff_projected = project(urban_objects[1]);
+        urban::projection::BrickPrint staff_projected = project(urban_objects[1]);
     }
     catch (const std::exception& except)
     {

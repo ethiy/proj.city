@@ -22,8 +22,8 @@ namespace urban
     /** Get extrems from coliear points*/
     void extrem_points(std::vector<Point_2> & points);
 
-    /** Compute FaceProjection area*/
-    double area(const FaceProjection & facet);
+    /** Compute FacePrint area*/
+    double area(const projection::FacePrint & facet);
 
     /**
      * Sorting heuristic functors
@@ -31,13 +31,13 @@ namespace urban
     struct Heuristic
     {
         inline Heuristic(void){}
-        virtual bool operator()(const FaceProjection & facet_a, const FaceProjection & facet_b) = 0;
+        virtual bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b) = 0;
     };
 
     struct SimpleHeuristic : public Heuristic
     {
         inline SimpleHeuristic(void){}
-        inline bool operator()(const FaceProjection & facet_a, const FaceProjection & facet_b)
+        inline bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
         {
             /* If one of the faces is perpendicular do not bother changing order
              */
@@ -68,7 +68,7 @@ namespace urban
     struct NaiveHeuristic : public Heuristic
     {
         inline NaiveHeuristic(void){}
-        inline bool operator()(const FaceProjection & facet_a, const FaceProjection & facet_b)
+        inline bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
         {
             bool greater(false); 
             if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
@@ -99,14 +99,14 @@ namespace urban
     /*________________________ Projections _________________________________________________*/
 
     /** Projects on camera view*/
-    BrickProjection project(const Brick & brick, const projection::Camera & camera);
+    projection::BrickPrint project(const Brick & brick, const projection::Camera & camera);
 
     /* ! Projects on xy axis*/
-    BrickProjection project(const Brick & brick);
+    projection::BrickPrint project(const Brick & brick);
     
     /** Project Faces to XY*/
-    std::vector<FaceProjection> project_xy(const Brick & brick);
+    std::vector<projection::FacePrint> project_xy(const Brick & brick);
 
-    /** Computes FaceProjection occlutions and gets rid of all perpendicular facets*/
-    std::list<FaceProjection> occlusion(const FaceProjection & lhs, std::list<FaceProjection> & rhs);
+    /** Computes FacePrint occlutions and gets rid of all perpendicular facets*/
+    std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhs);
 }

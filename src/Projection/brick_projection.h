@@ -8,43 +8,46 @@
 
 namespace urban
 {
-    class BrickProjection
+    namespace projection
     {
-    public:
-        BrickProjection(void);
-        BrickProjection(const std::string & _name, const Bbox & _bounding_box);
-        BrickProjection(const BrickProjection &other);
-        BrickProjection(BrickProjection && other);
-        ~BrickProjection(void);
+        class BrickPrint
+        {
+        public:
+            BrickPrint(void);
+            BrickPrint(const std::string & _name, const Bbox & _bounding_box);
+            BrickPrint(const BrickPrint &other);
+            BrickPrint(BrickPrint && other);
+            ~BrickPrint(void);
 
-        void swap(BrickProjection & other);
-        
-        BrickProjection operator=(const BrickProjection & other);
+            void swap(BrickPrint & other);
+            
+            BrickPrint operator=(const BrickPrint & other);
 
-        BrickProjection operator=(BrickProjection && other);
+            BrickPrint operator=(BrickPrint && other);
 
-        Bbox_2 bbox(void);
+            Bbox_2 bbox(void);
 
-        typedef std::list<FaceProjection>::iterator iterator;
-        typedef std::list<FaceProjection>::const_iterator const_iterator;
-        iterator begin(void);
-        iterator end(void);
-        const_iterator cbegin(void);
-        const_iterator cend(void);
+            typedef std::list<FacePrint>::iterator iterator;
+            typedef std::list<FacePrint>::const_iterator const_iterator;
+            iterator begin(void);
+            iterator end(void);
+            const_iterator cbegin(void);
+            const_iterator cend(void);
 
-        
-        bool contains(const Polygon_with_holes &) const;
-        bool is_under(const FaceProjection &) const;
-        void push_facet(FaceProjection &);
+            
+            bool contains(const Polygon_with_holes &) const;
+            bool is_under(const FacePrint &) const;
+            void push_facet(FacePrint &);
 
-        bool in_domain(const Point_2 &) const;
-        double get_height(const Point_2 &) const;
-    private:
-        std::string name;
-        std::list<FaceProjection> projected_facets;
-        Polygon_with_holes projected_surface;
-        Bbox_2 bounding_box;
-    };
+            bool in_domain(const Point_2 &) const;
+            double get_height(const Point_2 &) const;
+        private:
+            std::string name;
+            std::list<FacePrint> projected_facets;
+            Polygon_with_holes projected_surface;
+            Bbox_2 bounding_box;
+        };
+    }
 
-    void swap(BrickProjection & lhs, BrickProjection & rhs);
+    void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 }
