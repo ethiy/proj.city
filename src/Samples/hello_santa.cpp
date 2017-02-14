@@ -1,7 +1,10 @@
-#include "../ShadowMesh/shadow_mesh.h"
-#include "../UrbanObject/brick.h"
-#include "../IO/io.h"
-#include "../IO/io_3ds.h"
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+
+#include <boost/filesystem.hpp>
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
@@ -9,15 +12,12 @@
 
 #include <easylogging++.h>
 
-#include <boost/filesystem.hpp>
-
-#include <vector>
-#include <map>
-#include <algorithm>
-#include <iterator>
-#include <iostream>
-
 INITIALIZE_EASYLOGGINGPP
+
+#include "../ShadowMesh/shadow_mesh.h"
+#include "../UrbanObject/brick.h"
+#include "../IO/io.h"
+#include "../IO/io_3ds.h"
 
 int main(int, char **)
 {
