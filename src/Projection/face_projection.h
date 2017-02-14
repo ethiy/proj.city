@@ -13,7 +13,7 @@ namespace urban
     {
     public:
         FaceProjection(void);
-        FaceProjection(const Polygon_with_holes & _projected_polygon, const Plane & _supporting_plane);
+        FaceProjection(const Polygon_with_holes & _border, const Plane & _supporting_plane);
         FaceProjection(const FaceProjection & other);
         FaceProjection(FaceProjection && other);
         ~FaceProjection(void);
@@ -37,8 +37,9 @@ namespace urban
         Hole_const_iterator holes_end(void) const;
         Polygon outer_boundary(void) const;
         
-        /*! In our case, two edges are coinciding means that all edges are so:
-         *  - Due to the fact that all edges are supported by the same plane;
+        /**
+         * In our case, two edges are coinciding means that all edges are so,
+         * Due to the fact that all edges are supported by the same plane:
          *  - This means that we should just check if the area is null to assert
          *      that the projection is degenarate.
          */
@@ -48,7 +49,7 @@ namespace urban
         bool contains(const Point_2 & point) const;
 
     private:
-        Polygon_with_holes projected_polygon;
+        Polygon_with_holes border;
         Plane supporting_plane;
 
         friend std::ostream & operator<<(std::ostream & os, const FaceProjection & facet);

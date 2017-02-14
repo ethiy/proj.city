@@ -13,35 +13,35 @@
 namespace urban
 {
     FaceProjection::FaceProjection(void){}
-    FaceProjection::FaceProjection(const Polygon_with_holes & _projected_polygon, const Plane & _supporting_plane):projected_polygon(_projected_polygon), supporting_plane(_supporting_plane){}
-    FaceProjection::FaceProjection(const FaceProjection & other):projected_polygon(other.projected_polygon), supporting_plane(other.supporting_plane){}
-    FaceProjection::FaceProjection(FaceProjection && other):projected_polygon(std::move(other.projected_polygon)), supporting_plane(std::move(other.supporting_plane)){}
+    FaceProjection::FaceProjection(const Polygon_with_holes & _border, const Plane & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
+    FaceProjection::FaceProjection(const FaceProjection & other):border(other.border), supporting_plane(other.supporting_plane){}
+    FaceProjection::FaceProjection(FaceProjection && other):border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane)){}
     FaceProjection::~FaceProjection(void){}
 
     void FaceProjection::swap(FaceProjection & other)
     {
         using std::swap;
-        swap(projected_polygon, other.projected_polygon);
+        swap(border, other.border);
         swap(supporting_plane, other.supporting_plane);
     }
 
     FaceProjection & FaceProjection::operator=(const FaceProjection & other)
     {
-        projected_polygon = other.projected_polygon;
+        border = other.border;
         supporting_plane = other.supporting_plane;
         return *this;
     }
 
     FaceProjection & FaceProjection::operator=(FaceProjection && other)
     {
-        projected_polygon = std::move(other.projected_polygon);
+        border = std::move(other.border);
         supporting_plane = std::move(other.supporting_plane);
         return *this;
     }
 
     Polygon_with_holes FaceProjection::get_polygon(void) const noexcept
     {
-        return projected_polygon;
+        return border;
     }
 
     Plane FaceProjection::get_plane(void) const noexcept
@@ -70,9 +70,9 @@ namespace urban
     double FaceProjection::area(void) const
     {
         return std::accumulate(
-                    projected_polygon.holes_begin(),
-                    projected_polygon.holes_end(),
-                    to_double(projected_polygon.outer_boundary().area()),
+                    border.holes_begin(),
+                    border.holes_end(),
+                    to_double(border.outer_boundary().area()),
                     [](double & holes_area, const Polygon & hole)
                     {
                         return holes_area - to_double(hole.area());
@@ -82,23 +82,26 @@ namespace urban
 
      FaceProjection::Hole_const_iterator FaceProjection::holes_begin(void) const
     {
-        return projected_polygon.holes_begin();
+        return border.holes_begin();
     }
 
      FaceProjection::Hole_const_iterator FaceProjection::holes_end(void) const
     {
-        return  projected_polygon.holes_end();
+        return  border.holes_end();
     }
 
     Polygon FaceProjection::outer_boundary(void) const
     {
-        return projected_polygon.outer_boundary();
+        return border.outer_boundary();
     }
 
 
     bool FaceProjection::is_degenerate(void) const
     {
-        return is_perpendicular() || ( holes_begin() != holes_end() && std::abs(area()) < std::numeric_limits<double>::epsilon() ); /* If it has no holes no need to check surface */
+        /**
+         * If it has no holes no need to check surface
+         */
+        return is_perpendicular() || ( holes_begin() != holes_end() && std::abs(area()) < std::numeric_limits<double>::epsilon() );
     }
 
     bool FaceProjection::is_perpendicular(void) const
@@ -108,11 +111,11 @@ namespace urban
 
     bool FaceProjection::contains(const Point_2 & point) const
     {
-        return  projected_polygon.outer_boundary().bounded_side(point) != CGAL::ON_UNBOUNDED_SIDE
+        return  border.outer_boundary().bounded_side(point) != CGAL::ON_UNBOUNDED_SIDE
                 &&
                 std::all_of(
-                    projected_polygon.holes_begin(),
-                    projected_polygon.holes_end(),
+                    border.holes_begin(),
+                    border.holes_end(),
                     [point](Polygon hole)
                     {
                         return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
@@ -122,7 +125,7 @@ namespace urban
 
     std::ostream & operator<<(std::ostream & os, const FaceProjection & facet)
     {
-        return os << "The Polygon describing borders :" << facet.projected_polygon << std::endl
+        return os << "The Polygon describing borders :" << facet.border << std::endl
                   << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
     }
 
