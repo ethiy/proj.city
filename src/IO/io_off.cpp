@@ -59,10 +59,13 @@ namespace urban
                         std::remove_if(
                             std::begin(lines),
                             std::end(lines),
-                            [](const std::string line) {
+                            [](const std::string line)
+                            {
                                 return line.at(0) == '#' || line.empty();
-                            }),
-                        std::end(lines));
+                            }
+                        ),
+                        std::end(lines)
+                    );
                     if (lines.empty())
                     {
                         error_message << "This file: " << filepath.string() << " containes only comments!";
