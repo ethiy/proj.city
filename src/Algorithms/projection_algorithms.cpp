@@ -198,25 +198,39 @@ namespace urban
     {
         std::list<FaceProjection> result;
         
-        if(lhs.is_perpendicular() || rhs.is_perpendicular())
+        /**
+         * >> Checking that faces are not degenerate;
+         *      - Loose degenerate faces on the way.
+         */
+        if(lhs.is_degenerate() || rhs.is_degenerate())
         {
-            if(!lhs.is_perpendicular())
+            if(!lhs.is_degenerate())
                 result.push_back(lhs);
-            if(!rhs.is_perpendicular())
+            if(!rhs.is_degenerate())
                 result.push_back(rhs);
         }
         else
         {
             Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
-            std::list<Polygon_with_holes> superposition;
+            std::list<Polygon_with_holes> superposition(0);
 
+            /**
+             * >> Checking bounding box overlap before intersection computation;
+             *      - Bounding box checking is faster than Intersection predicate
+             */
             if(CGAL::do_overlap(first.bbox(), second.bbox()))
                 CGAL::intersection(first, second, std::back_inserter(superposition));
-
+            
+            /**
+             * >> Checking Intersection
+             */
             if(!superposition.empty())
             {
                 Polygon_with_holes first_parts_occluded, second_parts_occluded;
 
+                /**
+                 * >> Assign Intersection to corresponding facet
+                 */
                 std::for_each(
                     std::begin(superposition),
                     std::end(superposition),
@@ -235,7 +249,10 @@ namespace urban
                             CGAL::join(first_parts_occluded, intersection, first_parts_occluded);
                     }
                 );
-                
+
+                /**
+                 * >> Compute ooclusion for each facet
+                 */
                 std::list<Polygon_with_holes> _firsts;
                 CGAL::difference(first, first_parts_occluded, std::back_inserter(_firsts));
                 std::transform(
@@ -262,6 +279,9 @@ namespace urban
             }
             else
             {
+                /**
+                 * >> No occlusion
+                 */
                 result.push_back(lhs);
                 result.push_back(rhs);
             }
