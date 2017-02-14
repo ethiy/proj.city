@@ -13,15 +13,15 @@ namespace urban
 {
     BrickProjection::BrickProjection(void):name("N/A"), projected_surface(), bounding_box(){}
     BrickProjection::BrickProjection(const std::string & _name, const Bbox & _bounding_box):name(_name), projected_surface(), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
-    BrickProjection::BrickProjection(const BrickProjection & other):name(other.name), facets_xy(other.facets_xy), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
-    BrickProjection::BrickProjection(BrickProjection && other):name(std::move(other.name)), facets_xy(std::move(other.facets_xy)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
+    BrickProjection::BrickProjection(const BrickProjection & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
+    BrickProjection::BrickProjection(BrickProjection && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
     BrickProjection::~BrickProjection(void){}
 
     void BrickProjection::swap(BrickProjection & other)
     {
         using std::swap;
         swap(name, other.name);
-        swap(facets_xy, other.facets_xy);
+        swap(projected_facets, other.projected_facets);
         swap(projected_surface, other.projected_surface);
         swap(bounding_box, other.bounding_box);
     }
@@ -29,7 +29,7 @@ namespace urban
     BrickProjection BrickProjection::operator=(const BrickProjection & other)
     {
         name = other.name;
-        facets_xy = std::move(other.facets_xy);
+        projected_facets = std::move(other.projected_facets);
         projected_surface = std::move(other.projected_surface);
         bounding_box = std::move(other.bounding_box);
         return *this;
@@ -38,8 +38,8 @@ namespace urban
     BrickProjection BrickProjection::operator=(BrickProjection && other)
     {
         name = std::move(other.name);
-        facets_xy.resize(other.facets_xy.size());
-        std::copy(std::begin(other.facets_xy), std::end(other.facets_xy), std::begin(facets_xy));
+        projected_facets.resize(other.projected_facets.size());
+        std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::begin(projected_facets));
         projected_surface = std::move(other.projected_surface);
         bounding_box = std::move(other.bounding_box);
         return *this;
@@ -83,7 +83,7 @@ namespace urban
     void BrickProjection::push_facet(FaceProjection & new_facet)
     {
         std::list <FaceProjection> result;
-        if(facets_xy.empty())
+        if(projected_facets.empty())
         {
             if(projected_surface.outer_boundary().is_empty())
                 result.push_back(new_facet);
@@ -95,8 +95,8 @@ namespace urban
             /* If new_facet is under the surface we loose it*/
             if(!is_under(new_facet))
                 std::for_each(
-                    std::begin(facets_xy),
-                    std::end(facets_xy),
+                    std::begin(projected_facets),
+                    std::end(projected_facets),
                     [&result, &new_facet](FaceProjection & facet)
                     {
                         std::list<FaceProjection> occlusion_result(occlusion(facet, new_facet));
@@ -105,7 +105,7 @@ namespace urban
                     }
                 );
         }
-        facets_xy = std::move(result);
+        projected_facets = std::move(result);
     }
 
 
@@ -118,8 +118,8 @@ namespace urban
     {
         if(true) // To be checked
             return std::accumulate(
-                std::begin(facets_xy),
-                std::end(facets_xy),
+                std::begin(projected_facets),
+                std::end(projected_facets),
                 .0,
                 [point](double & height, const FaceProjection & facet)
                 {

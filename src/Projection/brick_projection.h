@@ -41,7 +41,7 @@ namespace urban
         double get_height(const Point_2 &) const;
     private:
         std::string name;
-        std::list<FaceProjection> facets_xy;
+        std::list<FaceProjection> projected_facets;
         Polygon_with_holes projected_surface;
         Bbox_2 bounding_box;
     };
