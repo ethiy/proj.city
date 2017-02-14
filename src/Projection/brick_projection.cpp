@@ -53,6 +53,23 @@ namespace urban
             return bounding_box;
         }
 
+        BrickPrint::iterator BrickPrint::begin(void) noexcept
+        {
+            return projected_facets.begin();
+        }
+        BrickPrint::iterator BrickPrint::end(void) noexcept
+        {
+            return projected_facets.end();
+        }
+        BrickPrint::const_iterator BrickPrint::cbegin(void) const noexcept
+        {
+            return projected_facets.cbegin();
+        }
+        BrickPrint::const_iterator BrickPrint::cend(void) const noexcept
+        {
+            return projected_facets.cend();
+        }
+
 
         bool BrickPrint::contains(const Polygon_with_holes & facet) const
         {

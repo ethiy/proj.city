@@ -29,10 +29,10 @@ namespace urban
 
             typedef std::list<FacePrint>::iterator iterator;
             typedef std::list<FacePrint>::const_iterator const_iterator;
-            iterator begin(void);
-            iterator end(void);
-            const_iterator cbegin(void);
-            const_iterator cend(void);
+            iterator begin(void) noexcept;
+            iterator end(void) noexcept;
+            const_iterator cbegin(void) const noexcept;
+            const_iterator cend(void) const noexcept;
 
             
             bool contains(const Polygon_with_holes &) const;
