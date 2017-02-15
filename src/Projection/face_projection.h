@@ -59,4 +59,7 @@ namespace urban
     }
 
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs);
+    
+    /** Compute FacePrint area*/
+    double area(const projection::FacePrint & facet);
 }

@@ -136,4 +136,10 @@ namespace urban
     {
         lhs.swap(rhs);
     }
+
+    double area(const projection::FacePrint & facet)
+    {
+        return facet.area();
+    }
+
 }
