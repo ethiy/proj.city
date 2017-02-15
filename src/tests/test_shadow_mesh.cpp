@@ -1,6 +1,6 @@
-#include "../Shadow/mesh.h"
+#include "../libs/Shadow/mesh.h"
 
-#include "catch.hpp"
+#include <catch.hpp>
 
 #include <initializer_list>
 #include <iterator>

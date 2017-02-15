@@ -2,9 +2,7 @@
 
 #include "../geometry_definitions.h"
 #include "../UrbanObject/brick.h"
-#include "../Projection/face_projection.h"
-#include "../Projection/brick_projection.h"
-#include "../Projection/camera.h"
+#include "../Projection/projection.h"
 
 #include <vector>
 #include <list>

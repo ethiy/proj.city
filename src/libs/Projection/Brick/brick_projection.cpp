@@ -1,6 +1,6 @@
 #include "brick_projection.h"
 
-#include "../Algorithms/projection_algorithms.h"
+#include "../../Algorithms/projection_algorithms.h"
 
 #include <CGAL/Boolean_set_operations_2.h>
 

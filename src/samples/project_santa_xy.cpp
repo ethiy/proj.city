@@ -1,10 +1,4 @@
-#include "../Shadow/mesh.h"
-#include "../UrbanObject/brick.h"
-#include "../IO/io.h"
-#include "../IO/io_3ds.h"
-
-#include "../Projection/brick_projection.h"
-#include "../Algorithms/algorithms.h"
+#include "../libs/urban.h"
 
 #include <boost/filesystem.hpp>
 

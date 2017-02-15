@@ -1,8 +1,6 @@
-#include "../geometry_definitions.h"
+#include "../libs/Shadow/Face/face.h"
 
-#include "../Shadow/Face/face.h"
-
-#include "catch.hpp"
+#include <catch.hpp>
 
 # include <cstdlib>
 

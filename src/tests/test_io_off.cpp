@@ -1,4 +1,4 @@
-#include "../IO/io_off.h"
+#include "../libs/IO/io_off.h"
 
 #include <boost/filesystem.hpp>
 
@@ -6,7 +6,7 @@
 #include <fstream>
 #include <streambuf>
 
-#include "catch.hpp"
+#include <catch.hpp>
 
 SCENARIO("Input/Output from OFF file:")
 {

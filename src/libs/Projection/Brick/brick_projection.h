@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "face_projection.h"
+#include "../../geometry_definitions.h"
+#include "../Face/face_projection.h"
 
 #include <string>
 #include <list>

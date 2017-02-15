@@ -1,4 +1,4 @@
-#include "../IO/io_3ds.h"
+#include "../libs/IO/io_3ds.h"
 
 #include <boost/filesystem.hpp>
 
@@ -6,7 +6,7 @@
 #include <fstream>
 #include <streambuf>
 
-#include "catch.hpp"
+#include <catch.hpp>
 
 SCENARIO("Input/Output from 3dsMAX file:")
 {

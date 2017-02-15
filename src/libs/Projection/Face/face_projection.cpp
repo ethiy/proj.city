@@ -1,6 +1,6 @@
 #include "face_projection.h"
 
-#include "../Algorithms/projection_algorithms.h"
+#include "../../Algorithms/projection_algorithms.h"
 
 #include <algorithm>
 #include <iterator>
