@@ -113,6 +113,20 @@ namespace urban
              * @see ~Mesh(void)
              */
             Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces);
+            
+            /**
+             * General constructor. 
+             * @param _name mesh name
+             * @param _points points coordinates
+             * @param _faces facets
+             * @see Mesh(void)
+             * @see Mesh(Mesh &&)
+             * @see Mesh(Lib3dsMesh*)
+             * @see Mesh(const Polyhedron &)
+             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
+             * @see ~Mesh(void)
+             */
+            Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces, const Bbox & _bounding_box);
 
             /** 
              * Destructor.

@@ -147,6 +147,9 @@ namespace urban
         {
             compute_box();
         }
+
+        Mesh::Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces, const Bbox & _bounding_box):name(_name), points(_points), faces(_faces), bounding_box(_bounding_box){}
+        
         Mesh::~Mesh(void){}
 
         void Mesh::swap(Mesh & other)
