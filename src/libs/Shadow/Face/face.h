@@ -170,7 +170,22 @@ namespace urban
              * Invert face orientation
              */
             void invert_orientation(void);
+
+            /**
+             * Find an index
+             * @param index the index to find inside the facet
+             * @return iterator to the index (it sould be unique)
+             */
+            iterator find(size_t index);
             
+            /**
+             * Find an index and overide it
+             * @param index the index to overide
+             * @param new_index the index to overide with
+             * @return true in case of success
+             */
+            bool overide(size_t index, size_t new_index);
+
             /**
              * Evaluates if face is convex based on points coordinates.
              * @param coordinates map associating point indexes to their coordinates

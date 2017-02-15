@@ -79,6 +79,20 @@ namespace urban
             std::reverse(std::next(std::begin(points)), std::end(points));
         }
 
+        Face::iterator Face::find(size_t index)
+        {
+            return std::find(std::begin(points), std::end(points), index);
+        }
+
+        bool Face::overide(size_t index, size_t new_index)
+        {
+            auto placeholder = find(index);
+            bool success( placeholder != std::end(points));
+            if(success)
+                *placeholder = new_index;
+            return success;
+        }
+
         bool Face::is_convex(const std::map<size_t, Point> & coordinates) const
         {
             if(coordinates.size() < vertices_number)
