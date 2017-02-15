@@ -1,6 +1,6 @@
 #include "../geometry_definitions.h"
 
-#include "../ShadowMesh/Face/face.h"
+#include "../Shadow/Face/face.h"
 
 #include "catch.hpp"
 

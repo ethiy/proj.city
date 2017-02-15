@@ -2,7 +2,7 @@
 
 #include "../geometry_definitions.h"
 
-#include "../ShadowMesh/shadow_mesh.h"
+#include "../Shadow/mesh.h"
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>

@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * \file shadow_mesh.h
+ * \file mesh.h
  * \brief Shadow Mesh definition
  * \author Oussama Ennafii
  * \date 8 february 2017

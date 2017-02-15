@@ -1,4 +1,4 @@
-#include "../ShadowMesh/shadow_mesh.h"
+#include "../Shadow/mesh.h"
 #include "../UrbanObject/brick.h"
 #include "../IO/io.h"
 #include "../IO/io_3ds.h"

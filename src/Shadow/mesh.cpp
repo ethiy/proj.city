@@ -1,4 +1,4 @@
-#include "shadow_mesh.h"
+#include "mesh.h"
 
 #include <stdexcept>
 

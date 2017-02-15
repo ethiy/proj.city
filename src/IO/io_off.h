@@ -2,7 +2,7 @@
 
 #include "io.h"
 
-#include "../ShadowMesh/shadow_mesh.h"
+#include "../Shadow/mesh.h"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>

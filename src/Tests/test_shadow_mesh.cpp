@@ -1,4 +1,4 @@
-#include "../ShadowMesh/shadow_mesh.h"
+#include "../Shadow/mesh.h"
 
 #include "catch.hpp"
 
