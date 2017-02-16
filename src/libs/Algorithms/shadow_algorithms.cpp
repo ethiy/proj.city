@@ -3,84 +3,105 @@
 #include "../geometry_definitions.h"
 
 #include <sstream>
-#include <map>
-#include <vector>
+
 #include <iterator>
 #include <algorithm>
 
+#include <stdexcept>
+
 namespace urban
 {
-    bool stitch(const shadow::Mesh & lhs, const shadow::Mesh & rhs, shadow::Mesh & stitched)
+    bool connectable(const shadow::Mesh & lhs, const shadow::Mesh & rhs, std::map<size_t, size_t> & suture_points)
     {
-        std::stringstream _name("");
-        _name << lhs.get_name() << "_and_" << rhs.get_name();
-
-        std::map<size_t, Point> s_coordinates, b_coordinates;
-        std::map<size_t, shadow::Face> s_faces, b_faces;
-        /**
-         * This is an optimization
-         *  - We are doing searches on the biggest mesh.
-         */
-        if(lhs.get_number_points() <= rhs.get_number_points())
-        {
-            s_coordinates = lhs.get_points();
-            s_faces = lhs.get_faces();
-            b_coordinates = rhs.get_points();
-            b_faces = rhs.get_faces();
-        }
-        else
-        {
-            s_coordinates = rhs.get_points();
-            s_faces = rhs.get_faces();
-            b_coordinates = lhs.get_points();
-            b_faces = lhs.get_faces();
-        }
-
-        size_t shift(s_coordinates.size());
+        if(!suture_points.empty())
+            throw std::logic_error("The map must be empty");
         
-        /**
-         * Find common points;
-         *  - Complexity: O( shift x log(b_coordinates.size()) )
-         */
-        std::map<size_t, size_t> suture_points;
+        std::map<size_t, Point> l_coordinates(lhs.get_points()),
+                                r_coordinates(rhs.get_points());
+        
         std::for_each(
-            std::begin(s_coordinates),
-            std::end(s_coordinates),
-            [sihft](const std::pair<size_t, Point> & p)
+            std::begin(l_coordinates),
+            std::end(l_coordinates),
+            [&r_coordinates, &suture_points](const std::pair<size_t, Point> & p)
             {
-                auto suture_point = std::find_if(
-                    std::begin(b_coordinates),
-                    std::end(b_coordinates),
+                auto suture_point = find_if(
+                    std::begin(r_coordinates),
+                    std::end(r_coordinates),
                     [&p](const std::pair<size_t, Point> & q)
                     {
-                        return q.second == p.second;
+                        return p.second == q.second;
                     }
                 );
 
-                if(suture_point != std::end(b_coordinates))
-                    suture_points.emplace(std::make_pair(p.first, suture_point->first));
-                else
-                    suture_points.emplace(std::make_pair(p.first, p.first + shift))
+                if(suture_point != std::end(r_coordinates))
+                    suture_points.emplace(std::make_pair(suture_point->first, p.first));
             }
         );
 
-        std::for_each(
-            
-        );
+        return !suture_points.empty();
+    }
+
+    // shadow::Mesh stitch(const shadow::Mesh & lhs, const shadow::Mesh & rhs, const std::map<size_t, size_t> & suture_points)
+    // {
+    //     std::stringstream _name("");
+    //     _name << lhs.get_name() << "_and_" << rhs.get_name();
+
+    //     // std::for_each(
+
+    //     // );
          
 
-        // translate indexes s_coordinates
+    //     // translate indexes s_coordinates
 
-        // Find by value
+    //     // Find by value
 
-        // concat coords
+    //     // concat coords
 
-        // update s_faces indexes
+    //     // update s_faces indexes
 
-        // concat faces
+    //     // concat faces
         
-        stitched = std::move(shadow::Mesh());
+    //     shadow::Mesh stitched;
+    //     return stitched;
+    // }
 
-        return false;
+    std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & connex_meshes, const shadow::Mesh & mesh)
+    {
+        std::vector<shadow::Mesh> result;
+        result.reserve(connex_meshes.size() + 1);
+        
+        shadow::Mesh snowball(mesh);
+
+        std::for_each(
+            std::begin(connex_meshes),
+            std::end(connex_meshes),
+            [&snowball, &result](const shadow::Mesh & connex_mesh)
+            {
+                std::map<size_t,size_t> suture_points;
+                if(connectable(connex_mesh, snowball, suture_points))
+                    snowball = stitch(connex_mesh, snowball, suture_points);
+                else
+                    result.push_back(connex_mesh);
+            }
+        );
+
+        result.push_back(snowball);
+        return result;
+    }
+
+    std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & meshes)
+    {
+        if(meshes.empty())
+            throw std::logic_error("Nothing to stitch here!");
+
+       return std::accumulate(
+           std::begin(meshes),
+           std::end(meshes),
+           std::vector<shadow::Mesh>(),
+           [](const std::vector<shadow::Mesh> & result, const shadow::Mesh & mesh)
+           {
+               return stitch(result, mesh);
+           }
+       );
     }
 }
