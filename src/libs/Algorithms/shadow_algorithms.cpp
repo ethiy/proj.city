@@ -41,29 +41,39 @@ namespace urban
         return !suture_points.empty();
     }
 
-    // shadow::Mesh stitch(const shadow::Mesh & lhs, const shadow::Mesh & rhs, const std::map<size_t, size_t> & suture_points)
-    // {
-    //     std::stringstream _name("");
-    //     _name << lhs.get_name() << "_and_" << rhs.get_name();
+    shadow::Mesh stitch(const shadow::Mesh & lhs, const shadow::Mesh & rhs, const std::map<size_t, size_t> & suture_points)
+    {
+        std::stringstream _name("");
+        _name << lhs.get_name() << "_and_" << rhs.get_name();
 
-    //     // std::for_each(
+        std::map<size_t, Point> l_coordinates(lhs.get_points()),
+                                r_coordinates(rhs.get_points());
 
-    //     // );
-         
+        size_t shift(l_coordinates.size());
+        std::for_each(
+            std::begin(r_coordinates),
+            std::end(r_coordinates),
+            [&l_coordinates, &shift, &suture_points](const std::pair<size_t, Point> & p)
+            {
+                try
+                {
+                    suture_points.at(p.first);
+                    shift--;
+                }
+                catch(const std::out_of_range & except)
+                {
+                    l_coordinates.emplace(std::make_pair(p.first + shift, p.second));
+                }
+            }
+        );
 
-    //     // translate indexes s_coordinates
+        // update r_faces indexes
 
-    //     // Find by value
-
-    //     // concat coords
-
-    //     // update s_faces indexes
-
-    //     // concat faces
+        // concat faces
         
-    //     shadow::Mesh stitched;
-    //     return stitched;
-    // }
+        shadow::Mesh stitched;
+        return stitched;
+    }
 
     std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & connex_meshes, const shadow::Mesh & mesh)
     {
@@ -91,9 +101,6 @@ namespace urban
 
     std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & meshes)
     {
-        if(meshes.empty())
-            throw std::logic_error("Nothing to stitch here!");
-
        return std::accumulate(
            std::begin(meshes),
            std::end(meshes),
