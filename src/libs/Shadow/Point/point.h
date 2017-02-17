@@ -1,7 +1,5 @@
 #pragma once
 
-// #include "../Vector/vector.h"
-
 #include <array>
 #include <ostream>
 

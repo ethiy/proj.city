@@ -1,7 +1,5 @@
 #pragma once
 
-//#include "../Point/point.h"
-
 #include <array>
 
 namespace urban

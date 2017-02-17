@@ -88,6 +88,7 @@ namespace urban
     std::ostream & operator<<(std::ostream & os, shadow::Point & point)
     {
         os << point.x() << " " << point.y() << " " << point.z();
+        return os;
     }
 
 }
