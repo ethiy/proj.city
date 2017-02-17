@@ -10,10 +10,9 @@
 
 #include "Face/face.h"
 
-#include "../geometry_definitions.h"
-
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
+#include <CGAL/Polyhedron_3.h>
 
 #include <map>
 #include <string>
@@ -58,7 +57,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -70,7 +69,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -82,7 +81,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -90,15 +89,16 @@ namespace urban
 
             /**
              * General constructor. 
-             * @param polyhedron CGAL Polyhedron_3 structure
+             * @param CGAL::Polyhedron_3 CGAL Polyhedron_3_3 structure
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            Mesh(const Polyhedron & polyhedron);
+            template<class Kernel>
+            Mesh(const CGAL::Polyhedron_3<Kernel> & polyhedron);
 
             /**
              * General constructor. 
@@ -108,7 +108,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -122,7 +122,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -133,7 +133,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
+             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -207,7 +207,7 @@ namespace urban
              * @param h halfedge to lookup
              * @return index of the halfedge
              */
-            size_t get_index(const Polyhedron::Halfedge & h);
+            size_t get_index(const CGAL::Polyhedron_3::Halfedge & h);
 
             /**
              * Returns 3ds mesh structure.
