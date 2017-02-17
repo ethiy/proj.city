@@ -50,7 +50,7 @@ namespace urban
 
                 /** Start with the first point*/
                 auto halfedge = facet.halfedge();
-                Point vertex(halfedge->vertex()->point());
+                Point_3 vertex(halfedge->vertex()->point());
                 facet_points[0] = Point_2(vertex.x(), vertex.y());
                 std::transform(
                     std::next(facet.facet_begin(), 1),

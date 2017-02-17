@@ -33,7 +33,7 @@ namespace urban
     };
 
     typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
-    typedef Kernel::Point_3 Point;
+    typedef Kernel::Point_3 Point_3;
     typedef Kernel::Vector_3 Vector;
     typedef Kernel::Plane_3 Plane;
     typedef CGAL::Polyhedron_3<Kernel, Polyhedron_items_colored> Polyhedron;

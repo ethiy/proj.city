@@ -32,7 +32,7 @@ namespace urban
             brick.points_begin(),
             brick.points_end(),
             brick.points_begin(),
-            [& affine_transformation](Point & point)
+            [& affine_transformation](Point_3 & point)
             {
                 return affine_transformation.transform(point);
             }
