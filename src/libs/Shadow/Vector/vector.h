@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Point/point.h"
+//#include "../Point/point.h"
 
 #include <array>
 
@@ -8,6 +8,8 @@ namespace urban
 {
     namespace shadow
     {
+        class Point;
+
         class Vector
         {
         public:

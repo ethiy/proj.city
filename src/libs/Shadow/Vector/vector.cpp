@@ -2,12 +2,18 @@
 
 #include <algorithm>
 
+#include <cmath>
+#include <limits>
+
+#include "../Point/point.h"
+
 namespace urban
 {
     namespace shadow
     {
         Vector::Vector(void): coordinates{{0, 0, 0}} {}
         Vector::Vector(double x, double y, double z): coordinates{{x, y, z}} {}
+        Vector::Vector(const Point & origin, const Point & target): coordinates{{target.x() - origin.x(), target.y() - origin.y(), target.z() - origin.z()}} {}
         Vector::Vector(double _coordinates[3]): coordinates{{_coordinates[0], _coordinates[1], _coordinates[2]}} {}
         Vector::Vector(const Vector & other): coordinates(other.coordinates) {}
         Vector::Vector(Vector && other): coordinates(std::move(other.coordinates)) {}
@@ -97,8 +103,11 @@ namespace urban
 
     bool operator==(const shadow::Vector & lhs, const shadow::Vector & rhs)
     {
-        shadow::Vector l_copy(lhs);
-        return (l_copy - rhs) == shadow::Vector();
+        shadow::Vector diff(lhs);
+        diff -= rhs;
+        return std::abs(diff.x()) < std::numeric_limits<double>::epsilon() &&
+               std::abs(diff.y()) < std::numeric_limits<double>::epsilon() &&
+               std::abs(diff.z()) < std::numeric_limits<double>::epsilon();
     }
 
     bool operator!=(const shadow::Vector & lhs, const shadow::Vector & rhs)
