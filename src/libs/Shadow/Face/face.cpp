@@ -51,7 +51,26 @@ namespace urban
             return points[index];
         }
 
+        Face & Face::operator-=(const Face & other)
+        {
+            if(other.vertices_number != vertices_number)
+                throw std::overflow_error("Cannot compare faces with different degrees");
+
+            std::transform(
+                std::begin(points),
+                std::end(points),
+                std::begin(other.points),
+                std::begin(points),
+                [](const size_t this_index,  const size_t other_index)
+                {
+                    return this_index - other_index;
+                }
+            );
+
+            return *this;
+        }
         
+
         size_t Face::size(void) const noexcept
         {
             return vertices_number;
@@ -173,8 +192,40 @@ namespace urban
             return os;
         }
     }
+
     void swap(shadow::Face & lhs, shadow::Face &rhs)
     {
         lhs.swap(rhs);
+    }
+
+    shadow::Face & operator-(shadow::Face & lhs, const shadow::Face & rhs)
+    {
+        return lhs.operator-=(rhs);
+    }
+
+    bool operator==(const shadow::Face & lhs, const shadow::Face & rhs)
+    {
+        bool result(false);
+        if(lhs.size() == rhs.size())
+        {
+            shadow::Face l_copy(lhs);
+            shadow::Face diff(l_copy - rhs);
+
+            result = std::all_of(
+                std::begin(diff),
+                std::end(diff),
+                [](const size_t index)
+                {
+                    return index == 0;
+                }
+            );
+        }
+
+        return result;
+    }
+
+    bool operator!=(const shadow::Face & lhs, const shadow::Face & rhs)
+    {
+        return !operator==(rhs, lhs);
     }
 }
