@@ -11,6 +11,24 @@
 
 namespace urban
 {
+    shadow::Face transform(shadow::Face & face, const std::map<size_t, size_t> map)
+    {
+        std::vector<size_t> mapped_indexes;
+
+        std::transform(
+            std::begin(face),
+            std::end(face),
+            std::begin(mapped_indexes),
+            [&map](const size_t index)
+            {
+                return map.at(index);
+            }
+        );
+
+        return shadow::Face(mapped_indexes.size(), mapped_indexes);
+    }
+
+
     bool connectable(const shadow::Mesh & lhs, const shadow::Mesh & rhs, std::map<size_t, size_t> & suture_points)
     {
         if(!suture_points.empty())
@@ -48,28 +66,50 @@ namespace urban
 
         std::map<size_t, Point> l_coordinates(lhs.get_points()),
                                 r_coordinates(rhs.get_points());
+        
+        std::map<size_t, shadow::Face> l_faces(lhs.get_faces()),
+                                r_faces(rhs.get_faces());
 
         size_t shift(l_coordinates.size());
+        std::map<size_t, size_t> stitcher;
         std::for_each(
             std::begin(r_coordinates),
             std::end(r_coordinates),
-            [&l_coordinates, &shift, &suture_points](const std::pair<size_t, Point> & p)
+            [&l_coordinates, &shift, &suture_points, &stitcher](const std::pair<size_t, Point> & p)
             {
                 try
                 {
-                    suture_points.at(p.first);
+                    stitcher.emplace(std::make_pair(p.first, suture_points.at(p.first)));
                     shift--;
                 }
                 catch(const std::out_of_range & except)
                 {
+                    stitcher.emplace(std::make_pair(p.first, p.first + shift));
                     l_coordinates.emplace(std::make_pair(p.first + shift, p.second));
                 }
             }
         );
 
-        // update r_faces indexes
+        shift = l_faces.size();
+        std::for_each(
+            std::begin(r_faces),
+            std::end(r_faces),
+            [&l_faces, &stitcher, shift](std::pair<const size_t, shadow::Face> p)
+            {
+                std::pair<size_t, shadow::Face> mapped_face(p.first + shift, transform(p.second, stitcher));
+                auto found = std::find_if(
+                    std::begin(l_faces),
+                    std::end(l_faces),
+                    [&mapped_face](const std::pair<size_t, shadow::Face> q)
+                    {
+                        return q.second == mapped_face.second;
+                    }
+                );
 
-        // concat faces
+                if(found == std::end(l_faces))
+                    l_faces.emplace(mapped_face);
+            }
+        );
         
         shadow::Mesh stitched;
         return stitched;

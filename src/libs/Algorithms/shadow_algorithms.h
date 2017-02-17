@@ -8,6 +8,14 @@
 namespace urban
 {
     /**
+     * Apply a map on a face
+     * @param face face to change
+     * @param map bijective map changing indexes on a face
+     * @return mapped Face
+     */
+    shadow::Face transform(shadow::Face & face, const std::map<size_t, size_t> map);
+
+    /**
      * Check if two meshes have common points
      * @param lhs first mesh to be stitched
      * @param rhs second mesh to be stitched
