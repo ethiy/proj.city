@@ -51,9 +51,9 @@ namespace urban
             return supporting_plane;
         }
 
-        Vector FacePrint::get_normal(void) const noexcept
+        Vector_3 FacePrint::get_normal(void) const noexcept
         {
-            return Vector(supporting_plane.a(), supporting_plane.b(), supporting_plane.c());
+            return Vector_3(supporting_plane.a(), supporting_plane.b(), supporting_plane.c());
         }
 
         double FacePrint::get_plane_height(const Point_2 & point) const

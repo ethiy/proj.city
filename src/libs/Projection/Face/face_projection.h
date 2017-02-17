@@ -28,7 +28,7 @@ namespace urban
 
             Polygon_with_holes get_polygon(void) const noexcept;
             Plane get_plane(void) const noexcept;
-            Vector get_normal(void) const noexcept;
+            Vector_3 get_normal(void) const noexcept;
 
             double get_plane_height(const Point_2 &) const;
             double get_height(const Point_2 &) const;

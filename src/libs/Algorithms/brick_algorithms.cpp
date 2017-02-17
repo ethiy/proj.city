@@ -21,7 +21,7 @@ namespace urban
             .0,
             [](double & length, const Polyhedron::Halfedge & halfedge)
             {
-                return length + halfedge.is_border() * std::sqrt(to_double(Vector(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
+                return length + halfedge.is_border() * std::sqrt(to_double(Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
             }
         );
     }
@@ -39,7 +39,7 @@ namespace urban
         );
     }
 
-    void translate(Brick & brick, const Vector & offset)
+    void translate(Brick & brick, const Vector_3 & offset)
     {
         Affine_transformation translation(CGAL::TRANSLATION, offset);
         affine_transform(brick, translation);
@@ -51,14 +51,14 @@ namespace urban
         affine_transform(brick, scaling);
     }
 
-    void rotate(Brick & brick, const Vector & axis, double angle)
+    void rotate(Brick & brick, const Vector_3 & axis, double angle)
     {
-        std::map<double, Vector> _rotation{{angle, axis}};
+        std::map<double, Vector_3> _rotation{{angle, axis}};
         Affine_transformation rotation(rotation_transform(_rotation));
         affine_transform(brick, rotation);
     }
 
-    void rotate(Brick & brick, const std::map<double, Vector> & _rotations)
+    void rotate(Brick & brick, const std::map<double, Vector_3> & _rotations)
     {
         Affine_transformation rotation(rotation_transform(_rotations));
         affine_transform(brick, rotation);
@@ -92,7 +92,7 @@ namespace urban
             [](double & area, Facet & facet)
             {
                 Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
-                Vector normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
+                Vector_3 normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
                 return area 
                 + to_double(CGAL::cross_product(h->vertex()->point() - CGAL::ORIGIN, h->next()->vertex()->point() - CGAL::ORIGIN) * normal/2.)
                 + std::accumulate(

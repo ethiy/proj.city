@@ -12,13 +12,13 @@ namespace urban
     /*! Applies affine transformations to bricks*/
     void affine_transform(Brick &, const Affine_transformation &);
     /*! Translate bricks*/
-    void translate(Brick &, const Vector &);
+    void translate(Brick &, const Vector_3 &);
     /*! Scale bricks*/
     void scale(Brick &, double);
     /*! Rotate bricks*/
-    void rotate(Brick &, const Vector &, double);
+    void rotate(Brick &, const Vector_3 &, double);
     /*! Rotate bricks*/
-    void rotate(Brick &, const std::map<double, Vector> &);
+    void rotate(Brick &, const std::map<double, Vector_3> &);
 
     /*! Computes plane equations*/
     void plane_equations(Brick &);

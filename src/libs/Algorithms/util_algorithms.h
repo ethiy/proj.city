@@ -9,7 +9,7 @@
 namespace urban
 {
     /** Get the rotation transformation from a set of axis and angle couples*/
-    Affine_transformation rotation_transform(const std::map<double, Vector> & _rotations);
+    Affine_transformation rotation_transform(const std::map<double, Vector_3> & _rotations);
 
     /** Check points collinearity*/
     bool check_collinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last);

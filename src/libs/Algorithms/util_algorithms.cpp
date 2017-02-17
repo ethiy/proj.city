@@ -4,16 +4,16 @@
 
 namespace urban
 {
-    Affine_transformation rotation_transform(const std::map<double, Vector> & _rotations)
+    Affine_transformation rotation_transform(const std::map<double, Vector_3> & _rotations)
     {
         std::vector<Affine_transformation> rotations;
         double norm(0);
-        Vector u(CGAL::NULL_VECTOR);
+        Vector_3 u(CGAL::NULL_VECTOR);
         std::transform(
             std::begin(_rotations),
             std::end(_rotations),
             std::begin(rotations),
-            [norm, u](const std::pair<double, Vector> & angle_axis) mutable
+            [norm, u](const std::pair<double, Vector_3> & angle_axis) mutable
             {
                 norm = std::sqrt(to_double(angle_axis.second * angle_axis.second));
                 u = angle_axis.second / norm;
