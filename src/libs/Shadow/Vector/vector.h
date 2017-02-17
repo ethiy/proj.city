@@ -32,6 +32,7 @@ namespace urban
 
             Vector & operator+=(const Vector & other);
             Vector & operator-=(const Vector & other);
+            Vector & operator^=(const Vector & other);
 
         private:
             std::array<double, 3> coordinates;
@@ -44,6 +45,8 @@ namespace urban
     
     shadow::Vector & operator+(shadow::Vector & lhs, const shadow::Vector & rhs);
     shadow::Vector & operator-(shadow::Vector & lhs, const shadow::Vector & rhs);
+    double operator*(const shadow::Vector & lhs, const shadow::Vector & rhs);
+    shadow::Vector & operator^(shadow::Vector & lhs, const shadow::Vector & rhs);
     bool operator==(const shadow::Vector & lhs, const shadow::Vector & rhs);
     bool operator!=(const shadow::Vector & lhs, const shadow::Vector & rhs);
 }

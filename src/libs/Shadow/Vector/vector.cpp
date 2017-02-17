@@ -64,6 +64,7 @@ namespace urban
             );
             return *this;
         }
+
         Vector & Vector::operator-=(const Vector & other)
         {
             std::transform(
@@ -79,6 +80,15 @@ namespace urban
             return *this;
         }
 
+        Vector & Vector::operator^=(const Vector & other)
+        {
+            std::array<double, 3> coord(coordinates);
+            coordinates[0] = coord.at(1) * other.z() - coord.at(2) * other.y();
+            coordinates[1] = coord.at(2) * other.x() - coord.at(0) * other.z();
+            coordinates[2] = coord.at(0) * other.y() - coord.at(1) * other.x();
+            
+            return *this;
+        }
         double determinant(const Vector & first, const Vector & second, const Vector & third)
         {
             return first.x() * (second.y() * third.z() - second.z() - third.y()) -
@@ -96,9 +106,24 @@ namespace urban
     {
         return lhs += rhs;
     }
+
     shadow::Vector & operator-(shadow::Vector & lhs, const shadow::Vector & rhs)
     {
         return lhs-=rhs;
+    }
+
+    double operator*(const shadow::Vector & lhs, const shadow::Vector & rhs)
+    {
+        return lhs.x() * rhs.x()
+               *
+               lhs.y() * rhs.y()
+               *
+               lhs.z() * rhs.z();
+    }
+
+    shadow::Vector & operator^(shadow::Vector & lhs, const shadow::Vector & rhs)
+    {
+        return lhs ^= rhs;
     }
 
     bool operator==(const shadow::Vector & lhs, const shadow::Vector & rhs)

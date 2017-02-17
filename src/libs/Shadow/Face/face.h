@@ -7,12 +7,14 @@
  * \date 8 february 2017
  */
 
-#include "../../geometry_definitions.h"
+#include "../Vector/vector.h"
+#include "../Point/point.h"
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
 
 #include <vector>
+#include <map>
 #include <ostream>
 
 namespace urban

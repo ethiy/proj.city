@@ -53,6 +53,11 @@ namespace urban
 
             return *this;
         }
+
+        Vector normal(const Point & first, const Point & second, const Point & third)
+        {
+            return (second - first)^(third - second);
+        }
     }
 
     void swap(shadow::Point & lhs, shadow::Point & rhs)

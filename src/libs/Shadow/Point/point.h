@@ -35,6 +35,8 @@ namespace urban
         private:
             std::array<double, 3> coordinates;
         };
+
+        Vector normal_to(const Point & first, const Point & second, const Point & third);
     }
 
     void swap(shadow::Point & lhs, shadow::Point & rhs);
