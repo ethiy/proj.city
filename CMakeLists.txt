@@ -40,22 +40,16 @@ add_library(Algorithms ${Algorithms_HEADERS} ${Algorithms_SRC} ${UObj_HEADERS} $
 target_link_libraries(Algorithms UrbanObject Shadow Projection ${LIBS})
 
 # Input/Output
-set(Line_HEADERS "${3DSceneModel_SOURCE_DIR}/src/libs/IO/Line/line.h")
-set(Line_SRC "${3DSceneModel_SOURCE_DIR}/src/libs/IO/Line/line.cpp")
-
-add_library(Line ${Line_HEADERS} ${Line_SRC})
-target_link_libraries(Line ${LIBS})
-
 file(GLOB_RECURSE IO_HEADERS "${3DSceneModel_SOURCE_DIR}/src/libs/IO/*.h")
 file(GLOB_RECURSE IO_SRC "${3DSceneModel_SOURCE_DIR}/src/libs/IO/*.cpp")
 
-add_library(IO ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Line_HEADERS})
-target_link_libraries(IO Shadow Line ${LIBS})
+add_library(IO ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS})
+target_link_libraries(IO Shadow ${LIBS})
 
 # urban
 set(urban_HEADERS "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
 add_library(urban SHARED ${urban_HEADERS})
-target_link_libraries(urban Shadow Line IO UrbanObject Projection Algorithms ${LIBS})
+target_link_libraries(urban Shadow IO UrbanObject Projection Algorithms ${LIBS})
 
 ##
 # ___________________________________________________ Samples ___________________________________________________
@@ -63,13 +57,13 @@ target_link_libraries(urban Shadow Line IO UrbanObject Projection Algorithms ${L
 
 # Santa
 set(SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/samples/hello_santa.cpp")
-add_executable(hello_santa ${SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS})
+add_executable(hello_santa ${SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS} ${Shadow_HEADERS})
 target_link_libraries(hello_santa urban)
 link_directories(hello_santa ${LIBS_DIRS})
 
 # Project Santa
 set(Proj_XY_SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/samples/project_santa_xy.cpp")
-add_executable(project_santa_xy ${Proj_HEADERS} ${Proj_XY_SANTA_SRC} ${UObj_HEADERS} ${IO_HEADERS} ${Algorithms_HEADERS})
+add_executable(project_santa_xy ${Proj_XY_SANTA_SRC} ${Proj_HEADERS} ${UObj_HEADERS} ${IO_HEADERS} ${Algorithms_HEADERS})
 target_link_libraries(project_santa_xy urban)
 link_directories(project_santa_xy ${LIBS_DIRS})
 
