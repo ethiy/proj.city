@@ -96,7 +96,7 @@ namespace urban
         return !(rhs == lhs);
     }
 
-    shadow::Vector normal(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third)
+    shadow::Vector normal_to(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third)
     {
         shadow::Vector v(first, second);
         return v ^ shadow::Vector(second, third);
