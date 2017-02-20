@@ -1,4 +1,5 @@
 #include "mesh.h"
+#include "Vector/vector.h"
 
 #include <stdexcept>
 
@@ -10,65 +11,6 @@ namespace urban
 {
     namespace shadow
     {
-        void Mesh::compute_box(void)
-        {
-            auto xmin_itr = std::min_element(
-                std::begin(points),
-                std::end(points),
-                [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
-                {
-                    return to_double(p1.second.x()) < to_double(p2.second.x());
-                }
-            );
-
-            auto xmax_itr = std::max_element(
-                std::begin(points),
-                std::end(points),
-                [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
-                {
-                    return to_double(p1.second.x()) < to_double(p2.second.x());
-                }
-            );
-
-            auto ymin_itr = std::min_element(
-                std::begin(points),
-                std::end(points),
-                [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
-                {
-                    return to_double(p1.second.y()) < to_double(p2.second.y());
-                }
-            );
-
-            auto ymax_itr = std::max_element(
-                std::begin(points),
-                std::end(points),
-                [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
-                {
-                    return to_double(p1.second.y()) < to_double(p2.second.y());
-                }
-            );
-
-            auto zmin_itr = std::min_element(
-                std::begin(points),
-                std::end(points),
-                [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
-                {
-                    return to_double(p1.second.z()) < to_double(p2.second.z());
-                }
-            );
-
-            auto zmax_itr = std::max_element(
-                std::begin(points),
-                std::end(points),
-                [](const std::pair<size_t, Point> & p1, const std::pair<size_t, Point>& p2)
-                {
-                    return to_double(p1.second.z()) < to_double(p2.second.z());
-                }
-            );
-
-            bounding_box = Bbox(to_double(xmin_itr->second.x()), to_double(xmax_itr->second.x()), to_double(ymin_itr->second.y()), to_double(ymax_itr->second.y()), to_double(zmin_itr->second.z()), to_double(zmax_itr->second.z()));
-        }
-
         Mesh::Mesh(void):name("N/A"){}
         Mesh::Mesh(const Mesh & other):name(other.name), points(other.points), faces(other.faces), bounding_box(other.bounding_box){}
         Mesh::Mesh(Mesh && other):name(std::move(other.name)), points(std::move(other.points)), faces(std::move(other.faces)), bounding_box(std::move(other.bounding_box)){}
@@ -78,9 +20,9 @@ namespace urban
             std::for_each(
                 lib3ds_mesh->pointL,
                 lib3ds_mesh->pointL + lib3ds_mesh->points,
-                [&](Lib3dsPoint _point)
+                [&it, this](Lib3dsPoint _point)
                 {
-                    points[it++] = Point(_point.pos[0], _point.pos[1], _point.pos[2]);
+                    points.emplace(std::make_pair(it++, Point(_point.pos[0], _point.pos[1], _point.pos[2])));
                 }
             );
 
@@ -88,7 +30,7 @@ namespace urban
             std::for_each(
                 lib3ds_mesh->faceL,
                 lib3ds_mesh->faceL + lib3ds_mesh->faces,
-                [&](Lib3dsFace _face)
+                [&it, this](Lib3dsFace _face)
                 {
                     Point point_0 = points[_face.points[0]];
                     Point point_1 = points[_face.points[1]];
@@ -98,24 +40,25 @@ namespace urban
                     Vector v2 = Vector(point_1, point_2);
                     Vector n = Vector(_face.normal[0], _face.normal[1], _face.normal[2]);
 
-                    if(CGAL::determinant(v1, v2, n)>0)
+                    if(determinant(v1, v2, n)>0)
                         faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[1], _face.points[2])));
                     else
                         faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[2], _face.points[1])));
                 }
             );
-            compute_box();
+            compute_bbox();
         }
 
-        Mesh::Mesh(const Polyhedron & polyhedron)
+        template<class Kernel>
+        Mesh::Mesh(const CGAL::Polyhedron_3<Kernel> & polyhedron)
         {
             size_t it(0);
             std::for_each(
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
-                [&](const Point & point)
+                [&it, this](const CGAL::Point_3<Kernel> & point)
                 {
-                    points.emplace(std::make_pair(it++, point));
+                    points.emplace(std::make_pair(it++, Point(point)));
                 }
             );
 
@@ -123,7 +66,7 @@ namespace urban
             std::for_each(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
-                [&](const Facet & facet)
+                [&it, this](const typename CGAL::Polyhedron_3<Kernel>::Facet & facet)
                 {
                     size_t face_degree(facet.facet_degree());
                     std::vector<size_t> face_points(face_degree);
@@ -132,7 +75,7 @@ namespace urban
                         std::next(facet.facet_begin(), 1),
                         std::next(facet.facet_begin(), static_cast<long>(face_degree)),
                         std::next(std::begin(face_points), 1),
-                        [&](const Polyhedron::Halfedge & halfedge)
+                        [&](const typename CGAL::Polyhedron_3<Kernel>::Halfedge & halfedge)
                         {
                             return get_index(halfedge);
                         }
@@ -140,12 +83,12 @@ namespace urban
                     faces.emplace(std::make_pair(it++, Face(face_degree, face_points)));
                 }
             );
-            compute_box();
+            compute_bbox();
         }
 
         Mesh::Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces):name(_name), points(_points), faces(_faces)
         {
-            compute_box();
+            compute_bbox();
         }
 
         Mesh::Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces, const Bbox & _bounding_box):name(_name), points(_points), faces(_faces), bounding_box(_bounding_box){}
@@ -209,18 +152,19 @@ namespace urban
             return bounding_box;
         }
 
-        size_t Mesh::get_index(const Polyhedron::Halfedge & halfedge)
+        template<class Kernel>
+        size_t Mesh::get_index(const typename CGAL::Polyhedron_3<Kernel>::Halfedge & halfedge)
         {
             size_t index;
             auto point_handle = std::find_if(
                 std::begin(points),
                 std::end(points),
-                [&](const std::pair<size_t, Point> & p)
+                [&halfedge](const std::pair<size_t, Point> & p)
                 {
-                    return p.second == halfedge.vertex()->point();
+                    return p.second == Point(halfedge.vertex()->point());
                 }
             );
-            if(point_handle!= std::end(points))
+            if(point_handle != std::end(points))
                 index = point_handle->first;
             else
                 throw std::out_of_range("The face contains a non listed point");
@@ -242,7 +186,7 @@ namespace urban
                 [&](std::pair<size_t, Point> p)
                 {
                     Lib3dsPoint point;
-                    auto init = std::initializer_list<double>({to_double(p.second.x()), to_double(p.second.y()), to_double(p.second.z())});
+                    auto init = std::initializer_list<double>({p.second.x(), p.second.y(), p.second.z()});
                     std::copy(std::begin(init), std::end(init), point.pos);
                     return point;
                 }
@@ -280,14 +224,15 @@ namespace urban
         std::ostream& operator<<(std::ostream &os, const Mesh & mesh)
         {
             os << "Name: " << mesh.name << std::endl
-            << "Points: " << std::endl;
+               << "Bounding box: " << mesh.bounding_box << std::endl
+               << "Points: " << std::endl;
 
             std::for_each(
                 std::begin(mesh.points),
                 std::end(mesh.points),
                 [&](std::pair<size_t, Point> p)
                 {
-                    os << "Point " << p.first << " : " << to_double(p.second.x()) << " " << to_double(p.second.y()) << " " << to_double(p.second.z()) << std::endl;
+                    os << "Point " << p.first << " : " << p.second << std::endl;
                 }
             );
 
@@ -303,6 +248,19 @@ namespace urban
             );
 
             return os;
+        }
+
+        void Mesh::compute_bbox(void)
+        {
+            bounding_box = std::accumulate(
+                std::begin(points),
+                std::end(points),
+                Bbox(),
+                [](Bbox & box, std::pair<size_t, Point> point)
+                {
+                    return box + point.second.bbox();
+                }
+            );
         }
     }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <CGAL/Point_3.h>
+
 #include <array>
 #include <ostream>
 
@@ -8,6 +10,7 @@ namespace urban
     namespace shadow
     {
         class Vector;
+        class Bbox;
 
         class Point
         {
@@ -15,6 +18,7 @@ namespace urban
             Point(void);
             Point(double x, double y, double z);
             Point(double _coordinates[3]);
+            template<class Kernel> Point(const CGAL::Point_3<Kernel &> point);
             Point(const Point & other);
             Point(Point && other);
             ~Point(void);
@@ -30,8 +34,10 @@ namespace urban
 
             Point & operator+=(const Vector & translation);
 
+            Bbox bbox(void);
         private:
             std::array<double, 3> coordinates;
+            friend std::ostream & operator<<(std::ostream & os, const Point & point);
         };
 
         Vector normal_to(const Point & first, const Point & second, const Point & third);
@@ -43,5 +49,4 @@ namespace urban
     shadow::Vector operator-(shadow::Point & lhs, const shadow::Point & rhs);
     bool operator==(const shadow::Point & lhs, const shadow::Point & rhs);
     bool operator!=(const shadow::Point & lhs, const shadow::Point & rhs);
-    std::ostream & operator<<(std::ostream & os, shadow::Point & point);
 }

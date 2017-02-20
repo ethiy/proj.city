@@ -9,6 +9,8 @@
 
 
 #include "Face/face.h"
+#include "Bbox/bbox.h"
+#include "Point/point.h"
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
@@ -207,7 +209,8 @@ namespace urban
              * @param h halfedge to lookup
              * @return index of the halfedge
              */
-            size_t get_index(const CGAL::Polyhedron_3::Halfedge & h);
+            template<class Kernel>
+            size_t get_index(const typename CGAL::Polyhedron_3<Kernel>::Halfedge & h);
 
             /**
              * Returns 3ds mesh structure.
@@ -224,7 +227,7 @@ namespace urban
             /** Bounding box*/
             Bbox bounding_box;
             /** Compute bounding box internal method*/
-            void compute_box(void);
+            void compute_bbox(void);
 
             /** 
              * Writes Mesh to output stream.

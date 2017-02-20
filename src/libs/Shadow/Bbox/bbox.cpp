@@ -3,6 +3,8 @@
 #include <algorithm>
 
 #include <limits>
+#include <iterator>
+#include <algorithm>
 
 namespace urban
 {
@@ -26,6 +28,16 @@ namespace urban
             ymax,
             zmin,
             zmax
+        }} {}
+
+        Bbox::Bbox(std::array<double, 3> coordinates)
+        : extreemes{{
+            coordinates.at(0),
+            coordinates.at(0),
+            coordinates.at(1),
+            coordinates.at(1),
+            coordinates.at(2),
+            coordinates.at(2),
         }} {}
 
         Bbox::Bbox(const Bbox & other): extreemes(other.extreemes) {}
@@ -67,10 +79,10 @@ namespace urban
         void Bbox::swap(Bbox & other)
         {
             using std::swap;
-            swap(extreemes, other.extreemes)
+            swap(extreemes, other.extreemes);
         }
 
-        Bbox & operator=(const Bbox & other) noexcept
+        Bbox & Bbox::operator=(const Bbox & other) noexcept
         {
             extreemes = other.extreemes;
             return *this;
@@ -82,14 +94,14 @@ namespace urban
             return *this;
         }
 
-        Bbox & operator+=(const Bbox & other)
+        Bbox & Bbox::operator+=(const Bbox & other)
         {
-            extreems.at(0) = std::min<double>(extreems.at(0), other.extreems.at(0));
-            extreems.at(1) = std::max<double>(extreems.at(1), other.extreems.at(1));
-            extreems.at(2) = std::min<double>(extreems.at(2), other.extreems.at(2));
-            extreems.at(3) = std::max<double>(extreems.at(3), other.extreems.at(3));
-            extreems.at(4) = std::min<double>(extreems.at(4), other.extreems.at(4));
-            extreems.at(5) = std::max<double>(extreems.at(5), other.extreems.at(5));
+            extreemes.at(0) = std::min<double>(extreemes.at(0), other.extreemes.at(0));
+            extreemes.at(1) = std::max<double>(extreemes.at(1), other.extreemes.at(1));
+            extreemes.at(2) = std::min<double>(extreemes.at(2), other.extreemes.at(2));
+            extreemes.at(3) = std::max<double>(extreemes.at(3), other.extreemes.at(3));
+            extreemes.at(4) = std::min<double>(extreemes.at(4), other.extreemes.at(4));
+            extreemes.at(5) = std::max<double>(extreemes.at(5), other.extreemes.at(5));
             return *this;
         }
 
@@ -103,9 +115,9 @@ namespace urban
             return lhs += rhs;
         }
 
-        std::ostream & operator<<(std::ostream & os, Bbox & bbox)
+        std::ostream & operator<<(std::ostream & os, const Bbox & bbox)
         {
-            os << bbox.xmin() << " " << bbox.xmax() << " " << bbox.ymin() << " " << bbox.ymax() << " " << bbox.zmin() << " " << bbox.zmax();
+            std::copy(std::begin(bbox.extreemes), std::end(bbox.extreemes), std::ostream_iterator<double>(os, " "));
             return os;
         }
     }

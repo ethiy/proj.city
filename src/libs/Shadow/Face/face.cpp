@@ -1,6 +1,6 @@
 #include "face.h"
 
-#include <CGAL/squared_distance_3.h>
+#include "../Vector/vector.h"
 
 #include <algorithm>
 #include <iterator>
@@ -152,6 +152,7 @@ namespace urban
                         }
                     }
                     Point A(coordinates.at(*circulator)), B(coordinates.at(*next_1)), C(coordinates.at(*next_2));
+                    Point p = B + normal;
                     Vector external_direction(normal_to(B, B + normal, A));
                     convexity &= (external_direction * Vector(B, C) < 0) ;
                 } while(convexity && ++circulator != std::end(points));

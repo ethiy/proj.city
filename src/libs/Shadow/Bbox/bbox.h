@@ -12,6 +12,7 @@ namespace urban
         public:
             Bbox(void);
             Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
+            Bbox(std::array<double, 3> coordinates);
             Bbox(const Bbox & other);
             Bbox(Bbox && other);
             ~Bbox(void);
@@ -32,10 +33,10 @@ namespace urban
 
         private:
             std::array<double, 6> extreemes;
+            friend std::ostream & operator<<(std::ostream & os, const Bbox & bbox);
         };
         
         void swap(Bbox & lhs, Bbox & rhs);
         Bbox & operator+(Bbox & lhs, const Bbox & rhs);
-        std::ostream & operator<<(std::ostream & os, Bbox & bbox);
     }
 }
