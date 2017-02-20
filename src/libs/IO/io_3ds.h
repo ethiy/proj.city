@@ -21,11 +21,11 @@ namespace urban
         {
         public:
             FileHandler(void);
-            FileHandler(boost::filesystem::path, std::map<std::string, bool>);
+            FileHandler(boost::filesystem::path _filepath, std::map<std::string, bool> _modes);
             ~FileHandler(void);
 
             std::vector<shadow::Mesh> read(void);
-            void write(std::vector<shadow::Mesh>);
+            void write(std::vector<shadow::Mesh> meshes);
 
         private:
             Lib3dsFile* file = NULL;
