@@ -24,7 +24,7 @@ namespace urban
          * @ingroup shadow
          * @brief Face class representing a 3D facet.
          * 
-         * Shadow Face is member class of Shadow Mesh. Shadow Face is member class of Shadow Mesh:
+         * Shadow Face is member class of Shadow Mesh:
          *  - It stores indexes for points that define a face.
          *  - Point coordinates are stored in the Mesh class.
          */
@@ -34,7 +34,7 @@ namespace urban
             
             /**
              * Empty Face constructor.
-             * @see Face(void)
+             * @see Face(const Face &)
              * @see Face(Face &&)
              * @see Face(size_t, const std::vector<size_t> &)
              * @see Face(size_t, size_t, size_t);
@@ -57,7 +57,7 @@ namespace urban
              * Move constructor.
              * @param other a Face
              * @see Face(void)
-             * @see Face(Face &&)
+             * @see Face(const Face &)
              * @see Face(size_t, const std::vector<size_t> &)
              * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
@@ -70,8 +70,8 @@ namespace urban
              * @param _vertices_number facet degree
              * @param _points point indexes
              * @see Face(void)
+             * @see Face(const Face &)
              * @see Face(Face &&)
-             * @see Face(size_t, const std::vector<size_t> &)
              * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
              */
@@ -83,9 +83,9 @@ namespace urban
              * @param second point index
              * @param third point index
              * @see Face(void)
+             * @see Face(const Face &);
              * @see Face(Face &&)
              * @see Face(size_t, const std::vector<size_t> &)
-             * @see Face(size_t, size_t, size_t);
              * @see ~Face(void)
              */
             Face(size_t first, size_t second, size_t third);
@@ -93,10 +93,10 @@ namespace urban
             /** 
              * Destructor.
              * @see Face(void)
+             * @see Face(const Face &)
              * @see Face(Face &&)
              * @see Face(size_t, const std::vector<size_t> &)
              * @see Face(size_t, size_t, size_t);
-             * @see ~Face(void)
              */
             ~Face(void);
 
