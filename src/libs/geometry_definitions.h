@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
+#include <CGAL/Cartesian_converter.h>
 
 #include <CGAL/IO/Color.h>
 
@@ -32,7 +33,11 @@ namespace urban
         };
     };
 
+    typedef CGAL::Simple_cartesian<double> InexactKernel;
     typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
+    typedef CGAL::Cartesian_converter<Kernel, InexactKernel> ExactToInexact;
+    typedef CGAL::Cartesian_converter<InexactKernel, Kernel> InexactToExact;
+
     typedef Kernel::Point_3 Point_3;
     typedef Kernel::Vector_3 Vector_3;
     typedef Kernel::Plane_3 Plane;
