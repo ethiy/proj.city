@@ -3,6 +3,9 @@
 # VS code
 .vscode
 
+# Qt creator
+*.user
+
 # Build files
 build
 
