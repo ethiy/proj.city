@@ -34,18 +34,18 @@ namespace urban
         if(!suture_points.empty())
             throw std::logic_error("The map must be empty");
         
-        std::map<size_t, Point> l_coordinates(lhs.get_points()),
+        std::map<size_t, shadow::Point> l_coordinates(lhs.get_points()),
                                 r_coordinates(rhs.get_points());
         
         std::for_each(
             std::begin(l_coordinates),
             std::end(l_coordinates),
-            [&r_coordinates, &suture_points](const std::pair<size_t, Point> & p)
+            [&r_coordinates, &suture_points](const std::pair<size_t, shadow::Point> & p)
             {
                 auto suture_point = find_if(
                     std::begin(r_coordinates),
                     std::end(r_coordinates),
-                    [&p](const std::pair<size_t, Point> & q)
+                    [&p](const std::pair<size_t, shadow::Point> & q)
                     {
                         return p.second == q.second;
                     }
@@ -64,7 +64,7 @@ namespace urban
         std::stringstream _name("");
         _name << lhs.get_name() << "_and_" << rhs.get_name();
 
-        std::map<size_t, Point> l_coordinates(lhs.get_points()),
+        std::map<size_t, shadow::Point> l_coordinates(lhs.get_points()),
                                 r_coordinates(rhs.get_points());
         
         std::map<size_t, shadow::Face> l_faces(lhs.get_faces()),
@@ -75,7 +75,7 @@ namespace urban
         std::for_each(
             std::begin(r_coordinates),
             std::end(r_coordinates),
-            [&l_coordinates, &shift, &suture_points, &stitcher](const std::pair<size_t, Point> & p)
+            [&l_coordinates, &shift, &suture_points, &stitcher](const std::pair<size_t, shadow::Point> & p)
             {
                 try
                 {

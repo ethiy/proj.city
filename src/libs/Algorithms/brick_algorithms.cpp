@@ -16,12 +16,12 @@ namespace urban
     double border_length(Brick & brick)
     {
         return std::accumulate(
-            brick.halfedges_begin(),
+            brick.border_halfedges_begin(),
             brick.halfedges_end(),
             .0,
             [](double & length, const Polyhedron::Halfedge & halfedge)
             {
-                return length + halfedge.is_border() * std::sqrt(to_double(Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
+                return length + std::sqrt(to_double(Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
             }
         );
     }

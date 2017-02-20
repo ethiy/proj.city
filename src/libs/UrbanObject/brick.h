@@ -76,6 +76,8 @@ namespace urban
         Halfedge_iterator halfedges_end(void) noexcept;
         Halfedge_const_iterator halfedges_cbegin(void) const noexcept;
         Halfedge_const_iterator halfedges_cend(void) const noexcept;
+        Halfedge_iterator border_halfedges_begin(void) noexcept;
+        Halfedge_const_iterator border_halfedges_begin(void) const noexcept;
 
         /*! Points iterators*/
         typedef Polyhedron::Point_iterator Point_iterator;

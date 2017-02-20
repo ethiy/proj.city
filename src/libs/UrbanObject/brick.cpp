@@ -99,6 +99,17 @@ namespace urban
         return surface.halfedges_end();
     }
 
+    Brick::Halfedge_iterator Brick::border_halfedges_begin(void) noexcept
+    {
+        return surface.border_halfedges_begin();
+    }
+
+    Brick::Halfedge_const_iterator Brick::border_halfedges_begin(void) const noexcept
+    {
+        return surface.border_halfedges_begin();
+    }
+
+
     Brick::Point_iterator Brick::points_begin(void) noexcept
     {
         return surface.points_begin();
