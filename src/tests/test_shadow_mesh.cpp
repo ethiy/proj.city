@@ -41,7 +41,7 @@ SCENARIO("shadow::Mesh manipulation:")
         WHEN( "mesh points and faces are accessed:")
         {
             urban::shadow::Mesh u_mesh(test_mesh);
-            std::map<size_t, urban::Point> points = u_mesh.get_points();
+            std::map<size_t, urban::shadow::Point> points = u_mesh.get_points();
             std::map<size_t, urban::shadow::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
             {
@@ -52,9 +52,9 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(points),
                     std::end(points),
-                    [&](std::pair<size_t, urban::Point> p)
+                    [&](std::pair<size_t, urban::shadow::Point> p)
                     {
-                        _auxilary << "Point " << p.first << " : " << to_double(p.second.x()) << " " << to_double(p.second.y()) << " " << to_double(p.second.z()) << std::endl;
+                        _auxilary << "Point " << p.first << " : " << p.second.x() << " " << p.second.y() << " " << p.second.z() << std::endl;
                     }
                 );
                 _auxilary << "Faces: " << std::endl;
