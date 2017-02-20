@@ -63,11 +63,6 @@ namespace urban
             return Bbox(coordinates);
         }
 
-        Vector normal(const Point & first, const Point & second, const Point & third)
-        {
-            Vector v(first, second);
-            return v ^ Vector(second, third);
-        }
         std::ostream & operator<<(std::ostream & os, const Point & point)
         {
             std::copy(std::begin(point.coordinates), std::end(point.coordinates), std::ostream_iterator<double>(os, " "));
@@ -100,4 +95,11 @@ namespace urban
     {
         return !(rhs == lhs);
     }
+
+    shadow::Vector normal(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third)
+    {
+        shadow::Vector v(first, second);
+        return v ^ shadow::Vector(second, third);
+    }
+
 }

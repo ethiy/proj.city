@@ -39,8 +39,6 @@ namespace urban
             std::array<double, 3> coordinates;
             friend std::ostream & operator<<(std::ostream & os, const Point & point);
         };
-
-        Vector normal_to(const Point & first, const Point & second, const Point & third);
     }
 
     void swap(shadow::Point & lhs, shadow::Point & rhs);
@@ -49,4 +47,6 @@ namespace urban
     shadow::Vector operator-(shadow::Point & lhs, const shadow::Point & rhs);
     bool operator==(const shadow::Point & lhs, const shadow::Point & rhs);
     bool operator!=(const shadow::Point & lhs, const shadow::Point & rhs);
+
+    shadow::Vector normal_to(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third);
 }
