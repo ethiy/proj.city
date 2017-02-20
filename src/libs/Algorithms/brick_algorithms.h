@@ -10,7 +10,7 @@ namespace urban
     double border_length(Brick &);
 
     /*! Applies affine transformations to bricks*/
-    void affine_transform(Brick &, const Affine_transformation &);
+    void affine_transform(Brick &, const Affine_transformation_3 &);
     /*! Translate bricks*/
     void translate(Brick &, const Vector_3 &);
     /*! Scale bricks*/

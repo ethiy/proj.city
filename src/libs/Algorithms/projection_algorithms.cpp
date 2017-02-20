@@ -65,7 +65,7 @@ namespace urban
                 /**
                  * >> Plane equation
                  */
-                Plane plane_equation(
+                Plane_3 plane_equation(
                     halfedge->vertex()->point(),
                     halfedge->next()->vertex()->point(),
                     halfedge->next()->next()->vertex()->point()

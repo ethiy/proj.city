@@ -50,7 +50,7 @@ namespace urban
         return name;
     }
 
-    Bbox Brick::bbox(void) const noexcept
+    Bbox_3 Brick::bbox(void) const noexcept
     {
         return bounding_box;
     }

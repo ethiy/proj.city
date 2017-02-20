@@ -14,7 +14,7 @@ namespace urban
         {
         public:
             BrickPrint(void);
-            BrickPrint(const std::string & _name, const Bbox & _bounding_box);
+            BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box);
             BrickPrint(const BrickPrint &other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);

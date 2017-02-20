@@ -40,12 +40,12 @@ namespace urban
 
     typedef Kernel::Point_3 Point_3;
     typedef Kernel::Vector_3 Vector_3;
-    typedef Kernel::Plane_3 Plane;
+    typedef Kernel::Plane_3 Plane_3;
     typedef CGAL::Polyhedron_3<Kernel, Polyhedron_items_colored> Polyhedron;
     typedef Polyhedron::Facet Facet;
     typedef CGAL::Color Color;
-    typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation;
-    typedef CGAL::Bbox_3 Bbox;
+    typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation_3;
+    typedef CGAL::Bbox_3 Bbox_3;
 
     typedef CGAL::Polygon_2<Kernel> Polygon;
     typedef CGAL::Polygon_with_holes_2<Kernel> Polygon_with_holes;

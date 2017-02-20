@@ -4,9 +4,9 @@
 
 namespace urban
 {
-    Affine_transformation rotation_transform(const std::map<double, Vector_3> & _rotations)
+    Affine_transformation_3 rotation_transform(const std::map<double, Vector_3> & _rotations)
     {
-        std::vector<Affine_transformation> rotations;
+        std::vector<Affine_transformation_3> rotations;
         double norm(0);
         Vector_3 u(CGAL::NULL_VECTOR);
         std::transform(
@@ -17,7 +17,7 @@ namespace urban
             {
                 norm = std::sqrt(to_double(angle_axis.second * angle_axis.second));
                 u = angle_axis.second / norm;
-                return Affine_transformation(
+                return Affine_transformation_3(
                         std::cos(angle_axis.first) + (1 - std::cos(angle_axis.first)) * std::pow(to_double(u.x()), 2.), 
                         (1 - std::cos(angle_axis.first)) * to_double(u.x()) * to_double(u.y()) - std::sin(angle_axis.first) * to_double(u.z()), 
                         (1 - std::cos(angle_axis.first)) * to_double(u.x()) * to_double(u.z()) + std::sin(angle_axis.first) * to_double(u.y()), 
@@ -34,8 +34,8 @@ namespace urban
         return std::accumulate(
             std::begin(rotations),
             std::end(rotations),
-            Affine_transformation(CGAL::IDENTITY),
-            [](Affine_transformation & result, const Affine_transformation & rotation)
+            Affine_transformation_3(CGAL::IDENTITY),
+            [](Affine_transformation_3 & result, const Affine_transformation_3 & rotation)
             {
                 return result * rotation;
             }

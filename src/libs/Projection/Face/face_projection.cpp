@@ -15,7 +15,7 @@ namespace urban
     namespace projection
     {
         FacePrint::FacePrint(void){}
-        FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
+        FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
         FacePrint::FacePrint(const FacePrint & other):border(other.border), supporting_plane(other.supporting_plane){}
         FacePrint::FacePrint(FacePrint && other):border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane)){}
         FacePrint::~FacePrint(void){}
@@ -46,7 +46,7 @@ namespace urban
             return border;
         }
 
-        Plane FacePrint::get_plane(void) const noexcept
+        Plane_3 FacePrint::get_plane(void) const noexcept
         {
             return supporting_plane;
         }

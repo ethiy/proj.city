@@ -15,7 +15,7 @@ namespace urban
         {
         public:
             FacePrint(void);
-            FacePrint(const Polygon_with_holes & _border, const Plane & _supporting_plane);
+            FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane);
             FacePrint(const FacePrint & other);
             FacePrint(FacePrint && other);
             ~FacePrint(void);
@@ -27,7 +27,7 @@ namespace urban
             FacePrint & operator=(FacePrint && other);
 
             Polygon_with_holes get_polygon(void) const noexcept;
-            Plane get_plane(void) const noexcept;
+            Plane_3 get_plane(void) const noexcept;
             Vector_3 get_normal(void) const noexcept;
 
             double get_plane_height(const Point_2 &) const;
@@ -52,7 +52,7 @@ namespace urban
 
         private:
             Polygon_with_holes border;
-            Plane supporting_plane;
+            Plane_3 supporting_plane;
 
             friend std::ostream & operator<<(std::ostream & os, const FacePrint & facet);
         };

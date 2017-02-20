@@ -59,7 +59,7 @@ namespace urban
         size_t facets_number(void) const;
 
         /*! Access Bounding box*/
-        Bbox bbox(void) const noexcept;
+        Bbox_3 bbox(void) const noexcept;
 
         /*! Face iterators*/
         typedef Polyhedron::Facet_iterator Facet_iterator;
@@ -102,7 +102,7 @@ namespace urban
         /*! The surface describing 3d urban objects*/
         Polyhedron surface;
                 /*! Bounding box*/
-        Bbox bounding_box;
+        Bbox_3 bounding_box;
 
         /*! Outstreaming Brick*/
         friend std::ostream& operator<<(std::ostream &, const Brick &);

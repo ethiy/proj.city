@@ -26,7 +26,7 @@ namespace urban
         );
     }
 
-    void affine_transform(Brick & brick, const Affine_transformation & affine_transformation)
+    void affine_transform(Brick & brick, const Affine_transformation_3 & affine_transformation)
     {
         std::transform(
             brick.points_begin(),
@@ -41,26 +41,26 @@ namespace urban
 
     void translate(Brick & brick, const Vector_3 & offset)
     {
-        Affine_transformation translation(CGAL::TRANSLATION, offset);
+        Affine_transformation_3 translation(CGAL::TRANSLATION, offset);
         affine_transform(brick, translation);
     }
 
     void scale(Brick & brick, double scale)
     {
-        Affine_transformation scaling(CGAL::SCALING, scale);
+        Affine_transformation_3 scaling(CGAL::SCALING, scale);
         affine_transform(brick, scaling);
     }
 
     void rotate(Brick & brick, const Vector_3 & axis, double angle)
     {
         std::map<double, Vector_3> _rotation{{angle, axis}};
-        Affine_transformation rotation(rotation_transform(_rotation));
+        Affine_transformation_3 rotation(rotation_transform(_rotation));
         affine_transform(brick, rotation);
     }
 
     void rotate(Brick & brick, const std::map<double, Vector_3> & _rotations)
     {
-        Affine_transformation rotation(rotation_transform(_rotations));
+        Affine_transformation_3 rotation(rotation_transform(_rotations));
         affine_transform(brick, rotation);
     }
 

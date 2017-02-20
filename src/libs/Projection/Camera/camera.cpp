@@ -6,7 +6,7 @@ namespace urban
 {
     namespace projection
     {
-        Camera::Camera(void) : name("N/A"), calibration(Affine_transformation_2()), position(Vector_3()), orientation(Affine_transformation()) {}
+        Camera::Camera(void) : name("N/A"), calibration(Affine_transformation_2()), position(Vector_3()), orientation(Affine_transformation_3()) {}
 
         Camera::Camera(const std::string & _name, double focal_distance, double scale_factor_x, double scale_factor_y, const Vector_2 & principal_point, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
         : name(_name),
@@ -26,7 +26,7 @@ namespace urban
         position(_position),
         orientation(rotation_transform(_rotations)) {}
 
-        Camera::Camera(const std::string & _name, const Affine_transformation_2 & _calibration, const Vector_3 & _position, const Affine_transformation & _orientation)
+        Camera::Camera(const std::string & _name, const Affine_transformation_2 & _calibration, const Vector_3 & _position, const Affine_transformation_3 & _orientation)
         : name(_name),
         calibration(_calibration),
         position(_position),
