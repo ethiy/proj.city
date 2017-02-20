@@ -11,6 +11,7 @@
 #include "Face/face.h"
 #include "Bbox/bbox.h"
 #include "Point/point.h"
+#include "Vector/vector.h"
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>

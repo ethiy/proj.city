@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Shadow/mesh.h"
-#include "Shadow/Face/face.h"
 
 #include "IO/io_off.h"
 #include "IO/io_3ds.h"
