@@ -1,7 +1,6 @@
 #include "io_off.h"
 
 #include "Line/line.h"
-#include "../UrbanObject/brick.h"
 
 #include <stdexcept>
 
@@ -97,27 +96,29 @@ namespace urban
                         std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::begin(buffer_lines));
                         size_t idx(0);
 
-                        std::map<size_t, urban::Point> points;
+                        std::map<size_t, shadow::Point> points;
                         std::vector<double> coordinates;
+                        coordinates.reserve(3);
                         std::istringstream sline;
                         std::for_each(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
-                            [&](std::string line) {
+                            [&points, &idx, &sline, &coordinates](const std::string & line)
+                            {
                                 sline.str(line);
                                 std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
-                                points[idx++] = Point(coordinates[0], coordinates[1], coordinates[2]);
+                                points.emplace(std::make_pair(idx++, shadow::Point(coordinates[0], coordinates[1], coordinates[2])));
                                 coordinates.clear();
                                 sline.clear();
-                            });
+                            }
+                        );
 
                         /*Parsing faces*/
                         idx = 0;
                         buffer_lines.clear();
                         sline.clear();
 
-                        std::map<size_t, urban::shadow::Face> faces;
-                        buffer_lines.clear();
+                        std::map<size_t, shadow::Face> faces;
                         buffer_lines.resize(static_cast<size_t>(sizes[1]));
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
 
@@ -126,7 +127,7 @@ namespace urban
                         std::for_each(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
-                            [&](std::string line) {
+                            [&indexes, &sline, &n, &idx, &faces](std::string line) {
                                 sline.str(line);
                                 sline >> n;
                                 indexes.resize(n);
@@ -188,11 +189,11 @@ namespace urban
                      << mesh.get_number_points() << " " << mesh.get_number_faces() << " 0" << std::endl;
                 
                 /*Writing points*/
-                std::map<size_t, Point> points = mesh.get_points();
+                std::map<size_t, shadow::Point> points(mesh.get_points());
                 std::for_each(
                     std::begin(points),
                     std::end(points),
-                    [&](std::pair<size_t, Point> p)
+                    [this](std::pair<size_t, shadow::Point> p)
                     {
                         file << p.second << std::endl;
                     }
@@ -203,7 +204,7 @@ namespace urban
                 std::for_each(
                     std::begin(faces),
                     std::end(faces),
-                    [&](std::pair<size_t, shadow::Face> p)
+                    [this](std::pair<size_t, shadow::Face> p)
                     {
                         file << p.second << std::endl;
                     }
