@@ -48,6 +48,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::ostringstream auxilary, _auxilary;
                 auxilary << u_mesh;
                 _auxilary << "Name: " << std::endl
+                          << "Bounding box: " << u_mesh.bbox() << std::endl
                           << "Points: " << std::endl;
                 std::for_each(
                     std::begin(points),

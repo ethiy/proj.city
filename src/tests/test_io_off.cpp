@@ -1,4 +1,5 @@
 #include "../libs/IO/io_off.h"
+#include "../libs/IO/Line/line.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -6,6 +7,9 @@
 #include <boost/uuid/uuid_io.hpp> 
 
 #include <string>
+#include <vector>
+#include <algorithm>
+#include <iterator>
 #include <fstream>
 #include <streambuf>
 
@@ -25,12 +29,17 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the output checks")
             {
-                std::ostringstream auxilary;
+                std::ostringstream auxilary, out;
                 auxilary << mesh;
+
+                std::istringstream _auxilary(auxilary.str());
+                std::vector<std::string> lines;
+                urban::io::read_lines(_auxilary, std::back_inserter(lines));
+                std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
-                REQUIRE(auxilary.str() == tmp_str);
+                REQUIRE( out.str() == tmp_str);
             }
         }
 
@@ -95,12 +104,17 @@ SCENARIO("Input/Output from OFF file:")
                 urban::io::FileHandler<std::fstream> checker_handler(file_name.str(), _modes);
                 urban::shadow::Mesh written_mesh = checker_handler.read();
 
-                std::ostringstream auxilary;
+                std::ostringstream auxilary, out;
                 auxilary << written_mesh;
+
+                std::istringstream _auxilary(auxilary.str());
+                std::vector<std::string> lines;
+                urban::io::read_lines(_auxilary, std::back_inserter(lines));
+                std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
-                REQUIRE(auxilary.str() == tmp_str);
+                REQUIRE( out.str() == tmp_str);
             }
         }
         
