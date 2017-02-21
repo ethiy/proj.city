@@ -191,9 +191,9 @@ namespace urban
 
     double determinant(const shadow::Vector & first, const shadow::Vector & second, const shadow::Vector & third)
     {
-        return first.x() * (second.y() * third.z() - second.z() - third.y()) -
-               first.y() * (second.x() * third.z() - second.z() - third.x()) +
-               first.z() * (second.x() * third.y() - second.y() - third.x());
+        return first.x() * second.y() * third.z() - first.x() * second.z() * third.y() -
+               first.y() * second.x() * third.z() + first.y() * second.z() * third.x() +
+               first.z() * second.x() * third.y() - first.z() * second.y() * third.x();
     }
 
 }
