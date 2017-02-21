@@ -35,7 +35,7 @@ SCENARIO("shadow::Mesh manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << u_mesh;
-                REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1 \n" );
+                REQUIRE( auxilary.str() == "Name: \nBounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764\nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1 \n" );
             }
         }
         WHEN( "mesh points and faces are accessed:")
@@ -80,7 +80,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 urban::shadow::Mesh _u_mesh(_mesh);
                 std::free(_mesh);
                 auxilary << _u_mesh;
-                REQUIRE( auxilary.str() == "Name: \nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
+                REQUIRE( auxilary.str() == "Name: \nBounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764\nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
             }
         }
 

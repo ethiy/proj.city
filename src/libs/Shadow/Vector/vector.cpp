@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <limits>
+#include <stdexcept>
 
 #include "../Point/point.h"
 
@@ -65,6 +66,36 @@ namespace urban
             return *this;
         }
 
+        Vector & Vector::operator*=(double scalar)
+        {
+            std::transform(
+                std::begin(coordinates),
+                std::end(coordinates),
+                std::begin(coordinates),
+                [scalar](const double rhs)
+                {
+                    return scalar * rhs;
+                }
+            );
+            return *this;
+        }
+
+        Vector & Vector::operator/=(double scalar)
+        {
+            if(std::abs(scalar) < std::numeric_limits<double>::epsilon())
+                throw std::overflow_error("Division by zero");
+            std::transform(
+                std::begin(coordinates),
+                std::end(coordinates),
+                std::begin(coordinates),
+                [scalar](const double rhs)
+                {
+                    return rhs / scalar;
+                }
+            );
+            return *this;
+        }
+
         Vector & Vector::operator-=(const Vector & other)
         {
             std::transform(
@@ -89,11 +120,62 @@ namespace urban
             
             return *this;
         }
-        double determinant(const Vector & first, const Vector & second, const Vector & third)
+
+        std::ostream & operator<<(std::ostream & os, Vector & vector)
         {
-            return first.x() * (second.y() * third.z() - second.z() - third.y()) -
-                   first.y() * (second.x() * third.z() - second.z() - third.x()) +
-                   first.z() * (second.x() * third.y() - second.y() - third.x());
+            os << vector.coordinates.at(0) << " " << vector.coordinates.at(1) << " " << vector.coordinates.at(2);
+            return os;
+        }
+
+        Vector & operator+(Vector & lhs, const Vector & rhs)
+        {
+            return lhs += rhs;
+        }
+
+        Vector & operator-(Vector & lhs, const Vector & rhs)
+        {
+            return lhs -= rhs;
+        }
+
+        Vector operator*(double scalar, const Vector & rhs)
+        {
+            Vector copy(rhs);
+            return copy *= scalar;
+        }
+
+        Vector operator/(const Vector & lhs, double scalar)
+        {
+            Vector copy(lhs);
+            return copy /= scalar;
+        }
+
+        double operator*(const Vector & lhs, const Vector & rhs)
+        {
+            return  lhs.x() * rhs.x()
+                    +
+                    lhs.y() * rhs.y()
+                    +
+                    lhs.z() * rhs.z();
+        }
+
+        Vector operator^(const Vector & lhs, const Vector & rhs)
+        {
+            Vector copy(lhs);
+            return copy ^= rhs;;
+        }
+
+        bool operator==(const Vector & lhs, const Vector & rhs)
+        {
+            Vector diff(lhs);
+            diff -= rhs;
+            return std::abs(diff.x()) < std::numeric_limits<double>::epsilon() &&
+                std::abs(diff.y()) < std::numeric_limits<double>::epsilon() &&
+                std::abs(diff.z()) < std::numeric_limits<double>::epsilon();
+        }
+
+        bool operator!=(const Vector & lhs, const Vector & rhs)
+        {
+            return !(lhs == rhs);
         }
     }
 
@@ -102,42 +184,16 @@ namespace urban
         lhs.swap(rhs);
     }
 
-    shadow::Vector & operator+(shadow::Vector & lhs, const shadow::Vector & rhs)
+    double norm_L2(shadow::Vector & vector)
     {
-        return lhs += rhs;
+        return std::sqrt(vector * vector);
     }
 
-    shadow::Vector & operator-(shadow::Vector & lhs, const shadow::Vector & rhs)
+    double determinant(const shadow::Vector & first, const shadow::Vector & second, const shadow::Vector & third)
     {
-        return lhs-=rhs;
-    }
-
-    double operator*(const shadow::Vector & lhs, const shadow::Vector & rhs)
-    {
-        return lhs.x() * rhs.x()
-               *
-               lhs.y() * rhs.y()
-               *
-               lhs.z() * rhs.z();
-    }
-
-    shadow::Vector & operator^(shadow::Vector & lhs, const shadow::Vector & rhs)
-    {
-        return lhs ^= rhs;
-    }
-
-    bool operator==(const shadow::Vector & lhs, const shadow::Vector & rhs)
-    {
-        shadow::Vector diff(lhs);
-        diff -= rhs;
-        return std::abs(diff.x()) < std::numeric_limits<double>::epsilon() &&
-               std::abs(diff.y()) < std::numeric_limits<double>::epsilon() &&
-               std::abs(diff.z()) < std::numeric_limits<double>::epsilon();
-    }
-
-    bool operator!=(const shadow::Vector & lhs, const shadow::Vector & rhs)
-    {
-        return !(lhs == rhs);
+        return first.x() * (second.y() * third.z() - second.z() - third.y()) -
+               first.y() * (second.x() * third.z() - second.z() - third.x()) +
+               first.z() * (second.x() * third.y() - second.y() - third.x());
     }
 
 }

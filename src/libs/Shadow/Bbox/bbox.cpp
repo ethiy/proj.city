@@ -105,20 +105,23 @@ namespace urban
             return *this;
         }
 
-        void swap(Bbox & lhs, Bbox & rhs)
+        Bbox operator+(const Bbox & lhs, const Bbox & rhs)
         {
-            lhs.swap(rhs);
-        }
-
-        Bbox & operator+(Bbox & lhs, const Bbox & rhs)
-        {
-            return lhs += rhs;
+            Bbox copy(lhs);
+            copy += rhs;
+            return copy;
         }
 
         std::ostream & operator<<(std::ostream & os, const Bbox & bbox)
         {
-            std::copy(std::begin(bbox.extreemes), std::end(bbox.extreemes), std::ostream_iterator<double>(os, " "));
+            os << bbox.extreemes.at(0) << " " << bbox.extreemes.at(1) << " " << bbox.extreemes.at(2) << " " << bbox.extreemes.at(3) << " " << bbox.extreemes.at(4) << " " << bbox.extreemes.at(5);
             return os;
         }
     }
+
+    void swap(shadow::Bbox & lhs, shadow::Bbox & rhs)
+    {
+        lhs.swap(rhs);
+    }
+
 }

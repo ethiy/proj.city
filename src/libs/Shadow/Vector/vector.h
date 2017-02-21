@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <ostream>
 
 namespace urban
 {
@@ -29,22 +30,26 @@ namespace urban
             Vector & operator=(Vector && other) noexcept;
 
             Vector & operator+=(const Vector & other);
+            Vector & operator*=(double scalar);
+            Vector & operator/=(double scalar);
             Vector & operator-=(const Vector & other);
             Vector & operator^=(const Vector & other);
 
         private:
             std::array<double, 3> coordinates;
+            friend std::ostream & operator<<(std::ostream & os, Vector & vector);
         };
-       
-        double determinant(const Vector & first, const Vector & second, const Vector & third);
+        Vector & operator+(Vector & lhs, const Vector & rhs);
+        Vector & operator-(Vector & lhs, const Vector & rhs);
+        double operator*(const Vector & lhs, const Vector & rhs);
+        Vector operator*(double scalar, const Vector & rhs);
+        Vector operator/(const Vector & lhs, double scalar);
+        Vector operator^(const Vector & lhs, const Vector & rhs);
+        bool operator==(const Vector & lhs, const Vector & rhs);
+        bool operator!=(const Vector & lhs, const Vector & rhs);
     }
 
     void swap(shadow::Vector & lhs, shadow::Vector & rhs);
-    
-    shadow::Vector & operator+(shadow::Vector & lhs, const shadow::Vector & rhs);
-    shadow::Vector & operator-(shadow::Vector & lhs, const shadow::Vector & rhs);
-    double operator*(const shadow::Vector & lhs, const shadow::Vector & rhs);
-    shadow::Vector & operator^(shadow::Vector & lhs, const shadow::Vector & rhs);
-    bool operator==(const shadow::Vector & lhs, const shadow::Vector & rhs);
-    bool operator!=(const shadow::Vector & lhs, const shadow::Vector & rhs);
+    double norm_L2(shadow::Vector & vector);
+    double determinant(const shadow::Vector & first, const shadow::Vector & second, const shadow::Vector & third);
 }

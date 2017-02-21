@@ -154,8 +154,7 @@ namespace urban
             std::array<double, 6> extreemes;
             friend std::ostream & operator<<(std::ostream & os, const Bbox & bbox);
         };
-        
-        void swap(Bbox & lhs, Bbox & rhs);
-        Bbox & operator+(Bbox & lhs, const Bbox & rhs);
+        Bbox operator+(const Bbox & lhs, const Bbox & rhs);
     }
+    void swap(shadow::Bbox & lhs, shadow::Bbox & rhs);
 }

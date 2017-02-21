@@ -34,19 +34,16 @@ namespace urban
 
             Point & operator+=(const Vector & translation);
 
-            Bbox bbox(void);
+            Bbox bbox(void) const;
         private:
             std::array<double, 3> coordinates;
             friend std::ostream & operator<<(std::ostream & os, const Point & point);
         };
+        Vector operator-(const Point & lhs, const Point & rhs);
+        Point & operator+(Point & lhs, const Vector & rhs);
+        bool operator==(const Point & lhs, const Point & rhs);
+        bool operator!=(const Point & lhs, const Point & rhs);
     }
-
     void swap(shadow::Point & lhs, shadow::Point & rhs);
-
-    shadow::Point & operator+(shadow::Point & lhs, const shadow::Vector & rhs);
-    shadow::Vector operator-(shadow::Point & lhs, const shadow::Point & rhs);
-    bool operator==(const shadow::Point & lhs, const shadow::Point & rhs);
-    bool operator!=(const shadow::Point & lhs, const shadow::Point & rhs);
-
     shadow::Vector normal_to(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third);
 }

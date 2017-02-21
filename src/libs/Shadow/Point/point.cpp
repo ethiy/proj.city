@@ -58,17 +58,36 @@ namespace urban
             return *this;
         }
 
-        Bbox Point::bbox(void)
+        Bbox Point::bbox(void) const
         {
             return Bbox(coordinates);
         }
 
         std::ostream & operator<<(std::ostream & os, const Point & point)
         {
-            std::copy(std::begin(point.coordinates), std::end(point.coordinates), std::ostream_iterator<double>(os, " "));
+            os << point.coordinates.at(0) << " " << point.coordinates.at(1) << " " << point.coordinates.at(2);
             return os;
         }
+        
+        Vector operator-(const Point & lhs, const Point & rhs)
+        {
+            return Vector(rhs, lhs);
+        }
 
+        Point & operator+(Point & lhs, const Vector & rhs)
+        {
+            return lhs += rhs;
+        }
+
+        bool operator==(const Point & lhs, const Point & rhs)
+        {
+            return (rhs - lhs) == shadow::Vector();
+        }
+        
+        bool operator!=(const Point & lhs, const Point & rhs)
+        {
+            return !(rhs == lhs);
+        }
     }
 
     void swap(shadow::Point & lhs, shadow::Point & rhs)
@@ -76,30 +95,11 @@ namespace urban
         lhs.swap(rhs);
     }
 
-    shadow::Point & operator+(shadow::Point & lhs, const shadow::Vector & rhs)
-    {
-        return lhs += rhs;
-    }
-
-    shadow::Vector operator-(const shadow::Point & lhs, const shadow::Point & rhs)
-    {
-        return shadow::Vector(rhs, lhs);
-    }
-
-    bool operator==(const shadow::Point & lhs, const shadow::Point & rhs)
-    {
-        return (rhs - lhs) == shadow::Vector();
-    }
-    
-    bool operator!=(const shadow::Point & lhs, const shadow::Point & rhs)
-    {
-        return !(rhs == lhs);
-    }
-
     shadow::Vector normal_to(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third)
     {
         shadow::Vector v(first, second);
-        return v ^ shadow::Vector(second, third);
+        v ^= shadow::Vector(second, third);
+        return v / norm_L2(v);
     }
 
 }
