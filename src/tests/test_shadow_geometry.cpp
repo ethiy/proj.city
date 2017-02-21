@@ -139,15 +139,5 @@ SCENARIO("Point manipulation:")
                 REQUIRE(urban::determinant(10. * u, 20000. * u, v) == 0.);
             }
         }
-        WHEN("determinant on vector permutations")
-        {
-            urban::shadow::Vector u = second - first,
-                                  v = third - second;
-            urban::shadow::Vector w(1., 2., .2);
-            THEN("the output checks:")
-            {
-                REQUIRE( std::abs(urban::determinant(w, u, v) -  w * (u ^ v)) < std::numeric_limits<double>::epsilon());
-            }
-        }
     }
 }
