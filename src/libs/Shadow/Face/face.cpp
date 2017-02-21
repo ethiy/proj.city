@@ -128,7 +128,7 @@ namespace urban
 
             if(vertices_number > 3)
             {
-                Vector normal(normal_to(coordinates.at(points.at(1)), coordinates.at(points.at(2)), coordinates.at(points.at(0))));
+                Vector normal_direction(Vector(coordinates.at(points.at(0)), coordinates.at(points.at(1))) ^ Vector(coordinates.at(points.at(1)), coordinates.at(points.at(2))));
                 auto circulator = std::begin(points);
                 do
                 {
@@ -152,9 +152,8 @@ namespace urban
                         }
                     }
                     Point A(coordinates.at(*circulator)), B(coordinates.at(*next_1)), C(coordinates.at(*next_2));
-                    Point p = B + normal;
-                    Vector external_direction(normal_to(B, B + normal, A));
-                    convexity &= (external_direction * Vector(B, C) > 0) ;
+                    Vector external_direction(Vector(A, B) ^ normal_direction);
+                    convexity &= (external_direction * Vector(B, C) < 0) ;
                 } while(convexity && ++circulator != std::end(points));
             }
             return convexity;
