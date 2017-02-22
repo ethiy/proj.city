@@ -143,7 +143,7 @@ namespace urban
                      */
                     if(!superposition.empty())
                     {
-                        Polygon_with_holes first_parts_occluded, second_parts_occluded;
+                        Polygon_set first_parts_occluded, second_parts_occluded;
                         /**
                          * >> Assign Intersection to corresponding facet
                          */
@@ -160,16 +160,21 @@ namespace urban
                                         )
                                 ); 
                                 if(lhs.get_plane_height(intersection_point) > rhs.get_plane_height(intersection_point))
-                                    CGAL::join(second_parts_occluded, intersection, second_parts_occluded);
+                                    second_parts_occluded.join(intersection);
                                 else
-                                    CGAL::join(first_parts_occluded, intersection, first_parts_occluded);
+                                    first_parts_occluded.join(intersection);
                             }
                         );
                         /**
                          * >> Compute oclusion for each facet
                          */
+                        first_parts_occluded.complement();
+                        first_parts_occluded.intersection(first);
+                        second_parts_occluded.complement();
+                        second_parts_occluded.intersection(second);
+                        
                         std::list<Polygon_with_holes> _firsts;
-                        CGAL::difference(first, first_parts_occluded, std::back_inserter(_firsts));
+                        first_parts_occluded.polygons_with_holes(std::back_inserter(_firsts));
                         std::transform(
                             std::begin(_firsts),
                             std::end(_firsts),
@@ -181,7 +186,7 @@ namespace urban
                         );
 
                         std::vector<Polygon_with_holes> _seconds;
-                        CGAL::difference(second, second_parts_occluded, std::back_inserter(_seconds));
+                        second_parts_occluded.polygons_with_holes(std::back_inserter(_seconds));
                         std::transform(
                             std::begin(_seconds),
                             std::end(_seconds),
