@@ -35,7 +35,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << v.x() << " " << v.y() << " " << v.z();
-                REQUIRE(auxilary.str() == "0.1861 0.262401 0.297501");
+                REQUIRE(auxilary.str() == "0.1861 0.2624 0.2975");
             }
         }
     }
@@ -52,7 +52,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << v.x() << " " << v.y() << " " << v.z();
-                REQUIRE(auxilary.str() == "0.1861 0.262401 0");
+                REQUIRE(auxilary.str() == "0.1861 0.2624 0");
             }
         }
         WHEN("two points are substructed")
@@ -62,7 +62,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << u.x() << " " << u.y() << " " << u.z();
-                REQUIRE(auxilary.str() == "0 0 0.297501");
+                REQUIRE(auxilary.str() == "0 0 0.2975");
             }
         }
         WHEN("A point is translated")
@@ -108,7 +108,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << n;
-                REQUIRE(auxilary.str() == "0.0780643 -0.0553649 0");
+                REQUIRE(auxilary.str() == "0.078064 -0.0553647 0");
             }
         }
         WHEN("the normal of the plane defined accordingly is computed")
