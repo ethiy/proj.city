@@ -80,9 +80,13 @@ namespace urban
 
 
     Heuristic::Heuristic(void){}
+    Heuristic::Heuristic(const Heuristic &){}
+    Heuristic::Heuristic(Heuristic &&){}
     Heuristic::~Heuristic(void){}
 
     SimpleHeuristic::SimpleHeuristic(void){}
+    SimpleHeuristic::SimpleHeuristic(const SimpleHeuristic &){}
+    SimpleHeuristic::SimpleHeuristic(SimpleHeuristic &&){}
     SimpleHeuristic::~SimpleHeuristic(void){}
     bool SimpleHeuristic::operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
     {
@@ -111,6 +115,8 @@ namespace urban
     }
 
     NaiveHeuristic::NaiveHeuristic(void){}
+    NaiveHeuristic::NaiveHeuristic(const NaiveHeuristic &){}
+    NaiveHeuristic::NaiveHeuristic(NaiveHeuristic &&){}
     NaiveHeuristic::~NaiveHeuristic(void){}
     bool NaiveHeuristic::operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
     {

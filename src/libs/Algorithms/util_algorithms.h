@@ -24,6 +24,8 @@ namespace urban
     struct Heuristic
     {
         Heuristic(void);
+        Heuristic(const Heuristic & other);
+        Heuristic(Heuristic && other);
         virtual ~Heuristic(void);
         virtual bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b) = 0;
     };
@@ -31,6 +33,8 @@ namespace urban
     struct SimpleHeuristic : public Heuristic
     {
         SimpleHeuristic(void);
+        SimpleHeuristic(const SimpleHeuristic & other);
+        SimpleHeuristic(SimpleHeuristic && other);
         ~SimpleHeuristic(void);
         bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b);
     };
@@ -39,6 +43,8 @@ namespace urban
     struct NaiveHeuristic : public Heuristic
     {
         NaiveHeuristic(void);
+        NaiveHeuristic(const NaiveHeuristic & other);
+        NaiveHeuristic(NaiveHeuristic && other);
         ~NaiveHeuristic(void);
         bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b);
     };
