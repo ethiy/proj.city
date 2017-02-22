@@ -22,7 +22,7 @@ namespace urban
                 lib3ds_mesh->pointL + lib3ds_mesh->points,
                 [&it, this](Lib3dsPoint _point)
                 {
-                    points.emplace(std::make_pair(it++, Point(_point.pos[0], _point.pos[1], _point.pos[2])));
+                    points.emplace(std::make_pair(it++, Point(static_cast<double>(_point.pos[0]), static_cast<double>(_point.pos[1]), static_cast<double>(_point.pos[2]))));
                 }
             );
 
@@ -38,7 +38,7 @@ namespace urban
 
                     Vector v1 = Vector(point_0, point_1);
                     Vector v2 = Vector(point_1, point_2);
-                    Vector n = Vector(_face.normal[0], _face.normal[1], _face.normal[2]);
+                    Vector n = Vector(static_cast<double>(_face.normal[0]), static_cast<double>(_face.normal[1]), static_cast<double>(_face.normal[2]));
 
                     if(determinant(v1, v2, n)>0)
                         faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[1], _face.points[2])));
