@@ -13,7 +13,7 @@ namespace urban
 {
     shadow::Face transform(shadow::Face & face, const std::map<size_t, size_t> map)
     {
-        std::vector<size_t> mapped_indexes;
+        std::vector<size_t> mapped_indexes(face.size());
 
         std::transform(
             std::begin(face),
@@ -61,9 +61,6 @@ namespace urban
 
     shadow::Mesh stitch(const shadow::Mesh & lhs, const shadow::Mesh & rhs, const std::map<size_t, size_t> & suture_points)
     {
-        std::stringstream _name("");
-        _name << lhs.get_name() << "_and_" << rhs.get_name();
-
         std::map<size_t, shadow::Point> l_coordinates(lhs.get_points()),
                                 r_coordinates(rhs.get_points());
         
@@ -77,15 +74,25 @@ namespace urban
             std::end(r_coordinates),
             [&l_coordinates, &shift, &suture_points, &stitcher](const std::pair<size_t, shadow::Point> & p)
             {
-                try
+                size_t index(p.first);
+                auto suture_point = std::find_if(
+                    std::begin(suture_points),
+                    std::end(suture_points),
+                    [index](const std::pair<size_t, size_t> & q)
+                    {
+                        return q.first == index;
+                    }
+                );
+
+                if(suture_point == std::end(suture_points))
                 {
-                    stitcher.emplace(std::make_pair(p.first, suture_points.at(p.first)));
-                    shift--;
+                    stitcher.emplace(std::make_pair(index, index + shift));
+                    l_coordinates.emplace(std::make_pair(index + shift, p.second));
                 }
-                catch(const std::out_of_range & except)
+                else
                 {
-                    stitcher.emplace(std::make_pair(p.first, p.first + shift));
-                    l_coordinates.emplace(std::make_pair(p.first + shift, p.second));
+                    stitcher.emplace(std::make_pair(index, suture_points.at(p.first)));
+                    shift--;
                 }
             }
         );
@@ -111,8 +118,11 @@ namespace urban
             }
         );
         
-        shadow::Mesh stitched;
-        return stitched;
+        return shadow::Mesh(
+            lhs.get_name() + "_" + rhs.get_name(),
+            l_coordinates,
+            l_faces
+        );
     }
 
     std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & connex_meshes, const shadow::Mesh & mesh)
