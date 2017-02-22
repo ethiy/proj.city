@@ -82,6 +82,11 @@ namespace urban
                     );
         }
 
+        Bbox_2 FacePrint::bbox(void) const
+        {
+            return border.bbox();
+        }
+
         FacePrint::Hole_const_iterator FacePrint::holes_begin(void) const
         {
             return border.holes_begin();
