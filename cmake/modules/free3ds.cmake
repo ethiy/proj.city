@@ -8,8 +8,8 @@ if(NOT TARGET free3ds)
                     -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/external/free3ds
                     -DCMAKE_C_FLAGS= "-O3"
                     -DCMAKE_CXX_FLAGS="-O3"
-        BUILD_COMMAND make
-        INSTALL_COMMAND make install
+        BUILD_COMMAND cmake --build . --target all
+        INSTALL_COMMAND cmake --build . --target install
     )
 
     set(LIB3DS_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/external/free3ds/include)
