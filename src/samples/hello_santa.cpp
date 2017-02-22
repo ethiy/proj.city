@@ -23,7 +23,7 @@ int main(int, char **)
 
         std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::shadow::Mesh>(std::cout, "\n"));
 
-        std::vector<urban::Brick> urban_objects(2);
+        std::vector<urban::Brick> urban_objects(meshes.size());
         std::transform(
             std::begin(meshes),
             std::end(meshes),
