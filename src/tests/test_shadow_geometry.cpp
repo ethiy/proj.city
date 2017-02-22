@@ -11,7 +11,7 @@ SCENARIO("Point manipulation:")
 {
     GIVEN("Point coordinates")
     {
-        urban::shadow::Point point(15.5343f, -13.4504f, 60.8789f);
+        urban::shadow::Point point(15.5343, -13.4504, 60.8789);
         WHEN("the point is created")
         {
             THEN("The output checks:")
@@ -26,8 +26,8 @@ SCENARIO("Point manipulation:")
 
     GIVEN("Two Point coordinates")
     {
-        urban::shadow::Point origin(15.5343f, -13.4504f, 60.8789f);
-        urban::shadow::Point target(15.7204f, -13.188f, 61.1764f);
+        urban::shadow::Point origin(15.5343, -13.4504, 60.8789);
+        urban::shadow::Point target(15.7204, -13.188, 61.1764);
         WHEN("the vector is created")
         {
             urban::shadow::Vector v(origin, target);
@@ -42,9 +42,9 @@ SCENARIO("Point manipulation:")
         
     GIVEN("Thee Point coordinates")
     {
-        urban::shadow::Point first(15.5343f, -13.4504f, 60.8789f);
-        urban::shadow::Point second(15.7204f, -13.188f, 60.8789f);
-        urban::shadow::Point third(15.7204f, -13.188f, 61.1764f);
+        urban::shadow::Point first(15.5343, -13.4504, 60.8789);
+        urban::shadow::Point second(15.7204, -13.188, 60.8789);
+        urban::shadow::Point third(15.7204, -13.188, 61.1764);
         WHEN("one vector is created")
         {
             urban::shadow::Vector v(first, second);
@@ -127,7 +127,7 @@ SCENARIO("Point manipulation:")
             urban::shadow::Vector n(urban::normal_to(first, second, third));
             THEN("the output checks:")
             {
-                REQUIRE(urban::determinant(n, u, v) == n * (u ^ v));
+                REQUIRE(std::abs(urban::determinant(n, u, v) - n * (u ^ v)) < std::numeric_limits<double>::epsilon());
             }
         }
         WHEN("determinant of colinear vectors")
