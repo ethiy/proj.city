@@ -6,6 +6,8 @@
 #include <string>
 #include <list>
 
+#include <ostream>
+
 namespace urban
 {
     namespace projection
@@ -44,8 +46,10 @@ namespace urban
         private:
             std::string name;
             std::list<FacePrint> projected_facets;
-            Polygon_with_holes projected_surface;
+            Polygon_set projected_surface;
             Bbox_2 bounding_box;
+
+            friend std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection);
         };
     }
 

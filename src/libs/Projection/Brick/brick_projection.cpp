@@ -6,6 +6,7 @@
 
 #include <list>
 #include <iterator>
+#include <algorithm>
 
 #include <stdexcept>
 
@@ -14,7 +15,7 @@ namespace urban
     namespace projection
     {
         BrickPrint::BrickPrint(void):name("N/A"), projected_surface(), bounding_box(){}
-        BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box):name(_name), projected_surface(), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
+        BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box):name(_name + "_projected_xy"), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
         BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
         BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
         BrickPrint::~BrickPrint(void){}
@@ -73,9 +74,10 @@ namespace urban
 
         bool BrickPrint::contains(const Polygon_with_holes & facet) const
         {
-            std::list<Polygon_with_holes> _inter(0);
-            if(CGAL::do_overlap(projected_surface.bbox(), facet.bbox()))
-                CGAL::intersection(projected_surface, facet, std::back_inserter(_inter));
+            Polygon_set shallow_copy(projected_surface);
+            shallow_copy.intersection(facet);
+            std::list<Polygon_with_holes> _inter;
+            shallow_copy.polygons_with_holes(std::back_inserter(_inter));
             return _inter.size() == 1 && _inter.front() == facet;
         }
 
@@ -94,7 +96,7 @@ namespace urban
                         facet.outer_boundary()[2]
                     )
                 );
-                under = contains(facet.get_polygon()) && facet.get_height(point) < get_height(point);
+                under = contains(facet.get_polygon()) && facet.get_height(point) < get_height(point); // there are no intersections
             }
             return under;
         }
@@ -106,7 +108,7 @@ namespace urban
             size_t it(0);
             if(projected_facets.empty())
             {
-                if(projected_surface.outer_boundary().is_empty())
+                if(projected_surface.is_empty())
                     result.push_back(new_facet);
                 else
                     std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
@@ -154,6 +156,19 @@ namespace urban
                 );
             else
                 throw std::out_of_range("The point is not inside the bounding box");
+        }
+
+        std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection)
+        {
+            os << "Name: " << brick_projection.name << std::endl
+               << "Bounding box" << brick_projection.bounding_box << std::endl
+               << "Face Projections: " << std::endl;
+            std::copy(std::begin(brick_projection.projected_facets), std::end(brick_projection.projected_facets), std::ostream_iterator<FacePrint>(os, "\n"));
+            std::vector<Polygon_with_holes> copy;
+            brick_projection.projected_surface.polygons_with_holes(std::back_inserter(copy));
+            os << "Projected surface: " << std::endl;
+            std::copy(std::begin(copy), std::end(copy), std::ostream_iterator<Polygon_with_holes>(os, "\n"));
+            return os;
         }
     }
 
