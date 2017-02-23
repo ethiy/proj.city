@@ -81,6 +81,13 @@ namespace urban
             return _inter.size() == 1 && _inter.front() == facet;
         }
 
+        bool BrickPrint::overlaps(const Polygon_with_holes & facet) const
+        {
+            Polygon_set shallow_copy(projected_surface);
+            shallow_copy.intersection(facet);
+            return !shallow_copy.is_empty();
+        }
+
         bool BrickPrint::is_under(const FacePrint & facet) const
         {
             bool under(false);
@@ -105,7 +112,6 @@ namespace urban
         void BrickPrint::push_facet(FacePrint & new_facet)
         {
             std::list<FacePrint> result(0);
-            size_t it(0);
             if(projected_facets.empty())
             {
                 if(projected_surface.is_empty())
@@ -118,19 +124,23 @@ namespace urban
                 /* If new_facet is under the surface we loose it*/
                 if(!is_under(new_facet))
                 {
-                    std::cout << "Faces to be treated:" << projected_facets.size() << std::endl;
-                    std::list<FacePrint> new_facets{new_facet};
-                    std::for_each(
-                        std::begin(projected_facets),
-                        std::end(projected_facets),
-                        [&result, &new_facets, &it](FacePrint & facet)
-                        {
-                            std::list<FacePrint> occlusion_results(occlusion(facet, new_facets));
-                            result.splice(std::end(result), occlusion_results);
-                            std::cout << "Treated Facet : " << it++ << std::endl;
-                        }
-                    );
-                    result.splice(std::end(result), new_facets);
+                    /* If new_facet does not intersect the surface we push it directly*/
+                    if(!overlaps(new_facet.get_polygon()))
+                        result.push_back(new_facet);
+                    else
+                    {
+                        std::list<FacePrint> new_facets{new_facet};
+                        std::for_each(
+                            std::begin(projected_facets),
+                            std::end(projected_facets),
+                            [&result, &new_facets](FacePrint & facet)
+                            {
+                                std::list<FacePrint> occlusion_results(occlusion(facet, new_facets));
+                                result.splice(std::end(result), occlusion_results);
+                            }
+                        );
+                        result.splice(std::end(result), new_facets);
+                    }
                 }
             }
             projected_facets = std::move(result);

@@ -37,7 +37,8 @@ namespace urban
             const_iterator cend(void) const noexcept;
 
             
-            bool contains(const Polygon_with_holes &) const;
+            bool contains(const Polygon_with_holes & facet) const;
+            bool overlaps(const Polygon_with_holes & facet) const;
             bool is_under(const FacePrint &) const;
             void push_facet(FacePrint &);
 
