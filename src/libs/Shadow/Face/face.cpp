@@ -171,11 +171,15 @@ namespace urban
                     std::prev(std::end(points), 1),
                     std::next(std::begin(points), 2),
                     face,
-                    [this](size_t b, size_t c)
+                    [this, &coordinates](size_t b, size_t c)
                     {
                         Lib3dsFace current;
                         auto init = std::initializer_list<size_t>({points.at(0), b, c});
                         std::copy(std::begin(init), std::end(init), current.points);
+                        Vector n(normal_to(coordinates.at(points.at(0)), coordinates.at(b), coordinates.at(c)));
+                        current.normal[0] = static_cast<float>(n.x());
+                        current.normal[1] = static_cast<float>(n.y());
+                        current.normal[2] = static_cast<float>(n.z());
                         return current;
                     }
                 );

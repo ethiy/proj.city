@@ -88,10 +88,9 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::ostringstream auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
-                std::cout << _mesh->faceL->normal[0] << _mesh->faceL->normal[1] << _mesh->faceL->normal[2] << std::endl;
                 std::free(_mesh);
                 auxilary << _u_mesh;
-                //REQUIRE( auxilary.str() == "Name: \nBounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764\nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 1 2 \n" );
+                REQUIRE( auxilary.str() == "Name: \nBounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764\nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1 \n" );
             }
         }
 
