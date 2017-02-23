@@ -59,4 +59,75 @@ SCENARIO("Occlusion management")
             }
         }
     }
+    GIVEN("two non convex faces with holes")
+    {
+        std::vector<urban::Point_2> vertices;
+        vertices.reserve(7);
+        vertices.push_back(urban::Point_2(-10, 6));
+        vertices.push_back(urban::Point_2(-12, 0));
+        vertices.push_back(urban::Point_2(0, 0));
+        vertices.push_back(urban::Point_2(-6, -12));
+        vertices.push_back(urban::Point_2(2, -12));
+        vertices.push_back(urban::Point_2(2, 8));
+        vertices.push_back(urban::Point_2(-2, 4));
+        
+        urban::projection::FacePrint face_1(
+            urban::Polygon_with_holes(
+                urban::Polygon(
+                    std::begin(vertices),
+                    std::end(vertices)
+                )
+            ),
+            urban::Plane_3(
+                urban::Point_3(-10, 6, 0),
+                urban::Point_3(-12, 0, 0),
+                urban::Point_3(0, 0, 0)                
+            )
+        );
+
+        vertices.clear();
+        vertices.reserve(3);
+        vertices.push_back(urban::Point_2(-6, 4));
+        vertices.push_back(urban::Point_2(-4, 2));
+        vertices.push_back(urban::Point_2(-6, 2));
+
+        std::list<urban::Polygon> hole_list{{urban::Polygon(std::begin(vertices), std::end(vertices))}};
+
+        vertices.clear();
+        vertices.reserve(6);
+        vertices.push_back(urban::Point_2(-6, 8));
+        vertices.push_back(urban::Point_2(-10, -10));
+        vertices.push_back(urban::Point_2(2, -10));
+        vertices.push_back(urban::Point_2(-2, -2));
+        vertices.push_back(urban::Point_2(-4, 6));
+        vertices.push_back(urban::Point_2(4, 4));
+
+        urban::projection::FacePrint face_2(
+            urban::Polygon_with_holes(
+                urban::Polygon(
+                    std::begin(vertices),
+                    std::end(vertices)
+                ),
+                std::begin(hole_list),
+                std::end(hole_list)
+            ),
+            urban::Plane_3(
+                urban::Point_3(-6, 8, 10),
+                urban::Point_3(-10, 10, 10),
+                urban::Point_3(2, -10, 10)                
+            )
+        );
+        WHEN("Occlusion is computed")
+        {
+            std::list<urban::projection::FacePrint> rhs{{face_2}};
+            std::list<urban::projection::FacePrint> result(urban::occlusion(face_1, rhs));
+            THEN("the output checks:")
+            {
+                std::ostringstream auxilary;
+                std::copy(std::begin(rhs), std::end(rhs), std::ostream_iterator<urban::projection::FacePrint>(auxilary, ""));
+                std::copy(std::begin(result), std::end(result), std::ostream_iterator<urban::projection::FacePrint>(auxilary, ""));
+                REQUIRE(auxilary.str() == "The Polygon describing borders :6 -10 -10 2 -10 -2 -2 -4 6 4 4 -6 8  1 3 -4 2 -6 2 -6 4  \nThe supporting plane coefficients : -0 -0 56 -560\nThe Polygon describing borders :4 -6.63158 5.15789 -10 6 -12 0 -7.77778 0  0 \nThe supporting plane coefficients : -0 -0 72 -0\nThe Polygon describing borders :3 -6 2 -4 2 -6 4  0 \nThe supporting plane coefficients : -0 -0 72 -0\nThe Polygon describing borders :12 -0.8 5.2 -2 4 -3.6 4.4 -2.5 0 0 0 -1.5 -3 2 -10 -5 -10 -6 -12 2 -12 2 -10 2 4.5  0 \nThe supporting plane coefficients : -0 -0 72 -0\nThe Polygon describing borders :3 2 8 -0.285714 5.71429 2 4.8  0 \nThe supporting plane coefficients : -0 -0 72 -0\n");
+            }
+        }
+    }
 }
