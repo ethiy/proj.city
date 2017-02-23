@@ -37,6 +37,7 @@ int main(int, char **)
                 return urban::project(brick);
             }
         );
+        std::copy(std::begin(projections_xy), std::end(projections_xy), std::ostream_iterator<urban::projection::BrickPrint>(std::cout, "\n"));
     }
     catch (const std::exception& except)
     {
