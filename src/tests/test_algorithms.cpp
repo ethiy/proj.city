@@ -1,5 +1,6 @@
 #include "../libs/Algorithms/algorithms.h"
 #include <CGAL/Boolean_set_operations_2.h>
+#include "../libs/UrbanObject/brick.h"
 
 #include <catch.hpp>
 
@@ -59,6 +60,7 @@ SCENARIO("Occlusion management")
             }
         }
     }
+
     GIVEN("two non convex faces with holes")
     {
         std::vector<urban::Point_2> vertices;
@@ -130,4 +132,34 @@ SCENARIO("Occlusion management")
             }
         }
     }
+    GIVEN("A closed shadow Mesh")
+    {
+        urban::shadow::Mesh test_mesh(
+            "test_mesh",
+            std::map<size_t, urban::shadow::Point>{
+                {0, urban::shadow::Point(-10, 6, 8)},
+                {1, urban::shadow::Point(-18, -14, 5)},
+                {2, urban::shadow::Point(-2, -13, 6)},
+                {3, urban::shadow::Point(-10, -10, -15)},
+                {4, urban::shadow::Point(-2, 10, 0)},
+                {5, urban::shadow::Point(-18, 9, 1)}
+            },
+            std::map<size_t, urban::shadow::Face>{
+                {0, urban::shadow::Face(0, 1, 2)},
+                {1, urban::shadow::Face(4, 3, 5)},
+                {2, urban::shadow::Face(0, 2, 4)},
+                {3, urban::shadow::Face(3, 4, 2)},
+                {4, urban::shadow::Face(5, 1, 0)},
+                {5, urban::shadow::Face(1, 5, 3)},
+                {6, urban::shadow::Face(5, 0, 4)},
+                {7, urban::shadow::Face(1, 3, 2)}
+            }
+        );
+
+        urban::Brick test_brick(test_mesh);
+
+        urban::projection::BrickPrint test_proj = urban::project(test_brick);
+        std::cout << test_proj << std::endl;
+    }
+
 }
