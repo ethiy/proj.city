@@ -3,6 +3,11 @@
 # VS code
 .vscode
 
+# Qt creator
+*.user
+
 # Build files
 build
 
+# Urban 3d resources
+ressources/UrbanModels/*

@@ -13,15 +13,15 @@ if(NOT TARGET Catch)
             URL https://github.com/philsquared/Catch/archive/v1.2.1-develop.12.tar.gz
             URL_HASH MD5=a8dfb7be899a6e7fb30bd55d53426122)
     endif()
-    ExternalProject_Add(Catch-External
+    ExternalProject_Add(libcatch
         PREFIX ${CMAKE_BINARY_DIR}/external/Catch
         ${GB_FETCH_EXTERNAL_CATCH}
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
-        INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/external/Catch/src/Catch-External/single_include/catch.hpp
+        INSTALL_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/external/Catch/src/libcatch/single_include/catch.hpp
                                                  ${CMAKE_BINARY_DIR}/external/Catch/include/catch.hpp
     )
     add_library(Catch INTERFACE)
-    add_dependencies(Catch Catch-External)
+    add_dependencies(Catch libcatch)
     target_include_directories(Catch INTERFACE ${CMAKE_BINARY_DIR}/external/Catch/include)
 endif()
