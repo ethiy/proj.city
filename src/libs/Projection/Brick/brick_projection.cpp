@@ -51,26 +51,7 @@ namespace urban
 
         Bbox_2 BrickPrint::bbox(void)
         {
-<<<<<<< HEAD
-            Bbox_2 BB;
-            if(!projected_facets.empty())
-            {
-                BB = Bbox_2(projected_facets.begin()->bbox());
-                BB = std::accumulate(
-                    std::next(std::begin(projected_facets), 1),
-                    std::end(projected_facets),
-                    BB,
-                    [](Bbox_2 & result, const FacePrint & facet)
-                    {
-                        return result + facet.bbox();
-                    }
-                );
-            }
-
-            return BB;
-=======
             return bounding_box;
->>>>>>> parent of 9c76db7... plot + no bounding_box member
         }
 
         BrickPrint::iterator BrickPrint::begin(void) noexcept
@@ -171,7 +152,13 @@ namespace urban
 
         bool BrickPrint::in_domain(const Point_2 & point) const
         {
-            return point.x() <= bounding_box.xmax() && point.x() >= bounding_box.xmin() && point.y() <= bounding_box.ymax() && point.y() <= bounding_box.ymin();
+            return bounding_box.xmax() - point.x() > std::numeric_limits<double>::epsilon()
+                    &&
+                   point.x() - bounding_box.xmin() > std::numeric_limits<double>::epsilon()
+                    &&
+                   bounding_box.ymax() - point.y() > std::numeric_limits<double>::epsilon()
+                    &&
+                   point.y() - bounding_box.ymin() > std::numeric_limits<double>::epsilon();
         }
 
         double BrickPrint::get_height(const Point_2 & point) const
@@ -193,8 +180,8 @@ namespace urban
         std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection)
         {
             os << "Name: " << brick_projection.name << std::endl
-               << "Bounding box" << brick_projection.bounding_box << std::endl
-               << "Face Projections: " << std::endl;
+               << "Bounding box: " << brick_projection.bounding_box << std::endl
+               << "Face Projections: " << brick_projection.projected_facets.size() << std::endl;
             std::copy(std::begin(brick_projection.projected_facets), std::end(brick_projection.projected_facets), std::ostream_iterator<FacePrint>(os, "\n"));
             std::vector<Polygon_with_holes> copy;
             brick_projection.projected_surface.polygons_with_holes(std::back_inserter(copy));

@@ -159,7 +159,7 @@ SCENARIO("Occlusion management")
         urban::Brick test_brick(test_mesh);
 
         urban::projection::BrickPrint test_proj = urban::project(test_brick);
-        std::cout << test_proj << std::endl;
+        std::cout << test_brick.bbox() << std::endl << test_proj << std::endl;
     }
 
 }
