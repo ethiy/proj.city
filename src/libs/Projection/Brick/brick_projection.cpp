@@ -50,10 +50,11 @@ namespace urban
 
         Bbox_2 BrickPrint::bbox(void) const
         {
+            Bbox_2 BB(projected_facets.begin()->bbox());
             return std::accumulate(
-                std::begin(projected_facets),
+                std::next(std::begin(projected_facets), 1),
                 std::end(projected_facets),
-                Bbox_2(),
+                BB,
                 [](Bbox_2 & result, const FacePrint & facet)
                 {
                     return result + facet.bbox();
