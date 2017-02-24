@@ -64,7 +64,7 @@ namespace urban
                     }
                 );
             }
-            
+
             return BB;
         }
 
@@ -167,12 +167,12 @@ namespace urban
         bool BrickPrint::in_domain(const Point_2 & point) const
         {
             Bbox_2 bounding_box(bbox());
-            return point.x() <= bounding_box.xmax() && point.x() >= bounding_box.xmin() && point.y() <= bounding_box.ymax() && point.y() <= bounding_box.ymin();
+            return point.x() <= bounding_box.xmax() && point.x() >= bounding_box.xmin() && point.y() <= bounding_box.ymax() && point.y() >= bounding_box.ymin();
         }
 
         double BrickPrint::get_height(const Point_2 & point) const
         {
-            if(true) // To be checked
+            if(in_domain(point))
                 return std::accumulate(
                     std::begin(projected_facets),
                     std::end(projected_facets),
