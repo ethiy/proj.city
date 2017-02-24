@@ -148,7 +148,6 @@ namespace urban
                 /* If new_facet is under the surface we loose it*/
                 if(!is_under(new_facet))
                 {
-                    projected_surface.join(new_facet.get_polygon());
                     /* If new_facet does not intersect the surface we push it directly*/
                     if(!overlaps(new_facet))
                     {
@@ -170,6 +169,7 @@ namespace urban
                     }
                 }
             }
+            projected_surface.join(new_facet.get_polygon());
             projected_facets = std::move(result);
         }
 
