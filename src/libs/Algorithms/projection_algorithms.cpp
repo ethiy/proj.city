@@ -15,7 +15,7 @@ namespace urban
 {
     projection::BrickPrint project(const Brick & brick)
     {
-        projection::BrickPrint projection(brick.get_name());
+        projection::BrickPrint projection(brick.get_name(), brick.bbox());
         std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
         size_t it(0);
         std::for_each(
