@@ -130,6 +130,12 @@ namespace urban
                     );
         }
 
+        PyObject* FacePrint::plot(void) const
+        {
+            PyObject* pFace;
+            return pFace;
+        }
+
         std::ostream & operator<<(std::ostream & os, const FacePrint & facet)
         {
             return os << "The Polygon describing borders :" << facet.border << std::endl

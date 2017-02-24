@@ -4,6 +4,8 @@
 
 #include <CGAL/Boolean_set_operations_2.h>
 
+#include <Python.h>
+
 #include <list>
 #include <iterator>
 #include <algorithm>
@@ -14,10 +16,10 @@ namespace urban
 {
     namespace projection
     {
-        BrickPrint::BrickPrint(void):name("N/A"), projected_surface(), bounding_box(){}
-        BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box):name(_name + "_projected_xy"), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
-        BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
-        BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
+        BrickPrint::BrickPrint(void):name("N/A"), projected_surface() {}
+        BrickPrint::BrickPrint(const std::string & _name):name(_name + "_projected_xy") {}
+        BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface) {}
+        BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)) {}
         BrickPrint::~BrickPrint(void){}
 
         void BrickPrint::swap(BrickPrint & other)
@@ -26,7 +28,6 @@ namespace urban
             swap(name, other.name);
             swap(projected_facets, other.projected_facets);
             swap(projected_surface, other.projected_surface);
-            swap(bounding_box, other.bounding_box);
         }
             
         BrickPrint BrickPrint::operator=(const BrickPrint & other)
@@ -34,7 +35,6 @@ namespace urban
             name = other.name;
             projected_facets = std::move(other.projected_facets);
             projected_surface = std::move(other.projected_surface);
-            bounding_box = std::move(other.bounding_box);
             return *this;
         }
 
@@ -44,14 +44,21 @@ namespace urban
             projected_facets.resize(other.projected_facets.size());
             std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::begin(projected_facets));
             projected_surface = std::move(other.projected_surface);
-            bounding_box = std::move(other.bounding_box);
             return *this;
         }
 
 
-        Bbox_2 BrickPrint::bbox(void)
+        Bbox_2 BrickPrint::bbox(void) const
         {
-            return bounding_box;
+            return std::accumulate(
+                std::begin(projected_facets),
+                std::end(projected_facets),
+                Bbox_2(),
+                [](Bbox_2 & result, const FacePrint & facet)
+                {
+                    return result + facet.bbox();
+                }
+            );
         }
 
         BrickPrint::iterator BrickPrint::begin(void) noexcept
@@ -152,6 +159,7 @@ namespace urban
 
         bool BrickPrint::in_domain(const Point_2 & point) const
         {
+            Bbox_2 bounding_box(bbox());
             return point.x() <= bounding_box.xmax() && point.x() >= bounding_box.xmin() && point.y() <= bounding_box.ymax() && point.y() <= bounding_box.ymin();
         }
 
@@ -171,11 +179,24 @@ namespace urban
                 throw std::out_of_range("The point is not inside the bounding box");
         }
 
+        void BrickPrint::plot(void) const
+        {
+            std::for_each(
+                std::begin(projected_facets),
+                std::end(projected_facets),
+                [](const FacePrint & facet)
+                {
+                    PyObject* pFace = facet.plot();
+                    Py_DECREF(pFace);
+                }
+            );
+        }
+
         std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection)
         {
             os << "Name: " << brick_projection.name << std::endl
-               << "Bounding box" << brick_projection.bounding_box << std::endl
-               << "Face Projections: " << std::endl;
+               << "Bounding box: " << brick_projection.bbox() << std::endl
+               << "Face Projections: " << brick_projection.projected_facets.size() << std::endl;
             std::copy(std::begin(brick_projection.projected_facets), std::end(brick_projection.projected_facets), std::ostream_iterator<FacePrint>(os, "\n"));
             std::vector<Polygon_with_holes> copy;
             brick_projection.projected_surface.polygons_with_holes(std::back_inserter(copy));
