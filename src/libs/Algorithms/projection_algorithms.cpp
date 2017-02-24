@@ -15,7 +15,7 @@ namespace urban
 {
     projection::BrickPrint project(const Brick & brick)
     {
-        projection::BrickPrint projection(brick.get_name(), brick.bbox());
+        projection::BrickPrint projection(brick.get_name());
         std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
         size_t it(0);
         std::for_each(
@@ -23,7 +23,6 @@ namespace urban
             std::end(projected_facets),
             [&projection, &it](projection::FacePrint facet)
             {
-                std::cout << ">> Face projection number: " << it++ << std::endl;
                 projection.push_facet(facet);
             }
         );
@@ -108,9 +107,6 @@ namespace urban
          */
         SimpleHeuristic heuristic;
         std::sort(std::begin(facets), std::end(facets), heuristic);
-
-        std::copy(std::begin(facets), std::end(facets), std::ostream_iterator<projection::FacePrint>(std::cout, " \n"));
-
         return facets;
     }
 
