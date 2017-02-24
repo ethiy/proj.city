@@ -23,7 +23,7 @@ namespace urban
             std::end(projected_facets),
             [&projection, &it](projection::FacePrint facet)
             {
-                projection.push_facet(facet);
+                projection.insert(facet);
             }
         );
         return projection;
