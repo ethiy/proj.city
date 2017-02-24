@@ -34,6 +34,11 @@ include( ${CGAL_USE_FILE} )
 include_directories(${CGAL_INCLUDE_DIRS})
 list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
 
+# Find Python.h
+find_package(PythonLibs REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+list(APPEND LIBS ${PYTHON_LIBRARIES})
+
 # Find Catch
 include(cmake/modules/catch.cmake)
 enable_testing(true)
