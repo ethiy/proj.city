@@ -2,8 +2,6 @@
 
 #include "../../geometry_definitions.h"
 
-#include <Python.h>
-
 #include <vector>
 #include <utility>
 
@@ -52,8 +50,7 @@ namespace urban
             bool is_perpendicular(void) const;
 
             bool contains(const Point_2 & point) const;
-            PyObject* plot(void) const;
-            
+
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;

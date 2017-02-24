@@ -16,7 +16,7 @@ namespace urban
         {
         public:
             BrickPrint(void);
-            BrickPrint(const std::string & _name);
+            BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box);
             BrickPrint(const BrickPrint &other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
@@ -27,7 +27,7 @@ namespace urban
 
             BrickPrint operator=(BrickPrint && other);
 
-            Bbox_2 bbox(void) const;
+            Bbox_2 bbox(void);
 
             typedef std::list<FacePrint>::iterator iterator;
             typedef std::list<FacePrint>::const_iterator const_iterator;
@@ -44,12 +44,11 @@ namespace urban
 
             bool in_domain(const Point_2 &) const;
             double get_height(const Point_2 &) const;
-
-            void plot(void) const;
         private:
             std::string name;
             std::list<FacePrint> projected_facets;
             Polygon_set projected_surface;
+            Bbox_2 bounding_box;
 
             friend std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection);
         };
