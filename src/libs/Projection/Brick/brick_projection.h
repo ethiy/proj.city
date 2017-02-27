@@ -42,6 +42,8 @@ namespace urban
             bool contains(const FacePrint & facet) const;
             bool overlaps(const FacePrint & facet) const;
             bool is_under(const FacePrint &) const;
+            bool check_integrity(void) const;
+
             void insert(const FacePrint & facet);
 
             bool in_domain(const Point_2 &) const;

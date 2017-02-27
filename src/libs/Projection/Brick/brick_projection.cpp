@@ -127,34 +127,40 @@ namespace urban
                         facet.outer_boundary()[2]
                     )
                 );
-                under = contains(facet) && facet.get_height(point) < get_height(point); // there are no intersections
+                under = contains(facet) && facet.get_height(point) <= get_height(point); // there are no intersections
             }
             return under;
         }
         
+        bool BrickPrint::check_integrity(void) const
+        {
+            Polygon_set diff(projected_surface);
+            std::for_each(
+                std::begin(projected_facets),
+                std::end(projected_facets),
+                [&diff](const FacePrint & facet)
+                {
+                    return diff.difference(facet.get_polygon());
+                }
+            );
+            return diff.is_empty();
+        }
 
         void BrickPrint::insert(const FacePrint & new_facet)
         {
-            std::list<FacePrint> result(0);
             if(projected_facets.empty())
-            {
-                if(projected_surface.is_empty())
-                    result.push_back(new_facet);
-                else
-                    std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
-            }
+                projected_facets.push_back(new_facet);
             else
             {
-                /* If new_facet is under the surface we loose it*/
-                if(!is_under(new_facet))
+                /* If new_facet does not intersect the surface we push it directly*/
+                if(!overlaps(new_facet))
+                    projected_facets.push_back(new_facet);
+                else
                 {
-                    /* If new_facet does not intersect the surface we push it directly*/
-                    if(!overlaps(new_facet))
+                    /* If new_facet is under the surface we loose it*/
+                    if(!is_under(new_facet))
                     {
-                        result.push_back(new_facet);
-                    }
-                    else
-                    {
+                        std::list<FacePrint> result;
                         std::list<FacePrint> new_facets{new_facet};
                         std::for_each(
                             std::begin(projected_facets),
@@ -166,11 +172,16 @@ namespace urban
                             }
                         );
                         result.splice(std::end(result), new_facets);
+                        projected_facets = std::move(result);
                     }
                 }
             }
+                // if(projected_surface.is_empty())
+                //     result.push_back(new_facet);
+                // else
+                //     std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
+                /* If new_facet is under the surface we loose it*/
             projected_surface.join(new_facet.get_polygon());
-            projected_facets = std::move(result);
         }
 
 
