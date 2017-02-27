@@ -80,8 +80,8 @@ SCENARIO("Face Projection manipulation:")
     GIVEN("A degenerate face")
     {
         urban::InexactToExact to_exact;
-        urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
-                       B(to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.))),
+        urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.))),
+                       B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
                        C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
         std::vector<urban::Point_2> vertices;
         vertices.push_back(urban::Point_2(A.x(), A.y()));
