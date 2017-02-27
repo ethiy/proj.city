@@ -18,6 +18,7 @@ file(GLOB_RECURSE Shadow_SRC "${3DSceneModel_SOURCE_DIR}/src/libs/Shadow/*.cpp")
 
 add_library(Shadow ${Shadow_HEADERS} ${Shadow_SRC})
 target_link_libraries(Shadow ${LIBS})
+
 # UrbanObject
 file(GLOB_RECURSE UObj_HEADERS "${3DSceneModel_SOURCE_DIR}/src/libs/UrbanObject/*.h")
 file(GLOB_RECURSE UObj_SRC "${3DSceneModel_SOURCE_DIR}/src/libs/UrbanObject/*.cpp")

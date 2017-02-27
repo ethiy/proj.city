@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <numeric>
 
+#include <limits>
+
 namespace urban
 {
     namespace shadow
@@ -40,7 +42,7 @@ namespace urban
                     Vector v2 = Vector(point_1, point_2);
                     Vector n = Vector(static_cast<double>(_face.normal[0]), static_cast<double>(_face.normal[1]), static_cast<double>(_face.normal[2]));
 
-                    if(determinant(v1, v2, n)>0)
+                    if(determinant(v1, v2, n) > std::numeric_limits<float>::epsilon())
                         faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[1], _face.points[2])));
                     else
                         faces.emplace(std::make_pair(it++, Face(_face.points[0], _face.points[2], _face.points[1])));

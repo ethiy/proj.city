@@ -6,6 +6,8 @@
 #include <string>
 #include <list>
 
+#include <ostream>
+
 namespace urban
 {
     namespace projection
@@ -15,15 +17,17 @@ namespace urban
         public:
             BrickPrint(void);
             BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box);
+            BrickPrint(const FacePrint & face_projection);
             BrickPrint(const BrickPrint &other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
 
             void swap(BrickPrint & other);
             
-            BrickPrint operator=(const BrickPrint & other);
+            BrickPrint & operator=(const BrickPrint & other);
+            BrickPrint & operator=(BrickPrint && other);
 
-            BrickPrint operator=(BrickPrint && other);
+            BrickPrint & operator+=(const BrickPrint & other);
 
             Bbox_2 bbox(void);
 
@@ -35,18 +39,25 @@ namespace urban
             const_iterator cend(void) const noexcept;
 
             
-            bool contains(const Polygon_with_holes &) const;
+            bool contains(const FacePrint & facet) const;
+            bool overlaps(const FacePrint & facet) const;
             bool is_under(const FacePrint &) const;
-            void push_facet(FacePrint &);
+            bool check_integrity(void) const;
+
+            void insert(const FacePrint & facet);
 
             bool in_domain(const Point_2 &) const;
             double get_height(const Point_2 &) const;
         private:
             std::string name;
             std::list<FacePrint> projected_facets;
-            Polygon_with_holes projected_surface;
+            Polygon_set projected_surface;
             Bbox_2 bounding_box;
+
+            friend std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection);
         };
+
+        BrickPrint & operator+(BrickPrint & lhs, const BrickPrint & rhs);
     }
 
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);

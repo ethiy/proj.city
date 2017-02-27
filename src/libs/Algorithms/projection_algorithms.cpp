@@ -23,8 +23,7 @@ namespace urban
             std::end(projected_facets),
             [&projection, &it](projection::FacePrint facet)
             {
-                std::cout << ">> Face projection number: " << it++ << std::endl;
-                projection.push_facet(facet);
+                projection.insert(facet);
             }
         );
         return projection;
@@ -108,9 +107,6 @@ namespace urban
          */
         SimpleHeuristic heuristic;
         std::sort(std::begin(facets), std::end(facets), heuristic);
-
-        std::copy(std::begin(facets), std::end(facets), std::ostream_iterator<projection::FacePrint>(std::cout, " \n"));
-
         return facets;
     }
 
