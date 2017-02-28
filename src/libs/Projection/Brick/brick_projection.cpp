@@ -78,6 +78,11 @@ namespace urban
             return bounding_box;
         }
 
+        size_t BrickPrint::size(void) const noexcept
+        {
+            return projected_facets.size();
+        }
+
         BrickPrint::iterator BrickPrint::begin(void) noexcept
         {
             return projected_facets.begin();
