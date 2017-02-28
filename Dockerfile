@@ -16,8 +16,9 @@ RUN apt-get install -y \
 WORKDIR /home
 RUN git clone https://github.com/Ethiy/3DSceneModel.git
 WORKDIR 3DSceneModel/
+RUN git checkout build-system-trial
 RUN mkdir build && mkdir build/linux
 WORKDIR build/linux
 RUN cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
 RUN make -j4 all
-RUN ./test_exec -a
+RUN ./tests -a

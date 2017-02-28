@@ -31,7 +31,6 @@ matrix:
         - brew update
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
-        - brew install lib3ds
         - mkdir build
         - mkdir build/darwin
       install:
@@ -39,4 +38,4 @@ matrix:
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
         - make -j4 all
-        - ./test_exec -a
+        - ./tests -a
