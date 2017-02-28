@@ -7,11 +7,13 @@ namespace urban
     namespace io
     {
         FileHandler<Lib3dsFile>::FileHandler(void) {}
+        FileHandler<Lib3dsFile>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): filepath(_filepath), modes(_modes) {}
 
-        FileHandler<Lib3dsFile>::FileHandler(boost::filesystem::path _filepath, std::map<std::string, bool> _modes)
-            : filepath(_filepath), modes(_modes) {}
+        FileHandler<Lib3dsFile>::~FileHandler(void)
+        {
+            std::free(file);
+        }
 
-        FileHandler<Lib3dsFile>::~FileHandler(void) {}
 
         std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void)
         {
