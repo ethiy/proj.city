@@ -12,7 +12,8 @@ RUN apt-get install -y \
             libboost-system-dev\
             lib3ds-dev\
             libcgal-dev\
-            libcgal-qt5-dev
+            libcgal-qt5-dev\
+            python-dev
 WORKDIR /home
 RUN git clone https://github.com/Ethiy/3DSceneModel.git
 WORKDIR 3DSceneModel/
