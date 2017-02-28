@@ -6,8 +6,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include "ogrsf_frmts.h"
-#include <gdal_priv.h>
+#include <ogrsf_frmts.h>
 
 #include <map>
 #include <string>
