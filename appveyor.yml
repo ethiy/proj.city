@@ -34,4 +34,4 @@ build_script:
   - ps: New-Item -ItemType Directory -Path .\build\MSYS2
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; /mingw64/bin/cmake -G'Unix Makefiles' -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../.. ; make -j4"
 test_script:
-  - IF NOT "%APPVEYOR_REPO_BRANCH%" == "master" C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; ./test_exec -a"
+  - IF NOT "%APPVEYOR_REPO_BRANCH%" == "master" C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; ./tests -a"

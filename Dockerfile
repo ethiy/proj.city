@@ -23,3 +23,4 @@ WORKDIR build/linux
 RUN cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
 RUN make -j4 all
 RUN ./tests -a
+RUN rm *.off *.3ds

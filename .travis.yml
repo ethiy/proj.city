@@ -39,3 +39,5 @@ matrix:
       script:
         - make -j4 all
         - ./tests -a
+      after_script:
+        - rm *.3ds *.off
