@@ -30,7 +30,8 @@ target_link_libraries(UrbanObject Shadow ${LIBS})
 set(Projection_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/Projection/projection.h")
 file(GLOB_RECURSE Projection_SRC "${3DSceneModel_SOURCE_DIR}/src/libs/Projection/*.cpp")
 
-add_library(Projection ${Projection_HEADERS} ${Projection_SRC} ${UObj_HEADERS})
+add_library(Projection ${Projection_HEADERS} ${Projection_SRC} ${UObj_HEADERS} ${Algorithms_HEADERS})
+target_link_libraries(Projection Algorithms ${LIBS})
 
 # Algorithms
 set(Algorithms_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/Algorithms/algorithms.h")
@@ -43,8 +44,8 @@ target_link_libraries(Algorithms UrbanObject Shadow Projection ${LIBS})
 file(GLOB_RECURSE IO_HEADERS "${3DSceneModel_SOURCE_DIR}/src/libs/IO/*.h")
 file(GLOB_RECURSE IO_SRC "${3DSceneModel_SOURCE_DIR}/src/libs/IO/*.cpp")
 
-add_library(IO ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS})
-target_link_libraries(IO Shadow ${LIBS})
+add_library(IO ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Projection_HEADERS})
+target_link_libraries(IO Shadow Projection ${LIBS})
 
 # urban
 set(urban_HEADERS "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")

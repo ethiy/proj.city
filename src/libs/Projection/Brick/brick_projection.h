@@ -3,6 +3,8 @@
 #include "../../geometry_definitions.h"
 #include "../Face/face_projection.h"
 
+#include <ogrsf_frmts.h>
+
 #include <string>
 #include <list>
 
@@ -18,6 +20,7 @@ namespace urban
             BrickPrint(void);
             BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box);
             BrickPrint(const FacePrint & face_projection);
+            BrickPrint(const std::string & _name, OGRLayer* projection_layer);
             BrickPrint(const BrickPrint &other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
@@ -29,8 +32,9 @@ namespace urban
 
             BrickPrint & operator+=(const BrickPrint & other);
 
-            Bbox_2 bbox(void);
+            Bbox_2 bbox(void) const noexcept;
 
+            size_t size(void) const noexcept;
             typedef std::list<FacePrint>::iterator iterator;
             typedef std::list<FacePrint>::const_iterator const_iterator;
             iterator begin(void) noexcept;
@@ -48,6 +52,8 @@ namespace urban
 
             bool in_domain(const Point_2 &) const;
             double get_height(const Point_2 &) const;
+
+            void to_ogr(GDALDataset* file) const;
         private:
             std::string name;
             std::list<FacePrint> projected_facets;

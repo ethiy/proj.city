@@ -3,6 +3,8 @@
 #include "../geometry_definitions.h"
 #include "../Projection/Face/face_projection.h"
 
+#include <ogr_geometry.h>
+
 #include <vector>
 #include <map>
 

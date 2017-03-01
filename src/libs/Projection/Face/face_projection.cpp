@@ -1,6 +1,9 @@
 #include "face_projection.h"
 
 #include "../../Algorithms/projection_algorithms.h"
+#include "../../Algorithms/ogr_algorithms.h"
+
+#include <ogr_geometry.h>
 
 #include <algorithm>
 #include <iterator>
@@ -16,6 +19,26 @@ namespace urban
     {
         FacePrint::FacePrint(void){}
         FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
+        FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
+        {
+            if(facet_definition->GetFieldCount() != 4)
+                throw std::overflow_error("GDAL could not read the projection due to incorrect number of fields");
+            InexactToExact to_exact;
+            supporting_plane = Plane_3(
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient a")),
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient b")),
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient c")),
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient d"))
+            );
+            OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
+            if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
+            {
+                border = to_urban(dynamic_cast<OGRPolygon*>(feature_polygon));
+            }
+            else
+                throw std::runtime_error("GDAL could not read a polygon from the feature");
+        }
+        
         FacePrint::FacePrint(const FacePrint & other):border(other.border), supporting_plane(other.supporting_plane){}
         FacePrint::FacePrint(FacePrint && other):border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane)){}
         FacePrint::~FacePrint(void){}
@@ -44,6 +67,11 @@ namespace urban
         Polygon_with_holes FacePrint::get_polygon(void) const noexcept
         {
             return border;
+        }
+        
+        Polygon FacePrint::outer_boundary(void) const
+        {
+            return border.outer_boundary();
         }
 
         Plane_3 FacePrint::get_plane(void) const noexcept
@@ -101,8 +129,7 @@ namespace urban
         {
             return border.outer_boundary();
         }
-
-
+ 
         bool FacePrint::is_degenerate(void) const
         {
             /**
@@ -128,6 +155,18 @@ namespace urban
                             return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
                         }
                     );
+        }
+
+        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
+        {
+            OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
+            feature->SetGeometry(urban::to_ogr(border));
+            
+            feature->SetField("Plane coefficient a", to_double(supporting_plane.a()));
+            feature->SetField("Plane coefficient b", to_double(supporting_plane.b()));
+            feature->SetField("Plane coefficient c", to_double(supporting_plane.c()));
+            feature->SetField("Plane coefficient d", to_double(supporting_plane.d()));
+            return feature;
         }
 
         std::ostream & operator<<(std::ostream & os, const FacePrint & facet)

@@ -16,6 +16,22 @@ namespace urban
     {
         BrickPrint::BrickPrint(void):name("N/A"), projected_surface(), bounding_box(){}
         BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box):name(_name + "_projected_xy"), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
+        BrickPrint::BrickPrint(const std::string & _name, OGRLayer* projection_layer): name(_name)
+        {
+            projection_layer->ResetReading();
+
+            OGRFeature* ogr_facet = NULL;
+            while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
+            {
+                FacePrint facet(ogr_facet, projection_layer->GetLayerDefn());
+                projected_facets.push_back(facet);
+                OGRFeature::DestroyFeature(ogr_facet);
+                projected_surface.join(facet.get_polygon());
+                bounding_box += facet.bbox();
+            }
+            OGRFeature::DestroyFeature(ogr_facet);
+        }
+
         BrickPrint::BrickPrint(const FacePrint & face_projection):name("contains_only_one_facet"), projected_facets(std::list<FacePrint>{{face_projection}}), projected_surface(Polygon_set(face_projection.get_polygon())) , bounding_box(face_projection.bbox()) {}
         BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
         BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
@@ -73,9 +89,14 @@ namespace urban
         }
 
 
-        Bbox_2 BrickPrint::bbox(void)
+        Bbox_2 BrickPrint::bbox(void) const noexcept
         {
             return bounding_box;
+        }
+
+        size_t BrickPrint::size(void) const noexcept
+        {
+            return projected_facets.size();
         }
 
         BrickPrint::iterator BrickPrint::begin(void) noexcept
@@ -127,7 +148,7 @@ namespace urban
                         facet.outer_boundary()[2]
                     )
                 );
-                under = contains(facet) && facet.get_height(point) <= get_height(point); // there are no intersections
+                under = contains(facet) && facet.get_height(point) <= get_height(point); /** there are no intersections */
             }
             return under;
         }
@@ -176,11 +197,6 @@ namespace urban
                     }
                 }
             }
-                // if(projected_surface.is_empty())
-                //     result.push_back(new_facet);
-                // else
-                //     std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
-                /* If new_facet is under the surface we loose it*/
             projected_surface.join(new_facet.get_polygon());
         }
 
@@ -210,6 +226,41 @@ namespace urban
                 );
             else
                 throw std::out_of_range("The point is not inside the bounding box");
+        }
+
+        void BrickPrint::to_ogr(GDALDataset* file) const
+        {
+            OGRLayer* projection_layer = file->CreateLayer("projection_xy", NULL, wkbPolygon, NULL);
+            if(projection_layer == NULL)
+                throw std::runtime_error("GDAL could not create a projection layer");
+            int width(static_cast<int>(projected_facets.size()));
+            OGRFieldDefn plane_coefficient_a("Plane coefficient a", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficient_b("Plane coefficient b", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficient_c("Plane coefficient c", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficient_d("Plane coefficient d", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+
+            if(
+               (projection_layer->CreateField(&plane_coefficient_a) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_b) != OGRERR_NONE )
+                &&
+               (projection_layer->CreateField(&plane_coefficient_c) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_d) != OGRERR_NONE )
+              )
+                    throw std::runtime_error("GDAL could not create plane coefficient fields");
+                
+            std::for_each(
+                std::begin(projected_facets),
+                std::end(projected_facets),
+                [projection_layer](const projection::FacePrint & facet)
+                {
+                    OGRFeature* ogr_facet = facet.to_ogr(projection_layer->GetLayerDefn());
+                    if(projection_layer->CreateFeature(ogr_facet) != OGRERR_NONE)
+                        throw std::runtime_error("GDAL could not insert the facet in shapefile");
+                    OGRFeature::DestroyFeature(ogr_facet);
+                }
+            );
         }
 
         std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection)

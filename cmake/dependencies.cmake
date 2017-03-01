@@ -9,16 +9,6 @@ list(APPEND LIBS ${LIB3DS_LIBRARIES})
 
 # Find Boost
 FIND_PACKAGE(Boost REQUIRED filesystem system)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIR})
-else(Boost_FOUND)
-    set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/local/boost_1_60_0/")
-    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/local/boost_1_60_0/lib64-msvc-14.0")
-    Find_PACKAGE(Boost REQUIRED filesystem)
-    if(Boost_FOUND)
-        INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    endif(Boost_FOUND)
-endif(Boost_FOUND)
 
 set(Boost_USE_STATIC_LIBS        OFF)
 set(Boost_USE_MULTITHREADED      ON)
@@ -38,6 +28,11 @@ list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 list(APPEND LIBS ${PYTHON_LIBRARIES})
+
+# Find GDAL
+find_package(GDAL REQUIRED)
+include_directories(${GDAL_INCLUDE_DIR})
+list(APPEND LIBS ${GDAL_LIBRARY})
 
 # Find Catch
 include(cmake/modules/catch.cmake)
