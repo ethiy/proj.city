@@ -88,12 +88,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
 
             std::map<std::string,bool> modes{{"write", true}};
-            urban::io::FileHandler<Lib3dsFile> handler(file_name.str(), modes);
+            urban::io::FileHandler<Lib3dsFile> handler(boost::filesystem::path(file_name.str()), modes);
             handler.write(meshes);
 
             THEN("the output checks")
             {
-                urban::io::FileHandler<Lib3dsFile> checker_handler(file_name.str(), _modes);
+                urban::io::FileHandler<Lib3dsFile> checker_handler(boost::filesystem::path(file_name.str()), _modes);
                 std::vector<urban::shadow::Mesh> written_meshes = checker_handler.read();
 
                 std::ostringstream auxilary;
