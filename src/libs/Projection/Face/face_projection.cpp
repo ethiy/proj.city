@@ -136,8 +136,7 @@ namespace urban
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
-            OGRPolygon* facet_projection = urban::to_ogr(border);
-            feature->SetGeometry(facet_projection);
+            feature->SetGeometry(urban::to_ogr(border));
             
             feature->SetField("Plane coefficient a", to_double(supporting_plane.a()));
             feature->SetField("Plane coefficient b", to_double(supporting_plane.b()));
