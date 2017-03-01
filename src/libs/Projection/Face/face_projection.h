@@ -2,6 +2,8 @@
 
 #include "../../geometry_definitions.h"
 
+#include <ogrsf_frmts.h>
+
 #include <vector>
 #include <utility>
 
@@ -27,6 +29,7 @@ namespace urban
             FacePrint & operator=(FacePrint && other);
 
             Polygon_with_holes get_polygon(void) const noexcept;
+            Polygon outer_boundary(void) const;
             Plane_3 get_plane(void) const noexcept;
             Vector_3 get_normal(void) const noexcept;
 
@@ -38,7 +41,6 @@ namespace urban
             typedef Polygon_with_holes::Hole_const_iterator Hole_const_iterator;
             Hole_const_iterator holes_begin(void) const;
             Hole_const_iterator holes_end(void) const;
-            Polygon outer_boundary(void) const;
             
             /**
             * In our case, two edges are coinciding means that all edges are so,
@@ -51,6 +53,7 @@ namespace urban
 
             bool contains(const Point_2 & point) const;
 
+            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition) const;
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;

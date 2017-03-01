@@ -88,46 +88,7 @@ namespace urban
                     throw boost::filesystem::filesystem_error(error_message.str(), ec);
                 }
 
-                OGRLayer* projection_layer = file->CreateLayer("projection", NULL, wkbPolygon, NULL);
-                if(projection_layer == NULL)
-                    throw std::runtime_error("GDAL could not create a projection layer");
-                
-                int width(static_cast<int>(brick_projection.size()));
-                OGRFieldDefn plane_coefficient_a("Plane coefficient a", OFTReal);
-                plane_coefficient_a.SetWidth(width);
-                OGRFieldDefn plane_coefficient_b("Plane coefficient b", OFTReal);
-                plane_coefficient_a.SetWidth(width);
-                OGRFieldDefn plane_coefficient_c("Plane coefficient c", OFTReal);
-                plane_coefficient_a.SetWidth(width);
-                OGRFieldDefn plane_coefficient_d("Plane coefficient d", OFTReal);
-                plane_coefficient_a.SetWidth(width);
-
-                if(
-                    (projection_layer->CreateField(&plane_coefficient_a) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_b) != OGRERR_NONE )
-                    &&
-                    (projection_layer->CreateField(&plane_coefficient_c) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_d) != OGRERR_NONE )
-                  )
-                    throw std::runtime_error("GDAL could not create plane coefficient fields");
-                
-                OGRFeature* polygon_to_write = NULL;
-                std::for_each(
-                    brick_projection.cbegin(),
-                    brick_projection.cend(),
-                    [&polygon_to_write, &projection_layer](const projection::FacePrint & facet)
-                    {
-                        polygon_to_write = NULL;
-                        polygon_to_write = OGRFeature::CreateFeature(projection_layer->GetLayerDefn());
-
-                        /* Still has to write Polygon*/
-
-                        Plane_3 plane = facet.get_plane();
-                        polygon_to_write->SetField("Plane coefficient a", to_double(plane.a()));
-                        polygon_to_write->SetField("Plane coefficient b", to_double(plane.b()));
-                        polygon_to_write->SetField("Plane coefficient c", to_double(plane.c()));
-                        polygon_to_write->SetField("Plane coefficient d", to_double(plane.d()));
-                    }
-                );
-
+                brick_projection.to_ogr(file);
                 GDALClose(file);
             }
             else

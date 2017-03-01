@@ -49,6 +49,8 @@ namespace urban
 
             bool in_domain(const Point_2 &) const;
             double get_height(const Point_2 &) const;
+
+            void to_ogr(GDALDataset* file) const;
         private:
             std::string name;
             std::list<FacePrint> projected_facets;

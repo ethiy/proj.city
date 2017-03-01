@@ -2,6 +2,8 @@
 
 #include "../../Algorithms/projection_algorithms.h"
 
+#include <ogr_geometry.h>
+
 #include <algorithm>
 #include <iterator>
 
@@ -44,6 +46,11 @@ namespace urban
         Polygon_with_holes FacePrint::get_polygon(void) const noexcept
         {
             return border;
+        }
+        
+        Polygon FacePrint::outer_boundary(void) const
+        {
+            return border.outer_boundary();
         }
 
         Plane_3 FacePrint::get_plane(void) const noexcept
@@ -97,11 +104,6 @@ namespace urban
             return  border.holes_end();
         }
 
-        Polygon FacePrint::outer_boundary(void) const
-        {
-            return border.outer_boundary();
-        }
-
 
         bool FacePrint::is_degenerate(void) const
         {
@@ -130,11 +132,26 @@ namespace urban
                     );
         }
 
+        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
+        {
+            OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
+            
+            OGRPolygon facet_border;
+            feature->SetGeometry(&facet_border);
+            
+            feature->SetField("Plane coefficient a", to_double(supporting_plane.a()));
+            feature->SetField("Plane coefficient b", to_double(supporting_plane.b()));
+            feature->SetField("Plane coefficient c", to_double(supporting_plane.c()));
+            feature->SetField("Plane coefficient d", to_double(supporting_plane.d()));
+            return feature;
+        }
+
         std::ostream & operator<<(std::ostream & os, const FacePrint & facet)
         {
             return os << "The Polygon describing borders :" << facet.border << std::endl
                     << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
         }
+        
     }
 
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs)

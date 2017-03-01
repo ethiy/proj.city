@@ -217,6 +217,41 @@ namespace urban
                 throw std::out_of_range("The point is not inside the bounding box");
         }
 
+        void BrickPrint::to_ogr(GDALDataset* file) const
+        {
+            OGRLayer* projection_layer = file->CreateLayer("projection", NULL, wkbPolygon, NULL);
+            if(projection_layer == NULL)
+                throw std::runtime_error("GDAL could not create a projection layer");
+            int width(static_cast<int>(projected_facets.size()));
+            OGRFieldDefn plane_coefficient_a("Plane coefficient a", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficient_b("Plane coefficient b", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficient_c("Plane coefficient c", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficient_d("Plane coefficient d", OFTReal);
+            plane_coefficient_a.SetWidth(width);
+
+            if(
+               (projection_layer->CreateField(&plane_coefficient_a) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_b) != OGRERR_NONE )
+                &&
+               (projection_layer->CreateField(&plane_coefficient_c) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_d) != OGRERR_NONE )
+              )
+                    throw std::runtime_error("GDAL could not create plane coefficient fields");
+                
+            std::for_each(
+                std::begin(projected_facets),
+                std::end(projected_facets),
+                [projection_layer](const projection::FacePrint & facet)
+                {
+                    OGRFeature* ogr_facet = facet.to_ogr(projection_layer->GetLayerDefn());
+                    if(projection_layer->CreateFeature(ogr_facet) != OGRERR_NONE)
+                        throw std::runtime_error("GDAL could not insert the facet in shapefile");
+                    OGRFeature::DestroyFeature(ogr_facet);
+                }
+            );
+        }
+
         std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection)
         {
             os << "Name: " << brick_projection.name << std::endl
