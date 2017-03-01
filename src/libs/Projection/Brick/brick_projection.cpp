@@ -29,6 +29,7 @@ namespace urban
                 projected_surface.join(facet.get_polygon());
                 bounding_box += facet.bbox();
             }
+            OGRFeature::DestroyFeature(ogr_facet);
         }
 
         BrickPrint::BrickPrint(const FacePrint & face_projection):name("contains_only_one_facet"), projected_facets(std::list<FacePrint>{{face_projection}}), projected_surface(Polygon_set(face_projection.get_polygon())) , bounding_box(face_projection.bbox()) {}
