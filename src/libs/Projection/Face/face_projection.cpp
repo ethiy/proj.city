@@ -1,6 +1,7 @@
 #include "face_projection.h"
 
 #include "../../Algorithms/projection_algorithms.h"
+#include "../../Algorithms/util_algorithms.h"
 
 #include <ogr_geometry.h>
 
@@ -136,8 +137,7 @@ namespace urban
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
             
-            OGRPolygon facet_border;
-            feature->SetGeometry(&facet_border);
+            feature->SetGeometry(to_ogr(border));
             
             feature->SetField("Plane coefficient a", to_double(supporting_plane.a()));
             feature->SetField("Plane coefficient b", to_double(supporting_plane.b()));
