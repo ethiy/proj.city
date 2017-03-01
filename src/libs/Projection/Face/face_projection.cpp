@@ -22,7 +22,21 @@ namespace urban
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
             if(facet_definition->GetFieldCount() != 4)
-                throw std::runtime_error("GDAL could not read the projection due to incorrect number of fields");
+                throw std::overflow_error("GDAL could not read the projection due to incorrect number of fields");
+            InexactToExact to_exact;
+            supporting_plane = Plane_3(
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient a")),
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient b")),
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient c")),
+                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient d"))
+            );
+            OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
+            if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
+            {
+                OGRPolygon* ogr_polygon = dynamic_cast<OGRPolygon*>(feature_polygon);
+            }
+            else
+                throw std::runtime_error("GDAL could not read a polygon from the feature");
         }
         
         FacePrint::FacePrint(const FacePrint & other):border(other.border), supporting_plane(other.supporting_plane){}

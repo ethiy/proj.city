@@ -23,10 +23,12 @@ namespace urban
             OGRFeature* ogr_facet = NULL;
             while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
             {
-                projected_facets.push_back(projection::FacePrint(ogr_facet, projection_layer->GetLayerDefn()));
+                FacePrint facet(ogr_facet, projection_layer->GetLayerDefn());
+                projected_facets.push_back(facet);
                 OGRFeature::DestroyFeature(ogr_facet);
+                projected_surface.join(facet.get_polygon());
+                bounding_box += facet.bbox();
             }
-            ;
         }
 
         BrickPrint::BrickPrint(const FacePrint & face_projection):name("contains_only_one_facet"), projected_facets(std::list<FacePrint>{{face_projection}}), projected_surface(Polygon_set(face_projection.get_polygon())) , bounding_box(face_projection.bbox()) {}
