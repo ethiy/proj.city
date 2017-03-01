@@ -1,7 +1,7 @@
 #include "face_projection.h"
 
 #include "../../Algorithms/projection_algorithms.h"
-#include "../../Algorithms/util_algorithms.h"
+#include "../../Algorithms/ogr_algorithms.h"
 
 #include <ogr_geometry.h>
 
@@ -136,8 +136,8 @@ namespace urban
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
-            
-            feature->SetGeometry(to_ogr(border));
+            OGRPolygon* facet_projection = urban::to_ogr(border);
+            feature->SetGeometry(facet_projection);
             
             feature->SetField("Plane coefficient a", to_double(supporting_plane.a()));
             feature->SetField("Plane coefficient b", to_double(supporting_plane.b()));
