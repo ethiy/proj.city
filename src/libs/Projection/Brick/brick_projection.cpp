@@ -16,6 +16,19 @@ namespace urban
     {
         BrickPrint::BrickPrint(void):name("N/A"), projected_surface(), bounding_box(){}
         BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box):name(_name + "_projected_xy"), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
+        BrickPrint::BrickPrint(const std::string & _name, OGRLayer* projection_layer): name(_name)
+        {
+            projection_layer->ResetReading();
+
+            OGRFeature* ogr_facet = NULL;
+            while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
+            {
+                projected_facets.push_back(projection::FacePrint(ogr_facet, projection_layer->GetLayerDefn()));
+                OGRFeature::DestroyFeature(ogr_facet);
+            }
+            ;
+        }
+
         BrickPrint::BrickPrint(const FacePrint & face_projection):name("contains_only_one_facet"), projected_facets(std::list<FacePrint>{{face_projection}}), projected_surface(Polygon_set(face_projection.get_polygon())) , bounding_box(face_projection.bbox()) {}
         BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
         BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}
@@ -73,7 +86,7 @@ namespace urban
         }
 
 
-        Bbox_2 BrickPrint::bbox(void)
+        Bbox_2 BrickPrint::bbox(void) const noexcept
         {
             return bounding_box;
         }
@@ -132,7 +145,7 @@ namespace urban
                         facet.outer_boundary()[2]
                     )
                 );
-                under = contains(facet) && facet.get_height(point) <= get_height(point); // there are no intersections
+                under = contains(facet) && facet.get_height(point) <= get_height(point); /** there are no intersections */
             }
             return under;
         }
@@ -181,11 +194,6 @@ namespace urban
                     }
                 }
             }
-                // if(projected_surface.is_empty())
-                //     result.push_back(new_facet);
-                // else
-                //     std::logic_error("Something went wrong! The projected surface should be an accumulation of all xy-projected facets");
-                /* If new_facet is under the surface we loose it*/
             projected_surface.join(new_facet.get_polygon());
         }
 
@@ -219,7 +227,7 @@ namespace urban
 
         void BrickPrint::to_ogr(GDALDataset* file) const
         {
-            OGRLayer* projection_layer = file->CreateLayer("projection", NULL, wkbPolygon, NULL);
+            OGRLayer* projection_layer = file->CreateLayer("projection_xy", NULL, wkbPolygon, NULL);
             if(projection_layer == NULL)
                 throw std::runtime_error("GDAL could not create a projection layer");
             int width(static_cast<int>(projected_facets.size()));

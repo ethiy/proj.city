@@ -19,6 +19,12 @@ namespace urban
     {
         FacePrint::FacePrint(void){}
         FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
+        FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
+        {
+            if(facet_definition->GetFieldCount() != 4)
+                throw std::runtime_error("GDAL could not read the projection due to incorrect number of fields");
+        }
+        
         FacePrint::FacePrint(const FacePrint & other):border(other.border), supporting_plane(other.supporting_plane){}
         FacePrint::FacePrint(FacePrint && other):border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane)){}
         FacePrint::~FacePrint(void){}

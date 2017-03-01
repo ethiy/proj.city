@@ -18,6 +18,7 @@ namespace urban
         public:
             FacePrint(void);
             FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane);
+            FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition);
             FacePrint(const FacePrint & other);
             FacePrint(FacePrint && other);
             ~FacePrint(void);

@@ -28,7 +28,7 @@ namespace urban
             FileHandler<GDALDataset> & operator=(const FileHandler & other) noexcept;
             FileHandler<GDALDataset> & operator=(FileHandler && other) noexcept;
 
-            projection::BrickPrint & read(projection::BrickPrint & brick_projection);
+            projection::BrickPrint read(void);
             void write(const projection::BrickPrint & brick_projection);
 
         private:

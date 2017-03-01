@@ -3,6 +3,8 @@
 #include "../../geometry_definitions.h"
 #include "../Face/face_projection.h"
 
+#include <ogrsf_frmts.h>
+
 #include <string>
 #include <list>
 
@@ -18,6 +20,7 @@ namespace urban
             BrickPrint(void);
             BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box);
             BrickPrint(const FacePrint & face_projection);
+            BrickPrint(const std::string & _name, OGRLayer* projection_layer);
             BrickPrint(const BrickPrint &other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
@@ -29,7 +32,7 @@ namespace urban
 
             BrickPrint & operator+=(const BrickPrint & other);
 
-            Bbox_2 bbox(void);
+            Bbox_2 bbox(void) const noexcept;
 
             size_t size(void) const noexcept;
             typedef std::list<FacePrint>::iterator iterator;

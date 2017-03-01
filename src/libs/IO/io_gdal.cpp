@@ -32,8 +32,9 @@ namespace urban
             return *this;
         }
 
-        projection::BrickPrint & FileHandler<GDALDataset>::read(projection::BrickPrint & brick_projection)
+        projection::BrickPrint FileHandler<GDALDataset>::read(void)
         {
+            projection::BrickPrint brick_projection;
             std::ostringstream error_message;
             
             if (modes["read"])
@@ -46,6 +47,8 @@ namespace urban
                         error_message << "GDAL could not open: " << filepath.string();
                         throw std::runtime_error(error_message.str());
                     }
+
+                    brick_projection = projection::BrickPrint(filepath.stem().string(), file->GetLayerByName("projection_xy"));
                     GDALClose(file);
                 }
                 else
