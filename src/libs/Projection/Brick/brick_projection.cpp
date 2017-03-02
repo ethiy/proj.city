@@ -17,11 +17,11 @@ namespace urban
     {
         BrickPrint::BrickPrint(void):name("N/A"), projected_surface(), bounding_box(){}
         BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box):name(_name + "_projected_xy"), bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())){}
-        BrickPrint::BrickPrint(const std::string & _name, OGRLayer* projection_layer): name(_name)
+        BrickPrint::BrickPrint(const std::string & _name, OGRLayer* projection_layer): name(_name), projected_surface(), bounding_box()
         {
             projection_layer->ResetReading();
 
-            OGRFeature* ogr_facet = NULL;
+            OGRFeature* ogr_facet;
             while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
             {
                 FacePrint facet(ogr_facet, projection_layer->GetLayerDefn());
@@ -30,7 +30,6 @@ namespace urban
                 projected_surface.join(facet.get_polygon());
                 bounding_box += facet.bbox();
             }
-            OGRFeature::DestroyFeature(ogr_facet);
         }
 
         BrickPrint::BrickPrint(const FacePrint & face_projection):name("contains_only_one_facet"), projected_facets(std::list<FacePrint>{{face_projection}}), projected_surface(Polygon_set(face_projection.get_polygon())) , bounding_box(face_projection.bbox()) {}

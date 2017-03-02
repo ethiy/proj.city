@@ -33,7 +33,7 @@ namespace urban
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
             if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
             {
-                border = to_urban(dynamic_cast<OGRPolygon*>(feature_polygon));
+                border = get_ogr_polygon(dynamic_cast<OGRPolygon*>(feature_polygon));
             }
             else
                 throw std::runtime_error("GDAL could not read a polygon from the feature");

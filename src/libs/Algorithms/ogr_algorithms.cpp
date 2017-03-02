@@ -40,32 +40,47 @@ namespace urban
         return ogr_polygon;
     }
 
-    Point_2 to_urban(OGRPoint* ogr_point)
+    Point_2 get_ogr_point(OGRPoint* ogr_point)
     {
-        ExactToInexact to_exact;
+        InexactToExact to_exact;
         return urban::Point_2(to_exact(ogr_point->getX()), to_exact(ogr_point->getY()));
     }
 
-    Polygon to_urban(OGRLinearRing* ogr_ring)
+    Polygon get_ogr_ring(OGRLinearRing* ogr_ring)
     {
         std::vector<Point_2> vertices(ogr_ring->getNumPoints() - 1);
-        OGRPoint* ogr_vertex = NULL;
-        for(int vertex_index(0); vertex_index < (ogr_ring->getNumPoints() - 1); ++vertex_index)
-        {
-            ogr_vertex = NULL;
-            ogr_ring->getPoint(vertex_index, ogr_vertex);
-            vertices[vertex_index] = to_urban(ogr_vertex);
-        }
-        std::free(ogr_vertex);
+        std::vector<size_t> indexes(ogr_ring->getNumPoints() - 1);
+        std::iota(std::begin(indexes), std::end(indexes), 0);
+        std::transform(
+            std::begin(indexes),
+            std::end(indexes),
+            std::begin(vertices),
+            [ogr_ring](size_t index)
+            {
+                OGRPoint* ogr_vertex = new OGRPoint();
+                ogr_ring->getPoint(index, ogr_vertex);
+                return get_ogr_point(ogr_vertex);
+                std::free(ogr_vertex);
+            }
+        );
         return Polygon(std::begin(vertices), std::end(vertices));
     }
     
-    Polygon_with_holes to_urban(OGRPolygon* ogr_polygon)
+    Polygon_with_holes get_ogr_polygon(OGRPolygon* ogr_polygon)
     {
         std::vector<Polygon> holes(ogr_polygon->getNumInteriorRings());
-        for(int hole_index(0); hole_index < ogr_polygon->getNumInteriorRings(); ++hole_index)
-            holes[hole_index] = to_urban(ogr_polygon->getInteriorRing(hole_index));
-        return Polygon_with_holes(to_urban(ogr_polygon->getExteriorRing()));
+        std::vector<size_t> indexes(ogr_polygon->getNumInteriorRings());
+        std::iota(std::begin(indexes), std::end(indexes), 0);
+        std::transform(
+            std::begin(indexes),
+            std::end(indexes),
+            std::begin(holes),
+            [ogr_polygon](size_t index)
+            {
+                return get_ogr_ring(ogr_polygon->getInteriorRing(index));
+            }
+        );
+        return Polygon_with_holes(get_ogr_ring(ogr_polygon->getExteriorRing()), std::begin(holes), std::end(holes));
     }
 
 }

@@ -28,8 +28,8 @@ namespace urban
                         error_message << "GDAL could not open: " << filepath.string();
                         throw std::runtime_error(error_message.str());
                     }
-
-                    brick_projection = projection::BrickPrint(filepath.stem().string(), file->GetLayerByName("projection_xy"));
+                    
+                    brick_projection = projection::BrickPrint(filepath.stem().string(), file->GetLayer(0));
                     GDALClose(file);
                 }
                 else
