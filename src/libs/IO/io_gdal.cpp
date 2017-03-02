@@ -9,30 +9,11 @@ namespace urban
 {
     namespace io
     {
-        FileHandler<GDALDataset>::FileHandler(void) {}
-        FileHandler<GDALDataset>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): filepath(_filepath), modes(_modes) {}
-        FileHandler<GDALDataset>::FileHandler(const FileHandler & other): filepath(other.filepath), modes(other.modes) {}
-        FileHandler<GDALDataset>::FileHandler(FileHandler && other): filepath(std::move(other.filepath)), modes(std::move(other.modes)) {}
-        FileHandler<GDALDataset>::~FileHandler(void)
-        {
-            std::free(file);
-        }
+        FileHandler<GDALDriver>::FileHandler(void) {}
+        FileHandler<GDALDriver>::FileHandler(const std::string & _driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes) {}
+        FileHandler<GDALDriver>::~FileHandler(void) {}
 
-        FileHandler<GDALDataset> & FileHandler<GDALDataset>::operator=(const FileHandler & other) noexcept
-        {
-            filepath = other.filepath;
-            modes = other.modes;
-            return *this;
-        }
-
-        FileHandler<GDALDataset> & FileHandler<GDALDataset>::operator=(FileHandler && other) noexcept
-        {
-            filepath = std::move(other.filepath);
-            modes = std::move(other.modes);
-            return *this;
-        }
-
-        projection::BrickPrint FileHandler<GDALDataset>::read(void)
+        projection::BrickPrint FileHandler<GDALDriver>::read(void)
         {
             projection::BrickPrint brick_projection;
             std::ostringstream error_message;
@@ -41,7 +22,7 @@ namespace urban
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
-                    file = reinterpret_cast<GDALDataset*>(GDALOpenEx(filepath.string().c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
+                    GDALDataset* file = reinterpret_cast<GDALDataset*>(GDALOpenEx(filepath.string().c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
                     if(file == NULL)
                     {
                         error_message << "GDAL could not open: " << filepath.string();
@@ -68,25 +49,24 @@ namespace urban
             return brick_projection;
         }
 
-        void FileHandler<GDALDataset>::write(const projection::BrickPrint & brick_projection)
+        void FileHandler<GDALDriver>::write(const projection::BrickPrint & brick_projection)
         {
             std::ostringstream error_message;
 
             if (modes["write"])
             {
                 GDALAllRegister();
-                const char *esri_driver_name = "ESRI Shapefile";
-                GDALDriver* esri_driver = GetGDALDriverManager()->GetDriverByName(esri_driver_name);
+                GDALDriver* esri_driver = GetGDALDriverManager()->GetDriverByName(driver_name.c_str());
                 if(esri_driver == NULL)
                 {
-                    error_message << "GDAL could not find a driver for: " << esri_driver_name;
+                    error_message << "GDAL could not find a driver for: " << driver_name;
                     throw std::runtime_error(error_message.str());
                 }
 
-                file = esri_driver->Create(filepath.string().c_str(), 0, 0, 0, GDT_Unknown, NULL);
+                GDALDataset* file = esri_driver->Create(filepath.string().c_str(), 0, 0, 0, GDT_Unknown, NULL);
                 if(file==NULL)
                 {
-                    error_message << "GDAL could not open: \"" << filepath.string() << "\" as an " << esri_driver_name;
+                    error_message << "GDAL could not open: \"" << filepath.string() << "\" as an ESRI Shapefile";
                     boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                     throw boost::filesystem::filesystem_error(error_message.str(), ec);
                 }

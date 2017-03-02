@@ -21,18 +21,14 @@ namespace urban
         FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
-            if(facet_definition->GetFieldCount() != 1)
+            if(facet_definition->GetFieldCount() != 4)
                 throw std::overflow_error("GDAL could not read the projection due to incorrect number of fields");
             InexactToExact to_exact;
-            int *number_of_coefficients = NULL;
-            const double * plane_coefficients = ogr_facet->GetFieldAsDoubleList("plane", number_of_coefficients);
-            if(*number_of_coefficients != 4)
-                throw std::overflow_error("GDAL could not read the projection due to incorrect number of plane coefficients");
             supporting_plane = Plane_3(
-                to_exact(*plane_coefficients),
-                to_exact(*(plane_coefficients + 1)),
-                to_exact(*(plane_coefficients + 2)),
-                to_exact(*(plane_coefficients + 3))
+                to_exact(ogr_facet->GetFieldAsDouble("coeff a")),
+                to_exact(ogr_facet->GetFieldAsDouble("coeff b")),
+                to_exact(ogr_facet->GetFieldAsDouble("coeff c")),
+                to_exact(ogr_facet->GetFieldAsDouble("coeff d"))
             );
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
             if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
@@ -160,9 +156,17 @@ namespace urban
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
+            std::cout << "setting geometry" << std::endl;
             feature->SetGeometry(urban::to_ogr(border));
-            double plane_coefficients[4] = {to_double(supporting_plane.a()), to_double(supporting_plane.b()), to_double(supporting_plane.c()), to_double(supporting_plane.d())};
-            feature->SetField("plane", *plane_coefficients);
+            ExactToInexact to_inexact;
+            std::cout << "setting plane coefficient a : " << to_inexact(supporting_plane.a()) << std::endl;
+            feature->SetField("coeff a", to_inexact(supporting_plane.a()));
+            std::cout << "setting plane coefficient b : " << to_inexact(supporting_plane.b()) << std::endl;
+            feature->SetField("coeff b", to_inexact(supporting_plane.b()));
+            std::cout << "setting plane coefficient c : " << to_inexact(supporting_plane.c()) << std::endl;
+            feature->SetField("coeff c", to_inexact(supporting_plane.c()));
+            std::cout << "setting plane coefficient d : " << to_inexact(supporting_plane.d()) << std::endl;
+            feature->SetField("coeff d", to_inexact(supporting_plane.d()));
             return feature;
         }
 

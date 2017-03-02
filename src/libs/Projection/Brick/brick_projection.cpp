@@ -1,6 +1,7 @@
 #include "brick_projection.h"
 
 #include "../../Algorithms/projection_algorithms.h"
+#include "../../Algorithms/ogr_algorithms.h"
 
 #include <CGAL/Boolean_set_operations_2.h>
 
@@ -126,11 +127,23 @@ namespace urban
             return _inter.size() == 1 && _inter.front() == facet.get_polygon();
         }
 
-        bool BrickPrint::overlaps(const FacePrint & facet) const
+        bool BrickPrint::overlaps(const Polygon & polygon) const
         {
             Polygon_set shallow_copy(projected_surface);
-            shallow_copy.intersection(facet.get_polygon());
+            shallow_copy.intersection(polygon);
             return !shallow_copy.is_empty();
+        }
+        
+        bool BrickPrint::overlaps(const Polygon_with_holes & polygon) const
+        {
+            Polygon_set shallow_copy(projected_surface);
+            shallow_copy.intersection(polygon);
+            return !shallow_copy.is_empty();
+        }
+
+        bool BrickPrint::overlaps(const FacePrint & facet) const
+        {
+            return overlaps(facet.get_polygon());
         }
 
         bool BrickPrint::is_under(const FacePrint & facet) const
@@ -228,18 +241,40 @@ namespace urban
                 throw std::out_of_range("The point is not inside the bounding box");
         }
 
+        double BrickPrint::get_mean_height(const Polygon & window) const
+        {
+            double height(0);
+            if(overlaps(window))
+            {
+                std::for_each(
+                    std::begin(projected_facets),
+                    std::end(projected_facets),
+                    [&height, &window](const FacePrint & facet)
+                    {
+                        std::list<Polygon_with_holes> _inter;
+                        CGAL::intersection(facet.get_polygon(), window, std::back_inserter(_inter));
+                        height += 0; // how to compute integral in general?
+                    }
+                );
+            }
+            return height;
+        }
+
         void BrickPrint::to_ogr(GDALDataset* file) const
         {
-            OGRLayer* projection_layer = file->CreateLayer("projection_xy", NULL, wkbPolygon, NULL);
+            OGRLayer* projection_layer = file->CreateLayer("projection_xy", NULL, wkbPoint, NULL);
             if(projection_layer == NULL)
                 throw std::runtime_error("GDAL could not create a projection layer");
-            int width(static_cast<int>(projected_facets.size()));
-            OGRFieldDefn plane_coefficients("plane", OFTRealList);
-            plane_coefficients.SetWidth(width);
-
-            if(projection_layer->CreateField(&plane_coefficients) != OGRERR_NONE )
-                    throw std::runtime_error("GDAL could not create plane coefficient fields");
-                
+            
+            OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff a", OFTReal);
+            projection_layer->CreateField(plane_coefficient_a);
+            OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff b", OFTReal);
+            projection_layer->CreateField(plane_coefficient_b);
+            OGRFieldDefn* plane_coefficient_c = new OGRFieldDefn("coeff c", OFTReal);
+            projection_layer->CreateField(plane_coefficient_c);
+            OGRFieldDefn* plane_coefficient_d = new OGRFieldDefn("coeff d", OFTReal);
+            projection_layer->CreateField(plane_coefficient_d);
+            
             std::for_each(
                 std::begin(projected_facets),
                 std::end(projected_facets),

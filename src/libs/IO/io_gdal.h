@@ -16,23 +16,18 @@ namespace urban
     namespace io
     {
         template<>
-        class FileHandler<GDALDataset>
+        class FileHandler<GDALDriver>
         {
         public:
             FileHandler(void);
-            FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
-            FileHandler(const FileHandler & other);
-            FileHandler(FileHandler && other);
+            FileHandler(const std::string & driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
             ~FileHandler(void);
-
-            FileHandler<GDALDataset> & operator=(const FileHandler & other) noexcept;
-            FileHandler<GDALDataset> & operator=(FileHandler && other) noexcept;
 
             projection::BrickPrint read(void);
             void write(const projection::BrickPrint & brick_projection);
 
         private:
-            GDALDataset* file = NULL;
+            std::string driver_name;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
         };

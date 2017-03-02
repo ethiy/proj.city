@@ -48,7 +48,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
             file_name << unique_name << ".shp";
 
             std::map<std::string,bool> modes{{"write", true}};
-            urban::io::FileHandler<GDALDataset> handler(boost::filesystem::path(file_name.str()), modes);
+            urban::io::FileHandler<GDALDriver> handler("ESRI Shapefile", boost::filesystem::path(file_name.str()), modes);
             handler.write(test_proj);
             THEN("The output checks:")
             {

@@ -7,10 +7,7 @@ namespace urban
 {
     OGRPoint* to_ogr(const Point_2 & point)
     {
-        OGRPoint* ogr_point = new OGRPoint();
-        ogr_point->setX(to_double(point.x()));
-        ogr_point->setY(to_double(point.y()));
-        return ogr_point;
+        return new OGRPoint(to_double(point.x()), to_double(point.y()));
     }
 
     OGRLinearRing* to_ogr(const Polygon & polygon)
@@ -31,6 +28,7 @@ namespace urban
     OGRPolygon* to_ogr(const Polygon_with_holes & polygon_with_holes)
     {
         OGRPolygon* ogr_polygon = new OGRPolygon();
+        std::cout << "writing polygon" << std::endl;
         ogr_polygon->addRing(to_ogr(polygon_with_holes.outer_boundary()));
         std::for_each(
             polygon_with_holes.holes_begin(),
