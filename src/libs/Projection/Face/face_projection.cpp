@@ -156,16 +156,11 @@ namespace urban
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
-            std::cout << "setting geometry" << std::endl;
             feature->SetGeometry(urban::to_ogr(border));
             ExactToInexact to_inexact;
-            std::cout << "setting plane coefficient a : " << to_inexact(supporting_plane.a()) << std::endl;
             feature->SetField("coeff a", to_inexact(supporting_plane.a()));
-            std::cout << "setting plane coefficient b : " << to_inexact(supporting_plane.b()) << std::endl;
             feature->SetField("coeff b", to_inexact(supporting_plane.b()));
-            std::cout << "setting plane coefficient c : " << to_inexact(supporting_plane.c()) << std::endl;
             feature->SetField("coeff c", to_inexact(supporting_plane.c()));
-            std::cout << "setting plane coefficient d : " << to_inexact(supporting_plane.d()) << std::endl;
             feature->SetField("coeff d", to_inexact(supporting_plane.d()));
             return feature;
         }
