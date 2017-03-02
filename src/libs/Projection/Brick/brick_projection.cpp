@@ -234,20 +234,10 @@ namespace urban
             if(projection_layer == NULL)
                 throw std::runtime_error("GDAL could not create a projection layer");
             int width(static_cast<int>(projected_facets.size()));
-            OGRFieldDefn plane_coefficient_a("Plane coefficient a", OFTReal);
-            plane_coefficient_a.SetWidth(width);
-            OGRFieldDefn plane_coefficient_b("Plane coefficient b", OFTReal);
-            plane_coefficient_a.SetWidth(width);
-            OGRFieldDefn plane_coefficient_c("Plane coefficient c", OFTReal);
-            plane_coefficient_a.SetWidth(width);
-            OGRFieldDefn plane_coefficient_d("Plane coefficient d", OFTReal);
-            plane_coefficient_a.SetWidth(width);
+            OGRFieldDefn plane_coefficients("plane", OFTRealList);
+            plane_coefficients.SetWidth(width);
 
-            if(
-               (projection_layer->CreateField(&plane_coefficient_a) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_b) != OGRERR_NONE )
-                &&
-               (projection_layer->CreateField(&plane_coefficient_c) != OGRERR_NONE ) && (projection_layer->CreateField(&plane_coefficient_d) != OGRERR_NONE )
-              )
+            if(projection_layer->CreateField(&plane_coefficients) != OGRERR_NONE )
                     throw std::runtime_error("GDAL could not create plane coefficient fields");
                 
             std::for_each(

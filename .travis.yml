@@ -25,12 +25,22 @@ matrix:
       cache:
         directories:
           - $HOME/Library/Caches/Homebrew
-          - ./external/
+          - ./external
+          - $HOME/3rdParty
       compiler: clang
       before_install:
         - brew update
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
+        - mkdir $HOME/3rdParty && cd $HOME/3rdParty
+        - curl -O http://download.osgeo.org/gdal/2.1.3/gdal213.zip
+        - unzip gdal213.zip
+        - rm gdal213.zip
+        - cd gdal-2.1.3
+        - ./configure
+        - make -j4
+        - sudo make install
+        - cd $TRAVIS_BUILD_DIR
         - mkdir build
         - mkdir build/darwin
       install:
@@ -39,5 +49,4 @@ matrix:
       script:
         - make -j4 all
         - ./tests -a
-      after_script:
-        - rm *.3ds *.off
+        - rm *.off *.3ds *.shp *.shx *.dbf

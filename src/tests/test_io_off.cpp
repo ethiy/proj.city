@@ -96,12 +96,12 @@ SCENARIO("Input/Output from OFF file:")
             file_name << unique_name << ".off";
 
             std::map<std::string, bool> modes{{"write", true}};
-            urban::io::FileHandler<std::fstream> handler(file_name.str(), modes);
+            urban::io::FileHandler<std::fstream> handler(boost::filesystem::path(file_name.str()), modes);
             handler.write(mesh);
 
             THEN("the input should check")
             {
-                urban::io::FileHandler<std::fstream> checker_handler(file_name.str(), _modes);
+                urban::io::FileHandler<std::fstream> checker_handler(boost::filesystem::path(file_name.str()), _modes);
                 urban::shadow::Mesh written_mesh = checker_handler.read();
 
                 std::ostringstream auxilary, out;

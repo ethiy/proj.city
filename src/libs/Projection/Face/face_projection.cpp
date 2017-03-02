@@ -21,14 +21,18 @@ namespace urban
         FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
-            if(facet_definition->GetFieldCount() != 4)
+            if(facet_definition->GetFieldCount() != 1)
                 throw std::overflow_error("GDAL could not read the projection due to incorrect number of fields");
             InexactToExact to_exact;
+            int *number_of_coefficients = NULL;
+            const double * plane_coefficients = ogr_facet->GetFieldAsDoubleList("plane", number_of_coefficients);
+            if(*number_of_coefficients != 4)
+                throw std::overflow_error("GDAL could not read the projection due to incorrect number of plane coefficients");
             supporting_plane = Plane_3(
-                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient a")),
-                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient b")),
-                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient c")),
-                to_exact(ogr_facet->GetFieldAsDouble("Plane coefficient d"))
+                to_exact(*plane_coefficients),
+                to_exact(*(plane_coefficients + 1)),
+                to_exact(*(plane_coefficients + 2)),
+                to_exact(*(plane_coefficients + 3))
             );
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
             if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
@@ -161,19 +165,18 @@ namespace urban
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
             feature->SetGeometry(urban::to_ogr(border));
-            
-            feature->SetField("Plane coefficient a", to_double(supporting_plane.a()));
-            feature->SetField("Plane coefficient b", to_double(supporting_plane.b()));
-            feature->SetField("Plane coefficient c", to_double(supporting_plane.c()));
-            feature->SetField("Plane coefficient d", to_double(supporting_plane.d()));
+
+            double plane_coefficients[4] = {to_double(supporting_plane.a()), to_double(supporting_plane.b()), to_double(supporting_plane.c()), to_double(supporting_plane.d())};
+            feature->SetField("plane", *plane_coefficients);
             return feature;
         }
 
         std::ostream & operator<<(std::ostream & os, const FacePrint & facet)
         {
             return os << "The Polygon describing borders :" << facet.border << std::endl
-                    << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
+                      << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
         }
+        
     }
 
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs)
