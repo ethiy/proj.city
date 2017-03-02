@@ -3,6 +3,8 @@
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Cartesian_converter.h>
 
+#include <CGAL/Linear_algebraCd.h>
+
 #include <CGAL/IO/Color.h>
 
 #include <CGAL/Polyhedron_3.h>
@@ -38,6 +40,10 @@ namespace urban
     typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
     typedef CGAL::Cartesian_converter<Kernel, InexactKernel> ExactToInexact;
     typedef CGAL::Cartesian_converter<InexactKernel, Kernel> InexactToExact;
+
+    typedef CGAL::Linear_algebraCd<Kernel> ExactLinearAlgebra;
+    typedef CGAL::Linear_algebraCd<InexactKernel> InexactLinearAlgebra;
+    typedef InexactLinearAlgebra::Matrix InexactMatrix;
 
     typedef Kernel::Point_3 Point_3;
     typedef Kernel::Vector_3 Vector_3;

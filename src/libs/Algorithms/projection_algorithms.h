@@ -14,6 +14,11 @@ namespace urban
 
     /* ! Projects on xy axis*/
     projection::BrickPrint project(const Brick & brick);
+
+    /**
+     * Rasterize projection
+     */
+    InexactMatrix rasterize(const projection::BrickPrint & brick_projection);
     
     /** Project Faces to XY*/
     std::vector<projection::FacePrint> project_xy(const Brick & brick);
