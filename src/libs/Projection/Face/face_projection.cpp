@@ -115,6 +115,41 @@ namespace urban
             return border.bbox();
         }
 
+        bool FacePrint::has_same_border(const FacePrint & other) const
+        {
+            bool result(false);
+            if(std::distance(border.holes_begin(), border.holes_end()) == std::distance(other.border.holes_begin(), other.border.holes_end()))
+            {
+                std::vector<bool> results(std::distance(border.holes_begin(), border.holes_end()));
+                std::transform(
+                    border.holes_begin(),
+                    border.holes_end(),
+                    other.border.holes_begin(),
+                    std::begin(results),
+                    [](const Polygon & l_poly, const Polygon & r_poly)
+                    {
+                        return l_poly == r_poly;
+                    }
+                );
+                result = std::accumulate(
+                    std::begin(results),
+                    std::end(results),
+                    border.outer_boundary() == other.border.outer_boundary(),
+                    [](bool & all, const bool r)
+                    {
+                        return all && r;
+                    }
+                );
+            }
+            return result;
+        }
+
+        bool FacePrint::has_same_plane(const FacePrint & other) const
+        {
+            return supporting_plane == other.supporting_plane;
+        }
+
+
         FacePrint::Hole_const_iterator FacePrint::holes_begin(void) const
         {
             return border.holes_begin();
@@ -170,7 +205,16 @@ namespace urban
             return os << "The Polygon describing borders :" << facet.border << std::endl
                       << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
         }
-        
+
+        bool operator==(const FacePrint & lhs, const FacePrint & rhs)
+        {
+            return lhs.has_same_border(rhs) && lhs.has_same_plane(rhs);
+        }
+
+        bool operator!=(const FacePrint & lhs, const FacePrint & rhs)
+        {
+            return !(lhs == rhs);
+        }
     }
 
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs)

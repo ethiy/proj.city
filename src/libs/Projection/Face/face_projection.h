@@ -39,6 +39,9 @@ namespace urban
             double area(void) const;
             Bbox_2 bbox(void) const;
 
+            bool has_same_border(const FacePrint & other) const;
+            bool has_same_plane(const FacePrint & other) const;
+
             typedef Polygon_with_holes::Hole_const_iterator Hole_const_iterator;
             Hole_const_iterator holes_begin(void) const;
             Hole_const_iterator holes_end(void) const;
@@ -61,6 +64,9 @@ namespace urban
 
             friend std::ostream & operator<<(std::ostream & os, const FacePrint & facet);
         };
+        
+        bool operator==(const FacePrint & lhs, const FacePrint & rhs);
+        bool operator!=(const FacePrint & lhs, const FacePrint & rhs);
     }
 
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs);

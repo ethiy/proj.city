@@ -50,6 +50,9 @@ namespace urban
             bool is_under(const FacePrint &) const;
             bool check_integrity(void) const;
 
+            bool has_same_footprint(const BrickPrint & other) const;
+            bool has_same_facets(const BrickPrint & other) const;
+
             void insert(const FacePrint & facet);
 
             bool in_domain(const Point_2 &) const;
@@ -67,6 +70,8 @@ namespace urban
         };
 
         BrickPrint & operator+(BrickPrint & lhs, const BrickPrint & rhs);
+        bool operator==(const BrickPrint & lhs, const BrickPrint & rhs);
+        bool operator!=(const BrickPrint & lhs, const BrickPrint & rhs);
     }
 
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);

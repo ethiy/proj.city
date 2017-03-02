@@ -179,6 +179,42 @@ namespace urban
             return diff.is_empty();
         }
 
+        bool BrickPrint::has_same_footprint(const BrickPrint & other) const
+        {
+            Polygon_set l_copy(projected_surface),
+                        r_copy(other.projected_surface);
+            l_copy.symmetric_difference(r_copy);
+            return l_copy.is_empty();
+        }
+        bool BrickPrint::has_same_facets(const BrickPrint & other) const
+        {
+            bool result(false);
+            if(projected_facets.size() == other.projected_facets.size())
+            {
+                std::vector<bool> results(projected_facets.size());
+                std::transform(
+                    std::begin(projected_facets),
+                    std::end(projected_facets),
+                    std::begin(other.projected_facets),
+                    std::begin(results),
+                    [](const FacePrint & l_face, const FacePrint & r_face)
+                    {
+                        return l_face == r_face;
+                    }
+                );
+                result = std::accumulate(
+                    std::begin(results),
+                    std::end(results),
+                    true,
+                    [](bool & all, const bool r)
+                    {
+                        return all && r;
+                    }
+                );
+            }
+            return result;
+        }
+
         void BrickPrint::insert(const FacePrint & new_facet)
         {
             if(projected_facets.empty())
@@ -303,6 +339,16 @@ namespace urban
         BrickPrint & operator+(BrickPrint & lhs, const BrickPrint & rhs)
         {
             return lhs += rhs;
+        }
+
+        bool operator==(const BrickPrint & lhs, const BrickPrint & rhs)
+        {
+            return  lhs.has_same_footprint(rhs) && lhs.has_same_facets(rhs);
+        }
+
+        bool operator!=(const BrickPrint & lhs, const BrickPrint & rhs)
+        {
+            return !(lhs == rhs);
         }
     }
 
