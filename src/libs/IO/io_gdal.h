@@ -15,6 +15,7 @@ namespace urban
 {
     namespace io
     {
+        extern const std::list<std::string> tested_vector_formats;
         template<>
         class FileHandler<GDALDriver>
         {

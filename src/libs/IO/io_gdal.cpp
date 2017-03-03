@@ -9,8 +9,17 @@ namespace urban
 {
     namespace io
     {
+        const  std::list<std::string> tested_vector_formats{{"ESRI Shapefile", "GeoJSON", "GML", "KML"}};
+
         FileHandler<GDALDriver>::FileHandler(void) {}
-        FileHandler<GDALDriver>::FileHandler(const std::string & _driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes) {}
+        FileHandler<GDALDriver>::FileHandler(const std::string & _driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes)
+        {
+            if(driver_name == "ESRI Shapefile")
+                std::cout << "You may face a problem with polygon orientations while reading." << std::endl;
+            if(std::find(std::begin(tested_vector_formats), std::end(tested_vector_formats), driver_name) == std::end(tested_vector_formats))
+                throw std::runtime_error("This format is not tested or supported");
+        }
+
         FileHandler<GDALDriver>::~FileHandler(void) {}
 
         projection::BrickPrint FileHandler<GDALDriver>::read(void)
