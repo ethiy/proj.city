@@ -45,17 +45,15 @@ SCENARIO("Input/Output from Shadow Mesh:")
         {
             boost::uuids::uuid unique_name = boost::uuids::random_generator()();
             std::ostringstream file_name;
-            file_name << unique_name << ".shp";
+            file_name << unique_name << ".geojson";
 
             std::map<std::string,bool> modes{{"write", true}, {"read", true}};
-            urban::io::FileHandler<GDALDriver> handler("ESRI Shapefile", boost::filesystem::path(file_name.str()), modes);
+            urban::io::FileHandler<GDALDriver> handler("GeoJSON", boost::filesystem::path(file_name.str()), modes);
             handler.write(test_proj);
             THEN("The output checks:")
             {
                 urban::projection::BrickPrint read_proj = handler.read();
-                std::cout << read_proj << std::endl;
-                std::cout << test_proj << std::endl;
-                std::cout << std::boolalpha << (read_proj == test_proj) << std::endl;
+                REQUIRE(read_proj == test_proj);
             }
         }
     }
