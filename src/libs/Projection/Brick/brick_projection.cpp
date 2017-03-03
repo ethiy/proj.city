@@ -301,13 +301,13 @@ namespace urban
             if(projection_layer == NULL)
                 throw std::runtime_error("GDAL could not create a projection layer");
             
-            OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff a", OFTReal);
+            OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff_a", OFTReal);
             projection_layer->CreateField(plane_coefficient_a);
-            OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff b", OFTReal);
+            OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff_b", OFTReal);
             projection_layer->CreateField(plane_coefficient_b);
-            OGRFieldDefn* plane_coefficient_c = new OGRFieldDefn("coeff c", OFTReal);
+            OGRFieldDefn* plane_coefficient_c = new OGRFieldDefn("coeff_c", OFTReal);
             projection_layer->CreateField(plane_coefficient_c);
-            OGRFieldDefn* plane_coefficient_d = new OGRFieldDefn("coeff d", OFTReal);
+            OGRFieldDefn* plane_coefficient_d = new OGRFieldDefn("coeff_d", OFTReal);
             projection_layer->CreateField(plane_coefficient_d);
             
             std::for_each(

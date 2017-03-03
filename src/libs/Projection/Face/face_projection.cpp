@@ -21,14 +21,14 @@ namespace urban
         FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
-            if(facet_definition->GetFieldCount() != 4)
+            if(facet_definition->GetFieldCount() < 4)
                 throw std::overflow_error("GDAL could not read the projection due to incorrect number of fields");
             InexactToExact to_exact;
             supporting_plane = Plane_3(
-                to_exact(ogr_facet->GetFieldAsDouble("coeff a")),
-                to_exact(ogr_facet->GetFieldAsDouble("coeff b")),
-                to_exact(ogr_facet->GetFieldAsDouble("coeff c")),
-                to_exact(ogr_facet->GetFieldAsDouble("coeff d"))
+                to_exact(ogr_facet->GetFieldAsDouble("coeff_a")),
+                to_exact(ogr_facet->GetFieldAsDouble("coeff_b")),
+                to_exact(ogr_facet->GetFieldAsDouble("coeff_c")),
+                to_exact(ogr_facet->GetFieldAsDouble("coeff_d"))
             );
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
             if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
@@ -193,10 +193,10 @@ namespace urban
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
             feature->SetGeometry(urban::to_ogr(border));
             ExactToInexact to_inexact;
-            feature->SetField("coeff a", to_inexact(supporting_plane.a()));
-            feature->SetField("coeff b", to_inexact(supporting_plane.b()));
-            feature->SetField("coeff c", to_inexact(supporting_plane.c()));
-            feature->SetField("coeff d", to_inexact(supporting_plane.d()));
+            feature->SetField("coeff_a", to_inexact(supporting_plane.a()));
+            feature->SetField("coeff_b", to_inexact(supporting_plane.b()));
+            feature->SetField("coeff_c", to_inexact(supporting_plane.c()));
+            feature->SetField("coeff_d", to_inexact(supporting_plane.d()));
             return feature;
         }
 

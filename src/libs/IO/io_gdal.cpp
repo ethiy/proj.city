@@ -66,7 +66,7 @@ namespace urban
                 GDALDataset* file = esri_driver->Create(filepath.string().c_str(), 0, 0, 0, GDT_Unknown, NULL);
                 if(file==NULL)
                 {
-                    error_message << "GDAL could not open: \"" << filepath.string() << "\" as an ESRI Shapefile";
+                    error_message << "GDAL could not open: \"" << filepath.string() << "\" as an " << driver_name;
                     boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                     throw boost::filesystem::filesystem_error(error_message.str(), ec);
                 }
