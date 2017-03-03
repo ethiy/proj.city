@@ -29,22 +29,24 @@ namespace urban
         return projection;
     }
 
-    // InexactMatrix rasterize(const projection::BrickPrint & brick_projection, double pixel_size)
-    // {
-    //     std::pair<size_t, size_t> image_sizes(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin())/pixel_size), std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin())/pixel_size));
-    //     std::vector< std::vector<double> > pixels;
-    //     std::map<std::pair<size_t, size_t>, double> pixel_map;
-    //     std::for_each(
-    //         std::begin(pixel_map),
-    //         std::end(pixel_map),
-    //         [&brick_projection, pixel_size](std::pair< const std::pair<size_t, size_t>, double> pixel)
-    //         {
-    //             pixel.second = brick_projection.get_height(Point_2((static_cast<double>(pixel.first.first) + .5) * pixel_size, (static_cast<double>(pixel.first.second) + .5) * pixel_size));
-    //         }
-    //     );
-    //     InexactMatrix image(std::begin(pixels), std::end(pixels));
-    //     return image;
-    // }
+    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, double pixel_size, const std::pair<size_t, size_t> & image_sizes)
+    {
+        std::pair<size_t, size_t> image_sizes(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin())/pixel_size), std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin())/pixel_size));
+        std::vector<double> pixels(image_sizes.first * image_sizes.second);
+        std::vector<size_t> indexes(image_sizes.first * image_sizes.second);
+        std::iota(std::begin(indexes), std::end(indexes), 0);
+        InexactToExact to_exact;
+        std::transform(
+            std::begin(indexes),
+            std::end(indexes),
+            std::begin(pixels),
+            [&brick_projection, pixel_size, &image_sizes, &to_exact](const size_t index)
+            {
+                return brick_projection.get_height(Point_2(to_exact((static_cast<double>(index%image_sizes.first) + .5) * pixel_size), to_exact((static_cast<double>(index/image_sizes.first) + .5) * pixel_size)));
+            }
+        );
+        return pixels;
+    }
 
     std::vector<projection::FacePrint> project_xy(const Brick & brick)
     {
