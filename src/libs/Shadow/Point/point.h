@@ -1,6 +1,6 @@
 #pragma once
 
-#include <CGAL/Point_3.h>
+#include "../../geometry_definitions.h"
 
 #include <array>
 #include <ostream>
@@ -18,7 +18,7 @@ namespace urban
             Point(void);
             Point(double x, double y, double z);
             Point(double _coordinates[3]);
-            template<class Kernel> Point(const CGAL::Point_3<Kernel> & point);
+            Point(const Point_3 & point);
             Point(const Point & other);
             Point(Point && other);
             ~Point(void);

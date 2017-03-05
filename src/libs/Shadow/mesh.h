@@ -15,7 +15,7 @@
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
-#include <CGAL/Polyhedron_3.h>
+#include "../geometry_definitions.h"
 
 #include <map>
 #include <string>
@@ -60,7 +60,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
+             * @see Mesh(const Polyhedron &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -72,7 +72,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
+             * @see Mesh(const Polyhedron &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -84,7 +84,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
+             * @see Mesh(const Polyhedron &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -92,16 +92,14 @@ namespace urban
 
             /**
              * General constructor. 
-             * @param CGAL::Polyhedron_3 CGAL Polyhedron_3_3 structure
+             * @param Polyhedron Polyhedron_3 structure
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
-            template<class Kernel>
-            Mesh(const CGAL::Polyhedron_3<Kernel> & polyhedron);
+            Mesh(const Polyhedron & polyhedron);
 
             /**
              * General constructor. 
@@ -111,7 +109,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
+             * @see Mesh(const Polyhedron &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -125,7 +123,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
+             * @see Mesh(const Polyhedron &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -136,7 +134,7 @@ namespace urban
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const CGAL::Polyhedron_3 &)
+             * @see Mesh(const Polyhedron &)
              * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
              * @see ~Mesh(void)
              */
@@ -166,6 +164,75 @@ namespace urban
              */
             Mesh & operator=(Mesh && other) noexcept;
 
+
+            /**
+             * Points iterator
+             */
+            typedef std::map<size_t, Point>::iterator points_iterator;
+
+            /**
+             * Points constant iterator
+             */
+            typedef std::map<size_t, Point>::const_iterator points_const_iterator;
+            
+            /**
+             * Faces iterator
+             */
+            typedef std::map<size_t, Face>::iterator faces_iterator;
+
+            /**
+             * Faces constant iterator
+             */
+            typedef std::map<size_t, Face>::const_iterator faces_const_iterator;
+
+            /**
+             * Access begin points iterator
+             * @return begin points iterator
+             */
+            points_iterator points_begin(void) noexcept;
+            
+            /**
+             * Access constant begin points iterator
+             * @return constant begin points iterator
+             */
+            points_const_iterator points_cbegin(void) const noexcept;
+            
+            /**
+             * Access end points iterator
+             * @return end points iterator
+             */
+            points_iterator points_end(void) noexcept;
+            
+            /**
+             * Access constant end points iterator
+             * @return constant end points iterator
+             */
+            points_const_iterator points_cend(void) const noexcept;
+            
+            /**
+             * Access begin faces iterator
+             * @return begin faces iterator
+             */
+            faces_iterator faces_begin(void) noexcept;
+            
+            /**
+             * Access constant begin faces iterator
+             * @return constant begin faces iterator
+             */
+            faces_const_iterator faces_cbegin(void) const noexcept;
+            
+            /**
+             * Access end faces iterator
+             * @return end faces iterator
+             */
+            faces_iterator faces_end(void) noexcept;
+            
+            /**
+             * Access constant end faces iterator
+             * @return constant end faces iterator
+             */
+            faces_const_iterator faces_cend(void) const noexcept;
+            
 
             /**
              * Access Mesh name
@@ -210,8 +277,7 @@ namespace urban
              * @param h halfedge to lookup
              * @return index of the halfedge
              */
-            template<class Kernel>
-            size_t get_index(const typename CGAL::Polyhedron_3<Kernel>::Halfedge & h);
+            size_t get_index(const typename Polyhedron::Halfedge & h);
 
             /**
              * Returns 3ds mesh structure.
@@ -238,6 +304,22 @@ namespace urban
              */
             friend std::ostream& operator<<(std::ostream & os, const Mesh & mesh);
         };
+
+        /**
+        * Comparison operator
+        * @param lhs left-hand Mesh.
+        * @param rhs right-hand Mesh.
+        $ @return true if both Meshes are equal
+        */
+        bool operator==(const shadow::Mesh & lhs, const shadow::Mesh & rhs);
+
+        /**
+        * Comparison operator
+        * @param lhs left-hand Mesh.
+        * @param rhs right-hand Mesh.
+        $ @return true if both Meshes are inequal
+        */
+        bool operator!=(const shadow::Mesh & lhs, const shadow::Mesh & rhs);
     }
     /** @} */ // end of shadow_group
 

@@ -12,7 +12,7 @@ namespace urban
         Point::Point(void): coordinates{{0, 0, 0}} {}
         Point::Point(double x, double y, double z): coordinates{{x, y, z}} {}
         Point::Point(double _coordinates[3]): coordinates{{_coordinates[0], _coordinates[1], _coordinates[2]}} {}
-        template<class Kernel> Point::Point(const CGAL::Point_3<Kernel> & point):coordinates{{CGAL::to_double(point.x()), CGAL::to_double(point.y()), CGAL::to_double(point.z())}} {}
+        Point::Point(const Point_3 & point):coordinates{{CGAL::to_double(point.x()), CGAL::to_double(point.y()), CGAL::to_double(point.z())}} {}
         Point::Point(const Point & other): coordinates(other.coordinates) {}
         Point::Point(Point && other): coordinates(std::move(other.coordinates)) {}
         Point::~Point(void){}

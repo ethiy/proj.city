@@ -51,14 +51,13 @@ namespace urban
             compute_bbox();
         }
 
-        template<class Kernel>
-        Mesh::Mesh(const CGAL::Polyhedron_3<Kernel> & polyhedron)
+        Mesh::Mesh(const Polyhedron & polyhedron)
         {
             size_t it(0);
             std::for_each(
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
-                [&it, this](const CGAL::Point_3<Kernel> & point)
+                [&it, this](const Point_3 & point)
                 {
                     points.emplace(std::make_pair(it++, Point(point)));
                 }
@@ -68,7 +67,7 @@ namespace urban
             std::for_each(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
-                [&it, this](const typename CGAL::Polyhedron_3<Kernel>::Facet & facet)
+                [&it, this](const typename Facet & facet)
                 {
                     size_t face_degree(facet.facet_degree());
                     std::vector<size_t> face_points(face_degree);
@@ -77,7 +76,7 @@ namespace urban
                         std::next(facet.facet_begin(), 1),
                         std::next(facet.facet_begin(), static_cast<long>(face_degree)),
                         std::next(std::begin(face_points), 1),
-                        [&](const typename CGAL::Polyhedron_3<Kernel>::Halfedge & halfedge)
+                        [&](const typename Polyhedron::Halfedge & halfedge)
                         {
                             return get_index(halfedge);
                         }
@@ -155,7 +154,7 @@ namespace urban
         }
 
         template<class Kernel>
-        size_t Mesh::get_index(const typename CGAL::Polyhedron_3<Kernel>::Halfedge & halfedge)
+        size_t Mesh::get_index(const typename Polyhedron::Halfedge & halfedge)
         {
             size_t index;
             auto point_handle = std::find_if(
@@ -264,6 +263,66 @@ namespace urban
                 }
             );
         }
+
+        bool operator==(const shadow::Mesh & lhs, const shadow::Mesh & rhs)
+        {
+            bool equal(false);
+            if(lhs.get_number_points() == rhs.get_number_points() && lhs.get_number_faces() == rhs.get_number_faces())
+            {
+                std::vector<bool> points_equalities(lhs.get_number_points());
+                std::vector<bool> faces_equalities(lhs.get_number_faces());
+                std::transform(
+                    lhs.points_cbegin(),
+                    lhs.points_cend(),
+                    rhs.points_cbegin(),
+                    std::begin(points_equalities),
+                    [](const std::pair<size_t, Point> & l_point_pair, const std::pair<size_t, Point> & r_point_pair)
+                    {
+                        return l_point_pair.second == r_point_pair.second;
+                    }
+                );
+
+                equal = std::accumulate(
+                    std::begin(points_equalities),
+                    std::end(points_equalities),
+                    true,
+                    [](bool & result, const bool & point_equality)
+                    {
+                        return result && point_equality;
+                    }
+                );
+
+                if(equal)
+                {
+                    std::transform(
+                        lhs.faces_cbegin(),
+                        lhs.faces_cend(),
+                        rhs.faces_cbegin(),
+                        std::begin(faces_equalities),
+                        [](const std::pair<size_t, Face> & l_face_pair, const std::pair<size_t, Face> & r_face_pair)
+                        {
+                            return l_face_pair.second == r_face_pair.second;
+                        }
+                    );
+
+                    equal &= std::accumulate(
+                        std::begin(faces_equalities),
+                        std::end(faces_equalities),
+                        true,
+                        [](bool & result, const bool & face_equality)
+                        {
+                            return result && face_equality;
+                        }
+                    );
+                }
+            }
+            return equal;
+        }
+
+        bool operator==(const shadow::Mesh & lhs, const shadow::Mesh & rhs)
+        {
+            return !(lhs == rhs);
+        }        
     }
 
     void swap(shadow::Mesh & lhs, shadow::Mesh & rhs)

@@ -224,7 +224,6 @@ namespace urban
                 }
             );
         }
-
         return result;
     }
 
