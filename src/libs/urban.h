@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Shadow/mesh.h"
+#include "shadow/mesh.h"
 
-#include "IO/io_off.h"
-#include "IO/io_3ds.h"
+#include "io/io_off.h"
+#include "io/io_3ds.h"
 
-#include "UrbanObject/brick.h"
+#include "brick/brick.h"
 
-#include "Projection/projection.h"
+#include "projection/projection.h"
 
-#include "Algorithms/algorithms.h"
+#include "algorithms/algorithms.h"

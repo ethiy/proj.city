@@ -1,6 +1,7 @@
-#include "../libs/Algorithms/algorithms.h"
+#include "../libs/algorithms/algorithms.h"
+#include "../libs/brick/brick.h"
+
 #include <CGAL/Boolean_set_operations_2.h>
-#include "../libs/UrbanObject/brick.h"
 
 #include <catch.hpp>
 

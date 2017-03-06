@@ -1,5 +1,5 @@
-#include "../libs/UrbanObject/brick.h"
-#include "../libs/IO/io_off.h"
+#include "../libs/brick/brick.h"
+#include "../libs/io/io_off.h"
 
 #include <boost/filesystem.hpp>
 

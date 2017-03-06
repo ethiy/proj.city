@@ -1,5 +1,5 @@
-#include "../libs/Shadow/mesh.h"
-#include "../libs/Algorithms/shadow_algorithms.h"
+#include "../libs/shadow/mesh.h"
+#include "../libs/algorithms/shadow/shadow_algorithms.h"
 
 #include "../libs/urban.h"
 

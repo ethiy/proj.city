@@ -3,8 +3,6 @@
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Cartesian_converter.h>
 
-#include <CGAL/IO/Color.h>
-
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Aff_transformation_3.h>
 
@@ -16,24 +14,6 @@
 
 namespace urban
 {
-    template <class Refs, class Tag, class Pln>
-    struct HalfedgeDS_face_colored : public CGAL::HalfedgeDS_face_base<Refs, Tag, Pln> 
-    {
-        void set_color(CGAL::Color _color) {color = _color;}
-        CGAL::Color get_color(void) {return color;}
-
-        CGAL::Color color;
-    };
-
-    struct Polyhedron_items_colored : public CGAL::Polyhedron_items_3
-    {
-        template <class Refs, class Traits>
-        struct Face_wrapper
-        {
-            typedef HalfedgeDS_face_colored<Refs, CGAL::Tag_true, typename Traits::Plane_3> Face;
-        };
-    };
-
     typedef CGAL::Simple_cartesian<double> InexactKernel;
     typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
     typedef CGAL::Cartesian_converter<Kernel, InexactKernel> ExactToInexact;
@@ -42,7 +22,7 @@ namespace urban
     typedef Kernel::Point_3 Point_3;
     typedef Kernel::Vector_3 Vector_3;
     typedef Kernel::Plane_3 Plane_3;
-    typedef CGAL::Polyhedron_3<Kernel, Polyhedron_items_colored> Polyhedron;
+    typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
     typedef Polyhedron::Facet Facet;
     typedef CGAL::Color Color;
     typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation_3;
