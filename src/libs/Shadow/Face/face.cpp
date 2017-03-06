@@ -195,40 +195,41 @@ namespace urban
             std::copy(std::begin(face.points), std::end(face.points), std::ostream_iterator<size_t>(os, " "));
             return os;
         }
+
+
+        Face & operator-(Face & lhs, const Face & rhs)
+        {
+            return lhs.operator-=(rhs);
+        }
+
+        bool operator==(const Face & lhs, const Face & rhs)
+        {
+            bool result(false);
+            if(lhs.size() == rhs.size())
+            {
+                Face l_copy(lhs);
+                Face diff(l_copy - rhs);
+
+                result = std::all_of(
+                    std::begin(diff),
+                    std::end(diff),
+                    [](const size_t index)
+                    {
+                        return index == 0;
+                    }
+                );
+            }
+            return result;
+        }
+
+        bool operator!=(const Face & lhs, const Face & rhs)
+        {
+            return !operator==(rhs, lhs);
+        }
     }
 
     void swap(shadow::Face & lhs, shadow::Face &rhs)
     {
         lhs.swap(rhs);
-    }
-
-    shadow::Face & operator-(shadow::Face & lhs, const shadow::Face & rhs)
-    {
-        return lhs.operator-=(rhs);
-    }
-
-    bool operator==(const shadow::Face & lhs, const shadow::Face & rhs)
-    {
-        bool result(false);
-        if(lhs.size() == rhs.size())
-        {
-            shadow::Face l_copy(lhs);
-            shadow::Face diff(l_copy - rhs);
-
-            result = std::all_of(
-                std::begin(diff),
-                std::end(diff),
-                [](const size_t index)
-                {
-                    return index == 0;
-                }
-            );
-        }
-        return result;
-    }
-
-    bool operator!=(const shadow::Face & lhs, const shadow::Face & rhs)
-    {
-        return !operator==(rhs, lhs);
     }
 }

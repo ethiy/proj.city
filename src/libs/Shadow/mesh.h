@@ -277,7 +277,7 @@ namespace urban
              * @param h halfedge to lookup
              * @return index of the halfedge
              */
-            size_t get_index(const typename Polyhedron::Halfedge & h);
+            size_t get_index(const Polyhedron::Halfedge & h);
 
             /**
              * Returns 3ds mesh structure.

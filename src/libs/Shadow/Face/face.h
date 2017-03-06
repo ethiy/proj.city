@@ -220,6 +220,31 @@ namespace urban
              */
             friend std::ostream& operator<<(std::ostream & os, const Face & face);
         };
+
+        /**
+        * Substruct operation on Faces
+        * @param lhs left-hand Face.
+        * @param rhs right-hand Face.
+        * @return the result of lhs - rhs
+        */
+        Face & operator-(Face & lhs, const Face & rhs);
+
+        /**
+        * Check if two faces are equal:
+        * if all indices are equal
+        * @param lhs left-hand Face.
+        * @param rhs right-hand Face.
+        * @return boolean indicating if the two faces are equal
+        */
+        bool operator==(const Face & lhs, const Face & rhs);
+        /**
+        * Check if two faces are different:
+        * if at least two indices are different
+        * @param lhs left-hand Face.
+        * @param rhs right-hand Face.
+        * @return boolean indicating if the two faces are different
+        */
+        bool operator!=(const Face & lhs, const Face & rhs);
     }
 
     /**
@@ -228,29 +253,4 @@ namespace urban
      * @param rhs right-hand Face.
      */
     void swap(shadow::Face & lhs, shadow::Face & rhs);
-
-    /**
-     * Substruct operation on Faces
-     * @param lhs left-hand Face.
-     * @param rhs right-hand Face.
-     * @return the result of lhs - rhs
-     */
-    shadow::Face & operator-(shadow::Face & lhs, const shadow::Face & rhs);
-
-    /**
-     * Check if two faces are equal:
-     * if all indices are equal
-     * @param lhs left-hand Face.
-     * @param rhs right-hand Face.
-     * @return boolean indicating if the two faces are equal
-     */
-    bool operator==(const shadow::Face & lhs, const shadow::Face & rhs);
-    /**
-     * Check if two faces are different:
-     * if at least two indices are different
-     * @param lhs left-hand Face.
-     * @param rhs right-hand Face.
-     * @return boolean indicating if the two faces are different
-     */
-    bool operator!=(const shadow::Face & lhs, const shadow::Face & rhs);
 }

@@ -67,7 +67,7 @@ namespace urban
             std::for_each(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
-                [&it, this](const typename Facet & facet)
+                [&it, this](const Facet & facet)
                 {
                     size_t face_degree(facet.facet_degree());
                     std::vector<size_t> face_points(face_degree);
@@ -76,7 +76,7 @@ namespace urban
                         std::next(facet.facet_begin(), 1),
                         std::next(facet.facet_begin(), static_cast<long>(face_degree)),
                         std::next(std::begin(face_points), 1),
-                        [&](const typename Polyhedron::Halfedge & halfedge)
+                        [&](const Polyhedron::Halfedge & halfedge)
                         {
                             return get_index(halfedge);
                         }
@@ -123,6 +123,47 @@ namespace urban
             return *this;
         }
 
+        Mesh::points_iterator Mesh::points_begin(void) noexcept
+        {
+            return std::begin(points);
+        }
+            
+        Mesh::points_const_iterator Mesh::points_cbegin(void) const noexcept
+        {
+            return points.cbegin();
+        }
+            
+        Mesh::points_iterator Mesh::points_end(void) noexcept
+        {
+            return std::end(points);
+        }
+            
+        Mesh::points_const_iterator Mesh::points_cend(void) const noexcept
+        {
+            return points.cend();
+        }
+            
+        Mesh::faces_iterator Mesh::faces_begin(void) noexcept
+        {
+            return std::begin(faces);
+        }
+            
+        Mesh::faces_const_iterator Mesh::faces_cbegin(void) const noexcept
+        {
+            return faces.cbegin();
+        }
+            
+        Mesh::faces_iterator Mesh::faces_end(void) noexcept
+        {
+            return std::end(faces);
+        }
+            
+        Mesh::faces_const_iterator Mesh::faces_cend(void) const noexcept
+        {
+            return faces.cend();
+        }
+
+
         std::string Mesh::get_name(void) const noexcept
         {
             return name;
@@ -153,8 +194,7 @@ namespace urban
             return bounding_box;
         }
 
-        template<class Kernel>
-        size_t Mesh::get_index(const typename Polyhedron::Halfedge & halfedge)
+        size_t Mesh::get_index(const Polyhedron::Halfedge & halfedge)
         {
             size_t index;
             auto point_handle = std::find_if(
@@ -319,7 +359,7 @@ namespace urban
             return equal;
         }
 
-        bool operator==(const shadow::Mesh & lhs, const shadow::Mesh & rhs)
+        bool operator!=(const shadow::Mesh & lhs, const shadow::Mesh & rhs)
         {
             return !(lhs == rhs);
         }        
