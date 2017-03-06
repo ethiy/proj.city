@@ -78,6 +78,22 @@ namespace urban
         points.push_back(B);
     }
 
+    template<typename dynamic_type> void convert(const std::vector<double> & original_image, std::vector<dynamic_type> & target_image)
+    {
+        unsigned long long dynamic = std::pow(2, sizeof(dynamic_type) * 8) - 1;
+        target_image = std::move(std::vector<dynamic_type>(original_image.size()));
+        std::vector<double>::iterator maximum_it = std::max_element(std::begin(original_image), std::end(original_image));
+        std::transform(
+            std::begin(original_image),
+            std::end(original_image),
+            std::begin(target_image),
+            [dynamic, &maximum_it](const double value)
+            {
+                return static_cast<dynamic_type>( dynamic * value / (*maximum_it));
+            }
+        );
+    }
+
 
     Heuristic::Heuristic(void){}
     Heuristic::Heuristic(const Heuristic &){}

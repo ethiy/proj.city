@@ -1,7 +1,7 @@
 #include "brick_projection.h"
 
-#include "../../Algorithms/projection_algorithms.h"
-#include "../../Algorithms/ogr_algorithms.h"
+#include "../../Algorithms/Projection/projection_algorithms.h"
+#include "../../Algorithms/Ogr/ogr_algorithms.h"
 
 #include <CGAL/Boolean_set_operations_2.h>
 
@@ -31,7 +31,6 @@ namespace urban
                 bounding_box += facet.bbox();
             }
         }
-
         BrickPrint::BrickPrint(const FacePrint & face_projection):name("contains_only_one_facet"), projected_facets(std::list<FacePrint>{{face_projection}}), projected_surface(Polygon_set(face_projection.get_polygon())) , bounding_box(face_projection.bbox()) {}
         BrickPrint::BrickPrint(const BrickPrint & other):name(other.name), projected_facets(other.projected_facets), projected_surface(other.projected_surface), bounding_box(other.bounding_box){}
         BrickPrint::BrickPrint(BrickPrint && other):name(std::move(other.name)), projected_facets(std::move(other.projected_facets)), projected_surface(std::move(other.projected_surface)), bounding_box(std::move(other.bounding_box)){}

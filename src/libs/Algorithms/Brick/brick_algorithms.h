@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "../UrbanObject/brick.h"
+#include "../../geometry_definitions.h"
+#include "../../UrbanObject/brick.h"
 
 
 namespace urban

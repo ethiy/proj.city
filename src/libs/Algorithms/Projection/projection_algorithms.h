@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "../UrbanObject/brick.h"
-#include "../Projection/projection.h"
+#include "../../geometry_definitions.h"
+#include "../../UrbanObject/brick.h"
+#include "../../Projection/projection.h"
 
 #include <vector>
 #include <list>
@@ -24,16 +24,6 @@ namespace urban
      */
     std::vector<double> rasterize(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes);
 
-    /**
-     * Rasterize projection
-     * @tparam dynamic_type type of the dynamic
-     * @param brick_projection the projection to rasterize
-     * @param pixel_size the pixel size
-     * @param image_sizes the image size
-     * @return The image matrix in form of an array with desired dynamic
-     */
-    template<typename dynamic_type> std::vector<dynamic_type> rasterize_to(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes);
-    
     /** Project Faces to XY*/
     std::vector<projection::FacePrint> project_xy(const Brick & brick);
 

@@ -1,5 +1,5 @@
 #include "projection_algorithms.h"
-#include "util_algorithms.h"
+#include "../Utils/util_algorithms.h"
 
 #include <CGAL/Boolean_set_operations_2.h>
 
@@ -48,23 +48,6 @@ namespace urban
         return pixels;
     }
 
-    template<typename dynamic_type> std::vector<dynamic_type> rasterize_to(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes)
-    {
-        unsigned long long dynamic = std::pow(2, sizeof(dynamic_type) * 8) - 1;
-        std::vector<double> double_pixels = urban::rasterize(brick_projection, pixel_size, image_sizes);
-        std::vector<dynamic_type> pixels(double_pixels.size());
-        std::vector<double>::iterator maximum_it = std::max_element(std::begin(double_pixels), std::end(double_pixels));
-        std::transform(
-            std::begin(double_pixels),
-            std::end(double_pixels),
-            std::begin(pixels),
-            [dynamic, &maximum_it](const double value)
-            {
-                return static_cast<dynamic_type>( dynamic * value / (*maximum_it));
-            }
-        );
-        return pixels;
-    }
 
     std::vector<projection::FacePrint> project_xy(const Brick & brick)
     {

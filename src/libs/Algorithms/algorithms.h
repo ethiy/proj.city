@@ -1,7 +1,7 @@
 #pragma once
 
-#include "brick_algorithms.h"
-#include "projection_algorithms.h"
-#include "util_algorithms.h"
-#include "shadow_algorithms.h"
-#include "ogr_algorithms.h"
+#include "Brick/brick_algorithms.h"
+#include "Projection/projection_algorithms.h"
+#include "Utils/util_algorithms.h"
+#include "Shadow/shadow_algorithms.h"
+#include "Ogr/ogr_algorithms.h"

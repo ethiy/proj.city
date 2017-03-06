@@ -1,6 +1,6 @@
 #include "shadow_algorithms.h"
 
-#include "../geometry_definitions.h"
+#include "../../geometry_definitions.h"
 
 #include <sstream>
 

@@ -1,7 +1,7 @@
 #include "face_projection.h"
 
-#include "../../Algorithms/projection_algorithms.h"
-#include "../../Algorithms/ogr_algorithms.h"
+#include "../../Algorithms/Projection/projection_algorithms.h"
+#include "../../Algorithms/Ogr/ogr_algorithms.h"
 
 #include <ogr_geometry.h>
 
