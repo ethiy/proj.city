@@ -288,6 +288,7 @@ namespace urban
                         std::list<Polygon_with_holes> _inter;
                         CGAL::intersection(facet.get_polygon(), window, std::back_inserter(_inter));
                         height += 0; // how to compute integral in general?
+                        throw std::logic_error("Not yet implemented.");
                     }
                 );
             }
