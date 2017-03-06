@@ -117,6 +117,16 @@ namespace urban
         }
 
 
+        bool BrickPrint::contains(const Point_2 & point) const
+        {
+            return projected_surface.oriented_side(point) != CGAL::ON_NEGATIVE_SIDE;
+        }
+
+        bool BrickPrint::in_domain(const Point_2 & point) const
+        {
+            return CGAL::do_overlap(bounding_box, point.bbox());
+        }
+
         bool BrickPrint::contains(const FacePrint & facet) const
         {
             Polygon_set shallow_copy(projected_surface);
@@ -249,21 +259,11 @@ namespace urban
         }
 
 
-        bool BrickPrint::in_domain(const Point_2 & point) const
-        {
-            return bounding_box.xmax() - point.x() > std::numeric_limits<double>::epsilon()
-                    &&
-                   point.x() - bounding_box.xmin() > std::numeric_limits<double>::epsilon()
-                    &&
-                   bounding_box.ymax() - point.y() > std::numeric_limits<double>::epsilon()
-                    &&
-                   point.y() - bounding_box.ymin() > std::numeric_limits<double>::epsilon();
-        }
-
         double BrickPrint::get_height(const Point_2 & point) const
         {
-            if(in_domain(point))
-                return std::accumulate(
+            double height(0);
+            if(contains(point))
+                height  = std::accumulate(
                     std::begin(projected_facets),
                     std::end(projected_facets),
                     .0,
@@ -272,8 +272,7 @@ namespace urban
                         return height + facet.get_height(point);
                     }
                 );
-            else
-                throw std::out_of_range("The point is not inside the bounding box");
+            return height;
         }
 
         double BrickPrint::get_mean_height(const Polygon & window) const

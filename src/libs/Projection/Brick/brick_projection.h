@@ -42,7 +42,8 @@ namespace urban
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            
+            bool in_domain(const Point_2 & point) const;
+            bool contains(const Point_2 & point) const;
             bool contains(const FacePrint & facet) const;
             bool overlaps(const Polygon & polygon) const;
             bool overlaps(const Polygon_with_holes & polygon) const;
@@ -55,7 +56,6 @@ namespace urban
 
             void insert(const FacePrint & facet);
 
-            bool in_domain(const Point_2 &) const;
             double get_height(const Point_2 &) const;
             double get_mean_height(const Polygon & window) const;
 
