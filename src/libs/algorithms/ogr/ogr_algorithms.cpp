@@ -48,8 +48,8 @@ namespace urban
 
     Polygon get_ogr_ring(OGRLinearRing* ogr_ring)
     {
-        std::vector<Point_2> vertices(ogr_ring->getNumPoints() - 1);
-        std::vector<size_t> indexes(ogr_ring->getNumPoints() - 1);
+        std::vector<Point_2> vertices(static_cast<size_t>(ogr_ring->getNumPoints()) - 1);
+        std::vector<size_t> indexes(static_cast<size_t>(ogr_ring->getNumPoints()) - 1);
         std::iota(std::begin(indexes), std::end(indexes), 0);
         std::transform(
             std::begin(indexes),
@@ -58,9 +58,8 @@ namespace urban
             [ogr_ring](size_t index)
             {
                 OGRPoint* ogr_vertex = new OGRPoint();
-                ogr_ring->getPoint(index, ogr_vertex);
+                ogr_ring->getPoint(static_cast<int>(index), ogr_vertex);
                 return get_ogr_point(ogr_vertex);
-                std::free(ogr_vertex);
             }
         );
         return Polygon(std::begin(vertices), std::end(vertices));
@@ -68,14 +67,14 @@ namespace urban
     
     Polygon_with_holes get_ogr_polygon(OGRPolygon* ogr_polygon)
     {
-        std::vector<Polygon> holes(ogr_polygon->getNumInteriorRings());
-        std::vector<size_t> indexes(ogr_polygon->getNumInteriorRings());
+        std::vector<Polygon> holes(static_cast<size_t>(ogr_polygon->getNumInteriorRings()));
+        std::vector<int> indexes(static_cast<size_t>(ogr_polygon->getNumInteriorRings()));
         std::iota(std::begin(indexes), std::end(indexes), 0);
         std::transform(
             std::begin(indexes),
             std::end(indexes),
             std::begin(holes),
-            [ogr_polygon](size_t index)
+            [ogr_polygon](int index)
             {
                 return get_ogr_ring(ogr_polygon->getInteriorRing(index));
             }

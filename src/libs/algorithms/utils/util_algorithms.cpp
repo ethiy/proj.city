@@ -82,7 +82,7 @@ namespace urban
     {
         unsigned long long dynamic = std::pow(2, sizeof(dynamic_type) * 8) - 1;
         target_image = std::move(std::vector<dynamic_type>(original_image.size()));
-        std::vector<double>::iterator maximum_it = std::max_element(std::begin(original_image), std::end(original_image));
+        auto maximum_it = std::max_element(std::begin(original_image), std::end(original_image));
         std::transform(
             std::begin(original_image),
             std::end(original_image),

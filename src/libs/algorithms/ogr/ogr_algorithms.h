@@ -22,7 +22,7 @@ namespace urban
     
     /**
      * construct OGRPolygon from a CGAL Polygon with holes
-     * @param polygon a CGAL Polygon with holes
+     * @param polygon_with_holes a CGAL Polygon with holes
      * @return a pointer to an OGR polygon
      */
     OGRPolygon* to_ogr(const Polygon_with_holes & polygon_with_holes);

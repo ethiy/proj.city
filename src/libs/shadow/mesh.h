@@ -92,7 +92,7 @@ namespace urban
 
             /**
              * General constructor. 
-             * @param Polyhedron Polyhedron_3 structure
+             * @param polyhedron Polyhedron_3 structure
              * @see Mesh(void)
              * @see Mesh(Mesh &&)
              * @see Mesh(Lib3dsMesh*)

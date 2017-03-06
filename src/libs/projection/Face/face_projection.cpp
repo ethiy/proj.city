@@ -120,7 +120,7 @@ namespace urban
             bool result(false);
             if(std::distance(border.holes_begin(), border.holes_end()) == std::distance(other.border.holes_begin(), other.border.holes_end()))
             {
-                std::vector<bool> results(std::distance(border.holes_begin(), border.holes_end()));
+                std::vector<bool> results(static_cast<size_t>(std::distance(border.holes_begin(), border.holes_end())));
                 std::transform(
                     border.holes_begin(),
                     border.holes_end(),

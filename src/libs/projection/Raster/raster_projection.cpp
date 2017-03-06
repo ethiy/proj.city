@@ -48,40 +48,6 @@ namespace urban
             
             return *this;
         }
-
-        RasterPrint & RasterPrint::rescale(double _pixel_size)
-        {
-            if(_pixel_size != pixel_size)
-            {
-                length = std::ceil(length * pixel_size / _pixel_size);
-                width = std::ceil(width * pixel_size / _pixel_size);
-            }
-            pixel_size = _pixel_size;
-            return *this;
-        }
-
-        RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
-        {
-            name += "+" + other.name;
-            if(pixel_size !=  other.pixel_size)
-                throw std::logic_error("Not yet implemented");
-            size = std::min(pixel_size, other.pixel_size);
-            rescale(size);
-
-            other.rescale(size);
-            throw std::logic_error("Not yet implemented");
-            return *this;
-        }
-
-        RasterPrint & RasterPrint::operator-=(const RasterPrint & other)
-        {
-            name += "+" + other.name;
-            pixel_size = std::min(pixel_size, other.pixel_size);
-            throw std::logic_error("Not yet implemented");
-            return *this;
-        }
-
-
     }
 
     void swap(projection::RasterPrint & lhs, projection::RasterPrint & rhs)

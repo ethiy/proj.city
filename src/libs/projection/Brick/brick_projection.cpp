@@ -266,9 +266,9 @@ namespace urban
                     std::begin(projected_facets),
                     std::end(projected_facets),
                     .0,
-                    [point](double & height, const FacePrint & facet)
+                    [point](double & result_height, const FacePrint & facet)
                     {
-                        return height + facet.get_height(point);
+                        return result_height + facet.get_height(point);
                     }
                 );
             return height;

@@ -22,8 +22,8 @@ namespace urban
     /**
      * Convert double image to another specified type
      * @tparam dynamic_type target image type
-     * @param original image vector
-     * @return image vector in target type
+     * @param original_image image vector
+     * @param target_image image vector in target type
      */
     template<typename dynamic_type> void convert(const std::vector<double> & original_image, std::vector<dynamic_type> & target_image);
 
