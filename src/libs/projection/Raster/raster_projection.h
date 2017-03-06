@@ -27,7 +27,7 @@ namespace urban
             RasterPrint & operator-=(const RasterPrint & other);
         private:
             std::string name;
-            Point reference_point;
+            shadow::Point reference_point;
             size_t length;
             size_t width;
             double pixel_size;
