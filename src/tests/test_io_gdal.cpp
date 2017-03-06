@@ -52,8 +52,29 @@ SCENARIO("Input/Output from Shadow Mesh:")
             handler.write(test_proj);
             THEN("The output checks:")
             {
-                urban::projection::BrickPrint read_proj = handler.read();
-                REQUIRE(read_proj == test_proj);
+                urban::projection::BrickPrint read_proj = handler.read_vectorial();
+                // REQUIRE(read_proj == test_proj);
+                std::pair<size_t, size_t> sizes;
+                std::vector<double> double_pixels = urban::rasterize(test_proj, .05, sizes);
+                unsigned long long dynamic = std::pow(2, sizeof(uint16_t) * 8) - 1;
+                std::vector<uint16_t> pixels(double_pixels.size());
+                std::vector<double>::iterator maximum_it = std::max_element(std::begin(double_pixels), std::end(double_pixels));
+                std::transform(
+                    std::begin(double_pixels),
+                    std::end(double_pixels),
+                    std::begin(pixels),
+                    [dynamic, &maximum_it](const double value)
+                    {
+                        return static_cast<uint16_t>( dynamic * value / (*maximum_it));
+                    }
+                );
+                std::cout << sizes.first << " " << sizes.second << std::endl;
+                std::ostringstream rasta_name;
+                rasta_name << unique_name << ".tiff";
+                urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(rasta_name.str()), modes);
+                rasta.write(pixels, sizes);
+                // std::copy(std::begin(pixels), std::end(pixels), std::ostream_iterator<double>(std::cout, " "));
+                // std::cout << std::endl;
             }
         }
     }
