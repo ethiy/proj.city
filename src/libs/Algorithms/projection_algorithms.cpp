@@ -29,9 +29,9 @@ namespace urban
         return projection;
     }
 
-    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, double pixel_size, const std::pair<size_t, size_t> & image_sizes)
+    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes)
     {
-        std::pair<size_t, size_t> image_sizes(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin())/pixel_size), std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin())/pixel_size));
+        image_sizes = std::make_pair(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin())/pixel_size), std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin())/pixel_size));
         std::vector<double> pixels(image_sizes.first * image_sizes.second);
         std::vector<size_t> indexes(image_sizes.first * image_sizes.second);
         std::iota(std::begin(indexes), std::end(indexes), 0);
@@ -42,7 +42,25 @@ namespace urban
             std::begin(pixels),
             [&brick_projection, pixel_size, &image_sizes, &to_exact](const size_t index)
             {
-                return brick_projection.get_height(Point_2(to_exact((static_cast<double>(index%image_sizes.first) + .5) * pixel_size), to_exact((static_cast<double>(index/image_sizes.first) + .5) * pixel_size)));
+                return brick_projection.get_height(Point_2(to_exact(brick_projection.bbox().xmin() + (static_cast<double>(index%image_sizes.second) + .5) * pixel_size), to_exact(brick_projection.bbox().ymin() + (static_cast<double>(index/image_sizes.second) + .5) * pixel_size)));
+            }
+        );
+        return pixels;
+    }
+
+    template<typename dynamic_type> std::vector<dynamic_type> rasterize_to(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes)
+    {
+        unsigned long long dynamic = std::pow(2, sizeof(dynamic_type) * 8) - 1;
+        std::vector<double> double_pixels = urban::rasterize(brick_projection, pixel_size, image_sizes);
+        std::vector<dynamic_type> pixels(double_pixels.size());
+        std::vector<double>::iterator maximum_it = std::max_element(std::begin(double_pixels), std::end(double_pixels));
+        std::transform(
+            std::begin(double_pixels),
+            std::end(double_pixels),
+            std::begin(pixels),
+            [dynamic, &maximum_it](const double value)
+            {
+                return static_cast<dynamic_type>( dynamic * value / (*maximum_it));
             }
         );
         return pixels;
