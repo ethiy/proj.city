@@ -43,12 +43,12 @@ namespace urban
 
         FileHandler<GDALDriver>::~FileHandler(void) {}
 
-        template<> projection::BrickPrint FileHandler<GDALDriver>::read<urban::projection::BrickPrint>(void)
+        template<> projection::BrickPrint FileHandler<GDALDriver>::read<urban::projection::BrickPrint>(void) const
         {
             projection::BrickPrint brick_projection;
             std::ostringstream error_message;
             
-            if (modes["read"])
+            if (modes.at("read"))
             {
                 if(!raster)
                 {
@@ -80,7 +80,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
@@ -88,11 +88,11 @@ namespace urban
             return brick_projection;
         }
 
-        void FileHandler<GDALDriver>::write(const projection::BrickPrint & brick_projection)
+        void FileHandler<GDALDriver>::write(const projection::BrickPrint & brick_projection) const
         {
             std::ostringstream error_message;
 
-            if (modes["write"])
+            if (modes.at("write"))
             {
                 if(!raster)
                 {
@@ -124,22 +124,22 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The write mode is set to:" << modes.at("write") << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
         }
 
-        template<> std::vector<double> FileHandler<GDALDriver>::read< std::vector<double> >(void)
+        template<> std::vector<double> FileHandler<GDALDriver>::read< std::vector<double> >(void) const
         {
             return std::vector<double>();
         }
 
-        void FileHandler<GDALDriver>::write(const std::vector<uint16_t> & raster_image, const std::pair<size_t, size_t> & image_sizes)
+        void FileHandler<GDALDriver>::write(const projection::RasterPrint & raster_image) const
         {
             std::ostringstream error_message;
 
-            if (modes["write"])
+            if (modes.at("write"))
             {
                 if(raster)
                 {
@@ -151,10 +151,12 @@ namespace urban
                         throw std::runtime_error(error_message.str());
                     }
 
-                    char **options = NULL;
-                    GDALDataset* file =  driver->Create(filepath.string().c_str(), image_sizes.second, image_sizes.first, 1, GDT_UInt16, options);
+                    double adfGeoTransform[6];
+                    size_t height(0), width(0);
+                    GUInt16* gdal_image = raster_image.to_gdal(adfGeoTransform, height, width);
+                    
+                    GDALDataset* file =  driver->Create(filepath.string().c_str(), height, width, 1, GDT_UInt16, NULL);
 
-                    double adfGeoTransform[6] = { 444720, 30, 0, 3751320, 0, -30 };
                     file->SetGeoTransform( adfGeoTransform );
 
                     OGRSpatialReference spatial_reference_system;
@@ -165,9 +167,7 @@ namespace urban
                     CPLFree(spatial_reference_system_name);
 
                     GDALRasterBand* unique_band = file->GetRasterBand(1);
-                    uint16_t gdal_image[image_sizes.first * image_sizes.second];
-                    std::copy(std::begin(raster_image), std::end(raster_image), gdal_image);
-                    CPLErr error = unique_band->RasterIO(GF_Write, 0, 0, image_sizes.second, image_sizes.first, gdal_image, image_sizes.second, image_sizes.first, GDT_UInt16,0, 0);
+                    CPLErr error = unique_band->RasterIO(GF_Write, 0, 0, height, width, gdal_image, height, width, GDT_UInt16,0, 0);
                     if(error != CE_None)
                         throw std::runtime_error("GDAL could not save raster band");
                     GDALClose(dynamic_cast<GDALDatasetH>(file));
@@ -181,7 +181,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The write mode is set to:" << modes.at("write") << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }

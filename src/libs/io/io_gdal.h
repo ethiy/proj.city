@@ -2,6 +2,7 @@
 
 #include "io.h"
 #include "../projection/Brick/brick_projection.h"
+#include "../projection/Raster/raster_projection.h"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -28,10 +29,10 @@ namespace urban
             FileHandler(const std::string & driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
             ~FileHandler(void);
 
-            template<class return_class> return_class read(void);
+            template<class return_class> return_class read(void) const;
 
-            void write(const projection::BrickPrint & brick_projection);
-            void write(const std::vector<uint16_t> & raster_image, const std::pair<size_t, size_t> & image_sizes);
+            void write(const projection::BrickPrint & brick_projection) const;
+            void write(const projection::RasterPrint & raster_image) const;
         private:
             std::string driver_name;
             bool raster;
