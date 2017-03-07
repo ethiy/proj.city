@@ -19,14 +19,6 @@ namespace urban
     /** Get extrems from coliear points*/
     void extrem_points(std::vector<Point_2> & points);
 
-    /**
-     * Convert double image to another specified type
-     * @tparam dynamic_type target image type
-     * @param original_image image vector
-     * @param target_image image vector in target type
-     */
-    template<typename dynamic_type> void convert(const std::vector<double> & original_image, std::vector<dynamic_type> & target_image);
-
     
     /**
      * Sorting heuristic functors

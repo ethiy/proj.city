@@ -33,8 +33,9 @@ namespace urban
             BrickPrint & operator+=(const BrickPrint & other);
 
             Bbox_2 bbox(void) const noexcept;
-
+            std::string get_name(void) const noexcept;
             size_t size(void) const noexcept;
+
             typedef std::list<FacePrint>::iterator iterator;
             typedef std::list<FacePrint>::const_iterator const_iterator;
             iterator begin(void) noexcept;

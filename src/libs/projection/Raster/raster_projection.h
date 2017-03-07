@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../Brick/brick_projection.h"
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../../shadow/Point/point.h"
@@ -6,7 +8,10 @@
 
 #include <gdal_priv.h>
 
+#include <vector>
+
 #include <string>
+#include <ostream>
 
 namespace urban
 {
@@ -16,6 +21,7 @@ namespace urban
         {
         public:
             RasterPrint(void);
+            RasterPrint(const std::string & _name, shadow::Point _reference_point, size_t height, size_t width, double pixel_size, const std::vector<uint16_t> & image_array);
             RasterPrint(const RasterPrint & other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
@@ -38,7 +44,10 @@ namespace urban
             size_t width;
             double pixel_size;
             cv::Mat image_matrix;
+
             void gdal_reference_init(double reference[6]) const;
+
+            friend std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection);
         };
 
         RasterPrint & operator+(const RasterPrint & lhs, const RasterPrint & rhs);

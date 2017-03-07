@@ -54,18 +54,15 @@ SCENARIO("Input/Output from Shadow Mesh:")
             {
                 urban::projection::BrickPrint read_proj = handler.read<urban::projection::BrickPrint>();
                 // REQUIRE(read_proj == test_proj);
-                std::pair<size_t, size_t> sizes;
-                std::vector<double> double_pixels = urban::rasterize(test_proj, .05, sizes);
-                unsigned long long dynamic = std::pow(2, sizeof(uint16_t) * 8) - 1;
-                std::vector<uint16_t> pixels;
-                urban::convert<uint16_t>(double_pixels, pixels);
-                std::cout << sizes.first << " " << sizes.second << std::endl;
                 std::ostringstream rasta_name;
                 rasta_name << unique_name << ".tiff";
                 urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(rasta_name.str()), modes);
-                rasta.write(pixels, sizes);
-                std::copy(std::begin(pixels), std::end(pixels), std::ostream_iterator<double>(std::cout, " "));
-                std::cout << std::endl;
+                rasta.write(
+                    urban::rasterize(
+                        test_proj,
+                        0.5
+                    )
+                );
             }
         }
     }

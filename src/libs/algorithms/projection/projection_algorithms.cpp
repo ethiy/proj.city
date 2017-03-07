@@ -3,11 +3,8 @@
 
 #include <CGAL/Boolean_set_operations_2.h>
 
-#include <vector>
 #include <iterator>
 #include <algorithm>
-
-#include <cmath>
 
 #include <stdexcept>
 
@@ -28,26 +25,6 @@ namespace urban
         );
         return projection;
     }
-
-    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes)
-    {
-        image_sizes = std::make_pair(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin())/pixel_size), std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin())/pixel_size));
-        std::vector<double> pixels(image_sizes.first * image_sizes.second);
-        std::vector<size_t> indexes(image_sizes.first * image_sizes.second);
-        std::iota(std::begin(indexes), std::end(indexes), 0);
-        InexactToExact to_exact;
-        std::transform(
-            std::begin(indexes),
-            std::end(indexes),
-            std::begin(pixels),
-            [&brick_projection, pixel_size, &image_sizes, &to_exact](const size_t index)
-            {
-                return brick_projection.get_height(Point_2(to_exact(brick_projection.bbox().xmin() + (static_cast<double>(index%image_sizes.second) + .5) * pixel_size), to_exact(brick_projection.bbox().ymin() + (static_cast<double>(index/image_sizes.second) + .5) * pixel_size)));
-            }
-        );
-        return pixels;
-    }
-
 
     std::vector<projection::FacePrint> project_xy(const Brick & brick)
     {

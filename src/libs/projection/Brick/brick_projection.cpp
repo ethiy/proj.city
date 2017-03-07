@@ -92,11 +92,17 @@ namespace urban
         {
             return bounding_box;
         }
+        
+        std::string BrickPrint::get_name(void) const noexcept
+        {
+            return name;
+        }
 
         size_t BrickPrint::size(void) const noexcept
         {
             return projected_facets.size();
         }
+
 
         BrickPrint::iterator BrickPrint::begin(void) noexcept
         {

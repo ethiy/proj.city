@@ -15,15 +15,6 @@ namespace urban
     /* ! Projects on xy axis*/
     projection::BrickPrint project(const Brick & brick);
 
-    /**
-     * Rasterize projection
-     * @param brick_projection the projection to rasterize
-     * @param pixel_size the pixel size
-     * @param image_sizes the image size
-     * @return The image matrix in form of an array
-     */
-    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, double pixel_size, std::pair<size_t, size_t> & image_sizes);
-
     /** Project Faces to XY*/
     std::vector<projection::FacePrint> project_xy(const Brick & brick);
 
