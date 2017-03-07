@@ -31,6 +31,9 @@ list(APPEND LIBS ${GDAL_LIBRARY})
 
 # Find OpenCV
 find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIR})
+list(APPEND LIBS ${OpenCV_LIBS})
+
 
 # Find Catch
 include(cmake/modules/catch.cmake)
