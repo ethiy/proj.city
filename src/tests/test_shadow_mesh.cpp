@@ -62,7 +62,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(points),
                     std::end(points),
-                    [&](std::pair<size_t, urban::shadow::Point> p)
+                    [&_auxilary](std::pair<size_t, urban::shadow::Point> p)
                     {
                         _auxilary << "Point " << p.first << " : " << p.second.x() << " " << p.second.y() << " " << p.second.z() << std::endl;
                     }
@@ -71,7 +71,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(faces),
                     std::end(faces),
-                    [&](std::pair<size_t, urban::shadow::Face> t)
+                    [&_auxilary](std::pair<size_t, urban::shadow::Face> t)
                     {
                         _auxilary << "Face " << t.first << " : " << t.second << std::endl;
                     }

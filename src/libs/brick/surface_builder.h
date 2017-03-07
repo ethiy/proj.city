@@ -32,7 +32,7 @@ namespace urban
             std::for_each(
                 shadow_mesh.faces_cbegin(),
                 shadow_mesh.faces_cend(),
-                [&](std::pair<size_t, shadow::Face> face)
+                [&incremental_builder](std::pair<size_t, shadow::Face> face)
                 {
                     incremental_builder.begin_facet();
                     std::for_each(

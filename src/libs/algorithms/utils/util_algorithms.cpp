@@ -59,7 +59,7 @@ namespace urban
         std::for_each(
             std::next(std::begin(points), 2),
             std::end(points),
-            [&](Point_2 C)
+            [&A, &B, &AB, &AC, &BC](Point_2 C)
             {
                 AB = to_double(CGAL::squared_distance(A, B));
                 AC = to_double(CGAL::squared_distance(A, C));

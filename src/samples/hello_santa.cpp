@@ -43,7 +43,7 @@ int main(int, char **)
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&](urban::Brick & obj)
+            [&geomview_stream, pigment, all](urban::Brick & obj) mutable
             {
                 geomview_stream << CGAL::Color(250 * (pigment - 1) / all, 0, 250 * pigment / all) << obj;
                 pigment++;

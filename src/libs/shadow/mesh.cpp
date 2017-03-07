@@ -76,7 +76,7 @@ namespace urban
                         std::next(facet.facet_begin(), 1),
                         std::next(facet.facet_begin(), static_cast<long>(face_degree)),
                         std::next(std::begin(face_points), 1),
-                        [&](const Polyhedron::Halfedge & halfedge)
+                        [this](const Polyhedron::Halfedge & halfedge)
                         {
                             return get_index(halfedge);
                         }
@@ -224,7 +224,7 @@ namespace urban
                 std::begin(points),
                 std::end(points),
                 mesh->pointL,
-                [&](std::pair<size_t, Point> p)
+                [](std::pair<size_t, Point> p)
                 {
                     Lib3dsPoint point;
                     auto init = std::initializer_list<double>({p.second.x(), p.second.y(), p.second.z()});
@@ -271,7 +271,7 @@ namespace urban
             std::for_each(
                 std::begin(mesh.points),
                 std::end(mesh.points),
-                [&](std::pair<size_t, Point> p)
+                [&os](std::pair<size_t, Point> p)
                 {
                     os << "Point " << p.first << " : " << p.second << std::endl;
                 }
@@ -282,7 +282,7 @@ namespace urban
             std::for_each(
                 std::begin(mesh.faces),
                 std::end(mesh.faces),
-                [&](std::pair<size_t, Face> t)
+                [&os](std::pair<size_t, Face> t)
                 {
                     os << "Face " << t.first << " : " << t.second << std::endl;
                 }

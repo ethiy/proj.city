@@ -60,7 +60,7 @@ namespace urban
                 std::for_each(
                     std::next(std::begin(meshes), 1),
                     std::end(meshes),
-                    [&](urban::shadow::Mesh mesh) {
+                    [&current](urban::shadow::Mesh mesh) {
                         current->next = mesh.to_3ds();
                         current = current->next;
                     });
