@@ -1,15 +1,14 @@
 FROM ubuntu:16.04
-RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y \
+            software-properties-common\
             gcc-5-base\
             libgcc-5-dev\
             g++\
             cmake\
-            git\
-            unzip\
-            curl
+            git
+RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 RUN apt-get install -y \
             libboost-filesystem-dev\
             libboost-system-dev\
