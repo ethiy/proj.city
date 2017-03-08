@@ -27,6 +27,8 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{boost,cmake}"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-gdal"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-opencv"
 build_script:
   - ps: New-Item -ItemType Directory -Path .\build\MSYS2
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; /mingw64/bin/cmake -G'Unix Makefiles' -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../.. ; make -j4"
