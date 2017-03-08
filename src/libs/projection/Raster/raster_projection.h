@@ -9,6 +9,7 @@
 #include <gdal_priv.h>
 
 #include <vector>
+#include <array>
 
 #include <string>
 #include <ostream>
@@ -26,6 +27,11 @@ namespace urban
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
 
+            size_t get_height(void) const noexcept;
+            size_t get_width(void) const noexcept;
+            std::array<double, 6> get_geographic_transform(void) const;
+            std::vector<GUInt16> get_array(void) const;
+
             void swap(RasterPrint & other);
 
             RasterPrint & operator=(const RasterPrint & other) noexcept;
@@ -35,8 +41,6 @@ namespace urban
 
             RasterPrint & operator+=(const RasterPrint & other);
             RasterPrint & operator-=(const RasterPrint & other);
-
-            GUInt16* to_gdal(double reference[6], size_t & height, size_t & width) const;
         private:
             std::string name;
             shadow::Point reference_point;
@@ -44,8 +48,6 @@ namespace urban
             size_t width;
             double pixel_size;
             cv::Mat image_matrix;
-
-            void gdal_reference_init(double reference[6]) const;
 
             friend std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection);
         };

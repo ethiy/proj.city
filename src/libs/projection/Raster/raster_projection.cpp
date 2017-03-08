@@ -12,9 +12,46 @@ namespace urban
     namespace projection
     {
         RasterPrint::RasterPrint(void) {}
-        RasterPrint::RasterPrint(const RasterPrint & other): name(other.name), reference_point(other.reference_point), height(other.height), width(other.width), pixel_size(other.pixel_size), image_matrix(other.image_matrix) {}
-        RasterPrint::RasterPrint(RasterPrint && other): name(std::move(other.name)), reference_point(std::move(other.reference_point)), height(std::move(other.height)), width(std::move(other.width)), pixel_size(std::move(other.pixel_size)), image_matrix(std::move(other.image_matrix)) {}
+        RasterPrint::RasterPrint(const std::string & _name, shadow::Point _reference_point, size_t _height, size_t _width, double _pixel_size, const std::vector<uint16_t> & image_array)
+            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(image_array)
+        {
+            if(image_array.size() != _width * _height)
+                throw std::logic_error("the image array should contain exaclty width * height elements");
+            image_matrix.reshape(_width);
+        }
+        RasterPrint::RasterPrint(const RasterPrint & other)
+            : name(other.name), reference_point(other.reference_point), height(other.height), width(other.width), pixel_size(other.pixel_size), image_matrix(other.image_matrix) {}
+        RasterPrint::RasterPrint(RasterPrint && other)
+            : name(std::move(other.name)), reference_point(std::move(other.reference_point)), height(std::move(other.height)), width(std::move(other.width)), pixel_size(std::move(other.pixel_size)), image_matrix(std::move(other.image_matrix)) {}
         RasterPrint::~RasterPrint(void) {}
+
+
+        size_t RasterPrint::get_height(void) const noexcept
+        {
+            return height;
+        }
+
+        size_t RasterPrint::get_width(void) const noexcept
+        {
+            return width;
+        }
+
+        std::array<double, 6> RasterPrint::get_geographic_transform(void) const
+        {
+            return std::array<double, 6>{{reference_point.x(), pixel_size, 0, reference_point.y(), 0, pixel_size}};
+        }
+
+        std::vector<GUInt16> RasterPrint::get_array(void) const
+        {
+            std::vector<GUInt16> raster_array(width * height);
+            std::copy(
+                image_matrix.begin<GUInt16>(),
+                image_matrix.end<GUInt16>(),
+                std::begin(raster_array)
+            );
+            return raster_array;
+        }
+
 
         void RasterPrint::swap(RasterPrint & other)
         {
@@ -58,28 +95,6 @@ namespace urban
             height = image_matrix.size().height;
             width = image_matrix.size().width;
             return *this;
-        }
-
-        GUInt16* RasterPrint::to_gdal(double reference[6], size_t & height, size_t & width) const
-        {
-            gdal_reference_init(reference);
-            GUInt16* image_array = new GUInt16[height * width];
-            std::copy(
-                image_matrix.begin<GUInt16>(),
-                image_matrix.end<GUInt16>(),
-                image_array
-            );
-            return image_array;
-        }
-
-        void RasterPrint::gdal_reference_init(double reference[6]) const
-        {
-            reference[0] = reference_point.x();
-            reference[1] = pixel_size;
-            reference[2] = 0;
-            reference[3] = reference_point.y();
-            reference[4] = pixel_size;
-            reference[5] = 0;            
         }
     }
 

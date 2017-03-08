@@ -52,8 +52,8 @@ namespace urban
 
     projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size)
     {
-        size_t width = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
-        size_t height = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
+        size_t height = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
+        size_t width = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
 
         return projection::RasterPrint(
             brick_projection.get_name(),

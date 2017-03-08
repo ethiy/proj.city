@@ -23,7 +23,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
             {
                 {0, urban::shadow::Point(-10, 6, 8)},
                 {1, urban::shadow::Point(-18, -14, 5)},
-                {2, urban::shadow::Point(-2, -13, 6)},
+                {2, urban::shadow::Point(-2, -14, 6)},
                 {3, urban::shadow::Point(-10, -10, -15)},
                 {4, urban::shadow::Point(-2, 10, 0)},
                 {5, urban::shadow::Point(-18, 9, 1)}
@@ -41,29 +41,32 @@ SCENARIO("Input/Output from Shadow Mesh:")
             }
         );
         urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh));
+
+        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
+        std::ostringstream file_name;
+        std::map<std::string,bool> modes{{"write", true}, {"read", true}};
+
         WHEN("the projection is written to a shapefile")
         {
-            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
-            std::ostringstream file_name;
-            file_name << unique_name << ".geojson";
-
-            std::map<std::string,bool> modes{{"write", true}, {"read", true}};
-            urban::io::FileHandler<GDALDriver> handler("GeoJSON", boost::filesystem::path(file_name.str()), modes);
+            file_name << unique_name << ".gml";
+            urban::io::FileHandler<GDALDriver> handler("GML", boost::filesystem::path(file_name.str()), modes);
             handler.write(test_proj);
             THEN("The output checks:")
             {
                 urban::projection::BrickPrint read_proj = handler.read<urban::projection::BrickPrint>();
-                // REQUIRE(read_proj == test_proj);
-                std::ostringstream rasta_name;
-                rasta_name << unique_name << ".tiff";
-                urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(rasta_name.str()), modes);
-                rasta.write(
-                    urban::rasterize(
-                        test_proj,
-                        0.5
-                    )
-                );
+                REQUIRE(read_proj == test_proj);
             }
+        }
+        WHEN("the projection is rasterized and written to a GeoTIFF")
+        {
+            file_name << unique_name << ".geotiff";
+            urban::io::FileHandler<GDALDriver> handler("GTiff", boost::filesystem::path(file_name.str()), modes);
+            handler.write(
+                urban::rasterize(
+                    test_proj,
+                    0.01
+                )
+            );
         }
     }
 }

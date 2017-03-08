@@ -151,10 +151,17 @@ namespace urban
                         throw std::runtime_error(error_message.str());
                     }
 
+                    size_t height(raster_image.get_height()),
+                           width(raster_image.get_width());
                     double adfGeoTransform[6];
-                    size_t height(0), width(0);
-                    GUInt16* gdal_image = raster_image.to_gdal(adfGeoTransform, height, width);
-                    
+                    GUInt16* gdal_buffer = new GUInt16[height * width];
+
+                    std::vector<GUInt16> raster_array = raster_image.get_array();
+                    std::array<double, 6> geographic_transform = raster_image.get_geographic_transform();
+
+                    std::copy(std::begin(raster_array), std::end(raster_array), gdal_buffer);
+                    std::copy(std::begin(geographic_transform), std::end(geographic_transform), adfGeoTransform);
+
                     GDALDataset* file =  driver->Create(filepath.string().c_str(), height, width, 1, GDT_UInt16, NULL);
 
                     file->SetGeoTransform( adfGeoTransform );
@@ -167,10 +174,12 @@ namespace urban
                     CPLFree(spatial_reference_system_name);
 
                     GDALRasterBand* unique_band = file->GetRasterBand(1);
-                    CPLErr error = unique_band->RasterIO(GF_Write, 0, 0, height, width, gdal_image, height, width, GDT_UInt16,0, 0);
+                    CPLErr error = unique_band->RasterIO(GF_Write, 0, 0, height, width, gdal_buffer, height, width, GDT_UInt16,0, 0);
                     if(error != CE_None)
                         throw std::runtime_error("GDAL could not save raster band");
                     GDALClose(dynamic_cast<GDALDatasetH>(file));
+                    
+                    std::free(gdal_buffer);
                 }
                 else
                 {
