@@ -66,6 +66,11 @@ namespace urban
             return raster_array;
         }
 
+        bool RasterPrint::is_zero() const
+        {
+            return cv::countNonZero(image_matrix) == 0;
+        }
+
 
         void RasterPrint::swap(RasterPrint & other)
         {
@@ -113,10 +118,13 @@ namespace urban
 
         RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
         {
-
+            return *this;
         }
         
-        RasterPrint & RasterPrint::operator-=(const RasterPrint & other);
+        RasterPrint & RasterPrint::operator-=(const RasterPrint & other)
+        {
+            return *this;
+        }
 
         std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection)
         {
@@ -128,6 +136,28 @@ namespace urban
                << raster_projection.image_matrix << std::endl;
                
             return os;
+        }
+
+        RasterPrint operator+(const RasterPrint & lhs, const RasterPrint & rhs)
+        {
+            RasterPrint copy(lhs);
+            return copy += rhs;
+        }
+
+        RasterPrint operator-(const RasterPrint & lhs, const RasterPrint & rhs)
+        {
+            RasterPrint copy(lhs);
+            return copy -= rhs;
+        }
+
+        bool operator==(const RasterPrint & lhs, const RasterPrint & rhs)
+        {
+            return (lhs - rhs).is_zero();
+        }
+        
+        bool operator!=(const RasterPrint & lhs, const RasterPrint & rhs)
+        {
+            return !(lhs == rhs);
         }
     }
 

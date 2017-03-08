@@ -33,6 +33,8 @@ namespace urban
             std::array<double, 6> get_geographic_transform(void) const;
             std::vector<GUInt16> get_array(void) const;
 
+            bool is_zero() const;
+
             void swap(RasterPrint & other);
 
             RasterPrint & operator=(const RasterPrint & other) noexcept;
@@ -53,8 +55,10 @@ namespace urban
             friend std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection);
         };
 
-        RasterPrint & operator+(const RasterPrint & lhs, const RasterPrint & rhs);
-        RasterPrint & operator-(const RasterPrint & lhs, const RasterPrint & rhs);
+        RasterPrint operator+(const RasterPrint & lhs, const RasterPrint & rhs);
+        RasterPrint operator-(const RasterPrint & lhs, const RasterPrint & rhs);
+        bool operator==(const RasterPrint & lhs, const RasterPrint & rhs);
+        bool operator!=(const RasterPrint & lhs, const RasterPrint & rhs);
     }
     void swap(projection::RasterPrint & lhs, projection::RasterPrint & rhs);
 }
