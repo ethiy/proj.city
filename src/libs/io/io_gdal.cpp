@@ -43,7 +43,7 @@ namespace urban
 
         FileHandler<GDALDriver>::~FileHandler(void) {}
 
-        template<> projection::BrickPrint FileHandler<GDALDriver>::read<urban::projection::BrickPrint>(void) const
+        template<> projection::BrickPrint FileHandler<GDALDriver>::read<projection::BrickPrint>(void) const
         {
             projection::BrickPrint brick_projection;
             std::ostringstream error_message;
@@ -130,9 +130,56 @@ namespace urban
             }
         }
 
-        template<> std::vector<double> FileHandler<GDALDriver>::read< std::vector<double> >(void) const
+        template<> projection::RasterPrint FileHandler<GDALDriver>::read<projection::RasterPrint>(void) const
         {
-            return std::vector<double>();
+            projection::RasterPrint raster_projection;
+            std::ostringstream error_message;
+            
+            if (modes.at("read"))
+            {
+                if(raster)
+                {
+                    if (boost::filesystem::is_regular_file(filepath))
+                    {
+                        GDALDataset* file = reinterpret_cast<GDALDataset*>(GDALOpen(filepath.string().c_str(), GA_ReadOnly));
+                        if(file == NULL)
+                        {
+                            error_message << "GDAL could not open: " << filepath.string();
+                            throw std::runtime_error(error_message.str());
+                        }
+                        
+                        const char * spatial_reference_system_name = file->GetProjectionRef();
+
+                        double geographic_transform[6] = {0,1,0,0,0,1};
+                        if( file->GetGeoTransform( geographic_transform ) != CE_None )
+                            throw std::runtime_error("GDAL could not retrieve any registered Geometric Transform");
+                        
+                        GDALRasterBand* raster_band = file->GetRasterBand(1);
+                        raster_projection = projection::RasterPrint(filepath.stem().string(), geographic_transform, static_cast<size_t>(file->GetRasterYSize()), static_cast<size_t>(file->GetRasterXSize()), raster_band);
+                        GDALClose(dynamic_cast<GDALDatasetH>(file));
+                    }
+                    else
+                    {
+                        error_message << "This file \"" << filepath.string() << "\" cannot be found! You should check the file path";
+                        boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                        throw boost::filesystem::filesystem_error(error_message.str(), ec);
+                    }
+                }
+                else
+                {
+                    error_message << "The chosen driver : \"" << driver_name << "\" is adapted for raster images";
+                    boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                    throw boost::filesystem::filesystem_error(error_message.str(), ec);
+                }
+            }
+            else
+            {
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
+            }
+
+            return raster_projection;
         }
 
         void FileHandler<GDALDriver>::write(const projection::RasterPrint & raster_image) const
@@ -177,8 +224,8 @@ namespace urban
                     CPLErr error = unique_band->RasterIO(GF_Write, 0, 0, height, width, gdal_buffer, height, width, GDT_UInt16,0, 0);
                     if(error != CE_None)
                         throw std::runtime_error("GDAL could not save raster band");
+
                     GDALClose(dynamic_cast<GDALDatasetH>(file));
-                    
                     std::free(gdal_buffer);
                 }
                 else

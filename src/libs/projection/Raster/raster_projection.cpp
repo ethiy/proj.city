@@ -19,6 +19,20 @@ namespace urban
                 throw std::logic_error("the image array should contain exaclty width * height elements");
             image_matrix.reshape(_width);
         }
+
+        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], size_t _height, size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1])
+        {
+            if(geographic_transform[1] != geographic_transform[5])
+                throw std::logic_error("this case is not treated here");
+            
+            GUInt16* buffer = new GUInt16[width * height];
+            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, width, height, buffer, width, height, GDT_UInt16,0, 0);
+            if(error != CE_None)
+                throw std::runtime_error("GDAL could not read raster band");
+            image_matrix = cv::Mat(height, width, CV_16UC1, buffer);
+            std::free(buffer);
+        }
+
         RasterPrint::RasterPrint(const RasterPrint & other)
             : name(other.name), reference_point(other.reference_point), height(other.height), width(other.width), pixel_size(other.pixel_size), image_matrix(other.image_matrix) {}
         RasterPrint::RasterPrint(RasterPrint && other)
@@ -95,6 +109,25 @@ namespace urban
             height = image_matrix.size().height;
             width = image_matrix.size().width;
             return *this;
+        }
+
+        RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
+        {
+
+        }
+        
+        RasterPrint & RasterPrint::operator-=(const RasterPrint & other);
+
+        std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection)
+        {
+            os << "Name : " << raster_projection.name << std::endl
+               << "Reference (Top left) Point : " << raster_projection.reference_point << std::endl
+               << "Height : " << raster_projection.height << std::endl
+               << "Width : " << raster_projection.width << std::endl
+               << "Image Matrix : " << std::endl
+               << raster_projection.image_matrix << std::endl;
+               
+            return os;
         }
     }
 

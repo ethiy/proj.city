@@ -64,9 +64,15 @@ SCENARIO("Input/Output from Shadow Mesh:")
             handler.write(
                 urban::rasterize(
                     test_proj,
-                    0.01
+                    0.1
                 )
             );
+            THEN("The output checks:")
+            {
+                urban::projection::RasterPrint read_proj = handler.read<urban::projection::RasterPrint>();
+                std::cout << read_proj << std::endl;
+                // REQUIRE(read_proj == test_proj);
+            }
         }
     }
 }
