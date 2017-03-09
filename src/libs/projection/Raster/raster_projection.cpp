@@ -23,7 +23,6 @@ namespace urban
                 buffer
             );
             image_matrix = Imagine::Image<GUInt16>(buffer, width, height);
-            std::free(buffer);
         }
 
         RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], size_t _height, size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1])
