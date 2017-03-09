@@ -1,7 +1,5 @@
 #include "raster_projection.h"
 
-#include <opencv2/imgproc.hpp>
-
 #include <iterator>
 #include <algorithm>
 
@@ -13,11 +11,19 @@ namespace urban
     {
         RasterPrint::RasterPrint(void) {}
         RasterPrint::RasterPrint(const std::string & _name, shadow::Point _reference_point, size_t _height, size_t _width, double _pixel_size, const std::vector<uint16_t> & image_array)
-            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(image_array)
+            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size)
         {
             if(image_array.size() != _width * _height)
                 throw std::logic_error("the image array should contain exaclty width * height elements");
-            image_matrix.reshape(_width);
+
+            GUInt16* buffer = new GUInt16[width * height];
+            std::copy(
+                std::begin(image_array),
+                std::end(image_array),
+                buffer
+            );
+            image_matrix = Imagine::Image<GUInt16>(buffer, width, height);
+            std::free(buffer);
         }
 
         RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], size_t _height, size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1])
@@ -29,7 +35,7 @@ namespace urban
             CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, width, height, buffer, width, height, GDT_UInt16,0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
-            image_matrix = cv::Mat(height, width, CV_16UC1, buffer);
+            image_matrix = Imagine::Image<GUInt16>(buffer, width, height);
             std::free(buffer);
         }
 
@@ -58,17 +64,21 @@ namespace urban
         std::vector<GUInt16> RasterPrint::get_array(void) const
         {
             std::vector<GUInt16> raster_array(width * height);
-            std::copy(
-                image_matrix.begin<GUInt16>(),
-                image_matrix.end<GUInt16>(),
-                std::begin(raster_array)
+            std::transform(
+                image_matrix.coordsBegin(),
+                image_matrix.coordsEnd(),
+                std::begin(raster_array),
+                [this](const Imagine::Coords<2> & coordinates)
+                {
+                    return image_matrix(coordinates);
+                }
             );
             return raster_array;
         }
 
         bool RasterPrint::is_zero() const
         {
-            return cv::countNonZero(image_matrix) == 0;
+            return norm(image_matrix) == 0;
         }
 
 
@@ -107,14 +117,14 @@ namespace urban
             return *this;
         }
 
-        RasterPrint & RasterPrint::rescale(const double & _pixel_size)
-        {
-            cv::resize(image_matrix, image_matrix, cv::Size(), pixel_size / _pixel_size, cv::INTER_LINEAR);
-            pixel_size = _pixel_size;
-            height = image_matrix.size().height;
-            width = image_matrix.size().width;
-            return *this;
-        }
+        // RasterPrint & RasterPrint::rescale(const double & _pixel_size)
+        // {
+        //     cv::resize(image_matrix, image_matrix, cv::Size(), pixel_size / _pixel_size, cv::INTER_LINEAR);
+        //     pixel_size = _pixel_size;
+        //     height = image_matrix.size().height;
+        //     width = image_matrix.size().width;
+        //     return *this;
+        // }
 
         RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
         {

@@ -4,7 +4,7 @@
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../../shadow/Point/point.h"
 
-#include <opencv2/core.hpp>
+#include "Imagine/Images.h"
 
 #include <gdal_priv.h>
 
@@ -33,7 +33,7 @@ namespace urban
             std::array<double, 6> get_geographic_transform(void) const;
             std::vector<GUInt16> get_array(void) const;
 
-            bool is_zero() const;
+            bool is_zero(void) const;
 
             void swap(RasterPrint & other);
 
@@ -50,7 +50,7 @@ namespace urban
             size_t height;
             size_t width;
             double pixel_size;
-            cv::Mat image_matrix;
+            Imagine::Image<GUInt16> image_matrix;
 
             friend std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection);
         };
