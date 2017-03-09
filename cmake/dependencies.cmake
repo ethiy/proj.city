@@ -1,12 +1,6 @@
 set(LIBS "")
 set(LIBS_DIRS "")
 
-# Find Lib3ds
-include(cmake/modules/free3ds.cmake)
-
-include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
-list(APPEND LIBS ${LIB3DS_LIBRARIES})
-
 # Find Boost
 FIND_PACKAGE(Boost REQUIRED filesystem system)
 
@@ -29,11 +23,15 @@ find_package(GDAL REQUIRED)
 include_directories(${GDAL_INCLUDE_DIR})
 list(APPEND LIBS ${GDAL_LIBRARY})
 
-# Find OpenCV
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIR})
-list(APPEND LIBS ${OpenCV_LIBS})
+# Find Free3ds
+include(cmake/modules/free3ds.cmake)
 
+include_directories(SYSTEM ${Free3ds_INCLUDE_DIRS})
+list(APPEND LIBS ${Free3ds_LIBRARIES})
+
+# Find Imagine
+# include(cmake/modules/imagine++.cmake)
+find_package(Imagine REQUIRED)
 
 # Find Catch
 include(cmake/modules/catch.cmake)

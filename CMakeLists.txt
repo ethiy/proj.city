@@ -50,6 +50,8 @@ target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 # urban
 set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
 add_library(urban SHARED ${urban_HEADER})
+ImagineUseModules(urban Images)
+link_directories(urban ${LIBS_DIRS})
 target_link_libraries(urban urban_shadow urban_io urban_brick urban_projection urban_algorithms ${LIBS})
 
 ##
@@ -66,7 +68,6 @@ link_directories(hello_santa ${LIBS_DIRS})
 set(Proj_XY_SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/samples/project_santa_xy.cpp")
 add_executable(project_santa_xy ${Proj_XY_SANTA_SRC} ${Proj_HEADERS} ${Brick_HEADERS} ${IO_HEADERS} ${Algorithms_HEADER})
 target_link_libraries(project_santa_xy urban)
-link_directories(project_santa_xy ${LIBS_DIRS})
 
 ##
 # ____________________________________________________ Tests _____________________________________________________
