@@ -33,7 +33,7 @@ matrix:
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
         - brew tap osgeo/osgeo4mac && brew tap --repair
-        - brew install gdal2 --with-armadillo --with-complete --with-libkml --with-unsupported
+        - brew install gdal2
         - brew tap homebrew/science
         - brew install opencv3
         - brew ln opencv3 --force
