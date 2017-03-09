@@ -4,7 +4,7 @@
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../../shadow/Point/point.h"
 
-#include "Imagine/Images.h"
+#include <Imagine/Images.h>
 
 #include <gdal_priv.h>
 
@@ -22,8 +22,8 @@ namespace urban
         {
         public:
             RasterPrint(void);
-            RasterPrint(const std::string & _name, shadow::Point _reference_point, size_t height, size_t width, double pixel_size, const std::vector<uint16_t> & image_array);
-            RasterPrint(const std::string & _name, const double geographic_transform[6], size_t height, size_t width, GDALRasterBand* raster_band);
+            RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t height, const size_t width, double pixel_size, const std::vector<uint16_t> & image_array);
+            RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t height, const size_t width, GDALRasterBand* raster_band);
             RasterPrint(const RasterPrint & other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);

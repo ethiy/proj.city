@@ -67,11 +67,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
             THEN("The output checks:")
             {
                 urban::projection::RasterPrint read_proj = handler.read<urban::projection::RasterPrint>();
-            urban::io::FileHandler<GDALDriver> rastafari("GTiff", boost::filesystem::path("blalal.geotiff"), std::map<std::string, bool>{{"write", true}});
-            rastafari.write(read_proj);
-                read_proj -= rasta;
-                std::cout << (read_proj) << std::endl;
-                // REQUIRE(read_proj == urban::rasterize(test_proj, 0.1));
+                REQUIRE(read_proj == rasta);
             }
         }
     }

@@ -1,5 +1,7 @@
 #include "raster_projection.h"
 
+#include <Imagine/LinAlg.h>
+
 #include <iterator>
 #include <algorithm>
 
@@ -10,7 +12,7 @@ namespace urban
     namespace projection
     {
         RasterPrint::RasterPrint(void) {}
-        RasterPrint::RasterPrint(const std::string & _name, shadow::Point _reference_point, size_t _height, size_t _width, double _pixel_size, const std::vector<uint16_t> & image_array)
+        RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size, const std::vector<uint16_t> & image_array)
             : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size)
         {
             if(image_array.size() != _width * _height)
@@ -25,17 +27,16 @@ namespace urban
             image_matrix = Imagine::Image<GUInt16>(buffer, width, height);
         }
 
-        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], size_t _height, size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1])
+        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_width), width(_height), pixel_size(geographic_transform[1])
         {
             if(geographic_transform[1] != geographic_transform[5])
                 throw std::logic_error("this case is not treated here");
             
             GUInt16* buffer = new GUInt16[width * height];
-            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, width, height, buffer, width, height, GDT_UInt16,0, 0);
+            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_UInt16,0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
             image_matrix = Imagine::Image<GUInt16>(buffer, width, height);
-            std::free(buffer);
         }
 
         RasterPrint::RasterPrint(const RasterPrint & other)
