@@ -75,12 +75,6 @@ namespace urban
             return raster_array;
         }
 
-        bool RasterPrint::is_zero() const
-        {
-            return norm(image_matrix) == 0;
-        }
-
-
         void RasterPrint::swap(RasterPrint & other)
         {
             using std::swap;
@@ -127,11 +121,17 @@ namespace urban
 
         RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
         {
+            if(pixel_size != other.pixel_size && reference_point != other.reference_point)
+                throw std::logic_error("Case not treated");
+            image_matrix += other.image_matrix;
             return *this;
         }
         
         RasterPrint & RasterPrint::operator-=(const RasterPrint & other)
         {
+            if(pixel_size != other.pixel_size && reference_point != other.reference_point)
+                throw std::logic_error("Case not treated");
+            image_matrix -= other.image_matrix;
             return *this;
         }
 
@@ -147,24 +147,22 @@ namespace urban
             return os;
         }
 
-        RasterPrint operator+(const RasterPrint & lhs, const RasterPrint & rhs)
+        RasterPrint & operator+(RasterPrint & lhs, const RasterPrint & rhs)
         {
-            RasterPrint copy(lhs);
-            return copy += rhs;
+            return lhs += rhs;
         }
 
-        RasterPrint operator-(const RasterPrint & lhs, const RasterPrint & rhs)
+        RasterPrint & operator-(RasterPrint & lhs, const RasterPrint & rhs)
         {
-            RasterPrint copy(lhs);
-            return copy -= rhs;
+            return lhs -= rhs;
         }
 
-        bool operator==(const RasterPrint & lhs, const RasterPrint & rhs)
+        bool operator==(RasterPrint & lhs, const RasterPrint & rhs)
         {
-            return (lhs - rhs).is_zero();
+            return lhs.pixel_size == rhs.pixel_size && lhs.reference_point == rhs.reference_point && lhs.image_matrix == rhs.image_matrix;
         }
         
-        bool operator!=(const RasterPrint & lhs, const RasterPrint & rhs)
+        bool operator!=(RasterPrint & lhs, const RasterPrint & rhs)
         {
             return !(lhs == rhs);
         }

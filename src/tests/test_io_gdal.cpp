@@ -42,12 +42,12 @@ SCENARIO("Input/Output from Shadow Mesh:")
         );
         urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh));
 
-        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
         std::ostringstream file_name;
         std::map<std::string,bool> modes{{"write", true}, {"read", true}};
 
         WHEN("the projection is written to a shapefile")
         {
+        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
             file_name << unique_name << ".gml";
             urban::io::FileHandler<GDALDriver> handler("GML", boost::filesystem::path(file_name.str()), modes);
             handler.write(test_proj);
@@ -59,19 +59,19 @@ SCENARIO("Input/Output from Shadow Mesh:")
         }
         WHEN("the projection is rasterized and written to a GeoTIFF")
         {
+        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
             file_name << unique_name << ".geotiff";
             urban::io::FileHandler<GDALDriver> handler("GTiff", boost::filesystem::path(file_name.str()), modes);
-            handler.write(
-                urban::rasterize(
-                    test_proj,
-                    0.1
-                )
-            );
+            urban::projection::RasterPrint rasta = urban::rasterize(test_proj, 1);
+            handler.write(rasta);
             THEN("The output checks:")
             {
                 urban::projection::RasterPrint read_proj = handler.read<urban::projection::RasterPrint>();
-                std::cout << read_proj << std::endl;
-                // REQUIRE(read_proj == test_proj);
+            urban::io::FileHandler<GDALDriver> rastafari("GTiff", boost::filesystem::path("blalal.geotiff"), std::map<std::string, bool>{{"write", true}});
+            rastafari.write(read_proj);
+                read_proj -= rasta;
+                std::cout << (read_proj) << std::endl;
+                // REQUIRE(read_proj == urban::rasterize(test_proj, 0.1));
             }
         }
     }
