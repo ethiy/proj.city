@@ -33,24 +33,23 @@ namespace urban
         return pixels;
     }
 
-    std::vector<uint16_t> convert(const std::vector<double> & original_image)
+    std::vector<uint16_t> convert(const std::vector<double> & original_image, double maximum_value)
     {
         unsigned long long dynamic = std::pow(2, sizeof(uint16_t) * 8) - 1;
         std::vector<uint16_t> target_image(original_image.size());
-        auto maximum_it = std::max_element(std::begin(original_image), std::end(original_image));
         std::transform(
             std::begin(original_image),
             std::end(original_image),
             std::begin(target_image),
-            [dynamic, &maximum_it](const double value)
+            [dynamic, maximum_value](const double value)
             {
-                return static_cast<uint16_t>( dynamic * value / (*maximum_it));
+                return static_cast<uint16_t>( dynamic * value / maximum_value);
             }
         );
         return target_image;
     }
 
-    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size)
+    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, double maximum_value)
     {
         size_t height = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
         size_t width = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
@@ -61,14 +60,12 @@ namespace urban
             height,
             width,
             pixel_size,
-            convert(
                 rasterize(
                     brick_projection,
                     pixel_size,
                     height,
                     width
                 )
-            )
         );
 
     }
