@@ -16,6 +16,7 @@ RUN apt-get install -y \
             libboost-system-dev\
             lib3ds-dev\
             libcgal-dev\
+            libcgal-qt5-dev\
             libqt5opengl5-dev\
             libgdal-dev
 WORKDIR /home
