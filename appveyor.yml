@@ -32,7 +32,7 @@ install:
   - ps: |
         New-Item -ItemType Directory -Path .\3rParty
         Set-Location 3rParty
-  -cmd: git clone https://github.com/Ethiy/imagine-pp.git
+  - cmd: git clone https://github.com/Ethiy/imagine-pp.git
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/imagine-pp; /mingw64/bin/cmake -G'Unix Makefiles' . ; make -j4; make install"
 build_script:
   - ps: New-Item -ItemType Directory -Path .\build\MSYS2
