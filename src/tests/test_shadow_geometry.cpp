@@ -1,6 +1,6 @@
-#include "../libs/Shadow/Point/point.h"
-#include "../libs/Shadow/Vector/vector.h"
-#include "../libs/Shadow/Bbox/bbox.h"
+#include "../libs/shadow/Point/point.h"
+#include "../libs/shadow/Vector/vector.h"
+#include "../libs/shadow/Bbox/bbox.h"
 
 #include <limits>
 #include <cmath>

@@ -1,6 +1,6 @@
-#include "../libs/IO/io_gdal.h"
-#include "../libs/Algorithms/algorithms.h"
-#include "../libs/UrbanObject/brick.h"
+#include "../libs/io/io_gdal.h"
+#include "../libs/algorithms/algorithms.h"
+#include "../libs/brick/brick.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -23,7 +23,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
             {
                 {0, urban::shadow::Point(-10, 6, 8)},
                 {1, urban::shadow::Point(-18, -14, 5)},
-                {2, urban::shadow::Point(-2, -13, 6)},
+                {2, urban::shadow::Point(-2, -14, 6)},
                 {3, urban::shadow::Point(-10, -10, -15)},
                 {4, urban::shadow::Point(-2, 10, 0)},
                 {5, urban::shadow::Point(-18, 9, 1)}
@@ -41,18 +41,32 @@ SCENARIO("Input/Output from Shadow Mesh:")
             }
         );
         urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh));
+        std::ostringstream file_name;
+        std::map<std::string,bool> modes{{"write", true}, {"read", true}};
+
         WHEN("the projection is written to a shapefile")
         {
-            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
-            std::ostringstream file_name;
-            file_name << unique_name << ".shp";
-
-            std::map<std::string,bool> modes{{"write", true}};
-            urban::io::FileHandler<GDALDataset> handler(boost::filesystem::path(file_name.str()), modes);
+        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
+            file_name << unique_name << ".gml";
+            urban::io::FileHandler<GDALDriver> handler("GML", boost::filesystem::path(file_name.str()), modes);
             handler.write(test_proj);
             THEN("The output checks:")
             {
-                ;
+                urban::projection::BrickPrint read_proj = handler.read<urban::projection::BrickPrint>();
+                REQUIRE(read_proj == test_proj);
+            }
+        }
+        WHEN("the projection is rasterized and written to a GeoTIFF")
+        {
+        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
+            file_name << unique_name << ".geotiff";
+            urban::io::FileHandler<GDALDriver> handler("GTiff", boost::filesystem::path(file_name.str()), modes);
+            urban::projection::RasterPrint rasta = urban::rasterize(test_proj, .1, 8);
+            handler.write(rasta);
+            THEN("The output checks:")
+            {
+                urban::projection::RasterPrint read_proj = handler.read<urban::projection::RasterPrint>();
+                REQUIRE(read_proj == rasta);
             }
         }
     }

@@ -1,5 +1,5 @@
-#include "../UrbanObject/urban_object.h"
-#include "../IO/io_off.h"
+#include "../libs/brick/brick.h"
+#include "../libs/io/io_off.h"
 
 #include <boost/filesystem.hpp>
 
@@ -7,20 +7,20 @@
 #include <fstream>
 #include <streambuf>
 
-#include "catch.hpp"
+#include <catch.hpp>
 
-SCENARIO("UrbanObject manipulation:")
+SCENARIO("Urban Brick manipulation:")
 {
-    GIVEN("A urban::ShadowMesh object")
+    GIVEN("A urban::shadow::Mesh object")
     {
         std::map<std::string,bool> modes{{"read", true}};
         boost::filesystem::path filepath("../../ressources/3dModels/OFF/hammerhead.off");
         urban::io::FileHandler<std::fstream> handler(filepath, modes);
-        urban::ShadowMesh mesh = handler.read();
+        urban::shadow::Mesh mesh = handler.read();
 
-        WHEN("the UrbanObject is constructed")
+        WHEN("the urban Brick is constructed")
         {
-            urban::UrbanObject hammerhead(mesh);
+            urban::Brick hammerhead(mesh);
 
             THEN("the output checks")
             {

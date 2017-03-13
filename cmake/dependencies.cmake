@@ -1,12 +1,6 @@
 set(LIBS "")
 set(LIBS_DIRS "")
 
-# Find Lib3ds
-include(cmake/modules/free3ds.cmake)
-
-include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
-list(APPEND LIBS ${LIB3DS_LIBRARIES})
-
 # Find Boost
 FIND_PACKAGE(Boost REQUIRED filesystem system)
 
@@ -24,15 +18,20 @@ include( ${CGAL_USE_FILE} )
 include_directories(${CGAL_INCLUDE_DIRS})
 list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
 
-# Find Python.h
-find_package(PythonLibs REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-list(APPEND LIBS ${PYTHON_LIBRARIES})
-
 # Find GDAL
 find_package(GDAL REQUIRED)
 include_directories(${GDAL_INCLUDE_DIR})
 list(APPEND LIBS ${GDAL_LIBRARY})
+
+# Find Free3ds
+include(cmake/modules/free3ds.cmake)
+
+include_directories(SYSTEM ${Free3ds_INCLUDE_DIRS})
+list(APPEND LIBS ${Free3ds_LIBRARIES})
+
+# Find Imagine
+# include(cmake/modules/imagine++.cmake)
+find_package(Imagine REQUIRED)
 
 # Find Catch
 include(cmake/modules/catch.cmake)
