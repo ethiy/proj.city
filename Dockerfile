@@ -7,8 +7,7 @@ RUN apt-get install -y \
             libgcc-5-dev\
             g++\
             cmake\
-            git\
-            curl
+            git
 RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 RUN apt-get -y update
 RUN apt-get -y upgrade
@@ -17,26 +16,15 @@ RUN apt-get install -y \
             libboost-system-dev\
             lib3ds-dev\
             libcgal-dev\
-            libcgal-qt5-dev\
-            libgdal-dev\
-            libopencv-dev
+            libqt5opengl5-dev\
+            libgdal-dev
 WORKDIR /home
 RUN mkdir 3rParty
 WORKDIR 3rParty
-RUN curl -O http://imagine.enpc.fr/~monasse/Imagine++/downloads/Imagine++-4.3.1-Linux-x86_64.deb
-RUN dpkg -i Imagine++-4.3.1-Linux-x86_64.deb
-RUN echo "Imagine_DIR DEFAULT=/usr/share/Imagine++" >> $HOME/.pam_environment
-RUN source $HOME/.pam_environment
-WORKDIR /home
-RUN mkdir -p 3rdParty
-WORKDIR 3rdParty
-RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal213.zip
-RUN unzip gdal213.zip
-RUN rm gdal213.zip
-WORKDIR gdal-2.1.3
-RUN ./configure
-RUN make -j4
-RUN make install
+RUN git clone https://github.com/Ethiy/imagine-pp.git
+WORKDIR imagine-pp
+RUN cmake .
+RUN make -j4 && make install
 WORKDIR /home
 RUN git clone https://github.com/Ethiy/3DSceneModel.git
 WORKDIR 3DSceneModel/
