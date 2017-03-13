@@ -32,17 +32,22 @@ matrix:
         - brew update
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
-        - brew tap osgeo/osgeo4mac && brew tap --repair
-        - brew install gdal2
-        - brew tap homebrew/science
-        - brew install opencv3
-        - brew ln opencv3 --force
-        - mkdir build
-        - mkdir build/darwin
+        - brew outdated qt5 || brew upgrade qt5
+        - brew outdated wget || brew upgrade wget
+        - mkdir 3rdParty && cd 3rdParty
+        - mkdir GDAL && cd GDAL
+        - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-2.1.dmg
+        - sudo hdiutil attach GDAL_Complete-2.1.dmg
+        - sudo installer -package /Volumes/GDAL_Complete-2.1/GDAL_Complete.pkg
+        - sudo hdiutil detach GDAL_Complete-2.1.dmg
+        - cd .. && mkdir Imagine++ && cd Imagine++
+        - wget http://imagine.enpc.fr/~monasse/Imagine++/downloads/Imagine++-4.3.1-Darwin-i386.pkg
+        - sudo installer -package Imagine++-4.3.1-Darwin-i386.pkg
+        - cd $HOME
       install:
-        - cd build/darwin
+        - mkdir build && mkdir build/darwin && cd build/darwin
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
         - make -j4 all
         - ./tests -a
-        - rm *.off *.3ds *.shp *.shx *.dbf
+        - rm *.off *.3ds *.gml *.xsd *.geotiff
