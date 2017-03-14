@@ -12,7 +12,6 @@ RUN apt-get install -y \
 RUN apt-get install -y \
             libboost-filesystem-dev\
             libboost-system-dev\
-            lib3ds-dev\
             libcgal-dev\
             libcgal-qt5-dev
 WORKDIR /home
