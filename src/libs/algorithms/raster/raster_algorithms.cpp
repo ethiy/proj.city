@@ -60,12 +60,12 @@ namespace urban
             height,
             width,
             pixel_size,
-                rasterize(
-                    brick_projection,
-                    pixel_size,
-                    height,
-                    width
-                )
+            rasterize(
+                brick_projection,
+                pixel_size,
+                height,
+                width
+            )
         );
 
     }

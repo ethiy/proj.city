@@ -59,7 +59,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
         }
         WHEN("the projection is rasterized and written to a GeoTIFF")
         {
-        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
+            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
             file_name << unique_name << ".geotiff";
             urban::io::FileHandler<GDALDriver> handler("GTiff", boost::filesystem::path(file_name.str()), modes);
             urban::projection::RasterPrint rasta = urban::rasterize(test_proj, .1, 8);
