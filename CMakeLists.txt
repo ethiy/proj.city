@@ -50,8 +50,8 @@ target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 # urban
 set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
 add_library(urban SHARED ${urban_HEADER})
-ImagineUseModules(urban Images)
 link_directories(urban ${LIBS_DIRS})
+ImagineUseModules(urban Images)
 target_link_libraries(urban urban_shadow urban_io urban_brick urban_projection urban_algorithms ${LIBS})
 
 ##
@@ -60,14 +60,18 @@ target_link_libraries(urban urban_shadow urban_io urban_brick urban_projection u
 
 # Santa
 set(SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/samples/hello_santa.cpp")
-add_executable(hello_santa ${SANTA_SRC} ${Brick_HEADERS} ${IO_HEADERS} ${Shadow_HEADERS})
+add_executable(hello_santa ${SANTA_SRC} ${urban_HEADER})
 target_link_libraries(hello_santa urban)
-link_directories(hello_santa ${LIBS_DIRS})
 
 # Project Santa
 set(Proj_XY_SANTA_SRC "${3DSceneModel_SOURCE_DIR}/src/samples/project_santa_xy.cpp")
-add_executable(project_santa_xy ${Proj_XY_SANTA_SRC} ${Proj_HEADERS} ${Brick_HEADERS} ${IO_HEADERS} ${Algorithms_HEADER})
+add_executable(project_santa_xy ${Proj_XY_SANTA_SRC} ${urban_HEADER})
 target_link_libraries(project_santa_xy urban)
+
+# Project Cli
+set(Proj_XY_CLI_SRC "${3DSceneModel_SOURCE_DIR}/src/cli/project_scene_xy.cpp")
+add_executable(project_scene_xy ${Proj_XY_CLI_SRC} ${urban_HEADER})
+target_link_libraries(project_scene_xy urban)
 
 ##
 # ____________________________________________________ Tests _____________________________________________________
@@ -75,6 +79,6 @@ target_link_libraries(project_santa_xy urban)
 
 file(GLOB_RECURSE TEST_SRC "${3DSceneModel_SOURCE_DIR}/src/tests/*.cpp")
 
-add_executable(tests ${TEST_SRC} ${Shadow_HEADERS} ${IO_HEADERS} ${Brick_HEADERS} ${Projection_HEADER} ${Algorithms_HEADER})
+add_executable(tests ${TEST_SRC} ${urban_HEADER})
 target_link_libraries(tests Catch urban)
 add_test(NAME test COMMAND tests -r junit)

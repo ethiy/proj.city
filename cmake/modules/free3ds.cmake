@@ -12,7 +12,7 @@ if(NOT TARGET free3ds)
         INSTALL_COMMAND cmake --build . --target install
     )
 
-    set(LIB3DS_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/external/free3ds/include)
+    set(Free3ds_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/external/free3ds/include)
     if(UNIX)
         if(APPLE)
             set(Free3ds_LIBRARIES "${CMAKE_BINARY_DIR}/external/free3ds/lib/libfree3ds.dylib")

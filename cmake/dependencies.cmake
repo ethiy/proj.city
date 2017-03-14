@@ -30,8 +30,12 @@ include_directories(SYSTEM ${Free3ds_INCLUDE_DIRS})
 list(APPEND LIBS ${Free3ds_LIBRARIES})
 
 # Find Imagine
-# include(cmake/modules/imagine++.cmake)
 find_package(Imagine REQUIRED)
+
+# Find Docopt
+include(cmake/modules/docopt.cmake)
+include_directories(SYSTEM ${Docopt_INCLUDE_DIRS})
+list(APPEND LIBS ${Docopt_LIBRARIES})
 
 # Find Catch
 include(cmake/modules/catch.cmake)
