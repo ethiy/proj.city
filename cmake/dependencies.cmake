@@ -32,6 +32,10 @@ list(APPEND LIBS ${Free3ds_LIBRARIES})
 # Find Imagine
 find_package(Imagine REQUIRED)
 
+# Find TinyXML2
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
+find_package(TinyXML2 REQUIRED)
+
 # Find Docopt
 include(cmake/modules/docopt.cmake)
 include_directories(SYSTEM ${Docopt_INCLUDE_DIRS})
