@@ -35,6 +35,8 @@ find_package(Imagine REQUIRED)
 # Find TinyXML2
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 find_package(TinyXML2 REQUIRED)
+include_directories(SYSTEM ${TINYXML2_INCLUDE_DIR})
+list(APPEND LIBS ${TINYXML2_LIBRARIES})
 
 # Find Docopt
 include(cmake/modules/docopt.cmake)

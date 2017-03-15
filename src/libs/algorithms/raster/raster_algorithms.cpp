@@ -1,7 +1,5 @@
 #include "raster_algorithms.h"
 
-#include "../../shadow/Point/point.h"
-
 #include <iterator>
 #include <algorithm>
 
@@ -9,25 +7,24 @@
 
 namespace urban
 {
-    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, const size_t & height, const size_t & width)
+    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, const size_t & height, const size_t & width, double z_offset)
     {
         
         std::vector<double> pixels(width * height);
         std::vector<size_t> indexes(width * height);
         std::iota(std::begin(indexes), std::end(indexes), 0);
-        InexactToExact to_exact;
         std::transform(
             std::begin(indexes),
             std::end(indexes),
             std::begin(pixels),
-            [&brick_projection, pixel_size, height, width, &to_exact](const size_t index)
+            [&brick_projection, pixel_size, height, width, z_offset](const size_t index)
             {
                 return brick_projection.get_height(
                     Point_2(
-                        to_exact(brick_projection.bbox().xmin() + (static_cast<double>(index%height) + .5) * pixel_size),
-                        to_exact(brick_projection.bbox().ymin() + (static_cast<double>(index/height) + .5) * pixel_size)
+                        brick_projection.bbox().xmin() + (static_cast<double>(index%height) + .5) * pixel_size,
+                        brick_projection.bbox().ymin() + (static_cast<double>(index/height) + .5) * pixel_size
                     )
-                );
+                ) + z_offset;
             }
         );
         return pixels;
@@ -49,14 +46,14 @@ namespace urban
         return target_image;
     }
 
-    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, double maximum_value)
+    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, shadow::Point pivot)
     {
         size_t height = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
         size_t width = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
 
         return projection::RasterPrint(
             brick_projection.get_name(),
-            shadow::Point(brick_projection.bbox().xmin(), brick_projection.bbox().ymin(), 0),
+            shadow::Point(pivot.x() + brick_projection.bbox().xmin(), pivot.y() + brick_projection.bbox().ymin(), 0),
             height,
             width,
             pixel_size,
@@ -64,7 +61,8 @@ namespace urban
                 brick_projection,
                 pixel_size,
                 height,
-                width
+                width,
+                pivot.z()
             )
         );
 

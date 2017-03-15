@@ -127,6 +127,12 @@ namespace urban
             return projected_surface.oriented_side(point) != CGAL::ON_NEGATIVE_SIDE;
         }
 
+        bool BrickPrint::contains(const InexactPoint_2 & inexact_point) const
+        {
+            InexactToExact to_exact;
+            return contains(to_exact(inexact_point));
+        }
+
         bool BrickPrint::in_domain(const Point_2 & point) const
         {
             return CGAL::do_overlap(bounding_box, point.bbox());
@@ -275,6 +281,22 @@ namespace urban
                     [point](double & result_height, const FacePrint & facet)
                     {
                         return result_height + facet.get_height(point);
+                    }
+                );
+            return height;
+        }
+
+        double BrickPrint::get_height(const InexactPoint_2 & inexact_point) const
+        {
+            double height(0);
+            if(contains(inexact_point))
+                height  = std::accumulate(
+                    std::begin(projected_facets),
+                    std::end(projected_facets),
+                    .0,
+                    [inexact_point](double & result_height, const FacePrint & facet)
+                    {
+                        return result_height + facet.get_height(inexact_point);
                     }
                 );
             return height;

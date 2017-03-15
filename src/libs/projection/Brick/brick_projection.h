@@ -45,6 +45,7 @@ namespace urban
 
             bool in_domain(const Point_2 & point) const;
             bool contains(const Point_2 & point) const;
+            bool contains(const InexactPoint_2 & inexact_point) const;
             bool contains(const FacePrint & facet) const;
             bool overlaps(const Polygon & polygon) const;
             bool overlaps(const Polygon_with_holes & polygon) const;
@@ -58,6 +59,7 @@ namespace urban
             void insert(const FacePrint & facet);
 
             double get_height(const Point_2 &) const;
+            double get_height(const InexactPoint_2 & inexact_point) const;
             double get_mean_height(const Polygon & window) const;
 
             void to_ogr(GDALDataset* file) const;

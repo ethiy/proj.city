@@ -35,7 +35,9 @@ namespace urban
             Vector_3 get_normal(void) const noexcept;
 
             double get_plane_height(const Point_2 &) const;
-            double get_height(const Point_2 &) const;
+            double get_plane_height(const InexactPoint_2 & inexact_point) const;
+            double get_height(const Point_2 & point) const;
+            double get_height(const InexactPoint_2 & inexact_point) const;
             double area(void) const;
             Bbox_2 bbox(void) const;
 
@@ -56,6 +58,7 @@ namespace urban
             bool is_perpendicular(void) const;
 
             bool contains(const Point_2 & point) const;
+            bool contains(const InexactPoint_2 & inexact_point) const;
 
             OGRFeature* to_ogr(OGRFeatureDefn* feature_definition) const;
         private:

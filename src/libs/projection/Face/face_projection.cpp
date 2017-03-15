@@ -91,10 +91,24 @@ namespace urban
             return to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
         }
 
+        double FacePrint::get_plane_height(const InexactPoint_2 & inexact_point) const
+        {
+            ExactToInexact to_inexact;
+            if( std::abs(to_inexact(supporting_plane.c())) < std::numeric_limits<double>::epsilon() )
+                throw std::overflow_error("The supporting plane is vertical!");
+            return ( -1 * to_inexact(supporting_plane.d()) - to_inexact(supporting_plane.a()) * inexact_point.x() - to_inexact(supporting_plane.b()) * inexact_point.y()) / to_inexact(supporting_plane.c()) ;
+        }
+
+
 
         double FacePrint::get_height(const Point_2 & point) const
         {
             return !is_degenerate() * contains(point) * get_plane_height(point) ;
+        }
+
+        double FacePrint::get_height(const InexactPoint_2 & inexact_point) const
+        {
+            return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
 
         double FacePrint::area(void) const
@@ -186,6 +200,12 @@ namespace urban
                             return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
                         }
                     );
+        }
+
+        bool FacePrint::contains(const InexactPoint_2 & inexact_point) const
+        {
+            InexactToExact to_exact;
+            return contains(to_exact(inexact_point));
         }
 
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const

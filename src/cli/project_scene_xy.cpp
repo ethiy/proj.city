@@ -4,6 +4,8 @@
 
 #include <boost/filesystem.hpp>
 
+#include <tinyxml2.h>
+
 #include <vector>
 #include <iostream>
 #include <map>
@@ -14,12 +16,13 @@ static const char USAGE[]=
 R"(project_scene_xy.
 
     Usage:
-      project_scene_xy <filename>
+      project_scene_xy <filename> [--pixel_size=<size>]
       project_scene_xy (-h | --help)
       project_scene_xy --version
     Options:
-      -h --help     Show this screen.
-      --version     Show version.
+      -h --help             Show this screen.
+      --version             Show version.
+      --pixel_size=<size>   Pixel size [default: 1].
 )";
 
 int main(int argc, const char** argv)
@@ -33,10 +36,38 @@ int main(int argc, const char** argv)
             true,
             "project_scene_xy 0.0.0-dev"
         );
-
+        std::stringstream sconverter(arguments.at("--pixel_size").asString());
+        double pixel_size(1);
+        sconverter >> pixel_size;
         std::cout << "Done" << std::endl;
 
         boost::filesystem::path input_path(arguments.at("<filename>").asString());
+        boost::filesystem::path root(input_path.parent_path());
+        boost::filesystem::path scene_tree_file(root / (input_path.stem().string() + ".XML"));
+                std::cout << scene_tree_file.string() << std::endl;
+
+        tinyxml2::XMLDocument scene_tree;
+        auto error = scene_tree.LoadFile(scene_tree_file.string().c_str());
+        if(error != tinyxml2::XML_SUCCESS)
+            throw std::runtime_error("Could not read Pivot Point");
+
+        double  x_offset(0),
+                y_offset(0),
+                z_offset(0);
+        
+        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
+        if(error != tinyxml2::XML_SUCCESS)
+            throw std::runtime_error("Could not read Pivot Point");
+        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
+        if(error != tinyxml2::XML_SUCCESS)
+            throw std::runtime_error("Could not read Pivot Point");
+        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
+        if(error != tinyxml2::XML_SUCCESS)
+            throw std::runtime_error("Could not read Pivot Point");
+        
+        urban::shadow::Point pivot(x_offset, y_offset, z_offset);
+
+        std::cout << "The shadow point : " << pivot << std::endl;
 
         std::map<std::string,bool> modes{{"write", true}, {"read", true}};
         urban::io::FileHandler<Lib3dsFile> handler(input_path, modes);
@@ -56,6 +87,27 @@ int main(int argc, const char** argv)
             }
         );
         std::cout << "Done" << std::endl;
+
+        #ifdef CGAL_USE_GEOMVIEW
+        CGAL::Geomview_stream geomview_stream;
+        geomview_stream.set_bg_color(CGAL::Color(0, 127, 200));
+        size_t pigment(1);
+        size_t all(meshes.size());
+        std::for_each(
+            std::begin(urban_objects),
+            std::end(urban_objects),
+            [&geomview_stream, pigment, all](urban::Brick & obj) mutable
+            {
+                geomview_stream << CGAL::Color(250 * (pigment - 1) / all, 0, 250 * pigment / all) << obj;
+                pigment++;
+            });
+
+        // geomview_stream.look_recenter();
+        std::cout << "Enter any character to continue the program:" << std::endl;
+        getchar();
+
+        #endif // CGAL_USE_GEOMVIEW
+
 
         std::cout << "Projecting on XY... ";
         std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
@@ -82,12 +134,11 @@ int main(int argc, const char** argv)
         );
         std::cout << "Done" << std::endl;
 
-        boost::filesystem::path root(input_path.remove_leaf());
         urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".geotiff")), modes);
         urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
         std::cout << "Saving projections... ";
         victor.write(scene_projection);
-        rasta.write(urban::rasterize(scene_projection, .1, 8));
+        rasta.write(urban::rasterize(scene_projection, pixel_size, pivot));
         std::cout << "Done" << std::endl;
     }
     catch(const std::exception& except)
