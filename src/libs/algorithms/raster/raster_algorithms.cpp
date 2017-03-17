@@ -7,7 +7,7 @@
 
 namespace urban
 {
-    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, const size_t & height, const size_t & width, double z_offset)
+    std::vector<double> rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, const size_t & width, const size_t & height, double z_offset)
     {
         
         std::vector<double> pixels(width * height);
@@ -21,8 +21,8 @@ namespace urban
             {
                 return brick_projection.get_height(
                     Point_2(
-                        brick_projection.bbox().xmin() + (static_cast<double>(index%height) + .5) * pixel_size,
-                        brick_projection.bbox().ymin() + (static_cast<double>(index/height) + .5) * pixel_size
+                        brick_projection.bbox().xmin() + (static_cast<double>(index%width) + .5) * pixel_size,
+                        brick_projection.bbox().ymin() + (static_cast<double>(index/width) + .5) * pixel_size
                     )
                 ) + z_offset;
             }
@@ -48,8 +48,8 @@ namespace urban
 
     projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, shadow::Point pivot)
     {
-        size_t height = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
-        size_t width = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
+        size_t width = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
+        size_t height = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
 
         return projection::RasterPrint(
             brick_projection.get_name(),
@@ -60,8 +60,8 @@ namespace urban
             rasterize(
                 brick_projection,
                 pixel_size,
-                height,
                 width,
+                height,
                 pivot.z()
             )
         );
