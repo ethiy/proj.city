@@ -56,18 +56,28 @@ namespace urban
             return width;
         }
 
+        shadow::Point RasterPrint::get_reference_point() const noexcept
+        {
+            return reference_point;
+        }
+
+        double RasterPrint::get_pixel_size() const noexcept
+        {
+            return pixel_size;
+        }
+
         std::array<double, 6> RasterPrint::get_geographic_transform(void) const
         {
             return std::array<double, 6>{{reference_point.x(), pixel_size, 0, reference_point.y(), 0, pixel_size}};
         }
 
-        std::vector<double> RasterPrint::get_array(void) const
+        double* RasterPrint::data(void) const
         {
-            std::vector<double> raster_array(width * height);
+            double* raster_array = reinterpret_cast<double*>(calloc(sizeof(double), width * height));
             std::transform(
                 image_matrix.coordsBegin(),
                 image_matrix.coordsEnd(),
-                std::begin(raster_array),
+                raster_array,
                 [this](const Imagine::Coords<2> & coordinates)
                 {
                     return image_matrix(coordinates);

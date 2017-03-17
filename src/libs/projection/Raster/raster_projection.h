@@ -30,8 +30,10 @@ namespace urban
 
             size_t get_height(void) const noexcept;
             size_t get_width(void) const noexcept;
+            shadow::Point get_reference_point() const noexcept;
+            double get_pixel_size() const noexcept;
             std::array<double, 6> get_geographic_transform(void) const;
-            std::vector<double> get_array(void) const;
+            double* data(void) const;
 
             void swap(RasterPrint & other);
 
