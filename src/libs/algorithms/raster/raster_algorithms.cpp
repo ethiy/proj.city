@@ -53,7 +53,7 @@ namespace urban
 
         return projection::RasterPrint(
             brick_projection.get_name(),
-            shadow::Point(pivot.x() + brick_projection.bbox().xmin(), pivot.y() + brick_projection.bbox().ymin(), 0),
+            shadow::Point(pivot.x() + brick_projection.bbox().xmin(), pivot.y() + brick_projection.bbox().ymin(), pivot.z()),
             height,
             width,
             pixel_size,
