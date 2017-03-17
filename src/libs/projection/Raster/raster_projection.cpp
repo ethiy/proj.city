@@ -97,6 +97,15 @@ namespace urban
             swap(image_matrix, other.image_matrix);
         }
 
+        double & RasterPrint::at(const size_t i, const size_t j)
+        {
+            if(i<0 && i>height && j<0 && j>width)
+                throw std::out_of_range("You iz out of rangez!!");
+            return image_matrix(i, j);
+        }
+
+        const double & RasterPrint::at(const size_t i, const size_t j) const;
+
         RasterPrint & RasterPrint::operator=(const RasterPrint & other) noexcept
         {
             name = other.name;

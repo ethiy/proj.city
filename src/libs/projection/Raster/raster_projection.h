@@ -37,6 +37,9 @@ namespace urban
 
             void swap(RasterPrint & other);
 
+            double & at(const size_t i, const size_t j);
+            const double & at(const size_t i, const size_t j) const;
+
             RasterPrint & operator=(const RasterPrint & other) noexcept;
             RasterPrint & operator=(RasterPrint && other) noexcept;
 
