@@ -129,6 +129,45 @@ namespace urban
             return border.bbox();
         }
 
+
+        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection) const
+        {
+            if(!is_degenerate())
+            {
+                /**
+                 * 'bb(ox)' pronounced in french could mean babe alias bae
+                 */
+                Bbox_2 bae = border.bbox();
+                double pixel_size = raster_projection.get_pixel_size();
+                size_t  i_min = std::ceil((bae.ymin() - raster_projection.get_reference_point().y()) / pixel_size),
+                        j_min = std::ceil((bae.xmin() - raster_projection.get_reference_point().x()) / pixel_size);
+                double z_offset = raster_projection.get_reference_point().z();
+                if(i_min < 0 && j_min < 0)
+                    throw std::runtime_error("Oh noooz!! I iz outsidez ze box");
+                size_t  w = std::ceil((bae.xmax() - bae.xmin()) / pixel_size),
+                        h = std::ceil((bae.ymax() - bae.ymin()) / pixel_size);
+                if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
+                    throw std::runtime_error("Oh noooz!! I iz outsidez ze box");
+                std::vector<size_t> indexes(w * h);
+                std::for_each(
+                    std::begin(indexes),
+                    std::end(indexes),
+                    [&raster_projection, pixel_size, h, w, z_offset, &bae](const size_t index)
+                    {
+                        raster_projection.at(index%w, index/w) = get_height(
+                            Point_2(
+                                bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
+                                bae.ymin() + (static_cast<double>(index/w) + .5) * pixel_size
+                            )
+                        ) + z_offset;
+                    }
+                );
+
+            }
+            
+            return raster_projection;
+        }
+
         bool FacePrint::has_same_border(const FacePrint & other) const
         {
             bool result(false);
