@@ -88,27 +88,6 @@ int main(int argc, const char** argv)
         );
         std::cout << "Done" << std::endl;
 
-        #ifdef CGAL_USE_GEOMVIEW
-        CGAL::Geomview_stream geomview_stream;
-        geomview_stream.set_bg_color(CGAL::Color(0, 127, 200));
-        size_t pigment(1);
-        size_t all(meshes.size());
-        std::for_each(
-            std::begin(urban_objects),
-            std::end(urban_objects),
-            [&geomview_stream, pigment, all](urban::Brick & obj) mutable
-            {
-                geomview_stream << CGAL::Color(250 * (pigment - 1) / all, 0, 250 * pigment / all) << obj;
-                pigment++;
-            });
-
-        // geomview_stream.look_recenter();
-        std::cout << "Enter any character to continue the program:" << std::endl;
-        getchar();
-
-        #endif // CGAL_USE_GEOMVIEW
-
-
         std::cout << "Projecting on XY... ";
         std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
         std::transform(
