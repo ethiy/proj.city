@@ -2,7 +2,7 @@ set(LIBS "")
 set(LIBS_DIRS "")
 
 # Find Boost
-FIND_PACKAGE(Boost REQUIRED filesystem system)
+FIND_PACKAGE(Boost REQUIRED filesystem system regex)
 
 set(Boost_USE_STATIC_LIBS        OFF)
 set(Boost_USE_MULTITHREADED      ON)

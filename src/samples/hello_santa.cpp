@@ -1,4 +1,4 @@
-#include "../libs/urban.h"
+#include <urban.h>
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>

@@ -1,4 +1,4 @@
-#include "../libs/urban.h"
+#include <urban.h>
 
 #include <docopt.h>
 
