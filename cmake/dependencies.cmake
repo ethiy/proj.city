@@ -37,8 +37,8 @@ list(APPEND LIBS ${TINYXML2_LIBRARIES})
 
 # Find Imagine
 find_package(Imagine REQUIRED)
-include_directories(SYSTEM ${Imagine_INCLUDE_DIR})
-list(APPEND LIBS ${Imagine_LIBRARIES})
+# include_directories(SYSTEM ${Imagine_INCLUDE_DIR})
+# list(APPEND LIBS ${Imagine_LIBRARIES})
 
 # Find Docopt
 include(cmake/modules/docopt.cmake)
