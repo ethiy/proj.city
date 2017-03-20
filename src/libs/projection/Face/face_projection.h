@@ -13,6 +13,8 @@ namespace urban
 {
     namespace projection
     {
+        class RasterPrint;
+        
         class FacePrint
         {
         public:
@@ -35,9 +37,13 @@ namespace urban
             Vector_3 get_normal(void) const noexcept;
 
             double get_plane_height(const Point_2 &) const;
-            double get_height(const Point_2 &) const;
+            double get_plane_height(const InexactPoint_2 & inexact_point) const;
+            double get_height(const Point_2 & point) const;
+            double get_height(const InexactPoint_2 & inexact_point) const;
             double area(void) const;
             Bbox_2 bbox(void) const;
+
+            RasterPrint & rasterize_to(RasterPrint & raster_projection) const;
 
             bool has_same_border(const FacePrint & other) const;
             bool has_same_plane(const FacePrint & other) const;
@@ -47,15 +53,18 @@ namespace urban
             Hole_const_iterator holes_end(void) const;
             
             /**
+            * Checks if the face projection is degenerate
             * In our case, two edges are coinciding means that all edges are so,
             * Due to the fact that all edges are supported by the same plane:
             *  - This means that we should just check if the area is null to assert
             *      that the projection is degenarate.
+            * @return boolean: true if degenerate and false if not
             */
             bool is_degenerate(void) const;
             bool is_perpendicular(void) const;
 
             bool contains(const Point_2 & point) const;
+            bool contains(const InexactPoint_2 & inexact_point) const;
 
             OGRFeature* to_ogr(OGRFeatureDefn* feature_definition) const;
         private:

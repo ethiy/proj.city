@@ -32,6 +32,7 @@ matrix:
         - brew update
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
+        - brew install lib3ds
         - brew outdated qt5 || brew upgrade qt5
         - brew outdated wget || brew upgrade wget
         - mkdir 3rdParty && cd 3rdParty

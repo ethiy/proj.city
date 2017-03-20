@@ -1,6 +1,7 @@
 #include "face_projection.h"
 
 #include "../../algorithms/projection/projection_algorithms.h"
+#include "../Raster/raster_projection.h"
 #include "../../algorithms/ogr/ogr_algorithms.h"
 
 #include <ogr_geometry.h>
@@ -91,10 +92,23 @@ namespace urban
             return to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
         }
 
+        double FacePrint::get_plane_height(const InexactPoint_2 & inexact_point) const
+        {
+            ExactToInexact to_inexact;
+            if( std::abs(to_inexact(supporting_plane.c())) < std::numeric_limits<double>::epsilon() )
+                throw std::overflow_error("The supporting plane is vertical!");
+            return ( -1 * to_inexact(supporting_plane.d()) - to_inexact(supporting_plane.a()) * inexact_point.x() - to_inexact(supporting_plane.b()) * inexact_point.y()) / to_inexact(supporting_plane.c()) ;
+        }
+
 
         double FacePrint::get_height(const Point_2 & point) const
         {
             return !is_degenerate() * contains(point) * get_plane_height(point) ;
+        }
+
+        double FacePrint::get_height(const InexactPoint_2 & inexact_point) const
+        {
+            return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
 
         double FacePrint::area(void) const
@@ -113,6 +127,44 @@ namespace urban
         Bbox_2 FacePrint::bbox(void) const
         {
             return border.bbox();
+        }
+
+        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection) const
+        {
+            if(!is_degenerate())
+            {
+                /**
+                 * 'bb(ox)' pronounced in french could mean babe alias bae
+                 */
+                Bbox_2 bae = border.bbox();
+                double pixel_size = raster_projection.get_pixel_size();
+                int i_min = static_cast<int>(std::ceil((bae.ymin() - raster_projection.get_reference_point().y()) / pixel_size)),
+                        j_min = static_cast<int>(std::ceil((bae.xmin() - raster_projection.get_reference_point().x()) / pixel_size));
+                double z_offset = raster_projection.get_reference_point().z();
+                if(i_min < 0 && j_min < 0)
+                    throw std::runtime_error("Oh noooz!! I iz outsidez ze box");
+                int w = static_cast<int>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
+                        h = static_cast<int>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
+                if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
+                    throw std::runtime_error("Oh noooz!! I iz outsidez ze box");
+                std::vector<int> indexes(w * h);
+                std::for_each(
+                    std::begin(indexes),
+                    std::end(indexes),
+                    [&raster_projection, pixel_size, h, w, z_offset, &bae, this](const int index)
+                    {
+                        raster_projection.at(index%w, index/w) = get_height(
+                            Point_2(
+                                bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
+                                bae.ymin() + (static_cast<double>(index/w) + .5) * pixel_size
+                            )
+                        ) + z_offset;
+                    }
+                );
+
+            }
+            
+            return raster_projection;
         }
 
         bool FacePrint::has_same_border(const FacePrint & other) const
@@ -186,6 +238,12 @@ namespace urban
                             return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
                         }
                     );
+        }
+
+        bool FacePrint::contains(const InexactPoint_2 & inexact_point) const
+        {
+            InexactToExact to_exact;
+            return contains(to_exact(inexact_point));
         }
 
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
