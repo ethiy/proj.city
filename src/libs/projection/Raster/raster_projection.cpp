@@ -29,7 +29,7 @@ namespace urban
 
         RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_width), width(_height), pixel_size(geographic_transform[1])
         {
-            if(geographic_transform[1] != geographic_transform[5])
+            if(std::abs(geographic_transform[1] - geographic_transform[5]) > std::numeric_limits<double>::epsilon())
                 throw std::logic_error("this case is not treated here");
             
             double* buffer = new double[width * height];
@@ -99,12 +99,17 @@ namespace urban
 
         double & RasterPrint::at(const size_t i, const size_t j)
         {
-            if(i<0 && i>height && j<0 && j>width)
+            if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
             return image_matrix(i, j);
         }
 
-        const double & RasterPrint::at(const size_t i, const size_t j) const;
+        const double & RasterPrint::at(const size_t i, const size_t j) const
+        {
+            if(i>height && j>width)
+                throw std::out_of_range("You iz out of rangez!!");
+            return image_matrix(i, j);
+        }
 
         RasterPrint & RasterPrint::operator=(const RasterPrint & other) noexcept
         {
@@ -141,7 +146,7 @@ namespace urban
 
         RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
         {
-            if(pixel_size != other.pixel_size && reference_point != other.reference_point)
+            if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
             image_matrix += other.image_matrix;
             return *this;
@@ -149,7 +154,7 @@ namespace urban
         
         RasterPrint & RasterPrint::operator-=(const RasterPrint & other)
         {
-            if(pixel_size != other.pixel_size && reference_point != other.reference_point)
+            if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
             image_matrix -= other.image_matrix;
             return *this;
@@ -179,7 +184,7 @@ namespace urban
 
         bool operator==(RasterPrint & lhs, const RasterPrint & rhs)
         {
-            return lhs.pixel_size == rhs.pixel_size && lhs.reference_point == rhs.reference_point && lhs.image_matrix == rhs.image_matrix;
+            return std::abs(lhs.pixel_size - rhs.pixel_size) < std::numeric_limits<double>::epsilon() && lhs.reference_point == rhs.reference_point && lhs.image_matrix == rhs.image_matrix;
         }
         
         bool operator!=(RasterPrint & lhs, const RasterPrint & rhs)

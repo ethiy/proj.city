@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
-#include "../Raster/raster_projection.h"
 
 #include <ogrsf_frmts.h>
 
@@ -14,6 +13,8 @@ namespace urban
 {
     namespace projection
     {
+        class RasterPrint;
+        
         class FacePrint
         {
         public:

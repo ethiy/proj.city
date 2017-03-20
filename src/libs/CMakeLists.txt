@@ -33,10 +33,10 @@ set(Projection_HEADER
     "${3DSceneModel_SOURCE_DIR}/src/libs/projection/projection.h"
 )
 set(Projection_SRC
-    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/brick/brick_projection.cpp"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/camera/camera.cpp"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/face/face_projection.cpp"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/raster/raster_projection.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/Brick/brick_projection.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/Camera/camera.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/Face/face_projection.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/projection/Raster/raster_projection.cpp"
 )
 
 add_library(urban_projection ${Projection_HEADER} ${Projection_SRC} ${Brick_HEADERS} ${Algorithms_HEADER})

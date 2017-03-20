@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Brick/brick_projection.h"
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../../shadow/Point/point.h"
 
