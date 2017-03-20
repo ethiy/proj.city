@@ -32,6 +32,7 @@ matrix:
         - brew update
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
+        - brew install lib3ds
         - mkdir $HOME/3rdParty && cd $HOME/3rdParty
         - curl -O http://download.osgeo.org/gdal/2.1.3/gdal213.zip
         - unzip gdal213.zip
