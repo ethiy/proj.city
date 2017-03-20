@@ -1,5 +1,6 @@
 set(LIBS "")
 set(LIBS_DIRS "")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 # Find Boost
 FIND_PACKAGE(Boost REQUIRED filesystem system regex)
@@ -23,20 +24,19 @@ find_package(GDAL REQUIRED)
 include_directories(${GDAL_INCLUDE_DIR})
 list(APPEND LIBS ${GDAL_LIBRARY})
 
-# Find Free3ds
-include(cmake/modules/free3ds.cmake)
+# Find Lib3ds
+find_package(Lib3ds REQUIRED)
 
-include_directories(SYSTEM ${Free3ds_INCLUDE_DIRS})
-list(APPEND LIBS ${Free3ds_LIBRARIES})
-
-# Find Imagine
-find_package(Imagine REQUIRED)
+include_directories(SYSTEM ${Lib3ds_INCLUDE_DIR})
+list(APPEND LIBS ${Lib3ds_LIBRARIES})
 
 # Find TinyXML2
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 find_package(TinyXML2 REQUIRED)
 include_directories(SYSTEM ${TINYXML2_INCLUDE_DIR})
 list(APPEND LIBS ${TINYXML2_LIBRARIES})
+
+# Find Imagine
+find_package(Imagine REQUIRED)
 
 # Find Docopt
 include(cmake/modules/docopt.cmake)
