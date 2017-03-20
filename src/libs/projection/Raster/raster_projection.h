@@ -22,6 +22,7 @@ namespace urban
         public:
             RasterPrint(void);
             RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t height, const size_t width, double pixel_size, const std::vector<double> & image_array);
+            RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t height, const size_t width, double pixel_size);
             RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t height, const size_t width, GDALRasterBand* raster_band);
             RasterPrint(const RasterPrint & other);
             RasterPrint(RasterPrint && other);

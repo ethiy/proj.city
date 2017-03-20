@@ -27,6 +27,9 @@ namespace urban
             image_matrix = Imagine::Image<double>(buffer, width, height);
         }
 
+        RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size)
+            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(Imagine::Image<double>(width, height)) {}
+
         RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_width), width(_height), pixel_size(geographic_transform[1])
         {
             if(std::abs(geographic_transform[1] - geographic_transform[5]) > std::numeric_limits<double>::epsilon())
