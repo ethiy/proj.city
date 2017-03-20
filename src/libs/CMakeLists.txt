@@ -77,8 +77,11 @@ set(IO_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_gdal.cpp"
 )
 
-add_library(urban_io ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Projection_HEADER})
-target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
+add_library(urban_io_line ${Line_SRC} ${Line_HEADER})
+target_link_libraries(urban_io_line)
+
+add_library(urban_io ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Projection_HEADER} ${Line_HEADER})
+target_link_libraries(urban_io urban_io_line urban_shadow urban_projection ${LIBS})
 
 # urban
 set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
