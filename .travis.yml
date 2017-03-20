@@ -39,9 +39,7 @@ matrix:
         - mkdir GDAL && cd GDAL
         - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-2.1.dmg
         - sudo hdiutil attach GDAL_Complete-2.1.dmg
-        - ls "/Volumes/GDAL Complete"
         - sudo installer -pkg "/Volumes/GDAL Complete/GDAL Complete.pkg" -target /
-        - sudo hdiutil detach GDAL_Complete-2.1.dmg
         - cd .. && mkdir Imagine++ && cd Imagine++
         - wget http://imagine.enpc.fr/~monasse/Imagine++/downloads/Imagine++-4.3.1-Darwin-i386.pkg
         - sudo installer -package Imagine++-4.3.1-Darwin-i386.pkg
