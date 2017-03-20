@@ -30,7 +30,7 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-gdal"
   - ps: |
-		New-Item -ItemType Directory -Path .\3rParty
+        New-Item -ItemType Directory -Path .\3rParty
         Set-Location 3rParty
   - cmd: git clone https://github.com/Ethiy/imagine-pp.git
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/imagine-pp; mkdir build; cd build; /mingw64/bin/cmake -G'Unix Makefiles' .. ; make -j4; make install"
