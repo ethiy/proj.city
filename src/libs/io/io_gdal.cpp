@@ -182,7 +182,7 @@ namespace urban
             return raster_projection;
         }
 
-        void FileHandler<GDALDriver>::write(const projection::RasterPrint & raster_image) const
+        void FileHandler<GDALDriver>::write(projection::RasterPrint & raster_image) const
         {
             std::ostringstream error_message;
 
@@ -203,10 +203,8 @@ namespace urban
                     double adfGeoTransform[6];
 
                     double* gdal_buffer = raster_image.data();
-                    
 
                     std::array<double, 6> geographic_transform = raster_image.get_geographic_transform();
-
                     std::copy(std::begin(geographic_transform), std::end(geographic_transform), adfGeoTransform);
 
                     GDALDataset* file =  driver->Create(filepath.string().c_str(), height, width, 1, GDT_Float64, NULL);

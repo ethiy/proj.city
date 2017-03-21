@@ -11,7 +11,7 @@ set(Boost_USE_STATIC_RUNTIME     OFF)
 set(BOOST_ALL_DYN_LINK           OFF)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
+list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_REGEX_LIBRARY})
 
 # Find CGAL
 FIND_PACKAGE(CGAL REQUIRED)
@@ -34,11 +34,6 @@ list(APPEND LIBS ${Lib3ds_LIBRARIES})
 find_package(TinyXML2 REQUIRED)
 include_directories(SYSTEM ${TINYXML2_INCLUDE_DIR})
 list(APPEND LIBS ${TINYXML2_LIBRARIES})
-
-# Find Imagine
-find_package(Imagine REQUIRED)
-# include_directories(SYSTEM ${Imagine_INCLUDE_DIR})
-# list(APPEND LIBS ${Imagine_LIBRARIES})
 
 # Find Docopt
 include(cmake/modules/docopt.cmake)

@@ -115,9 +115,13 @@ int main(int argc, const char** argv)
 
         urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".geotiff")), modes);
         urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
+        std::cout << "rasterizing projections... ";
+        urban::projection::RasterPrint rastafari = urban::rasterize(scene_projection, pixel_size, pivot);
+        std::cout << "Done" << std::endl;
+
         std::cout << "Saving projections... ";
         victor.write(scene_projection);
-        rasta.write(urban::rasterize(scene_projection, pixel_size, pivot));
+        rasta.write(rastafari);
         std::cout << "Done" << std::endl;
     }
     catch(const std::exception& except)
