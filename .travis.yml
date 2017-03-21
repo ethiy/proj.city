@@ -43,7 +43,7 @@ matrix:
         - sudo installer -package "/Volumes/GDAL Complete/GDAL Complete.pkg" -target /
         - cd .. && mkdir Imagine++ && cd Imagine++
         - wget http://imagine.enpc.fr/~monasse/Imagine++/downloads/Imagine++-4.3.1-Darwin-i386.pkg
-        - sudo installer -package Imagine++-4.3.1-Darwin-i386.pkg /
+        - sudo installer -package Imagine++-4.3.1-Darwin-i386.pkg -target /
         - cd $HOME
       install:
         - mkdir build && mkdir build/darwin && cd build/darwin
