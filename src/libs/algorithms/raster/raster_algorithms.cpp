@@ -48,23 +48,17 @@ namespace urban
 
     projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, shadow::Point pivot)
     {
-        size_t width = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
-        size_t height = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
+        size_t width = std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size);
+        size_t height = std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size);
 
-        projection::RasterPrint rasta(
-            brick_projection.get_name(),
-            shadow::Point(pivot.x() + brick_projection.bbox().xmin(), pivot.y() + brick_projection.bbox().ymin(), pivot.z()),
-            height,
-            width,
-            pixel_size
-        );
+        std::list<projection::FacePrint> buffer{{*(brick_projection.cbegin())}};
 
-        std::accumulate(
-            brick_projection.cbegin(),
-            brick_projection.cend(),
+        return std::accumulate(
+            buffer.cbegin(),
+            buffer.cend(),
             projection::RasterPrint(
                 brick_projection.get_name(),
-                shadow::Point(pivot.x() + brick_projection.bbox().xmin(), pivot.y() + brick_projection.bbox().ymin(), pivot.z()),
+                shadow::Point(pivot.x() + brick_projection.bbox().xmin(), pivot.y() + brick_projection.bbox().ymax(), pivot.z()),
                 height,
                 width,
                 pixel_size
@@ -74,7 +68,5 @@ namespace urban
                 return face_projection.rasterize_to(result);
             }
         );
-
-        return rasta;
     }
 }
