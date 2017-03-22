@@ -39,12 +39,12 @@ int main(int argc, const char** argv)
         std::stringstream sconverter(arguments.at("--pixel_size").asString());
         double pixel_size(1);
         sconverter >> pixel_size;
-        std::cout << "Done" << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
 
         boost::filesystem::path input_path(arguments.at("<filename>").asString());
         boost::filesystem::path root(input_path.parent_path());
         boost::filesystem::path scene_tree_file(root / (input_path.stem().string() + ".XML"));
-                std::cout << scene_tree_file.string() << std::endl;
+                std::cout << scene_tree_file.string() << std::flush << std::endl;
 
         tinyxml2::XMLDocument scene_tree;
         auto error = scene_tree.LoadFile(scene_tree_file.string().c_str());
@@ -67,26 +67,26 @@ int main(int argc, const char** argv)
         
         urban::shadow::Point pivot(x_offset, y_offset, z_offset);
 
-        std::cout << "The shadow point : " << pivot << std::endl;
+        std::cout << "The shadow point : " << pivot << std::flush << std::endl;
 
         std::map<std::string,bool> modes{{"write", true}, {"read", true}};
         urban::io::FileHandler<Lib3dsFile> handler(input_path, modes);
         std::cout << "Reading Scene Meshes... ";
         std::vector<urban::shadow::Mesh> meshes = handler.read();
-        std::cout << "Done" << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
 
         std::cout << "Loading to Scene Bricks... ";
-        std::vector<urban::Brick> urban_objects(meshes.size());
-        std::transform(
+        std::vector<urban::Brick> urban_objects;
+        std::for_each(
             std::begin(meshes),
             std::end(meshes),
-            std::begin(urban_objects),
-            [](const urban::shadow::Mesh & mesh)
+            [&urban_objects](const urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh);
+                if(mesh.get_name().at(0) == 'T')
+                    urban_objects.push_back(urban::Brick(mesh));
             }
         );
-        std::cout << "Done" << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
 
         std::cout << "Projecting on XY... ";
         std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
@@ -99,7 +99,7 @@ int main(int argc, const char** argv)
                 return urban::project(brick);
             }
         );
-        std::cout << "Done" << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
 
         std::cout << "Summing Projections... ";
         urban::projection::BrickPrint scene_projection = std::accumulate(
@@ -111,22 +111,26 @@ int main(int argc, const char** argv)
                 return rhs + lhs;
             }
         );
-        std::cout << "Done" << std::endl;
-
-        urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".geotiff")), modes);
+        std::cout << "Done" << std::flush << std::endl;
+        
+        std::cout << "Saving vector projections... ";
         urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
+        victor.write(scene_projection);
+        std::cout << "Done" << std::flush << std::endl;
+
+
         std::cout << "rasterizing projections... ";
         urban::projection::RasterPrint rastafari = urban::rasterize(scene_projection, pixel_size, pivot);
-        std::cout << "Done" << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
 
-        std::cout << "Saving projections... ";
-        victor.write(scene_projection);
+        std::cout << "Saving raster projections... ";
+        urban::io::FileHandler<GDALDriver> rasta("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".geotiff")), modes);
         rasta.write(rastafari);
-        std::cout << "Done" << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
     }
     catch(const std::exception& except)
     {
-        std::cerr << except.what() << std::endl;
+        std::cerr << except.what() << std::flush << std::endl;
     }
     return EXIT_SUCCESS;
 }

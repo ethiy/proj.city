@@ -171,7 +171,7 @@ namespace urban
                                 i_min + index/w,
                                 j_min + index%w
                             )
-                             = 
+                            += 
                             get_height
                             (
                                 Point_2
