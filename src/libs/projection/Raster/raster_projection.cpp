@@ -4,6 +4,7 @@
 
 #include <iterator>
 #include <algorithm>
+#include <iomanip>
 
 #include <cmath>
 
@@ -21,15 +22,15 @@ namespace urban
         }
 
         RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size)
-            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size) {}
+            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(_height * _width, _reference_point.z()) {}
 
         RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band)
-            : name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_width), width(_height), pixel_size(geographic_transform[1]), image_matrix(height * width)
+            : name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1]), image_matrix(_height * _width)
         {
-            // if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
-            //     throw std::logic_error("this case is not treated here");
+            if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
+                throw std::logic_error("this case is not treated here");
             
-            double* buffer = reinterpret_cast<double*>(_width * _height);
+            double* buffer = reinterpret_cast<double*>(calloc(sizeof(double), _width * _height));
             CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_Float64,0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
@@ -190,6 +191,8 @@ namespace urban
                << "Width : " << raster_projection.width << std::endl
                << "Image Matrix : " << std::endl
                << "[[";
+            
+            os << std::setprecision(6) << std::fixed;
 
             for(size_t it(0); it < raster_projection.height * raster_projection.width; ++it)
             {
@@ -199,8 +202,8 @@ namespace urban
                 else
                 {
                     os << "]";
-                    if(it + 1 == raster_projection.width * raster_projection.height)
-                        os << "," << std::endl << "[";
+                    if(it + 1 != raster_projection.width * raster_projection.height)
+                        os << "," << std::endl << " [";
                 }
             }            
             os << "]" << std::endl;
