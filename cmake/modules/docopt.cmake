@@ -6,7 +6,7 @@ if(NOT TARGET docopt)
         GIT_TAG v0.6.2
         CMAKE_ARGS  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                     -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/external/docopt
-                    -DUSE_BOOST_REGEX=ON
+                    -DUSE_BOOST_REGEX=OFF
         BUILD_COMMAND cmake --build . --target all
         INSTALL_COMMAND cmake --build . --target install
     )

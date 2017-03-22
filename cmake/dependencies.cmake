@@ -3,15 +3,15 @@ set(LIBS_DIRS "")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 # Find Boost
-FIND_PACKAGE(Boost REQUIRED filesystem system regex)
+FIND_PACKAGE(Boost REQUIRED filesystem system)
 
-set(Boost_USE_STATIC_LIBS        OFF)
+set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME     OFF)
 set(BOOST_ALL_DYN_LINK           OFF)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_REGEX_LIBRARY})
+list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 
 # Find CGAL
 FIND_PACKAGE(CGAL REQUIRED)
