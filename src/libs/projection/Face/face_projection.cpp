@@ -142,26 +142,44 @@ namespace urban
                 double pixel_size = raster_projection.get_pixel_size();
                 size_t i_min = static_cast<size_t>(std::ceil((raster_projection.get_reference_point().y() - bae.ymax()) / pixel_size)),
                     j_min = static_cast<size_t>(std::ceil((bae.xmin() - raster_projection.get_reference_point().x()) / pixel_size));
-                double z_offset = raster_projection.get_reference_point().z();
                 size_t w = static_cast<size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
                     h = static_cast<size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
                 if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
                     throw std::runtime_error("Oh noooz!! I iz outsidez ze box");
                 std::vector<size_t> indexes(w * h);
                 std::iota(std::begin(indexes), std::end(indexes), 0);
-                std::transform(
+                std::cout << i_min << " " << j_min << " " << h << " " << w << std::endl;
+                std::for_each(
                     std::begin(indexes),
                     std::end(indexes),
-                    std::begin(raster_projection),
-                    std::begin(raster_projection),
-                    [pixel_size, h, w, z_offset, &bae, this](double pixel, const size_t index)
+                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](const size_t index)
                     {
-                        return pixel + get_height(
-                            Point_2(
-                                bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
-                                bae.ymax() - (static_cast<double>(index/w) + .5) * pixel_size
+                        if(
+                            contains(
+                                Point_2(
+                                    bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
+                                    bae.ymax() - (static_cast<double>(index/w) + .5) * pixel_size
+                                )
                             )
-                        ) + z_offset;
+                        )
+                        {
+                            std::cout << index/w << " " << index%w << std::endl;
+                            raster_projection.at
+                            (
+                                i_min + index/w,
+                                j_min + index%w
+                            )
+                             = 
+                            get_height
+                            (
+                                Point_2
+                                (
+                                    bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
+                                    bae.ymax() - (static_cast<double>(index/w) + .5) * pixel_size
+                                )
+                            );
+                        }
+
                     }
                 );
 
