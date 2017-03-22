@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
+#include "../../shadow/Point/point.h"
 
 #include <ogrsf_frmts.h>
 
@@ -43,7 +44,7 @@ namespace urban
             double area(void) const;
             Bbox_2 bbox(void) const;
 
-            RasterPrint & rasterize_to(RasterPrint & raster_projection) const;
+            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const;
 
             bool has_same_border(const FacePrint & other) const;
             bool has_same_plane(const FacePrint & other) const;

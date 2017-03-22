@@ -131,7 +131,7 @@ namespace urban
         }
 
 
-        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection) const
+        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const
         {
             if(!is_degenerate())
             {
@@ -140,15 +140,19 @@ namespace urban
                  */
                 Bbox_2 bae = border.bbox();
                 double pixel_size = raster_projection.get_pixel_size();
-                size_t i_min = static_cast<size_t>(std::ceil((raster_projection.get_reference_point().y() - bae.ymax()) / pixel_size)),
-                    j_min = static_cast<size_t>(std::ceil((bae.xmin() - raster_projection.get_reference_point().x()) / pixel_size));
-                size_t w = static_cast<size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
-                    h = static_cast<size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
+                size_t  i_min = static_cast<size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
+                        j_min = static_cast<size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
+                size_t  w = static_cast<size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
+                        h = static_cast<size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
                 if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
-                    throw std::runtime_error("Oh noooz!! I iz outsidez ze box");
+                {
+                    std::stringstream error_message("Oh noooz!! I iz outsidez ze box");
+                    error_message << i_min + h << " > " << raster_projection.get_height() << " or " << j_min + w << " > " << raster_projection.get_width();
+                    throw std::runtime_error(error_message.str());
+
+                }
                 std::vector<size_t> indexes(w * h);
                 std::iota(std::begin(indexes), std::end(indexes), 0);
-                std::cout << i_min << " " << j_min << " " << h << " " << w << std::endl;
                 std::for_each(
                     std::begin(indexes),
                     std::end(indexes),
@@ -162,8 +166,6 @@ namespace urban
                                 )
                             )
                         )
-                        {
-                            std::cout << index/w << " " << index%w << std::endl;
                             raster_projection.at
                             (
                                 i_min + index/w,
@@ -178,8 +180,6 @@ namespace urban
                                     bae.ymax() - (static_cast<double>(index/w) + .5) * pixel_size
                                 )
                             );
-                        }
-
                     }
                 );
 
