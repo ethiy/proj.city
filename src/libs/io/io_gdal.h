@@ -32,7 +32,7 @@ namespace urban
             template<class return_class> return_class read(void) const;
 
             void write(const projection::BrickPrint & brick_projection) const;
-            void write(projection::RasterPrint & raster_image) const;
+            void write(const projection::RasterPrint & raster_image) const;
         private:
             std::string driver_name;
             bool raster;
