@@ -3,8 +3,6 @@
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../../shadow/Point/point.h"
 
-#include <Imagine/Images.h>
-
 #include <gdal_priv.h>
 
 #include <vector>
@@ -33,17 +31,24 @@ namespace urban
             shadow::Point get_reference_point() const noexcept;
             double get_pixel_size() const noexcept;
             std::array<double, 6> get_geographic_transform(void) const;
-            double* data(void) const;
+            double* data(void) noexcept;
+            const double* data(void) const noexcept;
 
             void swap(RasterPrint & other);
 
             double & at(const size_t i, const size_t j);
             const double & at(const size_t i, const size_t j) const;
 
+            typedef std::vector<double>::iterator iterator;
+            typedef std::vector<double>::const_iterator const_iterator;
+
+            iterator begin(void) noexcept;
+            const_iterator cbegin(void) const noexcept;
+            iterator end(void) noexcept;
+            const_iterator cend(void) const noexcept;
+
             RasterPrint & operator=(const RasterPrint & other) noexcept;
             RasterPrint & operator=(RasterPrint && other) noexcept;
-
-            RasterPrint & rescale(const double & _pixel_size);
 
             RasterPrint & operator+=(const RasterPrint & other);
             RasterPrint & operator-=(const RasterPrint & other);
@@ -53,10 +58,10 @@ namespace urban
             size_t height;
             size_t width;
             double pixel_size;
-            Imagine::Image<double> image_matrix;
+            std::vector<double> image_matrix;
 
             friend std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection);
-            friend bool operator==(RasterPrint & lhs, const RasterPrint & rhs);
+            friend bool operator==(const RasterPrint & lhs, const RasterPrint & rhs);
         };
 
         RasterPrint & operator+(RasterPrint & lhs, const RasterPrint & rhs);

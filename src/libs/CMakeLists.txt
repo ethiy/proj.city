@@ -87,5 +87,4 @@ target_link_libraries(urban_io urban_io_line urban_shadow urban_projection ${LIB
 set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
 add_library(urban SHARED ${urban_HEADER})
 link_directories(urban ${LIBS_DIRS})
-ImagineUseModules(urban Images)
 target_link_libraries(urban urban_shadow urban_io urban_brick urban_projection urban_algorithms ${LIBS})
