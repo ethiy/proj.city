@@ -91,9 +91,9 @@ int main(int argc, const char** argv)
         std::cout << "Projecting on XY... ";
         std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
         std::transform(
-            std::begin(meshes),
-            std::end(meshes),
-            std::begin(projections_xy),
+            std::begin(urban_objects),
+            std::end(urban_objects),
+            std::back_inserter(projections_xy),
             [](const urban::Brick & brick)
             {
                 return urban::project(brick);
