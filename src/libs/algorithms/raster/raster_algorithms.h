@@ -15,5 +15,5 @@ namespace urban
      * @param pivot the pivot point (generally the pointwise scene mean)
      * @return The image matrix with its geographic reference point
      */
-    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, shadow::Point pivot);
+    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, const shadow::Point & pivot);
 }

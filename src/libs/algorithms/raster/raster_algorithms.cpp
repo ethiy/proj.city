@@ -7,7 +7,7 @@
 
 namespace urban
 {
-    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, shadow::Point pivot)
+    projection::RasterPrint rasterize(const projection::BrickPrint & brick_projection, const double & pixel_size, const shadow::Point & pivot)
     {
         return std::accumulate(
             brick_projection.cbegin(),
@@ -19,9 +19,9 @@ namespace urban
                 static_cast<size_t>(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size)),
                 pixel_size
             ),
-            [](projection::RasterPrint result, const projection::FacePrint & face_projection)
+            [&pivot](projection::RasterPrint result, const projection::FacePrint & face_projection)
             {
-                return face_projection.rasterize_to(result);
+                return face_projection.rasterize_to(result, pivot);
             }
         );
     }
