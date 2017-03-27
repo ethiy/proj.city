@@ -26,6 +26,7 @@ namespace urban
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
 
+            std::string get_name(void) const noexcept;
             size_t get_height(void) const noexcept;
             size_t get_width(void) const noexcept;
             shadow::Point get_reference_point() const noexcept;

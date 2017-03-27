@@ -48,6 +48,11 @@ namespace urban
         RasterPrint::~RasterPrint(void) {}
 
 
+        std::string RasterPrint::get_name(void) const noexcept
+        {
+            return name;
+        }
+
         size_t RasterPrint::get_height(void) const noexcept
         {
             return height;
