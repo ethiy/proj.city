@@ -102,7 +102,8 @@ int main(int argc, const char** argv)
             std::begin(urban_objects),
             [](const urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh);
+                urban::Brick brick(mesh);
+                return urban::prune(brick);
             }
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;

@@ -23,6 +23,12 @@ namespace urban
     /*! Computes plane equations*/
     void plane_equations(Brick &);
 
+    /** Prunes surfaces of brick.
+     * @param brick brick to prune
+     * @return Brick with pruned surfaces
+     */
+    Brick prune(Brick & brick);
+
     /*! Computes brick surface area*/
     double area(Brick &);
 }

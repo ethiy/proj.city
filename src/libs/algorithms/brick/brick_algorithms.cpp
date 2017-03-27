@@ -84,6 +84,42 @@ namespace urban
         );
     }
 
+    Brick prune(Brick & brick)
+    {
+        Brick::Halfedge_iterator h_it = brick.halfedges_end();
+        bool prunable = brick.joinable(h_it);
+
+        Brick cooling_recipient;
+        size_t pair(0);
+
+        while(prunable)
+        {
+            std::cout << h_it->facet()->plane() << std::endl;
+            Brick::Halfedge_handle h = h_it->opposite()->opposite();
+            pair ++;
+            switch(pair%2)
+            {
+                case 1:
+                    cooling_recipient = brick.join_facet(h);
+                    h_it = cooling_recipient.halfedges_end();
+                    std::cout << "Cooling" << std::endl;
+                    prunable = cooling_recipient.joinable(h_it);
+                    std::cout << std::boolalpha << prunable << std::endl;
+                    break;
+                default:
+                    brick = cooling_recipient.join_facet(h);
+                    h_it = brick.halfedges_end();
+                    prunable = brick.joinable(h_it);
+                    std::cout << std::boolalpha << prunable << std::endl;
+                    break;
+            }
+        }
+        
+        if(pair%2)
+            brick = cooling_recipient;
+        return brick;
+    }
+
     double area(Brick& brick)
     {
         return std::accumulate(
