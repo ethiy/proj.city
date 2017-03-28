@@ -33,6 +33,7 @@ matrix:
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
         - brew install lib3ds
+        - brew install tinyxml2
         - mkdir -p 3rdParty && cd 3rdParty
         - mkdir -p GDAL && cd GDAL
         - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-2.1.dmg
