@@ -1,5 +1,8 @@
 #include "raster_algorithms.h"
 
+#include "../../projection/Face/face_projection.h"
+#include "../../brick/brick.h"
+
 #include <iterator>
 #include <algorithm>
 
