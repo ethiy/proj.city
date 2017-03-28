@@ -27,7 +27,8 @@ WORKDIR 3DSceneModel/
 RUN git checkout build-system-trial
 RUN mkdir build && mkdir build/linux
 WORKDIR build/xenial
-RUN cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
+RUN cmake ../..
+RUN cmake ../..
 RUN make -j4 all
-RUN ./tests
+RUN ./tests/tests
 RUN rm *.off *.3ds *.gml *.xsd *.geotiff
