@@ -58,7 +58,7 @@ namespace urban
                         std::remove_if(
                             std::begin(lines),
                             std::end(lines),
-                            [](const std::string line)
+                            [](const std::string & line)
                             {
                                 return line.at(0) == '#' || line.empty();
                             }

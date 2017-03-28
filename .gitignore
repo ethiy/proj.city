@@ -4,7 +4,7 @@
 .vscode
 
 # Qt creator
-*.cmake.user
+CMakeLists.txt.user
 
 # Build files
 build

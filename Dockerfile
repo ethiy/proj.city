@@ -22,13 +22,6 @@ RUN apt-get install -y \
             libqt5opengl5-dev\
             libgdal-dev
 WORKDIR /home
-RUN mkdir 3rParty
-WORKDIR 3rParty
-RUN git clone https://github.com/Ethiy/imagine-pp.git
-WORKDIR imagine-pp
-RUN cmake .
-RUN make -j4 && make install
-WORKDIR /home
 RUN git clone https://github.com/Ethiy/3DSceneModel.git
 WORKDIR 3DSceneModel/
 RUN git checkout build-system-trial

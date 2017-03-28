@@ -6,17 +6,13 @@ if(NOT TARGET docopt)
         GIT_TAG v0.6.2
         CMAKE_ARGS  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                     -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/external/docopt
-                    -DUSE_BOOST_REGEX=ON
+                    -DUSE_BOOST_REGEX=OFF
         BUILD_COMMAND cmake --build . --target all
         INSTALL_COMMAND cmake --build . --target install
     )
 
     set(Docopt_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/external/docopt/include/docopt)
     if(UNIX)
-        if(APPLE)
-            set(Docopt_LIBRARIES "${CMAKE_BINARY_DIR}/external/docopt/lib/libdocopt.dylib")
-        else(APPLE)
-            set(Docopt_LIBRARIES "${CMAKE_BINARY_DIR}/external/docopt/lib/libdocopt.so")
-        endif(APPLE)
+        set(Docopt_LIBRARIES "${CMAKE_BINARY_DIR}/external/docopt/lib/libdocopt.a")
     endif(UNIX)
 endif()

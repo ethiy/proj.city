@@ -4,6 +4,7 @@
 
 #include <iterator>
 #include <algorithm>
+#include <iomanip>
 
 #include <cmath>
 
@@ -12,34 +13,32 @@ namespace urban
     namespace projection
     {
         RasterPrint::RasterPrint(void) {}
+
         RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size, const std::vector<double> & image_array)
-            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size)
+            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(image_array)
         {
             if(image_array.size() != _width * _height)
                 throw std::logic_error("the image array should contain exaclty width * height elements");
-
-            double* buffer = new double[width * height];
-            std::copy(
-                std::begin(image_array),
-                std::end(image_array),
-                buffer
-            );
-            image_matrix = Imagine::Image<double>(buffer, width, height);
         }
 
         RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size)
-            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(Imagine::Image<double>(width, height)) {}
+            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(_height * _width, _reference_point.z()) {}
 
-        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band): name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_width), width(_height), pixel_size(geographic_transform[1])
+        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band)
+            : name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1]), image_matrix(_height * _width)
         {
-            if(std::abs(geographic_transform[1] - geographic_transform[5]) > std::numeric_limits<double>::epsilon())
+            if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
                 throw std::logic_error("this case is not treated here");
             
-            double* buffer = new double[width * height];
+            double* buffer = reinterpret_cast<double*>(calloc(sizeof(double), _width * _height));
             CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_Float64,0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
-            image_matrix = Imagine::Image<double>(buffer, width, height);
+            std::copy(
+                buffer,
+                buffer + _width * _height,
+                std::begin(image_matrix)
+            );
         }
 
         RasterPrint::RasterPrint(const RasterPrint & other)
@@ -48,6 +47,11 @@ namespace urban
             : name(std::move(other.name)), reference_point(std::move(other.reference_point)), height(std::move(other.height)), width(std::move(other.width)), pixel_size(std::move(other.pixel_size)), image_matrix(std::move(other.image_matrix)) {}
         RasterPrint::~RasterPrint(void) {}
 
+
+        std::string RasterPrint::get_name(void) const noexcept
+        {
+            return name;
+        }
 
         size_t RasterPrint::get_height(void) const noexcept
         {
@@ -71,22 +75,17 @@ namespace urban
 
         std::array<double, 6> RasterPrint::get_geographic_transform(void) const
         {
-            return std::array<double, 6>{{reference_point.x(), pixel_size, 0, reference_point.y(), 0, pixel_size}};
+            return std::array<double, 6>{{reference_point.x(), pixel_size, 0, reference_point.y(), 0, - pixel_size}};
         }
 
-        double* RasterPrint::data(void) const
+        double* RasterPrint::data(void) noexcept
         {
-            double* raster_array = reinterpret_cast<double*>(calloc(sizeof(double), width * height));
-            std::transform(
-                image_matrix.coordsBegin(),
-                image_matrix.coordsEnd(),
-                raster_array,
-                [this](const Imagine::Coords<2> & coordinates)
-                {
-                    return image_matrix(coordinates);
-                }
-            );
-            return raster_array;
+            return image_matrix.data();
+        }
+
+        const double* RasterPrint::data(void) const noexcept
+        {
+            return image_matrix.data();
         }
 
         void RasterPrint::swap(RasterPrint & other)
@@ -104,14 +103,31 @@ namespace urban
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
-            return image_matrix(i, j);
+            return image_matrix.at(i * width + j);
         }
 
         const double & RasterPrint::at(const size_t i, const size_t j) const
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
-            return image_matrix(i, j);
+            return image_matrix.at(i * width + j);
+        }
+
+        RasterPrint::iterator RasterPrint::begin(void) noexcept
+        {
+            return image_matrix.begin();
+        }
+        RasterPrint::const_iterator RasterPrint::cbegin(void) const noexcept
+        {
+            return image_matrix.cbegin();
+        }
+        RasterPrint::iterator RasterPrint::end(void) noexcept
+        {
+            return image_matrix.end();
+        }
+        RasterPrint::const_iterator RasterPrint::cend(void) const noexcept
+        {
+            return image_matrix.cend();
         }
 
         RasterPrint & RasterPrint::operator=(const RasterPrint & other) noexcept
@@ -138,29 +154,37 @@ namespace urban
             return *this;
         }
 
-        // RasterPrint & RasterPrint::rescale(const double & _pixel_size)
-        // {
-        //     cv::resize(image_matrix, image_matrix, cv::Size(), pixel_size / _pixel_size, cv::INTER_LINEAR);
-        //     pixel_size = _pixel_size;
-        //     height = image_matrix.size().height;
-        //     width = image_matrix.size().width;
-        //     return *this;
-        // }
-
         RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
         {
             if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
-            image_matrix += other.image_matrix;
+            std::transform(
+                std::begin(image_matrix),
+                std::end(image_matrix),
+                std::begin(other.image_matrix),
+                std::begin(image_matrix),
+                [](const double rhs, const double lhs)
+                {
+                    return rhs + lhs;
+                }
+            );
             return *this;
         }
         
         RasterPrint & RasterPrint::operator-=(const RasterPrint & other)
         {
-
             if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
-            image_matrix -= other.image_matrix;
+            std::transform(
+                std::begin(image_matrix),
+                std::end(image_matrix),
+                std::begin(other.image_matrix),
+                std::begin(image_matrix),
+                [](const double rhs, const double lhs)
+                {
+                    return rhs - lhs;
+                }
+            );
             return *this;
         }
 
@@ -171,8 +195,23 @@ namespace urban
                << "Height : " << raster_projection.height << std::endl
                << "Width : " << raster_projection.width << std::endl
                << "Image Matrix : " << std::endl
-               << raster_projection.image_matrix << std::endl;
-               
+               << "[[";
+            
+            os << std::setprecision(6) << std::fixed;
+
+            for(size_t it(0); it < raster_projection.height * raster_projection.width; ++it)
+            {
+                os << raster_projection.image_matrix.at(it); 
+                if((it + 1) % raster_projection.width)
+                    os << ", ";
+                else
+                {
+                    os << "]";
+                    if(it + 1 != raster_projection.width * raster_projection.height)
+                        os << "," << std::endl << " [";
+                }
+            }            
+            os << "]" << std::endl;
             return os;
         }
 
@@ -186,9 +225,38 @@ namespace urban
             return lhs -= rhs;
         }
 
-        bool operator==(RasterPrint & lhs, const RasterPrint & rhs)
+        bool operator==(const RasterPrint & lhs, const RasterPrint & rhs)
         {
-            return std::abs(lhs.pixel_size - rhs.pixel_size) < std::numeric_limits<double>::epsilon() && lhs.reference_point == rhs.reference_point && lhs.image_matrix == rhs.image_matrix;
+            bool result(
+                std::abs(lhs.pixel_size - rhs.pixel_size) < std::numeric_limits<double>::epsilon()
+                &&
+                lhs.reference_point == rhs.reference_point
+                &&
+                lhs.height == rhs.height
+                &&
+                lhs.width == rhs.width
+            );
+            if(result)
+            {
+                std::vector<bool> comparisons(lhs.height * lhs.width);
+                std::transform(
+                    std::begin(lhs.image_matrix),
+                    std::end(lhs.image_matrix),
+                    std::begin(rhs.image_matrix),
+                    std::begin(comparisons),
+                    [](const double rrhs, const double llhs)
+                    {
+                        return std::abs(rrhs - llhs) < std::numeric_limits<double>::epsilon();
+                    }
+                );
+                result = std::accumulate(
+                    std::begin(comparisons),
+                    std::end(comparisons),
+                    result,
+                    std::logical_and<bool>()
+                );
+            }
+            return result;
         }
         
         bool operator!=(RasterPrint & lhs, const RasterPrint & rhs)

@@ -3,9 +3,9 @@ set(LIBS_DIRS "")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 # Find Boost
-FIND_PACKAGE(Boost REQUIRED filesystem system regex)
+FIND_PACKAGE(Boost REQUIRED filesystem system)
 
-set(Boost_USE_STATIC_LIBS        OFF)
+set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME     OFF)
 set(BOOST_ALL_DYN_LINK           OFF)
@@ -34,11 +34,6 @@ list(APPEND LIBS ${Lib3ds_LIBRARIES})
 find_package(TinyXML2 REQUIRED)
 include_directories(SYSTEM ${TINYXML2_INCLUDE_DIR})
 list(APPEND LIBS ${TINYXML2_LIBRARIES})
-
-# Find Imagine
-find_package(Imagine REQUIRED)
-# include_directories(SYSTEM ${Imagine_INCLUDE_DIR})
-# list(APPEND LIBS ${Imagine_LIBRARIES})
 
 # Find Docopt
 include(cmake/modules/docopt.cmake)

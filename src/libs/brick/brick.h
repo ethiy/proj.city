@@ -94,6 +94,19 @@ namespace urban
         Plane_iterator planes_end(void) noexcept;
         Plane_const_iterator planes_cbegin(void) const noexcept;
         Plane_const_iterator planes_cend(void) const noexcept;
+
+
+        typedef Polyhedron::Halfedge_handle Halfedge_handle;
+
+        /** Finds a joinable halfedge.
+         * @returns halfedge iterator to join its incidents facets
+        */
+        Brick::Halfedge_iterator prunable(void);
+
+        /** Wraps CGAL join_facet()
+         * @param halfedge halfedge handle to join its incidents facets
+         */
+        Brick & join_facet(Halfedge_handle & h);
     private:
         /* ! Brick name*/
         std::string name;
