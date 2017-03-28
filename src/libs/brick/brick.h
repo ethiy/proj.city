@@ -99,15 +99,14 @@ namespace urban
         typedef Polyhedron::Halfedge_handle Halfedge_handle;
 
         /** Finds a joinable halfedge.
-         * @param halfedge halfedge handle to join its incidents facets
-         * @returns true if there are facets to join
+         * @returns halfedge iterator to join its incidents facets
         */
-        bool joinable(Halfedge_handle & h);
+        Brick::Halfedge_iterator prunable(void);
 
         /** Wraps CGAL join_facet()
          * @param halfedge halfedge handle to join its incidents facets
          */
-        Brick join_facet(Halfedge_handle & h);
+        Brick & join_facet(Halfedge_handle & h);
     private:
         /* ! Brick name*/
         std::string name;

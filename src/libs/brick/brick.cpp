@@ -144,21 +144,28 @@ namespace urban
         return surface.planes_end();
     }
 
-    bool Brick::joinable(Brick::Halfedge_iterator & h)
+    Brick::Halfedge_iterator Brick::prunable(void)
     {
-        h = std::find_if(
+        return std::find_if(
             halfedges_begin(),
-            border_halfedges_begin(),
-            [](Polyhedron::Halfedge & halfedge)
+            halfedges_end(),
+            [](const Polyhedron::Halfedge & halfedge)
             {
-                return halfedge.facet()->plane() == halfedge.opposite()->facet()->plane();
+                bool joignable = !halfedge.is_border_edge();
+                if(joignable)
+                {
+                    Point_3 A(halfedge.vertex()->point()),
+                            B(halfedge.next()->vertex()->point()),
+                            C(halfedge.next()->next()->vertex()->point()),
+                            D(halfedge.opposite()->next()->vertex()->point());
+                    joignable = (std::abs(to_double(CGAL::determinant(B - A, C - A, D - A))) < std::numeric_limits<double>::epsilon());
+                }
+                return  joignable;
             }
         );
-
-        return h != border_halfedges_begin();
     }
 
-    Brick Brick::join_facet(Brick::Halfedge_handle & h)
+    Brick & Brick::join_facet(Brick::Halfedge_handle & h)
     {
         surface.join_facet(h);
         return *this;
