@@ -84,7 +84,7 @@ namespace urban
         );
     }
 
-    Brick prune(Brick & brick)
+    Brick & prune(Brick & brick)
     {
         Brick::Halfedge_iterator h_it = brick.prunable();
 
