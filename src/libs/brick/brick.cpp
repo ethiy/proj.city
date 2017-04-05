@@ -263,17 +263,72 @@ namespace urban
         return *this;
     }
 
-    std::ostream & operator<<(std::ostream &os, const Brick &uobj)
+    Point_3 Brick::centroid(const Brick::Facet & facet) const
     {
-        os  << "# Name: " << uobj.name << std::endl
-            << uobj.surface;
+        Vector_3 centroid = CGAL::NULL_VECTOR;
+        Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
+        Vector_3 normal = CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
+
+        do
+        {
+            centroid =  centroid
+                        +
+                        ((circulator->vertex()->point() - CGAL::ORIGIN) + (circulator->next()->vertex()->point() - CGAL::ORIGIN))
+                            *
+                        to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * normal)
+                            /
+                        6;
+        }while(circulator != facet.facet_begin());
+
+        return CGAL::ORIGIN + centroid / area(facet);
+    }
+
+    Vector_3 Brick::normal(const Brick::Facet & facet) const
+    {
+        Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
+        return CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
+    }
+
+    double Brick::area(const Brick::Facet & facet) const
+    {
+        Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
+        Vector_3 n = normal(facet);
+
+        double area(0);
+        do
+        {
+            area += to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n/2.);
+        }while(circulator != facet.facet_begin());
+
+        return area;
+    }
+
+    std::ostream & operator<<(std::ostream &os, const Brick & brick)
+    {
+        os  << "# Name: " << brick.name << std::endl
+            << brick.surface;
         return os;
     }
 
-    #ifdef CGAL_USE_GEOMVIEW
-    CGAL::Geomview_stream & operator<<(CGAL::Geomview_stream &gs, const Brick &uobj)
+    Adjacency_stream & operator<<(Adjacency_stream & as, const Brick & brick)
     {
-        gs << uobj.surface;
+        std::map<size_t, Brick::Facet_const_handle> facets;
+        std::uint8_t adjacency_matrix(brick.facets_number() * brick.facets_number());
+        std::for_each(
+            brick.facets_cbegin(),
+            brick.facets_cend(),
+            [&as, &brick](const Brick::Facet & facet)
+            {
+                as << facet.facet_degree() << " " << brick.area(facet) << " " << brick.centroid(facet) << brick.normal(facet) << std::endl;
+            }
+        );
+        return as;
+    }
+
+    #ifdef CGAL_USE_GEOMVIEW
+    CGAL::Geomview_stream & operator<<(CGAL::Geomview_stream &gs, const Brick & brick)
+    {
+        gs << brick.surface;
         return gs;
     }
     #endif // CGAL_USE_GEOMVIEW

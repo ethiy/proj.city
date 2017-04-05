@@ -4,6 +4,8 @@
 
 #include "../shadow/mesh.h"
 
+#include "../io/Adjacency_stream/adjacency_stream.h"
+
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
 #endif // CGAL_USE_GEOMVIEW
@@ -97,7 +99,14 @@ namespace urban
 
 
         typedef Polyhedron::Halfedge_handle Halfedge_handle;
+
         typedef Polyhedron::Facet Facet;
+        typedef Polyhedron::Facet_handle Facet_handle;
+        typedef Polyhedron::Facet_const_handle Facet_const_handle;
+
+        Point_3 centroid(const Brick::Facet & facet) const;
+        Vector_3 normal(const Brick::Facet & facet) const;
+        double area(const Brick::Facet & facet) const;
 
         bool likeness(const Facet & left_facet, const Facet & right_facet) const;
 
@@ -130,6 +139,7 @@ namespace urban
 
         /*! Outstreaming Brick*/
         friend std::ostream& operator<<(std::ostream &, const Brick &);
+        friend Adjacency_stream& operator<<(Adjacency_stream &, const Brick &);
         #ifdef CGAL_USE_GEOMVIEW
         friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const Brick &);
         #endif // CGAL_USE_GEOMVIEW

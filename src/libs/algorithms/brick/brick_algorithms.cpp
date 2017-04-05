@@ -100,21 +100,9 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             .0,
-            [](double & area, Brick::Facet & facet)
+            [&brick](double & area, Brick::Facet & facet)
             {
-                Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
-                Vector_3 normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
-                return area 
-                + to_double(CGAL::cross_product(h->vertex()->point() - CGAL::ORIGIN, h->next()->vertex()->point() - CGAL::ORIGIN) * normal/2.)
-                + std::accumulate(
-                    std::next(facet.facet_begin(), 1),
-                    std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
-                    .0,
-                    [normal](double & surface_area, const Polyhedron::Halfedge & halfedge)
-                    {
-                        return surface_area + to_double(CGAL::cross_product(halfedge.vertex()->point() - CGAL::ORIGIN, halfedge.next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);
-                    }
-                );
+                return area + brick.area(facet);
             }
         );
     }
