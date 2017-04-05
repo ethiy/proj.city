@@ -34,7 +34,7 @@ namespace urban
             brick.facets_cbegin(),
             brick.facets_cend(),
             std::begin(facets),
-            [&facet_points](const Facet & facet)
+            [&facet_points](const Brick::Facet & facet)
             {
                 projection::FacePrint projected_facet;
                 /**

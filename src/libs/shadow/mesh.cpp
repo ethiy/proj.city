@@ -67,7 +67,7 @@ namespace urban
             std::for_each(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
-                [&it, this](const Facet & facet)
+                [&it, this](const Polyhedron::Facet & facet)
                 {
                     size_t face_degree(facet.facet_degree());
                     std::vector<size_t> face_points(face_degree);

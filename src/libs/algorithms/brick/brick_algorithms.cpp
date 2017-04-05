@@ -72,10 +72,10 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             brick.planes_begin(),
-            [](Facet & facet)
+            [](Brick::Facet & facet)
             {
-                Facet::Halfedge_handle halfedge = facet.halfedge();
-                return Facet::Plane_3(
+                Brick::Halfedge_handle halfedge = facet.halfedge();
+                return Brick::Facet::Plane_3(
                     halfedge->vertex()->point(),
                     halfedge->next()->vertex()->point(),
                     halfedge->next()->next()->vertex()->point()
@@ -100,7 +100,7 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             .0,
-            [](double & area, Facet & facet)
+            [](double & area, Brick::Facet & facet)
             {
                 Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
                 Vector_3 normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());

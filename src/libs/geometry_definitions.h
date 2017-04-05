@@ -23,7 +23,6 @@ namespace urban
     typedef Kernel::Vector_3 Vector_3;
     typedef Kernel::Plane_3 Plane_3;
     typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
-    typedef Polyhedron::Facet Facet;
     typedef CGAL::Color Color;
     typedef CGAL::Aff_transformation_3<Kernel> Affine_transformation_3;
     typedef CGAL::Bbox_3 Bbox_3;

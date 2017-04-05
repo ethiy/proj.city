@@ -97,6 +97,7 @@ namespace urban
 
 
         typedef Polyhedron::Halfedge_handle Halfedge_handle;
+        typedef Polyhedron::Facet Facet;
 
         bool likeness(const Facet & left_facet, const Facet & right_facet) const;
 
