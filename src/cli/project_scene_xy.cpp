@@ -136,14 +136,16 @@ int main(int argc, const char** argv)
         std::cout << "Saving vector projections... ";
         urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
         victor.write(scene_projection);
+        boost::filesystem::path vector_dir(root / "vectors");
+        boost::filesystem::create_directory(vector_dir);
         std::for_each(
             std::begin(projections_xy),
             std::end(projections_xy),
-            [&root, &input_path, &modes](const urban::projection::BrickPrint & projection)
+            [&vector_dir, &input_path, &modes](const urban::projection::BrickPrint & projection)
             {
                 urban::io::FileHandler<GDALDriver> victors(
                     "GML",
-                    boost::filesystem::path(root / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
+                    boost::filesystem::path(vector_dir / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
                     modes
                 );
                 victors.write(projection);
@@ -170,14 +172,16 @@ int main(int argc, const char** argv)
         std::cout << "Saving raster projections... ";
         urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
         rastaf.write(global_rasta);
+        boost::filesystem::path raster_dir(root / "rasters");
+        boost::filesystem::create_directory(raster_dir);
         std::for_each(
             std::begin(raster_projections),
             std::end(raster_projections),
-            [&root, &input_path, &modes](const urban::projection::RasterPrint & rasta)
+            [&raster_dir, &input_path, &modes](const urban::projection::RasterPrint & rasta)
             {
                 urban::io::FileHandler<GDALDriver> rastafari(
                     "GTiff",
-                    boost::filesystem::path(root / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
+                    boost::filesystem::path(raster_dir / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
                     modes
                 );
                 rastafari.write(rasta);
