@@ -86,13 +86,10 @@ namespace urban
 
     Brick & prune(Brick & brick)
     {
-        Brick::Halfedge_iterator h_it = brick.prunable();
-
-        while(h_it != brick.halfedges_end())
+        std::vector<Brick::Halfedge_handle> prunables = brick.pruning_halfedges();
+        for(auto prunable : prunables)
         {
-            Brick::Halfedge_handle h = h_it->opposite()->opposite();
-            brick = brick.join_facet(h);
-            h_it = brick.prunable();
+            brick = brick.join_facet(prunable);
         }
         return brick;
     }

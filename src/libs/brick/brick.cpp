@@ -165,6 +165,98 @@ namespace urban
         );
     }
 
+    bool Brick::likeness(const Facet & left_facet, const Facet & right_facet) const
+    {
+        bool equality(left_facet.facet_degree() == right_facet.facet_degree());
+
+        if(equality)
+        {
+            Polyhedron::Halfedge_around_facet_const_circulator left_facet_circulator = left_facet.facet_begin();
+            Polyhedron::Halfedge_around_facet_const_circulator right_facet_circulator = right_facet.facet_begin();
+
+            bool common_halfedge(false);
+            do
+            {
+                common_halfedge =   right_facet_circulator->vertex()->point() == left_facet_circulator->vertex()->point()
+                                    &&
+                                    right_facet_circulator->opposite()->vertex()->point() == left_facet_circulator->opposite()->vertex()->point();
+            }while(!common_halfedge && ++ right_facet_circulator != right_facet.facet_begin());
+
+            if(common_halfedge)
+            {
+                equality = true;
+                do
+                {
+                    equality =  equality
+                                &&
+                                right_facet_circulator->vertex()->point() == left_facet_circulator->vertex()->point()
+                                &&
+                                right_facet_circulator->opposite()->vertex()->point() == left_facet_circulator->opposite()->vertex()->point();
+                                ++right_facet_circulator;
+                }while(equality && ++left_facet_circulator != left_facet.facet_begin());
+            }
+        }
+        
+        return equality;
+    }
+
+    std::vector<Brick::Halfedge_handle> Brick::combinable(Facet & facet) const
+    {
+        std::vector<Brick::Halfedge_handle> combining_edges;
+        combining_edges.reserve(facet.facet_degree());
+
+        Polyhedron::Halfedge_around_facet_circulator facet_circulator = facet.facet_begin();
+        do
+        {
+            if(!facet_circulator->is_border_edge())
+            {
+                Point_3 A(facet_circulator->vertex()->point()),
+                        B(facet_circulator->next()->vertex()->point()),
+                        C(facet_circulator->next()->next()->vertex()->point()),
+                        D(facet_circulator->opposite()->next()->vertex()->point());
+                if(std::abs(to_double(CGAL::determinant(B - A, C - A, D - A))) < std::numeric_limits<double>::epsilon())
+                    combining_edges.push_back(facet_circulator->opposite());
+            }
+        }while(++facet_circulator != facet.facet_begin());
+
+        return combining_edges;
+    }
+
+    std::vector<Brick::Halfedge_handle> Brick::pruning_halfedges(void)
+    {
+        std::vector<Brick::Halfedge_handle> combining_edges;
+        std::vector<Brick::Halfedge_handle> buffer;
+
+        std::for_each(
+            facets_begin(),
+            facets_end(),
+            [&combining_edges, &buffer, this](Facet & facet)
+            {
+                buffer = combinable(facet);
+                std::copy_if(
+                    std::begin(buffer),
+                    std::end(buffer),
+                    std::back_inserter(combining_edges),
+                    [&combining_edges](const Brick::Halfedge_handle & h)
+                    {
+                        return std::none_of(
+                            std::begin(combining_edges),
+                            std::end(combining_edges),
+                            [&h](const Brick::Halfedge_handle & present)
+                            {
+                                return  (present->vertex()->point() == h->vertex()->point() && present->opposite()->vertex()->point() == h->opposite()->vertex()->point())
+                                        ||
+                                        (present->opposite()->vertex()->point() == h->vertex()->point() && present->vertex()->point() == h->opposite()->vertex()->point());
+                            }
+                        );
+                    }
+                );
+                buffer.clear();
+            }
+        );
+        return combining_edges;
+    }
+
     Brick & Brick::join_facet(Brick::Halfedge_handle & h)
     {
         surface.join_facet(h);

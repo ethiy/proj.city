@@ -98,10 +98,22 @@ namespace urban
 
         typedef Polyhedron::Halfedge_handle Halfedge_handle;
 
+        bool likeness(const Facet & left_facet, const Facet & right_facet) const;
+
         /** Finds a joinable halfedge.
-         * @returns halfedge iterator to join its incidents facets
+         * @returns a halfedge iterator of joinable facets
         */
         Brick::Halfedge_iterator prunable(void);
+
+        /** Finds all joinable halfedges.
+         * @returns a vector of halfedge references to join their facets
+        */
+        std::vector<Brick::Halfedge_handle> combinable(Facet & facet) const;
+
+        /** Clusters all facets into prunable facet bags.
+         * @returns facets clusters
+        */
+        std::vector<Brick::Halfedge_handle> pruning_halfedges(void);
 
         /** Wraps CGAL join_facet()
          * @param halfedge halfedge handle to join its incidents facets
