@@ -132,15 +132,12 @@ namespace urban
             
             std::list<Polygon_with_holes> pixel_inter;
             CGAL::intersection(pixel, border, std::back_inserter(pixel_inter));
-            std::cout << "Helloz" << std::endl;
-            std::copy(std::begin(pixel_inter), std::end(pixel_inter), std::ostream_iterator<Polygon_with_holes>(std::cout, "\n"));
             return std::accumulate(
                 std::begin(pixel_inter),
                 std::end(pixel_inter),
                 0.,
                 [this](double & height, const Polygon_with_holes & pixel_part)
                 {
-                    // std::cout << centroid(pixel_part) << std::endl;
                     return height + get_plane_height(CGAL::centroid(pixel_part.outer_boundary()[0], pixel_part.outer_boundary()[1], pixel_part.outer_boundary()[2]));
                 }
             );
@@ -191,7 +188,8 @@ namespace urban
                     std::end(indexes),
                     [pixel_size, w, &bae, this, &raster_projection, i_min, j_min, &pixel_access](const size_t index)
                     {
-                        if(pixel_access.at(index) <= 1)
+                        size_t _index = raster_projection.get_data_index(i_min + index/w, j_min + index%w);
+                        if(pixel_access.at(_index) <= 1)
                         {
                             raster_projection.at(
                                 i_min + index/w,
@@ -204,7 +202,7 @@ namespace urban
                                 pixel_size
                             );
 
-                            ++pixel_access.at(index);
+                            ++pixel_access.at(_index);
                         }
                         else
                         {
@@ -219,7 +217,7 @@ namespace urban
                                     j_min + index%w
                                 )
                                 *
-                                pixel_access.at(index)
+                                pixel_access.at(_index)
                             )
                             +
                             get_height(
@@ -227,13 +225,13 @@ namespace urban
                                 bae.ymax() - static_cast<double>(index/w) * pixel_size,
                                 pixel_size
                             );
-                            ++pixel_access.at(index);
+                            ++pixel_access.at(_index);
                             raster_projection.at(
                                 i_min + index/w,
                                 j_min + index%w
                             )
                             /=
-                            pixel_access.at(index);
+                            pixel_access.at(_index);
                         }
                     }
                 );
