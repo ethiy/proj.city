@@ -78,6 +78,74 @@ namespace urban
         points.push_back(B);
     }
 
+    InexactPoint_2 centroid(const InexactPolygon & polygon)
+    {
+        InexactPolygon::Vertex_const_circulator circulator = polygon.vertices_circulator();
+        InexactPolygon::Vertex_const_circulator next_circulator = std::next(polygon.vertices_circulator(), 1);
+
+        InexactVector_2 centroid = CGAL::NULL_VECTOR;
+        do
+        {
+            centroid =  centroid
+                        +
+                        ((*circulator - CGAL::ORIGIN) + (*next_circulator - CGAL::ORIGIN))
+                         *
+                        CGAL::determinant(*circulator - CGAL::ORIGIN, *next_circulator - CGAL::ORIGIN)
+                         /
+                        6.;
+        }while(++circulator != polygon.vertices_circulator());
+
+        return CGAL::ORIGIN + centroid / polygon.area();
+    }
+
+    InexactPoint_2 centroid(const InexactPolygon_with_holes & polygon)
+    {
+        return centroid(polygon.outer_boundary());
+    }
+
+    InexactPoint_2 centroid(const Polygon & polygon)
+    {
+        ExactToInexact to_inexact;
+        Polygon::Vertex_const_circulator circulator = polygon.vertices_circulator();
+        Polygon::Vertex_const_circulator next_circulator = std::next(polygon.vertices_circulator(), 1);
+
+        InexactVector_2 centroid = CGAL::NULL_VECTOR;
+        double area = to_inexact(polygon.area());
+
+        if(to_inexact(polygon.area()) < std::numeric_limits<double>::epsilon())
+        {
+            centroid = ((to_inexact(*circulator) - CGAL::ORIGIN) + (to_inexact(*next_circulator) - CGAL::ORIGIN)) / 2.;
+        }
+        else
+        {
+            InexactPoint_2 v_0, v_1;
+            do
+            {
+                v_0 = to_inexact(*circulator);
+                v_1 = to_inexact(*next_circulator);
+                std::cout << v_0 << " " << v_1 << std::endl;
+                centroid =  centroid
+                            +
+                            ((v_0 - CGAL::ORIGIN) + (v_1 - CGAL::ORIGIN))
+                            *
+                            CGAL::determinant(v_0 - CGAL::ORIGIN, v_1 - CGAL::ORIGIN)
+                            /
+                            6.
+                            /
+                            area;
+                std::cout << centroid << std::endl;
+                ++next_circulator;
+                ++circulator;
+            }while(circulator != std::prev(polygon.vertices_circulator(), 1));
+        }
+        return CGAL::ORIGIN + centroid;
+    }
+
+    InexactPoint_2 centroid(const Polygon_with_holes & polygon)
+    {
+        return centroid(polygon.outer_boundary());
+    }
+
 
     Heuristic::Heuristic(void){}
     Heuristic::Heuristic(const Heuristic &){}

@@ -265,10 +265,10 @@ namespace urban
 
     Point_3 Brick::centroid(const Brick::Facet & facet) const
     {
-        Vector_3 centroid = CGAL::NULL_VECTOR;
         Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
         Vector_3 normal = CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
 
+        Vector_3 centroid = CGAL::NULL_VECTOR;
         do
         {
             centroid =  centroid
@@ -313,15 +313,19 @@ namespace urban
     Adjacency_stream & operator<<(Adjacency_stream & as, const Brick & brick)
     {
         std::map<size_t, Brick::Facet_const_handle> facets;
-        std::uint8_t adjacency_matrix(brick.facets_number() * brick.facets_number());
+        std::map<size_t, std::vector<size_t> > adjacences;
+
+        size_t index(0);
         std::for_each(
             brick.facets_cbegin(),
             brick.facets_cend(),
-            [&as, &brick](const Brick::Facet & facet)
+            [&as, &brick, &facets, &index](const Brick::Facet & facet)
             {
                 as << facet.facet_degree() << " " << brick.area(facet) << " " << brick.centroid(facet) << brick.normal(facet) << std::endl;
+                facets.emplace(std::make_pair(index, &facet));
             }
         );
+
         return as;
     }
 

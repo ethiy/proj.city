@@ -108,19 +108,19 @@ int main(int argc, const char** argv)
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
 
-        std::cout << "Saving brick duals... " << std::flush;
-        boost::filesystem::path dual_dir(root / "dual_graphs");
-        boost::filesystem::create_directory(dual_dir);
-        std::for_each(
-            std::begin(urban_objects),
-            std::end(urban_objects),
-            [&dual_dir, &input_path](const urban::Brick & brick)
-            {
-                urban::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
-                as << brick;
-            }
-        );
-        std::cout << " Done" << std::flush << std::endl;
+        // std::cout << "Saving brick duals... " << std::flush;
+        // boost::filesystem::path dual_dir(root / "dual_graphs");
+        // boost::filesystem::create_directory(dual_dir);
+        // std::for_each(
+        //     std::begin(urban_objects),
+        //     std::end(urban_objects),
+        //     [&dual_dir, &input_path](const urban::Brick & brick)
+        //     {
+        //         urban::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
+        //         as << brick;
+        //     }
+        // );
+        // std::cout << " Done" << std::flush << std::endl;
 
 
         std::cout << "Projecting on XY... " << std::flush;

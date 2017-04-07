@@ -28,11 +28,14 @@ namespace urban
     typedef CGAL::Bbox_3 Bbox_3;
 
     typedef CGAL::Polygon_2<Kernel> Polygon;
+    typedef CGAL::Polygon_2<InexactKernel> InexactPolygon;
     typedef CGAL::Polygon_with_holes_2<Kernel> Polygon_with_holes;
+    typedef CGAL::Polygon_with_holes_2<InexactKernel> InexactPolygon_with_holes;
     typedef CGAL::Polygon_set_2<Kernel> Polygon_set;
     typedef Kernel::Point_2 Point_2;
     typedef InexactKernel::Point_2 InexactPoint_2;
     typedef Kernel::Vector_2 Vector_2;
+    typedef InexactKernel::Vector_2 InexactVector_2;
     typedef Kernel::Intersect_2 Intersect_2;
     typedef CGAL::Aff_transformation_2<Kernel> Affine_transformation_2;
     typedef CGAL::Bbox_2 Bbox_2;
