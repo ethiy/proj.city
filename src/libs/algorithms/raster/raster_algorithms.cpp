@@ -12,7 +12,7 @@ namespace urban
         size_t h = static_cast<size_t>(std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size));
         size_t w = static_cast<size_t>(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size));
         std::vector<short> pixel_access(h * w, 0);
-        projection::RasterPrint result = std::accumulate(
+        return std::accumulate(
             brick_projection.cbegin(),
             brick_projection.cend(),
             projection::RasterPrint(

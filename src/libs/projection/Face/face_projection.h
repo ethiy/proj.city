@@ -41,7 +41,7 @@ namespace urban
             double get_plane_height(const InexactPoint_2 & inexact_point) const;
             double get_height(const Point_2 & point) const;
             double get_height(const InexactPoint_2 & inexact_point) const;
-            double get_height(double top_left_x, double top_left_y, double pixel_size) const;
+            double get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const;
             double area(void) const;
             Bbox_2 bbox(void) const;
 

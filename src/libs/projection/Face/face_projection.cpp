@@ -115,7 +115,7 @@ namespace urban
             return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
 
-        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size) const
+        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const
         {
             InexactToExact to_exact;
 
@@ -127,11 +127,10 @@ namespace urban
             }};
 
             Polygon pixel(std::begin(pixel_corners), std::end(pixel_corners));
-            // std::cout << pixel << std::endl;
-            // std::cout << border << std::endl;
             
             std::list<Polygon_with_holes> pixel_inter;
             CGAL::intersection(pixel, border, std::back_inserter(pixel_inter));
+            hit = !pixel_inter.empty();
             return std::accumulate(
                 std::begin(pixel_inter),
                 std::end(pixel_inter),
@@ -171,6 +170,7 @@ namespace urban
                  */
                 Bbox_2 bae = border.bbox();
                 double pixel_size = raster_projection.get_pixel_size();
+                double z_offset = pivot.z();
                 size_t  i_min = static_cast<size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
                         j_min = static_cast<size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
                 size_t  w = static_cast<size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
@@ -186,30 +186,27 @@ namespace urban
                 std::for_each(
                     std::begin(indexes),
                     std::end(indexes),
-                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min, &pixel_access](const size_t index)
+                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min, &pixel_access, z_offset](const size_t index)
                     {
                         size_t _index = raster_projection.get_data_index(i_min + index/w, j_min + index%w);
-                        if(pixel_access.at(_index) <= 1)
+                        bool hit(false);
+                        double temp(raster_projection.at(i_min + index/w, j_min + index%w) - z_offset);
+                        if(!pixel_access.at(_index))
                         {
-                            raster_projection.at(
-                                i_min + index/w,
-                                j_min + index%w
-                            )
+                            temp
                             +=
                             get_height(
                                 bae.xmin() + static_cast<double>(index%w) * pixel_size,
                                 bae.ymax() - static_cast<double>(index/w) * pixel_size,
-                                pixel_size
+                                pixel_size,
+                                hit
                             );
 
-                            ++pixel_access.at(_index);
+                            pixel_access.at(_index) += hit * 1;
                         }
                         else
                         {
-                            raster_projection.at(
-                                i_min + index/w,
-                                j_min + index%w
-                            )
+                            temp
                             =
                             (
                                 raster_projection.at(
@@ -223,16 +220,14 @@ namespace urban
                             get_height(
                                 bae.xmin() + static_cast<double>(index%w) * pixel_size,
                                 bae.ymax() - static_cast<double>(index/w) * pixel_size,
-                                pixel_size
+                                pixel_size,
+                                hit
                             );
-                            ++pixel_access.at(_index);
-                            raster_projection.at(
-                                i_min + index/w,
-                                j_min + index%w
-                            )
-                            /=
-                            pixel_access.at(_index);
+                            pixel_access.at(_index) += hit * 1;
+
+                            temp /=  pixel_access.at(_index);
                         }
+                        raster_projection.at(i_min + index/w, j_min + index%w) = temp + z_offset;
                     }
                 );
 
