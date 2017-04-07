@@ -24,13 +24,13 @@
 namespace urban
 {
     /** @defgroup shadow_group Shadow Structures
-    *  This an interface to external structures
+    *  This is an interface to external structures
     *  @{
     */
 
     /**
     *  namespace shadow is in four groups
-    *  @see @link shadow_group The i/o interface @endlink
+    *  @see io @link io The i/o interface @endlink
     *
     */
     namespace shadow

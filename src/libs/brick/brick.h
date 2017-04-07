@@ -13,27 +13,77 @@
 #include <string>
 #include <ostream>
 
+/** @defgroup urban_group Urban geometric representation
+*  This Program loads an urban scene and offers tools for its manipulation
+*  @{
+*/
+
+/**
+*  namespace urban is in four groups
+*  @see io @link io The i/o interface @endlink
+*  @see shadow @link shadow The shadow interface @endlink
+*
+*/
+
 namespace urban
 {
-    /*! Container class modelling urba objects using CGAL*/
+    /**
+     * @brief Container class modelling urbans objects
+     * It is based on CGAL::Polyhedron structure.
+     */
     class Brick
     {
     public:
-        /*! Brick default constructor*/
+        /**
+         * Default constructor.
+         * @see Brick(const Brick & other)
+         * @see Brick(Brick && other)
+         * @see Brick(const shadow::Mesh & mesh)
+         * @see ~Brick(void)
+         */
         Brick(void);
-        /*! Brick copy constructor*/
+
+        /**
+         * Copy constructor.
+         * @see Brick(void)
+         * @see Brick(Brick && other)
+         * @see Brick(const shadow::Mesh & mesh)
+         * @see ~Brick(void)
+         */
         Brick(const Brick & other);
-        /** Brick move constructor*/
+
+        /**
+         * Move constructor.
+         * @see Brick(void)
+         * @see Brick(const Brick & other)
+         * @see Brick(const shadow::Mesh & mesh)
+         * @see ~Brick(void)
+         */
         Brick(Brick && other);
-        /*! Brick constructor form 3ds meshes*/
-        Brick(shadow::Mesh mesh);
-        /*! Brick default destructor*/
+
+
+        /**
+         * Constructor from Shadow Mesh.
+         * @see Brick(void)
+         * @see Brick(const Brick & other)
+         * @see Brick(Brick && other)
+         * @see ~Brick(void)
+         */
+        Brick(const shadow::Mesh & mesh);
+
+        /**
+         * Default destructor.
+         * @see Brick(void)
+         * @see Brick(const Brick & other)
+         * @see Brick(Brick && other)
+         * @see Brick(const shadow::Mesh & mesh)
+         */
         ~Brick(void);
 
         /**
          * Swap `this` with `other`.
          * @param other an other brick to swap with
-         * @see swap(Brick &, Brick &)
+         * @see swap(Brick & lhs, Brick & rhs)
          */
         void swap(Brick &other);
             
@@ -51,58 +101,121 @@ namespace urban
          */
         Brick & operator=(Brick && other) noexcept;
 
-        /*! Access brick name*/
+        /**
+         * Access brick name.
+         * @return brick name
+         */
         std::string get_name(void) const noexcept;
         
-        /*! Get the number of vertices*/
-        size_t vertices_number(void) const;
+        /**
+         * Get the number of vertices
+         * @return number of vertices
+         */
+        size_t vertices_size(void) const;
 
-        /*! Get the number of faces*/
-        size_t facets_number(void) const;
+        /**
+         * Get the number of facets
+         * @return number of facets
+         */
+        size_t facets_size(void) const;
 
-        /*! Access Bounding box*/
+        /**
+         * Get the bounding box
+         * @return bounding box
+         */
         Bbox_3 bbox(void) const noexcept;
 
-        /*! Face iterators*/
+        /** Halfedge handle */
+        typedef Polyhedron::Halfedge_handle Halfedge_handle;
+        /** Halfedge constant handle */
+        typedef Polyhedron::Halfedge_const_handle Halfedge_const_handle;
+        /** Halfedge iterator*/
+        typedef Polyhedron::Halfedge_iterator Halfedge_iterator;
+        /** Halfedge constant iterator*/
+        typedef Polyhedron::Halfedge_const_iterator Halfedge_const_iterator;
+
+        /** Facet */
+        typedef Polyhedron::Facet Facet;
+        /** Facet handle */
+        typedef Polyhedron::Facet_handle Facet_handle;
+        /** Facet constant handle */
+        typedef Polyhedron::Facet_const_handle Facet_const_handle;
+        /** Facet iterator */
         typedef Polyhedron::Facet_iterator Facet_iterator;
+        /** Facet constant iterator */
         typedef Polyhedron::Facet_const_iterator Facet_const_iterator;
+
+        /** Points iterator */
+        typedef Polyhedron::Point_iterator Point_iterator;
+        /** Pointsc constant iterator */
+        typedef Polyhedron::Point_const_iterator Point_const_iterator;
+
+        /** Plane iterator */
+        typedef Polyhedron::Plane_iterator Plane_iterator;
+        /** Plane constant iterator */
+        typedef Polyhedron::Plane_const_iterator Plane_const_iterator;
+
+        /**
+         * return facets begin iterator
+         * @return facets begin iterator
+         */
         Facet_iterator facets_begin(void) noexcept;
+        /**
+         * return facets end iterator
+         * @return facets end iterator
+         */
         Facet_iterator facets_end(void) noexcept;
+        /**
+         * return facets constant begin iterator
+         * @return facets constant begin iterator
+         */
         Facet_const_iterator facets_cbegin(void) const noexcept;
+        /**
+         * return facets constant end iterator
+         * @return facets constant end iterator
+         */
         Facet_const_iterator facets_cend(void) const noexcept;
 
-        /*! Halfedge iterators*/
-        typedef Polyhedron::Halfedge_iterator Halfedge_iterator;
-        typedef Polyhedron::Halfedge_const_iterator Halfedge_const_iterator;
+        /**
+         * return halfedges begin iterator
+         * @return halfedges begin iterator
+         */
         Halfedge_iterator halfedges_begin(void) noexcept;
+        /**
+         * return halfedges end iterator
+         * @return halfedges end iterator
+         */
         Halfedge_iterator halfedges_end(void) noexcept;
+        /**
+         * return halfedges constant begin iterator
+         * @return halfedges constant begin iterator
+         */
         Halfedge_const_iterator halfedges_cbegin(void) const noexcept;
+        /**
+         * return halfedges constant end iterator
+         * @return halfedges constant end iterator
+         */
         Halfedge_const_iterator halfedges_cend(void) const noexcept;
+        /**
+         * return border halfedges begin iterator
+         * @return border halfedges begin iterator
+         */
         Halfedge_iterator border_halfedges_begin(void) noexcept;
+        /**
+         * return border halfedges constant begin iterator
+         * @return border halfedges constant begin iterator
+         */
         Halfedge_const_iterator border_halfedges_begin(void) const noexcept;
 
-        /*! Points iterators*/
-        typedef Polyhedron::Point_iterator Point_iterator;
-        typedef Polyhedron::Point_const_iterator Point_const_iterator;
         Point_iterator points_begin(void) noexcept;
         Point_iterator points_end(void) noexcept;
         Point_const_iterator points_cbegin(void) const noexcept;
         Point_const_iterator points_cend(void) const noexcept;
 
-        /*! Plane iterators*/
-        typedef Polyhedron::Plane_iterator Plane_iterator;
-        typedef Polyhedron::Plane_const_iterator Plane_const_iterator;
         Plane_iterator planes_begin(void) noexcept;
         Plane_iterator planes_end(void) noexcept;
         Plane_const_iterator planes_cbegin(void) const noexcept;
         Plane_const_iterator planes_cend(void) const noexcept;
-
-
-        typedef Polyhedron::Halfedge_handle Halfedge_handle;
-
-        typedef Polyhedron::Facet Facet;
-        typedef Polyhedron::Facet_handle Facet_handle;
-        typedef Polyhedron::Facet_const_handle Facet_const_handle;
 
         Point_3 centroid(const Brick::Facet & facet) const;
         Vector_3 normal(const Brick::Facet & facet) const;
@@ -130,20 +243,25 @@ namespace urban
          */
         Brick & join_facet(Halfedge_handle & h);
     private:
-        /* ! Brick name*/
+        /** Brick name */
         std::string name;
-        /*! The surface describing 3d urban objects*/
+        /** Reference Point */
+        shadow::Point reference_point;
+        /** Projection system ESPG code*/
+        unsigned char espg_index = 2154;
+        /** The 3D surface*/
         Polyhedron surface;
-                /*! Bounding box*/
+        /** Bounding box*/
         Bbox_3 bounding_box;
 
-        /*! Outstreaming Brick*/
+        /** Outstreaming Brick*/
         friend std::ostream& operator<<(std::ostream &, const Brick &);
         friend Adjacency_stream& operator<<(Adjacency_stream &, const Brick &);
         #ifdef CGAL_USE_GEOMVIEW
         friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const Brick &);
         #endif // CGAL_USE_GEOMVIEW
     };
+    /** @} */ // end of urban
 
     /**
      * Swaps two bricks.
