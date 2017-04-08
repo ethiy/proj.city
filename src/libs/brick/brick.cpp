@@ -17,7 +17,7 @@ namespace urban
     Brick::Brick(Brick && other)
         : name(std::move(other.name)), reference_point(std::move(other.reference_point)), espg_index(std::move(other.espg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
     Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _espg_index)
-        : name(mesh.get_name()), reference_point(_reference_point), espg_index(_espg_index), bounding_box(mesh.bbox().xmin(), mesh.bbox().ymin(), mesh.bbox().zmin(), mesh.bbox().xmax(), mesh.bbox().ymax(), mesh.bbox().zmax())
+        : name(mesh.get_name()), reference_point(_reference_point), espg_index(_espg_index), bounding_box(mesh.bbox().to_cgal())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);

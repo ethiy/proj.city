@@ -112,6 +112,11 @@ namespace urban
             return copy;
         }
 
+        CGAL::Bbox_3 Bbox::to_cgal(void) const noexcept
+        {
+            return CGAL::Bbox_3(extreemes.at(0), extreemes.at(2), extreemes.at(4), extreemes.at(1), extreemes.at(3), extreemes.at(5));
+        }
+
         std::ostream & operator<<(std::ostream & os, const Bbox & bbox)
         {
             os << bbox.extreemes.at(0) << " " << bbox.extreemes.at(1) << " " << bbox.extreemes.at(2) << " " << bbox.extreemes.at(3) << " " << bbox.extreemes.at(4) << " " << bbox.extreemes.at(5);
