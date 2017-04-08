@@ -42,7 +42,6 @@ namespace urban
          * @see ~Brick(void)
          */
         Brick(void);
-
         /**
          * Copy constructor.
          * @see Brick(void)
@@ -51,7 +50,6 @@ namespace urban
          * @see ~Brick(void)
          */
         Brick(const Brick & other);
-
         /**
          * Move constructor.
          * @see Brick(void)
@@ -60,8 +58,6 @@ namespace urban
          * @see ~Brick(void)
          */
         Brick(Brick && other);
-
-
         /**
          * Constructor from Shadow Mesh.
          * @see Brick(void)
@@ -69,8 +65,7 @@ namespace urban
          * @see Brick(Brick && other)
          * @see ~Brick(void)
          */
-        Brick(const shadow::Mesh & mesh);
-
+        Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _espg_index);
         /**
          * Default destructor.
          * @see Brick(void)
@@ -156,90 +151,142 @@ namespace urban
         typedef Polyhedron::Plane_const_iterator Plane_const_iterator;
 
         /**
-         * return facets begin iterator
+         * Returns facets begin iterator
          * @return facets begin iterator
          */
         Facet_iterator facets_begin(void) noexcept;
         /**
-         * return facets end iterator
+         * Returns facets end iterator
          * @return facets end iterator
          */
         Facet_iterator facets_end(void) noexcept;
         /**
-         * return facets constant begin iterator
+         * Returns facets constant begin iterator
          * @return facets constant begin iterator
          */
         Facet_const_iterator facets_cbegin(void) const noexcept;
         /**
-         * return facets constant end iterator
+         * Returns facets constant end iterator
          * @return facets constant end iterator
          */
         Facet_const_iterator facets_cend(void) const noexcept;
 
         /**
-         * return halfedges begin iterator
+         * Returns halfedges begin iterator
          * @return halfedges begin iterator
          */
         Halfedge_iterator halfedges_begin(void) noexcept;
         /**
-         * return halfedges end iterator
+         * Returns halfedges end iterator
          * @return halfedges end iterator
          */
         Halfedge_iterator halfedges_end(void) noexcept;
         /**
-         * return halfedges constant begin iterator
+         * Returns halfedges constant begin iterator
          * @return halfedges constant begin iterator
          */
         Halfedge_const_iterator halfedges_cbegin(void) const noexcept;
         /**
-         * return halfedges constant end iterator
+         * Returns halfedges constant end iterator
          * @return halfedges constant end iterator
          */
         Halfedge_const_iterator halfedges_cend(void) const noexcept;
         /**
-         * return border halfedges begin iterator
+         * Returns border halfedges begin iterator
          * @return border halfedges begin iterator
          */
         Halfedge_iterator border_halfedges_begin(void) noexcept;
         /**
-         * return border halfedges constant begin iterator
+         * Returns border halfedges constant begin iterator
          * @return border halfedges constant begin iterator
          */
         Halfedge_const_iterator border_halfedges_begin(void) const noexcept;
 
+        /**
+         * Returns points begin iterator
+         * @return points begin iterator
+         */
         Point_iterator points_begin(void) noexcept;
+        /**
+         * Returns points end iterator
+         * @return points end iterator
+         */
         Point_iterator points_end(void) noexcept;
+        /**
+         * Returns points constant begin iterator
+         * @return points constant begin iterator
+         */
         Point_const_iterator points_cbegin(void) const noexcept;
+        /**
+         * Returns points constant end iterator
+         * @return points constant end iterator
+         */
         Point_const_iterator points_cend(void) const noexcept;
 
+        /**
+         * Returns planes begin iterator
+         * @return planes begin iterator
+         */
         Plane_iterator planes_begin(void) noexcept;
+        /**
+         * Returns planes end iterator
+         * @return planes end iterator
+         */
         Plane_iterator planes_end(void) noexcept;
+        /**
+         * Returns planes constant begin iterator
+         * @return planes constant begin iterator
+         */
         Plane_const_iterator planes_cbegin(void) const noexcept;
+        /**
+         * Returns planes constant end iterator
+         * @return planes constant end iterator
+         */
         Plane_const_iterator planes_cend(void) const noexcept;
 
+        /**
+         * Compute the centroid of a brick facet
+         * @param facet a brick facet
+         * @return centroid of the facet
+         */
         Point_3 centroid(const Brick::Facet & facet) const;
+        /**
+         * Compute the normal of a brick facet
+         * @param facet a brick facet
+         * @return the normal of the facet
+         */
         Vector_3 normal(const Brick::Facet & facet) const;
+        /**
+         * Compute the area of a brick facet
+         * @param facet a brick facet
+         * @return area of the facet
+         */
         double area(const Brick::Facet & facet) const;
 
-        bool likeness(const Facet & left_facet, const Facet & right_facet) const;
-
-        /** Finds a joinable halfedge.
-         * @returns a halfedge iterator of joinable facets
+        /** 
+         * Finds a joinable halfedge.
+         * @return a halfedge handle of joinable facets
         */
         Brick::Halfedge_iterator prunable(void);
 
-        /** Finds all joinable halfedges.
-         * @returns a vector of halfedge references to join their facets
+        /** 
+         * Finds all joinable halfedges.
+         * @param facet a brick facet
+         * @return a vector of pruning halfedge handles for the facet
         */
         std::vector<Brick::Halfedge_handle> combinable(Facet & facet) const;
 
-        /** Clusters all facets into prunable facet bags.
-         * @returns facets clusters
+        /** 
+         * Clusters all facets into prunable facet bags.
+         * @return a vector of all pruning halfedges
         */
         std::vector<Brick::Halfedge_handle> pruning_halfedges(void);
 
-        /** Wraps CGAL join_facet()
-         * @param halfedge halfedge handle to join its incidents facets
+        /** 
+         * Join prunable halfedge
+         * Wraps CGAL join_facet() for brick.
+         * @param h halfedge handle to join its incidents facets
+         * @return `this` brick modified
          */
         Brick & join_facet(Halfedge_handle & h);
     private:
@@ -248,17 +295,34 @@ namespace urban
         /** Reference Point */
         shadow::Point reference_point;
         /** Projection system ESPG code*/
-        unsigned char espg_index = 2154;
+        unsigned short espg_index = 2154;
         /** The 3D surface*/
         Polyhedron surface;
         /** Bounding box*/
         Bbox_3 bounding_box;
 
-        /** Outstreaming Brick*/
-        friend std::ostream& operator<<(std::ostream &, const Brick &);
-        friend Adjacency_stream& operator<<(Adjacency_stream &, const Brick &);
+        /**
+         * Outstreaming Brick in OFF format
+         * @param os the output stream
+         * @param brick the brick to stream
+         * @return the output stream
+         */
+        friend std::ostream& operator<<(std::ostream & os, const Brick & brick);
+        /**
+         * Outstreaming the dual adjacency graph
+         * @param as the output stream
+         * @param brick the brick to stream
+         * @return the output stream
+         */
+        friend Adjacency_stream& operator<<(Adjacency_stream & as, const Brick & brick);
         #ifdef CGAL_USE_GEOMVIEW
-        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream &, const Brick &);
+        /**
+         * Outstreaming Brick to GeomView
+         * @param gs the output stream
+         * @param brick the brick to stream
+         * @return the output stream
+         */
+        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, const Brick & brick);
         #endif // CGAL_USE_GEOMVIEW
     };
     /** @} */ // end of urban

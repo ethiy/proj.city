@@ -27,7 +27,7 @@ namespace urban
 
     std::vector<projection::FacePrint> project_xy(const Brick & brick)
     {
-        std::vector<projection::FacePrint> facets(brick.facets_number());
+        std::vector<projection::FacePrint> facets(brick.facets_size());
 
         std::vector<Point_2> facet_points;
         std::transform(

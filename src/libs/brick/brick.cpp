@@ -11,14 +11,17 @@
 
 namespace urban
 {
-    Brick::Brick(void):name("N/A"){}
-    Brick::Brick(shadow::Mesh mesh): name(mesh.get_name()), bounding_box(mesh.bbox().xmin(), mesh.bbox().ymin(), mesh.bbox().zmin(), mesh.bbox().xmax(), mesh.bbox().ymax(), mesh.bbox().zmax())
+    Brick::Brick(void): name("no name"){}
+    Brick::Brick(const Brick & other)
+        :name(other.name), reference_point(other.reference_point), espg_index(other.espg_index), surface(other.surface), bounding_box(other.bounding_box){}
+    Brick::Brick(Brick && other)
+        : name(std::move(other.name)), reference_point(std::move(other.reference_point)), espg_index(std::move(other.espg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
+    Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _espg_index)
+        : name(mesh.get_name()), reference_point(_reference_point), espg_index(_espg_index), bounding_box(mesh.bbox().xmin(), mesh.bbox().ymin(), mesh.bbox().zmin(), mesh.bbox().xmax(), mesh.bbox().ymax(), mesh.bbox().zmax())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);
     }
-    Brick::Brick(const Brick & other):name(other.name), surface(other.surface), bounding_box(other.bounding_box){}
-    Brick::Brick(Brick && other):name(std::move(other.name)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
     Brick::~Brick(void){}
 
     void Brick::swap(Brick & other)
@@ -32,6 +35,8 @@ namespace urban
     Brick & Brick::operator=(const Brick & other) noexcept
     {
         name = other.name;
+        reference_point = other.reference_point;
+        espg_index = other.espg_index;
         surface = other.surface;
         bounding_box = other.bounding_box;
         return *this;
@@ -40,6 +45,8 @@ namespace urban
     Brick & Brick::operator=(Brick && other) noexcept
     {
         name = std::move(other.name);
+        reference_point = std::move(other.reference_point);
+        espg_index = std::move(other.espg_index);
         surface = std::move(other.surface);
         bounding_box = std::move(other.bounding_box);
         return *this;
@@ -55,12 +62,12 @@ namespace urban
         return bounding_box;
     }
 
-    size_t Brick::vertices_number(void) const
+    size_t Brick::vertices_size(void) const
     {
         return surface.size_of_vertices();
     }
 
-    size_t Brick::facets_number(void) const
+    size_t Brick::facets_size(void) const
     {
         return surface.size_of_facets();
     }
@@ -165,41 +172,6 @@ namespace urban
         );
     }
 
-    bool Brick::likeness(const Facet & left_facet, const Facet & right_facet) const
-    {
-        bool equality(left_facet.facet_degree() == right_facet.facet_degree());
-
-        if(equality)
-        {
-            Polyhedron::Halfedge_around_facet_const_circulator left_facet_circulator = left_facet.facet_begin();
-            Polyhedron::Halfedge_around_facet_const_circulator right_facet_circulator = right_facet.facet_begin();
-
-            bool common_halfedge(false);
-            do
-            {
-                common_halfedge =   right_facet_circulator->vertex()->point() == left_facet_circulator->vertex()->point()
-                                    &&
-                                    right_facet_circulator->opposite()->vertex()->point() == left_facet_circulator->opposite()->vertex()->point();
-            }while(!common_halfedge && ++ right_facet_circulator != right_facet.facet_begin());
-
-            if(common_halfedge)
-            {
-                equality = true;
-                do
-                {
-                    equality =  equality
-                                &&
-                                right_facet_circulator->vertex()->point() == left_facet_circulator->vertex()->point()
-                                &&
-                                right_facet_circulator->opposite()->vertex()->point() == left_facet_circulator->opposite()->vertex()->point();
-                                ++right_facet_circulator;
-                }while(equality && ++left_facet_circulator != left_facet.facet_begin());
-            }
-        }
-        
-        return equality;
-    }
-
     std::vector<Brick::Halfedge_handle> Brick::combinable(Facet & facet) const
     {
         std::vector<Brick::Halfedge_handle> combining_edges;
@@ -266,7 +238,7 @@ namespace urban
     Point_3 Brick::centroid(const Brick::Facet & facet) const
     {
         Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
-        Vector_3 normal = CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
+        Vector_3 n = normal(facet);
 
         Vector_3 centroid = CGAL::NULL_VECTOR;
         do
@@ -275,7 +247,7 @@ namespace urban
                         +
                         ((circulator->vertex()->point() - CGAL::ORIGIN) + (circulator->next()->vertex()->point() - CGAL::ORIGIN))
                             *
-                        to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * normal)
+                        to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n)
                             /
                         6;
         }while(circulator != facet.facet_begin());
