@@ -157,7 +157,7 @@ SCENARIO("Occlusion management")
             }
         );
 
-        urban::Brick test_brick(test_mesh);
+        urban::Brick test_brick(test_mesh, shadow::Point());
 
         urban::projection::BrickPrint test_proj = urban::project(test_brick);
         THEN("The output checks:")

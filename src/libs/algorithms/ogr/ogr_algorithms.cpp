@@ -5,36 +5,36 @@
 
 namespace urban
 {
-    OGRPoint* to_ogr(const Point_2 & point)
+    OGRPoint* to_ogr(const Point_2 & point, const shadow::Point & reference_point)
     {
-        return new OGRPoint(to_double(point.x()), to_double(point.y()));
+        return new OGRPoint(to_double(point.x() + reference_point.x()), to_double(point.y() + reference_point.y()));
     }
 
-    OGRLinearRing* to_ogr(const Polygon & polygon)
+    OGRLinearRing* to_ogr(const Polygon & polygon, const shadow::Point & reference_point)
     {
         OGRLinearRing* ring = new OGRLinearRing();
         std::for_each(
             polygon.vertices_begin(),
             polygon.vertices_end(),
-            [ring](const Point_2 & vertex)
+            [ring, &reference_point](const Point_2 & vertex)
             {
-                return ring->addPoint(to_ogr(vertex));
+                return ring->addPoint(to_ogr(vertex, reference_point));
             }
         );
         ring->closeRings();
         return ring;
     }
     
-    OGRPolygon* to_ogr(const Polygon_with_holes & polygon_with_holes)
+    OGRPolygon* to_ogr(const Polygon_with_holes & polygon_with_holes, const shadow::Point & reference_point)
     {
         OGRPolygon* ogr_polygon = new OGRPolygon();
-        ogr_polygon->addRing(to_ogr(polygon_with_holes.outer_boundary()));
+        ogr_polygon->addRing(to_ogr(polygon_with_holes.outer_boundary(), reference_point));
         std::for_each(
             polygon_with_holes.holes_begin(),
             polygon_with_holes.holes_end(),
-            [ogr_polygon](const Polygon & hole)
+            [ogr_polygon, &reference_point](const Polygon & hole)
             {
-                ogr_polygon->addRing(to_ogr(hole));
+                ogr_polygon->addRing(to_ogr(hole, reference_point));
             }
         );
         return ogr_polygon;

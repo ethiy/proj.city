@@ -60,6 +60,19 @@ namespace urban
         Brick(Brick && other);
         /**
          * Constructor from Shadow Mesh.
+         * @see mesh Shadow Mesh
+         * @see _reference_point reference point
+         * @see Brick(void)
+         * @see Brick(const Brick & other)
+         * @see Brick(Brick && other)
+         * @see ~Brick(void)
+         */
+        Brick(const shadow::Mesh & mesh, const shadow::Point & _reference_point);
+        /**
+         * Constructor from Shadow Mesh.
+         * @see mesh Shadow Mesh
+         * @see _reference_point reference point
+         * @see _espg_index espg index
          * @see Brick(void)
          * @see Brick(const Brick & other)
          * @see Brick(Brick && other)
@@ -101,24 +114,31 @@ namespace urban
          * @return brick name
          */
         std::string get_name(void) const noexcept;
-        
-        /**
-         * Get the number of vertices
-         * @return number of vertices
-         */
-        size_t vertices_size(void) const;
-
-        /**
-         * Get the number of facets
-         * @return number of facets
-         */
-        size_t facets_size(void) const;
-
         /**
          * Get the bounding box
          * @return bounding box
          */
         Bbox_3 bbox(void) const noexcept;
+        /**
+         * Access brick espg.
+         * @return brick espg
+         */
+        unsigned short get_espg(void) const noexcept;
+        /**
+         * Access brick reference point.
+         * @return brick reference point
+         */
+        shadow::Point get_reference_point(void) const noexcept;
+        /**
+         * Get the number of vertices
+         * @return number of vertices
+         */
+        size_t vertices_size(void) const;
+        /**
+         * Get the number of facets
+         * @return number of facets
+         */
+        size_t facets_size(void) const;
 
         /** Halfedge handle */
         typedef Polyhedron::Halfedge_handle Halfedge_handle;

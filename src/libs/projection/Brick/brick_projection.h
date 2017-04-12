@@ -53,14 +53,10 @@ namespace urban
             bool is_under(const FacePrint &) const;
             bool check_integrity(void) const;
 
-            bool has_same_footprint(const BrickPrint & other) const;
-            bool has_same_facets(const BrickPrint & other) const;
-
             void insert(const FacePrint & facet);
 
             double get_height(const Point_2 &) const;
             double get_height(const InexactPoint_2 & inexact_point) const;
-            double get_mean_height(const Polygon & window) const;
 
             void to_ogr(GDALDataset* file) const;
         private:
@@ -71,13 +67,15 @@ namespace urban
             std::list<FacePrint> projected_facets;
             Polygon_set projected_surface;
 
+            bool has_same_footprint(const BrickPrint & other) const;
+            bool has_same_facets(const BrickPrint & other) const;
+
             friend std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection);
+            friend bool operator==(const BrickPrint & lhs, const BrickPrint & rhs);
+            friend bool operator!=(const BrickPrint & lhs, const BrickPrint & rhs);
         };
 
         BrickPrint & operator+(BrickPrint & lhs, const BrickPrint & rhs);
-        bool operator==(const BrickPrint & lhs, const BrickPrint & rhs);
-        bool operator!=(const BrickPrint & lhs, const BrickPrint & rhs);
     }
-
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 }

@@ -68,7 +68,7 @@ namespace urban
             bool contains(const Point_2 & point) const;
             bool contains(const InexactPoint_2 & inexact_point) const;
 
-            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition) const;
+            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, const shadow::Point & reference_point) const;
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;
@@ -79,9 +79,12 @@ namespace urban
         bool operator==(const FacePrint & lhs, const FacePrint & rhs);
         bool operator!=(const FacePrint & lhs, const FacePrint & rhs);
     }
-
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs);
     
-    /** Compute FacePrint area*/
+    /**
+     * Compute FacePrint area.
+     * @param facet a facet projection
+     * @return area of the facet projection
+     */
     double area(const projection::FacePrint & facet);
 }

@@ -30,7 +30,7 @@ int main(int, char **)
             std::begin(urban_objects),
             [](urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh);
+                return urban::Brick(mesh, urban::shadow::Point());
             }
         );
 

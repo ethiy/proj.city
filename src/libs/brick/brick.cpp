@@ -62,6 +62,16 @@ namespace urban
         return bounding_box;
     }
 
+    unsigned short Brick::get_espg(void) const noexcept
+    {
+        return espg_index;
+    }
+
+    shadow::Point Brick::get_reference_point(void) const noexcept
+    {
+        return reference_point;
+    }
+
     size_t Brick::vertices_size(void) const
     {
         return surface.size_of_vertices();

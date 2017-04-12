@@ -298,13 +298,13 @@ namespace urban
 
         double BrickPrint::get_height(const Point_2 & point) const
         {
-            double height(0);
+            double height(0.);
             if(contains(point))
                 height  = std::accumulate(
                     std::begin(projected_facets),
                     std::end(projected_facets),
-                    .0,
-                    [point](double & result_height, const FacePrint & facet)
+                    height,
+                    [&point](double & result_height, const FacePrint & facet)
                     {
                         return result_height + facet.get_height(point);
                     }
@@ -314,37 +314,17 @@ namespace urban
 
         double BrickPrint::get_height(const InexactPoint_2 & inexact_point) const
         {
-            double height(0);
+            double height(0.);
             if(contains(inexact_point))
                 height  = std::accumulate(
                     std::begin(projected_facets),
                     std::end(projected_facets),
-                    .0,
-                    [inexact_point](double & result_height, const FacePrint & facet)
+                    height,
+                    [&inexact_point](double & result_height, const FacePrint & facet)
                     {
                         return result_height + facet.get_height(inexact_point);
                     }
                 );
-            return height;
-        }
-
-        double BrickPrint::get_mean_height(const Polygon & window) const
-        {
-            double height(0);
-            if(overlaps(window))
-            {
-                std::for_each(
-                    std::begin(projected_facets),
-                    std::end(projected_facets),
-                    [&height, &window](const FacePrint & facet)
-                    {
-                        std::list<Polygon_with_holes> _inter;
-                        CGAL::intersection(facet.get_polygon(), window, std::back_inserter(_inter));
-                        height += 0; // how to compute integral in general?
-                        throw std::logic_error("Not yet implemented.");
-                    }
-                );
-            }
             return height;
         }
 

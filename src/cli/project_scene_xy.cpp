@@ -100,9 +100,9 @@ int main(int argc, const char** argv)
             std::begin(stitched_roofs),
             std::end(stitched_roofs),
             std::begin(urban_objects),
-            [](const urban::shadow::Mesh & mesh)
+            [&pivot](const urban::shadow::Mesh & mesh)
             {
-                urban::Brick brick(mesh);
+                urban::Brick brick(mesh, pivot);
                 return urban::prune(brick);
             }
         );
