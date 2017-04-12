@@ -12,6 +12,13 @@ namespace urban
         class Vector;
         class Bbox;
 
+        /** 
+         * @ingroup shadow
+         * @brief Point class representing a 3D Point.
+         * 
+         * Shadow Point is member class of Shadow Mesh:
+         *  - It stores a 3d Point coordinates.
+         */
         class Point
         {
         public:

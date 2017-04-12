@@ -282,7 +282,7 @@ namespace urban
         return os;
     }
 
-    Adjacency_stream & operator<<(Adjacency_stream & as, const Brick & brick)
+    io::Adjacency_stream & operator<<(io::Adjacency_stream & as, const Brick & brick)
     {
         std::map<size_t, Brick::Facet_const_handle> facets;
         std::map<size_t, std::vector<size_t> > adjacences;

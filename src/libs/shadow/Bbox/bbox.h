@@ -11,7 +11,7 @@ namespace urban
     {
         /** 
          * @ingroup shadow
-         * @brief Bbox class representing a 3D facet.
+         * @brief Bbox class representing a 3D Bounding box.
          * 
          * Shadow Bbox is member class of Shadow Mesh:
          *  - It stores the bounding box of the 3d Mesh

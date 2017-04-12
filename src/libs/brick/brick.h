@@ -314,7 +314,7 @@ namespace urban
          * @param brick the brick to stream
          * @return the output stream
          */
-        friend Adjacency_stream& operator<<(Adjacency_stream & as, const Brick & brick);
+        friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, const Brick & brick);
         #ifdef CGAL_USE_GEOMVIEW
         /**
          * Outstreaming Brick to GeomView

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
+#include "../../shadow/Point/point.h"
 #include "../Face/face_projection.h"
 
 #include <ogrsf_frmts.h>
@@ -18,10 +19,9 @@ namespace urban
         {
         public:
             BrickPrint(void);
-            BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box);
-            BrickPrint(const FacePrint & face_projection);
+            BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box, const shadow::Point & reference_point, unsigned short espg_index);
             BrickPrint(const std::string & _name, OGRLayer* projection_layer);
-            BrickPrint(const BrickPrint &other);
+            BrickPrint(const BrickPrint & other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
 
@@ -65,9 +65,11 @@ namespace urban
             void to_ogr(GDALDataset* file) const;
         private:
             std::string name;
+            Bbox_2 bounding_box;
+            shadow::Point reference_point;
+            unsigned short espg_index = 2154;
             std::list<FacePrint> projected_facets;
             Polygon_set projected_surface;
-            Bbox_2 bounding_box;
 
             friend std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection);
         };

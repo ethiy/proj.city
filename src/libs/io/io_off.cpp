@@ -1,13 +1,13 @@
 #include "io_off.h"
 
 #include "Line/line.h"
+#include "Off_stream/off_stream.h"
 
 #include <stdexcept>
 
 #include <string>
 #include <sstream>
 
-#include <map>
 #include <vector>
 
 #include <algorithm>
@@ -19,8 +19,29 @@ namespace urban
     {
         FileHandler<std::fstream>::FileHandler(void) {}
 
-        FileHandler<std::fstream>::FileHandler(boost::filesystem::path _filepath, std::map<std::string, bool> _modes)
-            : filepath(_filepath), modes(_modes) {}
+        FileHandler<std::fstream>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes)
+            : filepath(_filepath), modes(_modes)
+        {
+            if (boost::filesystem::is_regular_file(filepath))
+            {
+                std::ios_base::openmode filemode = 0;
+                if(modes["read"])
+                    filemode = filemode | std::ios_base::in;
+                if(modes["write"])
+                    filemode = filemode | std::ios_base::out;
+                if(modes["binary"])
+                    filemode = filemode | std::ios_base::binary;
+                
+                file = std::fstream(filepath.string(), filemode);
+            }
+            else
+            {
+                std::ostringstream error_message;
+                error_message << "This file: " << filepath.string() << " cannot be found! You should check the file path.";
+                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
+            }
+        }
 
         FileHandler<std::fstream>::~FileHandler(void) {}
 
@@ -30,126 +51,103 @@ namespace urban
             shadow::Mesh mesh;
 
             if (modes["read"])
-            {
-                if (boost::filesystem::is_regular_file(filepath))
+            {                    
+                /*Read Lines*/
+                std::vector<std::string> lines;
+                readlines(file, std::back_inserter(lines));
+                if (lines.empty())
                 {
-                    file.exceptions(std::ifstream::badbit);
+                    error_message << "This file: " << filepath.string() << " is empty!";
+                    throw std::out_of_range(error_message.str());
+                }
 
-                    /*Opening file*/
-                    if (modes["binary"])
-                        file.open(filepath.string().c_str(), std::ios::in | std::ios::binary);
-                    else
-                        file.open(filepath.string().c_str(), std::ios::in);
-                    
-                    /*Mesh name*/
-                    std::string name = filepath.stem().string();
-
-                    /*Read Lines*/
-                    std::vector<std::string> lines;
-                    read_lines(file, std::back_inserter(lines));
-                    if (lines.empty())
-                    {
-                        error_message << "This file: " << filepath.string() << " is empty!";
-                        throw std::out_of_range(error_message.str());
-                    }
-
-                    /*Ignore Comments*/
-                    lines.erase(
-                        std::remove_if(
-                            std::begin(lines),
-                            std::end(lines),
-                            [](const std::string & line)
-                            {
-                                return line.at(0) == '#' || line.empty();
-                            }
-                        ),
-                        std::end(lines)
-                    );
-                    if (lines.empty())
-                    {
-                        error_message << "This file: " << filepath.string() << " containes only comments!";
-                        throw std::out_of_range(error_message.str());
-                    }
-
-                    /*Parsing file*/
-                    if (lines[0] == "OFF")
-                    {
-                        if (lines.empty())
+                /*Ignore Comments*/
+                lines.erase(
+                    std::remove_if(
+                        std::begin(lines),
+                        std::end(lines),
+                        [](const std::string & line)
                         {
-                            error_message << "This file: " << filepath.string() << " containes only the OFF header!";
-                            throw std::out_of_range(error_message.str());
+                            return line.at(0) == '#' || line.empty();
                         }
+                    ),
+                    std::end(lines)
+                );
+                if (lines.empty())
+                {
+                    error_message << "This file: " << filepath.string() << " containes only comments!";
+                    throw std::out_of_range(error_message.str());
+                }
 
-                        /*Parsing sizes*/
-                        std::vector<long> sizes(3);
-                        std::istringstream _sizes(lines[1]);
-                        std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::begin(sizes));
-                        if (sizes.size() != 3)
-                            throw std::range_error("Error parsing the second line! There should be 3 integers.");
-                        if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
-                            throw std::range_error("Error parsing the second line! The first and second integers sould be positive and the third is always equal to 0.");
-                        if (static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
-                            throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
-
-                        /*Parsing vertex points*/
-                        std::vector<std::string> buffer_lines(static_cast<size_t>(sizes[0]));
-                        std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::begin(buffer_lines));
-                        size_t idx(0);
-
-                        std::map<size_t, shadow::Point> points;
-                        std::vector<double> coordinates;
-                        coordinates.reserve(3);
-                        std::istringstream sline;
-                        std::for_each(
-                            std::begin(buffer_lines),
-                            std::end(buffer_lines),
-                            [&points, &idx, &sline, &coordinates](const std::string & line)
-                            {
-                                sline.str(line);
-                                std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
-                                points.emplace(std::make_pair(idx++, shadow::Point(coordinates[0], coordinates[1], coordinates[2])));
-                                coordinates.clear();
-                                sline.clear();
-                            }
-                        );
-
-                        /*Parsing faces*/
-                        idx = 0;
-                        buffer_lines.clear();
-                        sline.clear();
-
-                        std::map<size_t, shadow::Face> faces;
-                        buffer_lines.resize(static_cast<size_t>(sizes[1]));
-                        std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
-
-                        std::vector<size_t> indexes;
-                        size_t n(0);
-                        std::for_each(
-                            std::begin(buffer_lines),
-                            std::end(buffer_lines),
-                            [&indexes, &sline, &n, &idx, &faces](std::string line) {
-                                sline.str(line);
-                                sline >> n;
-                                indexes.resize(n);
-                                std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
-                                if (indexes.size() != n)
-                                    throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                                faces.emplace(std::make_pair(idx++, shadow::Face(n, indexes)));
-                                indexes.clear();
-                                sline.clear();
-                            });
-                        /*Mesh to return*/
-                        mesh = shadow::Mesh(name, points, faces);
-                    }
-                    else
+                /*Parsing file*/
+                if (lines[0] == "OFF")
+                {
+                    if (lines.empty())
                     {
-                        error_message << "Not identified as OFF file! OFF files starts with a \'OFF\' hearder line.";
-                        boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                        throw boost::filesystem::filesystem_error(error_message.str(), ec);
+                        error_message << "This file: " << filepath.string() << " containes only the OFF header!";
+                        throw std::out_of_range(error_message.str());
                     }
 
-                    /*Closing file*/
-                    file.close();
+                    /*Parsing sizes*/
+                    std::vector<long> sizes(3);
+                    std::istringstream _sizes(lines[1]);
+                    std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::begin(sizes));
+                    if (sizes.size() != 3)
+                        throw std::range_error("Error parsing the second line! There should be 3 integers.");
+                    if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
+                        throw std::range_error("Error parsing the second line! The first and second integers sould be positive and the third is always equal to 0.");
+                    if (static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
+                        throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
+
+                    /*Parsing vertex points*/
+                    std::vector<std::string> buffer_lines(static_cast<size_t>(sizes[0]));
+                    std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::begin(buffer_lines));
+                    size_t idx(0);
+
+                    std::map<size_t, shadow::Point> points;
+                    std::vector<double> coordinates;
+                    coordinates.reserve(3);
+                    std::istringstream sline;
+                    std::for_each(
+                    std::begin(buffer_lines),
+                    std::end(buffer_lines),
+                    [&points, &idx, &sline, &coordinates](const std::string & line)
+                    {
+                        sline.str(line);
+                        std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
+                        points.emplace(std::make_pair(idx++, shadow::Point(coordinates[0], coordinates[1], coordinates[2])));
+                            coordinates.clear();
+                            sline.clear();
+                        }
+                    );
+
+                    /*Parsing faces*/
+                    idx = 0;
+                    buffer_lines.clear();
+                    sline.clear();
+
+                    std::map<size_t, shadow::Face> faces;
+                    buffer_lines.resize(static_cast<size_t>(sizes[1]));
+                    std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
+
+                    std::vector<size_t> indexes;
+                    size_t n(0);
+                    std::for_each(
+                        std::begin(buffer_lines),
+                        std::end(buffer_lines),
+                        [&indexes, &sline, &n, &idx, &faces](std::string line) {
+                            sline.str(line);
+                            sline >> n;
+                            indexes.resize(n);
+                            std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
+                            if (indexes.size() != n)
+                                throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
+                            faces.emplace(std::make_pair(idx++, shadow::Face(n, indexes)));
+                            indexes.clear();
+                            sline.clear();
+                        });
+                    /*Mesh to return*/
+                    mesh = shadow::Mesh(filepath.stem().string() , points, faces);
                 }
                 else
                 {
@@ -164,7 +162,6 @@ namespace urban
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
-
             return mesh;
         }
 
@@ -174,15 +171,6 @@ namespace urban
 
             if (modes["write"])
             {
-                if (modes["binary"])
-                {
-                    file.open(filepath.string().c_str(), std::ios::out | std::ios::binary);
-                }
-                else
-                {
-                    file.open(filepath.string().c_str(), std::ios::out);
-                }
-
                 /*Writing comments, header and sizes*/
                 file << "# Mesh: " << mesh.get_name() << std::endl
                      << "OFF" << std::endl
@@ -207,8 +195,6 @@ namespace urban
                         file << p.second << std::endl;
                     }
                 );
-
-                file.close();
             }
             else
             {

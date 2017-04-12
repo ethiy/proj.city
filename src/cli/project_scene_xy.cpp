@@ -116,7 +116,7 @@ int main(int argc, const char** argv)
         //     std::end(urban_objects),
         //     [&dual_dir, &input_path](const urban::Brick & brick)
         //     {
-        //         urban::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
+        //         urban::io::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
         //         as << brick;
         //     }
         // );
