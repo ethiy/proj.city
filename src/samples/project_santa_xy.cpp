@@ -11,7 +11,7 @@ int main(int, char **)
 {
     try
     {
-        boost::filesystem::path filepath("../../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
+        boost::filesystem::path filepath("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS");
         std::map<std::string, bool> modes{{"read", true}};
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
         std::vector<urban::shadow::Mesh> meshes = handler.read();
@@ -29,8 +29,8 @@ int main(int, char **)
 
         std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
         std::transform(
-            std::begin(meshes),
-            std::end(meshes),
+            std::begin(urban_objects),
+            std::end(urban_objects),
             std::begin(projections_xy),
             [](const urban::Brick & brick)
             {

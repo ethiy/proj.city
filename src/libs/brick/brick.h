@@ -44,6 +44,7 @@ namespace urban
         Brick(void);
         /**
          * Copy constructor.
+         * @param other an other brick
          * @see Brick(void)
          * @see Brick(Brick && other)
          * @see Brick(const shadow::Mesh & mesh)
@@ -52,6 +53,7 @@ namespace urban
         Brick(const Brick & other);
         /**
          * Move constructor.
+         * @param other an other brick
          * @see Brick(void)
          * @see Brick(const Brick & other)
          * @see Brick(const shadow::Mesh & mesh)
@@ -60,8 +62,8 @@ namespace urban
         Brick(Brick && other);
         /**
          * Constructor from Shadow Mesh.
-         * @see mesh Shadow Mesh
-         * @see _reference_point reference point
+         * @param mesh Shadow Mesh
+         * @param _reference_point reference point
          * @see Brick(void)
          * @see Brick(const Brick & other)
          * @see Brick(Brick && other)
@@ -70,9 +72,9 @@ namespace urban
         Brick(const shadow::Mesh & mesh, const shadow::Point & _reference_point);
         /**
          * Constructor from Shadow Mesh.
-         * @see mesh Shadow Mesh
-         * @see _reference_point reference point
-         * @see _espg_index espg index
+         * @param mesh Shadow Mesh
+         * @param _reference_point reference point
+         * @param _espg_index espg index
          * @see Brick(void)
          * @see Brick(const Brick & other)
          * @see Brick(Brick && other)
@@ -93,7 +95,7 @@ namespace urban
          * @param other an other brick to swap with
          * @see swap(Brick & lhs, Brick & rhs)
          */
-        void swap(Brick &other);
+        void swap(Brick & other);
             
         /**
          * Copy assignement operator.
@@ -101,7 +103,6 @@ namespace urban
          * @see operator=(Brick &&)
          */
         Brick & operator=(const Brick & other) noexcept;
-
         /**
          * Move assignement operator.
          * @param other an other brick to move

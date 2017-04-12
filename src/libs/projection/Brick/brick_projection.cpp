@@ -23,6 +23,12 @@ namespace urban
               reference_point(_reference_point),
               espg_index(_espg_index)
               {}
+        BrickPrint::BrickPrint(const FacePrint & face_projection)
+            : name("contains_only_one_facet"),
+              projected_facets(std::list<FacePrint>{{face_projection}}),
+              projected_surface(Polygon_set(face_projection.get_polygon())),
+              bounding_box(face_projection.bbox())
+              {}
         BrickPrint::BrickPrint(const std::string & _name, OGRLayer* projection_layer): name(_name)
         {
             projection_layer->ResetReading();

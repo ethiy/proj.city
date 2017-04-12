@@ -20,6 +20,7 @@ namespace urban
         public:
             BrickPrint(void);
             BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box, const shadow::Point & reference_point, unsigned short espg_index);
+            BrickPrint(const FacePrint & face_projection);
             BrickPrint(const std::string & _name, OGRLayer* projection_layer);
             BrickPrint(const BrickPrint & other);
             BrickPrint(BrickPrint && other);
