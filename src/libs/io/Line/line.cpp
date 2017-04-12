@@ -6,7 +6,8 @@ namespace urban
     {
         Line::Line(void){}
         Line::Line(const Line & other): line(other.line){}
-        Line::Line(std::string s):line(s){}
+        Line::Line(Line && other): line(std::move(other.line)){}
+        Line::Line(const std::string & _line):line(_line){}
         Line::~Line(void){}
 
         Line::operator std::string() const
