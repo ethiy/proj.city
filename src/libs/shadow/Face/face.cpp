@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <functional>
 
 #include <stdexcept>
 
@@ -13,67 +14,49 @@ namespace urban
 {
     namespace shadow
     {
-        Face::Face(void): vertices_number(0){}
-        Face::Face(const Face & other): vertices_number(other.vertices_number), points(other.points){}
-        Face::Face(Face && other): vertices_number(std::move(other.vertices_number)), points(std::move(other.points)){}
-        Face::Face(size_t first, size_t second, size_t third): vertices_number(3), points{{first, second, third}}{}
-        Face::Face(size_t _vertices_number, const std::vector<size_t> & _points):vertices_number(_vertices_number), points(_points)
+        Face::Face(void): degree(0) {}
+        Face::Face(Face const& other): degree(other.degree), points(other.points){}
+        Face::Face(Face && other): degree(std::move(other.degree)), points(std::move(other.points)){}
+        Face::Face(std::initializer_list<size_t> initializer):degree(initializer.size()), points(initializer)
         {
-            if(_vertices_number<3)
-                throw std::out_of_range("You must have at least three vertices to define a face!");
+            if(degree<3)
+                throw std::logic_error("You must have at least three vertices to define a face!");
         }
+        Face::Face(size_t first, size_t second, size_t third): degree(3), points{{first, second, third}}{}
         Face::~Face(void){}
 
         void Face::swap(Face & other)
         {
             using std::swap;
-            swap(vertices_number, other.vertices_number);
+            swap(degree, other.degree);
             swap(points, other.points);
         }
-
-        Face & Face::operator=(const Face & other) noexcept
+        Face & Face::operator=(Face const& other) noexcept
         {
-            vertices_number = other.vertices_number;
-            points.resize(vertices_number);
+            degree = other.degree;
+            points.resize(degree);
             std::copy(std::begin(other.points), std::begin(other.points), std::begin(points));
             return *this;
         }
-
         Face & Face::operator=(Face && other) noexcept
         {
-            vertices_number = std::move(other.vertices_number);
+            degree = std::move(other.degree);
             points = std::move(other.points);
             return *this;
         }
 
-        size_t Face::operator[](size_t index)
+        size_t & Face::operator[](size_t index)
         {
             return points[index];
         }
-
-        Face & Face::operator-=(const Face & other)
+        size_t const& Face::operator[](size_t index) const
         {
-            if(other.vertices_number != vertices_number)
-                throw std::overflow_error("Cannot compare faces with different degrees");
+            return points[index];
+        }        
 
-            std::transform(
-                std::begin(points),
-                std::end(points),
-                std::begin(other.points),
-                std::begin(points),
-                [](const size_t this_index,  const size_t other_index)
-                {
-                    return this_index - other_index;
-                }
-            );
-
-            return *this;
-        }
-        
-
-        size_t Face::size(void) const noexcept
+        size_t Face::get_degree(void) const noexcept
         {
-            return vertices_number;
+            return degree;
         }
 
         Face::iterator Face::begin(void) noexcept
@@ -97,12 +80,19 @@ namespace urban
         {
             std::reverse(std::next(std::begin(points)), std::end(points));
         }
+        void Face::rotate(void)
+        {
+            std::rotate(std::begin(points), std::next(std::begin(points)), std::end(points));
+        }
+        void Face::rotate(long n)
+        {
+            std::rotate(std::begin(points), std::next(std::begin(points), n), std::end(points));
+        }
 
         Face::iterator Face::find(size_t index)
         {
             return std::find(std::begin(points), std::end(points), index);
         }
-
         bool Face::overide(size_t index, size_t new_index)
         {
             auto placeholder = find(index);
@@ -112,21 +102,21 @@ namespace urban
             return success;
         }
 
-        bool Face::is_convex(const std::map<size_t, Point> & coordinates) const
+        bool Face::is_convex(std::map<size_t, Point> const& coordinates) const
         {
-            if(coordinates.size() < vertices_number)
+            if(coordinates.size() < degree)
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
 
-            if(vertices_number < 3)
+            if(degree < 3)
                 throw std::out_of_range("You must have at least three vertices to define a face");
 
             bool convexity(true);
 
-            /*
-            * If the face is a triangle (i.e. 'vertices_number == 3') it is convex (strictly if non-degenerate)
-            */
+            /**
+             * If the face is a triangle (i.e. 'degree == 3') it is convex (strictly if non-degenerate)
+             */
 
-            if(vertices_number > 3)
+            if(degree > 3)
             {
                 Vector normal_direction(Vector(coordinates.at(points.at(0)), coordinates.at(points.at(1))) ^ Vector(coordinates.at(points.at(1)), coordinates.at(points.at(2))));
                 auto circulator = std::begin(points);
@@ -159,11 +149,11 @@ namespace urban
             return convexity;
         }
 
-        Lib3dsFace* Face::to_3ds(const std::map<size_t, Point> & coordinates)
+        Lib3dsFace* Face::to_3ds(std::map<size_t, Point> const& coordinates) const
         {
-            if(coordinates.size() < vertices_number)
+            if(coordinates.size() < degree)
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
-            Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), vertices_number-2));
+            Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), degree-2));
             if(is_convex(coordinates))
             {
                 std::transform(
@@ -189,47 +179,56 @@ namespace urban
             return face;
         }
 
-        std::ostream& operator<<(std::ostream & os, const Face & face)
+        std::ostream& operator<<(std::ostream & os, Face const& face)
         {
-            os << face.vertices_number << " ";
-            std::copy(std::begin(face.points), std::end(face.points), std::ostream_iterator<size_t>(os, " "));
+            os << face.degree << " ";
+            auto it = std::begin(face.points);
+            for(; it != std::end(face.points); ++it)
+            {
+                os << *it;
+                if(it != std::prev(std::end(face.points)))
+                    os << " ";
+            }
             return os;
         }
 
 
-        Face & operator-(Face & lhs, const Face & rhs)
+        bool operator==(Face const& lhs, Face const& rhs)
         {
-            return lhs.operator-=(rhs);
-        }
-
-        bool operator==(const Face & lhs, const Face & rhs)
-        {
-            bool result(false);
-            if(lhs.size() == rhs.size())
+            bool result(lhs.get_degree() == rhs.get_degree());
+            if(result)
             {
-                Face l_copy(lhs);
-                Face diff(l_copy - rhs);
-
-                result = std::all_of(
-                    std::begin(diff),
-                    std::end(diff),
-                    [](const size_t index)
-                    {
-                        return index == 0;
-                    }
-                );
+                auto placeholder = std::find(std::begin(rhs.points),std::end(rhs.points), lhs.points.at(0));
+                result = (placeholder != std::end(rhs.points));
+                if(result)
+                {
+                    std::vector<size_t> rotated_points(lhs.get_degree());
+                    std::rotate_copy(
+                        std::begin(rhs.points),
+                        placeholder,
+                        std::end(rhs.points),
+                        std::begin(rotated_points)
+                    );
+                    result = std::inner_product(
+                        std::begin(rhs.points),
+                        std::end(lhs.points),
+                        std::begin(rotated_points),
+                        true,
+                        std::logical_and<bool>(),
+                        std::equal_to<size_t>()
+                    );
+                }
             }
             return result;
         }
-
-        bool operator!=(const Face & lhs, const Face & rhs)
+        bool operator!=(Face const& lhs, Face const& rhs)
         {
             return !operator==(rhs, lhs);
         }
-    }
 
-    void swap(shadow::Face & lhs, shadow::Face &rhs)
-    {
-        lhs.swap(rhs);
+        void swap(Face & lhs, Face &rhs)
+        {
+            lhs.swap(rhs);
+        }
     }
 }
