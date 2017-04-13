@@ -13,7 +13,7 @@ SCENARIO("Face manipulation:")
         {
             THEN("The constructor throws")
             {
-                REQUIRE_THROWS_AS( urban::shadow::Face facet(2, indexes), std::out_of_range );
+                REQUIRE_THROWS_AS( urban::shadow::Face(2, indexes), std::out_of_range );
             }
         }
 
@@ -26,25 +26,10 @@ SCENARIO("Face manipulation:")
 
         WHEN("the triangle is created")
         {
-            urban::shadow::Face facet(indexes[0], indexes[1], indexes[2]);
-
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
-                auxilary << facet;
-                REQUIRE( auxilary.str() == "3 145 45 97 " );
-            }
-        }
-
-        WHEN("the triangle is copied")
-        {
-            urban::shadow::Face facet(indexes[0], indexes[1], indexes[2]);
-            urban::shadow::Face facet2 = facet;
-
-            THEN("the output checks")
-            {
-                std::ostringstream auxilary;
-                auxilary << facet;
+                auxilary << urban::shadow::Face(indexes[0], indexes[1], indexes[2]);
                 REQUIRE( auxilary.str() == "3 145 45 97 " );
             }
         }
@@ -59,20 +44,6 @@ SCENARIO("Face manipulation:")
                 std::ostringstream auxilary;
                 auxilary << facet;
                 REQUIRE( auxilary.str() == "3 145 97 45 " );
-            }
-        }
-
-        WHEN("the triangle is iterated throught")
-        {
-            urban::shadow::Face facet(indexes[0], indexes[1], indexes[2]);
-            std::ostringstream s_facet("");
-            s_facet << facet.size() << " ";
-            std::copy(std::begin(facet), std::end(facet), std::ostream_iterator<size_t>(s_facet));
-            THEN("the output checks")
-            {
-                std::ostringstream auxilary;
-                auxilary << facet;
-                REQUIRE( auxilary.str() == "3 145 45 97 " );
             }
         }
 
@@ -139,20 +110,6 @@ SCENARIO("Face manipulation:")
                 REQUIRE( auxilary.str() == "4 145 85 97 45 " );
             }
         }
-
-        WHEN("the facet is iterated throught")
-        {
-            urban::shadow::Face facet(indexes.size(), indexes);
-            std::ostringstream s_facet("");
-            s_facet << facet.size() << " ";
-            std::copy(std::begin(facet), std::end(facet), std::ostream_iterator<size_t>(s_facet));
-            THEN("the output checks")
-            {
-                std::ostringstream auxilary;
-                auxilary << facet;
-                REQUIRE( auxilary.str() == "4 145 45 97 85 " );
-            }
-        }
         
         WHEN("Convexity is checked with the wrong number of points")
         {
@@ -160,7 +117,7 @@ SCENARIO("Face manipulation:")
             std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {45, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 61.1764)}};
             THEN("It throws")
             {
-                REQUIRE_THROWS_AS( facet.is_convex(coord), std::out_of_range );
+                REQUIRE_THROWS_AS(facet.is_convex(coord), std::out_of_range );
             }
         }
 
@@ -170,7 +127,7 @@ SCENARIO("Face manipulation:")
             std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {85, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
             THEN("It does not checkout ")
             {
-                REQUIRE( !facet.is_convex(coord));
+                REQUIRE(!facet.is_convex(coord));
             }
         }
 
@@ -180,7 +137,7 @@ SCENARIO("Face manipulation:")
             std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
             THEN("It does checkout ")
             {
-                REQUIRE( facet.is_convex(coord));
+                REQUIRE(facet.is_convex(coord));
             }
         }
 
