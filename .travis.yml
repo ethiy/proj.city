@@ -48,5 +48,5 @@ matrix:
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
         - make -j4 all
-        - ./tests/tests -a
+        - ./tests/tests
         - rm *.off *.3ds *.gml *.xsd *.geotiff
