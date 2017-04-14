@@ -19,6 +19,29 @@ namespace urban
     /** Get extrems from coliear points*/
     void extrem_points(std::vector<Point_2> & points);
 
+    /** Get an approximate centroid
+     * @param polygon an inexact polygon
+     * @return an inexact point centroid
+     */
+    InexactPoint_2 centroid(const InexactPolygon & polygon);
+    
+    /** Get an approximate centroid
+     * @param polygon an inexact polygon
+     * @return an inexact point centroid
+     */
+    InexactPoint_2 centroid(const InexactPolygon_with_holes & polygon);
+
+    /** Get an approximate centroid
+     * @param polygon an inexact polygon
+     * @return an inexact point centroid
+     */
+    InexactPoint_2 centroid(const Polygon & polygon);
+    
+    /** Get an approximate centroid
+     * @param polygon an inexact polygon
+     * @return an inexact point centroid
+     */
+    InexactPoint_2 centroid(const Polygon_with_holes & polygon);
     
     /**
      * Sorting heuristic functors

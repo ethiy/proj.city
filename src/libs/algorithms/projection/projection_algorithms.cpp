@@ -12,7 +12,7 @@ namespace urban
 {
     projection::BrickPrint project(const Brick & brick)
     {
-        projection::BrickPrint projection(brick.get_name(), brick.bbox());
+        projection::BrickPrint projection(brick.get_name(), brick.bbox(), brick.get_reference_point(), brick.get_espg());
         std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
         std::for_each(
             std::begin(projected_facets),
@@ -27,14 +27,14 @@ namespace urban
 
     std::vector<projection::FacePrint> project_xy(const Brick & brick)
     {
-        std::vector<projection::FacePrint> facets(brick.facets_number());
+        std::vector<projection::FacePrint> facets(brick.facets_size());
 
         std::vector<Point_2> facet_points;
         std::transform(
             brick.facets_cbegin(),
             brick.facets_cend(),
             std::begin(facets),
-            [&facet_points](const Facet & facet)
+            [&facet_points](const Brick::Facet & facet)
             {
                 projection::FacePrint projected_facet;
                 /**

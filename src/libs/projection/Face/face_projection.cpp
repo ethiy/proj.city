@@ -3,8 +3,11 @@
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../Raster/raster_projection.h"
 #include "../../algorithms/ogr/ogr_algorithms.h"
+#include "../../algorithms/utils/util_algorithms.h"
 
 #include <ogr_geometry.h>
+
+#include <CGAL/Boolean_set_operations_2.h>
 
 #include <algorithm>
 #include <iterator>
@@ -111,6 +114,33 @@ namespace urban
             return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
 
+        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const
+        {
+            InexactToExact to_exact;
+
+            std::vector<Point_2> pixel_corners{{
+                to_exact(InexactPoint_2(top_left_x, top_left_y)),
+                to_exact(InexactPoint_2(top_left_x + pixel_size, top_left_y)),
+                to_exact(InexactPoint_2(top_left_x + pixel_size, top_left_y - pixel_size)),
+                to_exact(InexactPoint_2(top_left_x, top_left_y - pixel_size))
+            }};
+
+            Polygon pixel(std::begin(pixel_corners), std::end(pixel_corners));
+            
+            std::list<Polygon_with_holes> pixel_inter;
+            CGAL::intersection(pixel, border, std::back_inserter(pixel_inter));
+            hit = !pixel_inter.empty();
+            return std::accumulate(
+                std::begin(pixel_inter),
+                std::end(pixel_inter),
+                0.,
+                [this](double & height, const Polygon_with_holes & pixel_part)
+                {
+                    return height + get_plane_height(CGAL::centroid(pixel_part.outer_boundary()[0], pixel_part.outer_boundary()[1], pixel_part.outer_boundary()[2]));
+                }
+            );
+        }
+
         double FacePrint::area(void) const
         {
             return std::accumulate(
@@ -130,7 +160,7 @@ namespace urban
         }
 
 
-        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const
+        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot, std::vector<short> & pixel_access) const
         {
             if(!is_degenerate())
             {
@@ -139,6 +169,7 @@ namespace urban
                  */
                 Bbox_2 bae = border.bbox();
                 double pixel_size = raster_projection.get_pixel_size();
+                double z_offset = pivot.z();
                 size_t  i_min = static_cast<size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
                         j_min = static_cast<size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
                 size_t  w = static_cast<size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
@@ -148,37 +179,54 @@ namespace urban
                     std::stringstream error_message("Oh noooz!! I iz outsidez ze box");
                     error_message << i_min + h << " > " << raster_projection.get_height() << " or " << j_min + w << " > " << raster_projection.get_width();
                     throw std::runtime_error(error_message.str());
-
                 }
                 std::vector<size_t> indexes(w * h);
                 std::iota(std::begin(indexes), std::end(indexes), 0);
                 std::for_each(
                     std::begin(indexes),
                     std::end(indexes),
-                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](const size_t index)
+                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min, &pixel_access, z_offset](const size_t index)
                     {
-                        if(
-                            contains(
-                                Point_2(
-                                    bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
-                                    bae.ymax() - (static_cast<double>(index/w) + .5) * pixel_size
-                                )
-                            )
-                        )
-                            raster_projection.at
-                            (
-                                i_min + index/w,
-                                j_min + index%w
-                            )
-                            += 
-                            get_height
-                            (
-                                Point_2
-                                (
-                                    bae.xmin() + (static_cast<double>(index%w) + .5) * pixel_size,
-                                    bae.ymax() - (static_cast<double>(index/w) + .5) * pixel_size
-                                )
+                        size_t _index = raster_projection.get_data_index(i_min + index/w, j_min + index%w);
+                        bool hit(false);
+                        double temp(raster_projection.at(i_min + index/w, j_min + index%w) - z_offset);
+                        if(!pixel_access.at(_index))
+                        {
+                            temp
+                            +=
+                            get_height(
+                                bae.xmin() + static_cast<double>(index%w) * pixel_size,
+                                bae.ymax() - static_cast<double>(index/w) * pixel_size,
+                                pixel_size,
+                                hit
                             );
+
+                            pixel_access.at(_index) += hit * 1;
+                        }
+                        else
+                        {
+                            temp
+                            =
+                            (
+                                raster_projection.at(
+                                    i_min + index/w,
+                                    j_min + index%w
+                                )
+                                *
+                                pixel_access.at(_index)
+                            )
+                            +
+                            get_height(
+                                bae.xmin() + static_cast<double>(index%w) * pixel_size,
+                                bae.ymax() - static_cast<double>(index/w) * pixel_size,
+                                pixel_size,
+                                hit
+                            );
+                            pixel_access.at(_index) += hit * 1;
+
+                            temp /=  pixel_access.at(_index);
+                        }
+                        raster_projection.at(i_min + index/w, j_min + index%w) = temp + z_offset;
                     }
                 );
 
@@ -266,15 +314,15 @@ namespace urban
             return contains(to_exact(inexact_point));
         }
 
-        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition) const
+        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, const shadow::Point & reference_point) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
-            feature->SetGeometry(urban::to_ogr(border));
+            feature->SetGeometry(urban::to_ogr(border, reference_point));
             ExactToInexact to_inexact;
             feature->SetField("coeff_a", to_inexact(supporting_plane.a()));
             feature->SetField("coeff_b", to_inexact(supporting_plane.b()));
             feature->SetField("coeff_c", to_inexact(supporting_plane.c()));
-            feature->SetField("coeff_d", to_inexact(supporting_plane.d()));
+            feature->SetField("coeff_d", to_inexact(supporting_plane.d() + reference_point.z()));
             return feature;
         }
 

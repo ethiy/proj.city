@@ -72,10 +72,10 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             brick.planes_begin(),
-            [](Facet & facet)
+            [](Brick::Facet & facet)
             {
-                Facet::Halfedge_handle halfedge = facet.halfedge();
-                return Facet::Plane_3(
+                Brick::Halfedge_handle halfedge = facet.halfedge();
+                return Brick::Facet::Plane_3(
                     halfedge->vertex()->point(),
                     halfedge->next()->vertex()->point(),
                     halfedge->next()->next()->vertex()->point()
@@ -84,15 +84,12 @@ namespace urban
         );
     }
 
-    Brick prune(Brick & brick)
+    Brick & prune(Brick & brick)
     {
-        Brick::Halfedge_iterator h_it = brick.prunable();
-
-        while(h_it != brick.halfedges_end())
+        std::vector<Brick::Halfedge_handle> prunables = brick.pruning_halfedges();
+        for(auto prunable : prunables)
         {
-            Brick::Halfedge_handle h = h_it->opposite()->opposite();
-            brick = brick.join_facet(h);
-            h_it = brick.prunable();
+            brick = brick.join_facet(prunable);
         }
         return brick;
     }
@@ -103,21 +100,9 @@ namespace urban
             brick.facets_begin(),
             brick.facets_end(),
             .0,
-            [](double & area, Facet & facet)
+            [&brick](double & area, Brick::Facet & facet)
             {
-                Polyhedron::Halfedge_around_facet_circulator h = facet.facet_begin();
-                Vector_3 normal = CGAL::normal(h->vertex()->point(), h->next()->vertex()->point(), h->next()->next()->vertex()->point());
-                return area 
-                + to_double(CGAL::cross_product(h->vertex()->point() - CGAL::ORIGIN, h->next()->vertex()->point() - CGAL::ORIGIN) * normal/2.)
-                + std::accumulate(
-                    std::next(facet.facet_begin(), 1),
-                    std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
-                    .0,
-                    [normal](double & surface_area, const Polyhedron::Halfedge & halfedge)
-                    {
-                        return surface_area + to_double(CGAL::cross_product(halfedge.vertex()->point() - CGAL::ORIGIN, halfedge.next()->vertex()->point() - CGAL::ORIGIN) * normal/2.);
-                    }
-                );
+                return area + brick.area(facet);
             }
         );
     }

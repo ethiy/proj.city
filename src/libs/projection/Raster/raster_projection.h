@@ -29,6 +29,7 @@ namespace urban
             std::string get_name(void) const noexcept;
             size_t get_height(void) const noexcept;
             size_t get_width(void) const noexcept;
+            size_t get_data_index(const size_t i, const size_t j) const noexcept;
             shadow::Point get_reference_point() const noexcept;
             double get_pixel_size() const noexcept;
             std::array<double, 6> get_geographic_transform(void) const;

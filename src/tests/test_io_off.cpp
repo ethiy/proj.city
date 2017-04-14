@@ -34,7 +34,7 @@ SCENARIO("Input/Output from OFF file:")
 
                 std::istringstream _auxilary(auxilary.str());
                 std::vector<std::string> lines;
-                urban::io::read_lines(_auxilary, std::back_inserter(lines));
+                urban::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
@@ -109,7 +109,7 @@ SCENARIO("Input/Output from OFF file:")
 
                 std::istringstream _auxilary(auxilary.str());
                 std::vector<std::string> lines;
-                urban::io::read_lines(_auxilary, std::back_inserter(lines));
+                urban::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");

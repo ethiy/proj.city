@@ -37,7 +37,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << face_proj;
-                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: 1.25 0.029 87.3 98.64\nFace Projections: 1\nThe Polygon describing borders :3 64.25 50 1.25 98.64 87.3 0.029  0 \nThe supporting plane coefficients : 425.689 342.995 2027.02 -44500.2\n\nProjected surface: \n3 1.25 98.64 87.3 0.029 64.25 50  0 \n");
+                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: 1.25 0.029 87.3 98.64\nReference Point: 0 0 0\nESPG index: 2154\nFace Projections: 1\nThe Polygon describing borders :3 64.25 50 1.25 98.64 87.3 0.029  0 \nThe supporting plane coefficients : 425.689 342.995 2027.02 -44500.2\n\nProjected surface: \n3 1.25 98.64 87.3 0.029 64.25 50  0 \n");
             }
         }
         WHEN("it is compared to an encapsulated brick projection:")
@@ -93,7 +93,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: -0.5 0.33 0.5 0.67\nFace Projections: 1\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\nProjected surface: \n3 -0.5 0.33 0.5 0.33 0 0.67  0 \n");
+                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: -0.5 0.33 0.5 0.67\nReference Point: 0 0 0\nESPG index: 2154\nFace Projections: 1\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\nProjected surface: \n3 -0.5 0.33 0.5 0.33 0 0.67  0 \n");
             }
         }
         WHEN("face_1 is compared to the other")
@@ -120,7 +120,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: -1 0 1 1\nFace Projections: 2\nThe Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  \nThe supporting plane coefficients : 3 -0.23 2 -7\n\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\nProjected surface: \n3 -1 0 1 0 0 1  0 \n");
+                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: -1 0 1 1\nReference Point: 0 0 0\nESPG index: 2154\nFace Projections: 2\nThe Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  \nThe supporting plane coefficients : 3 -0.23 2 -7\n\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\nProjected surface: \n3 -1 0 1 0 0 1  0 \n");
             }
         }
     }
@@ -199,7 +199,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: -12 -12 2 8\nFace Projections: 5\nThe Polygon describing borders :4 -6.63158 5.15789 -10 6 -12 0 -7.77778 0  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :3 -6 2 -4 2 -6 4  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :12 -0.8 5.2 -2 4 -3.6 4.4 -2.5 0 0 0 -1.5 -3 2 -10 -5 -10 -6 -12 2 -12 2 -10 2 4.5  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :3 2 8 -0.285714 5.71429 2 4.8  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :6 -10 -10 2 -10 -2 -2 -4 6 4 4 -6 8  1 3 -4 2 -6 2 -6 4  \nThe supporting plane coefficients : -0 -0 56 -560\n\nProjected surface: \n15 -6 -12 2 -12 2 -10 2 4.5 4 4 2 4.8 2 8 -0.285714 5.71429 -6 8 -6.63158 5.15789 -10 6 -12 0 -7.77778 0 -10 -10 -5 -10  2 4 0 0 -1.5 -3 -2 -2 -2.5 0  4 -0.8 5.2 -2 4 -3.6 4.4 -4 6  \n");
+                REQUIRE(auxilary.str() == "Name: contains_only_one_facet\nBounding box: -12 -12 2 8\nReference Point: 0 0 0\nESPG index: 2154\nFace Projections: 5\nThe Polygon describing borders :4 -6.63158 5.15789 -10 6 -12 0 -7.77778 0  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :3 -6 2 -4 2 -6 4  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :12 -0.8 5.2 -2 4 -3.6 4.4 -2.5 0 0 0 -1.5 -3 2 -10 -5 -10 -6 -12 2 -12 2 -10 2 4.5  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :3 2 8 -0.285714 5.71429 2 4.8  0 \nThe supporting plane coefficients : -0 -0 72 -0\n\nThe Polygon describing borders :6 -10 -10 2 -10 -2 -2 -4 6 4 4 -6 8  1 3 -4 2 -6 2 -6 4  \nThe supporting plane coefficients : -0 -0 56 -560\n\nProjected surface: \n15 -6 -12 2 -12 2 -10 2 4.5 4 4 2 4.8 2 8 -0.285714 5.71429 -6 8 -6.63158 5.15789 -10 6 -12 0 -7.77778 0 -10 -10 -5 -10  2 4 0 0 -1.5 -3 -2 -2 -2.5 0  4 -0.8 5.2 -2 4 -3.6 4.4 -4 6  \n");
             }
         }
 

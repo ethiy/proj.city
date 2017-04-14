@@ -22,6 +22,16 @@ RUN apt-get install -y \
             libqt5opengl5-dev\
             libgdal-dev
 WORKDIR /home
+RUN mkdir -p 3rdParty
+WORKDIR 3rdParty
+RUN curl -O http://download.osgeo.org/gdal/2.1.3/gdal213.zip
+RUN unzip gdal213.zip
+RUN rm gdal213.zip
+WORKDIR gdal-2.1.3
+RUN ./configure
+RUN make -j4
+RUN make install
+WORKDIR /home
 RUN git clone https://github.com/Ethiy/3DSceneModel.git
 WORKDIR 3DSceneModel/
 RUN git checkout build-system-trial

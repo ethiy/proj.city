@@ -14,14 +14,15 @@
 
 #include <vector>
 #include <map>
-#include <ostream>
+#include <initializer_list>
+#include <iostream>
 
 namespace urban
 {
     namespace shadow
     {
         /** 
-         * @ingroup shadow
+         * @ingroup shadow_group
          * @brief Face class representing a 3D facet.
          * 
          * Shadow Face is member class of Shadow Mesh:
@@ -31,72 +32,82 @@ namespace urban
         class Face
         {
         public:
-            
             /**
              * Empty Face constructor.
-             * @see Face(const Face &)
-             * @see Face(Face &&)
-             * @see Face(size_t, const std::vector<size_t> &)
-             * @see Face(size_t, size_t, size_t);
+             * @see Face(Face const& other);
+             * @see Face(Face && other);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(void);
-            
             /**
              * Copy constructor.
              * @param other a Face
-             * @see Face(void)
-             * @see Face(Face &&)
-             * @see Face(size_t, const std::vector<size_t> &)
-             * @see Face(size_t, size_t, size_t);
+             * @see Face(void);
+             * @see Face(Face && other);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void)
              */
-            Face(const Face & other);
-            
+            Face(Face const& other);
             /**
              * Move constructor.
              * @param other a Face
-             * @see Face(void)
-             * @see Face(const Face &)
-             * @see Face(size_t, const std::vector<size_t> &)
-             * @see Face(size_t, size_t, size_t);
+             * @see Face(void);
+             * @see Face(Face const&)
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(Face && other);
-            
             /**
-             * General constructor. 
-             * @throws std::out_of_range
-             * @param _vertices_number facet degree
-             * @param _points point indexes
-             * @see Face(void)
-             * @see Face(const Face &)
-             * @see Face(Face &&)
-             * @see Face(size_t, size_t, size_t);
-             * @see ~Face(void)
+             * Initializer list constructor. 
+             * @throws std::logic_error
+             * @param initializer initializer list
+             * @see Face(void);
+             * @see Face(Face const&);
+             * @see Face(Face &&);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see ~Face(void);
              */
-            Face(size_t _vertices_number, const std::vector<size_t> & _points);
-            
+            Face(std::initializer_list<size_t> initializer);
             /**
-             * Constructs a triagular face. 
+             * STL Vector constructor. 
+             * @throws std::logic_error
+             * @param indices vector containing point indices
+             * @see Face(void);
+             * @see Face(Face const&);
+             * @see Face(Face &&);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see ~Face(void);
+             */
+            Face(std::vector<size_t> const& indices);
+            /**
+             * Triagular face constructor. 
              * @param first point index
              * @param second point index
              * @param third point index
-             * @see Face(void)
-             * @see Face(const Face &);
-             * @see Face(Face &&)
-             * @see Face(size_t, const std::vector<size_t> &)
-             * @see ~Face(void)
+             * @see Face(void);
+             * @see Face(Face const& other);
+             * @see Face(Face && other);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see ~Face(void);
              */
-            Face(size_t first, size_t second, size_t third);
-            
+            Face(size_t first, size_t second, size_t third, bool orientation);
             /** 
              * Destructor.
              * @see Face(void)
-             * @see Face(const Face &)
-             * @see Face(Face &&)
-             * @see Face(size_t, const std::vector<size_t> &)
-             * @see Face(size_t, size_t, size_t);
+             * @see Face(Face const& other)
+             * @see Face(Face && other)
+             * @see Face(std::initializer_list<size_t> initializer)
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              */
             ~Face(void);
 
@@ -106,70 +117,60 @@ namespace urban
              * @see swap(shadow::Face &, shadow::Face &)
              */
             void swap(Face & other);
-            
             /**
              * Copy assignement operator.
              * @param other an other face to move
              * @see operator=(Face &&)
              */
-            Face & operator=(const Face & other) noexcept;
-
+            Face & operator=(Face const& other) noexcept;
             /**
              * Move assignement operator.
              * @param other an other face to copy
-             * @see operator=(const Face &)
+             * @see operator=(Face const&)
              */
             Face & operator=(Face && other) noexcept;
             
             /**
              * Access operator[].
              * @param index point index to access
+             * @return reference to the requested element
              */
-            size_t operator[](size_t index);
+            size_t & operator[](size_t index);
+            /**
+             * Access operator[].
+             * @param index point index to access
+             * @return constant reference to the requested element
+             */
+            size_t const& operator[](size_t index) const;
             
             /**
-             * Substruct a face from the current one.
-             * @param other other face to compare
-             * @return result of substraction
-             */
-            Face & operator-=(const Face & other);
-
-            /**
-             * Access Face size.
+             * Access Facet degree.
              * @return facet degree
              */
-            size_t size(void) const noexcept;
+            size_t get_degree(void) const noexcept;
 
-            /**
-             * Iterator over face vertices.
-             */
+            /** Iterator over face vertices */
             typedef std::vector<size_t>::iterator iterator;
-
-            /**
-             * Constant iterator over face vertices.
-             */
+            /** Constant iterator over face vertices */
             typedef std::vector<size_t>::const_iterator const_iterator;
 
             /**
-             * begin iterator access.
+             * Access begin iterator.
              * @return begin iterator
              */
             iterator begin(void) noexcept;
-
             /**
-             * end iterator access.
+             * Access end iterator.
              * @return end iterator
              */
             iterator end(void) noexcept;
-
             /**
-             * begin iterator access.
+             * Access begin constant iterator.
              * @return constant begin iterator
              */
             const_iterator cbegin(void) const noexcept;
-
             /**
-             * end iterator access.
+             * Access end constant iterator.
              * @return constant end iterator
              */
             const_iterator cend(void) const noexcept;
@@ -178,65 +179,68 @@ namespace urban
              * Invert face orientation
              */
             void invert_orientation(void);
+            /**
+             * Apply a left rotation
+             */
+            void rotate(void);
+            /**
+             * Apply a left rotation n times
+             * n number of left rotations
+             */
+            void rotate(long n);
 
             /**
-             * Find an index
+             * Find an index.
              * @param index the index to find inside the facet
              * @return iterator to the index (it sould be unique)
              */
             iterator find(size_t index);
-            
             /**
-             * Find an index and overide it
-             * @param index the index to overide
+             * Find an index and overide it.
+             * @param old_index the index to overide
              * @param new_index the index to overide with
-             * @return true in case of success
+             * @return true if successful
              */
-            bool overide(size_t index, size_t new_index);
+            bool overide(size_t old_index, size_t new_index);
 
             /**
-             * Evaluates if face is convex based on points coordinates.
+             * Evaluates if facet is convex based on points coordinates.
              * @param coordinates map associating point indexes to their coordinates
-             * @return facet convexity
+             * @return true if facet is convex
              */
-            bool is_convex(const std::map<size_t, Point> & coordinates) const;
+            bool is_convex(std::map<size_t, Point> const& coordinates) const;
 
             /**
-             * Returns 3ds face structure.
+             * Writes to a 3ds face structure.
              * @param coordinates map associating point indexes to their coordinates
-             * @return pointer to `Lib3dsFace`
+             * @return pointer to `Lib3dsFace` list
              * @throws std::logic_error
              */
-            Lib3dsFace* to_3ds(const std::map<size_t, Point> & coordinates);
+            Lib3dsFace * to_3ds(std::map<size_t, Point> const& coordinates) const;
         private:
-            size_t vertices_number;     /**< Face degree */
-            std::vector<size_t> points; /**< Points array */
+            /** Face degree */
+            size_t degree;
+            /** Points array */
+            std::vector<size_t> points;
+
+            /**
+            * Check if two faces are equal:
+            * if all indices are equal
+            * @param lhs left-hand Face.
+            * @param rhs right-hand Face.
+            * @return boolean indicating if the two faces are equal
+            */
+            friend bool operator==(Face const& lhs, Face const& rhs);
 
             /** 
              * Writes Face to output stream.
              * @param os output stream
              * @param face the facet to write
-             * @return the output stream
+             * @return reference to the output stream
              */
-            friend std::ostream& operator<<(std::ostream & os, const Face & face);
+            friend std::ostream & operator<<(std::ostream & os, Face const& face);
         };
 
-        /**
-        * Substruct operation on Faces
-        * @param lhs left-hand Face.
-        * @param rhs right-hand Face.
-        * @return the result of lhs - rhs
-        */
-        Face & operator-(Face & lhs, const Face & rhs);
-
-        /**
-        * Check if two faces are equal:
-        * if all indices are equal
-        * @param lhs left-hand Face.
-        * @param rhs right-hand Face.
-        * @return boolean indicating if the two faces are equal
-        */
-        bool operator==(const Face & lhs, const Face & rhs);
         /**
         * Check if two faces are different:
         * if at least two indices are different
@@ -244,13 +248,13 @@ namespace urban
         * @param rhs right-hand Face.
         * @return boolean indicating if the two faces are different
         */
-        bool operator!=(const Face & lhs, const Face & rhs);
-    }
+        bool operator!=(Face const& lhs, Face const& rhs);
 
-    /**
-     * Swaps two faces.
-     * @param lhs left-hand Face.
-     * @param rhs right-hand Face.
-     */
-    void swap(shadow::Face & lhs, shadow::Face & rhs);
+        /**
+        * Swaps two faces.
+        * @param lhs left-hand Face.
+        * @param rhs right-hand Face.
+        */
+        void swap(Face & lhs, Face & rhs);
+    }
 }

@@ -30,17 +30,17 @@ SCENARIO("Input/Output from Shadow Mesh:")
             },
             std::map<size_t, urban::shadow::Face>
             {
-                {0, urban::shadow::Face(0, 1, 2)},
-                {1, urban::shadow::Face(4, 3, 5)},
-                {2, urban::shadow::Face(0, 2, 4)},
-                {3, urban::shadow::Face(3, 4, 2)},
-                {4, urban::shadow::Face(5, 1, 0)},
-                {5, urban::shadow::Face(1, 5, 3)},
-                {6, urban::shadow::Face(5, 0, 4)},
-                {7, urban::shadow::Face(1, 3, 2)}
+                {0, urban::shadow::Face{{0, 1, 2}}},
+                {1, urban::shadow::Face{{4, 3, 5}}},
+                {2, urban::shadow::Face{{0, 2, 4}}},
+                {3, urban::shadow::Face{{3, 4, 2}}},
+                {4, urban::shadow::Face{{5, 1, 0}}},
+                {5, urban::shadow::Face{{1, 5, 3}}},
+                {6, urban::shadow::Face{{5, 0, 4}}},
+                {7, urban::shadow::Face{{1, 3, 2}}}
             }
         );
-        urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh));
+        urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh, urban::shadow::Point()));
 
         std::ostringstream file_name;
         std::map<std::string,bool> modes{{"write", true}, {"read", true}};

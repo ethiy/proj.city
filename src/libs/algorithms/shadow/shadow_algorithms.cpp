@@ -13,7 +13,7 @@ namespace urban
 {
     shadow::Face transform(shadow::Face & face, const std::map<size_t, size_t> map)
     {
-        std::vector<size_t> mapped_indexes(face.size());
+        std::vector<size_t> mapped_indexes(face.get_degree());
 
         std::transform(
             std::begin(face),
@@ -25,7 +25,7 @@ namespace urban
             }
         );
 
-        return shadow::Face(mapped_indexes.size(), mapped_indexes);
+        return shadow::Face(mapped_indexes);
     }
 
 

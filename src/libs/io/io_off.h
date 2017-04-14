@@ -20,7 +20,7 @@ namespace urban
         {
         public:
             FileHandler(void);
-            FileHandler(boost::filesystem::path, std::map<std::string, bool>);
+            FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
             ~FileHandler(void);
 
             shadow::Mesh read(void);

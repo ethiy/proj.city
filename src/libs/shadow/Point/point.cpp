@@ -9,13 +9,21 @@ namespace urban
 {
     namespace shadow
     {
-        Point::Point(void): coordinates{{0, 0, 0}} {}
-        Point::Point(double x, double y, double z): coordinates{{x, y, z}} {}
-        Point::Point(double _coordinates[3]): coordinates{{_coordinates[0], _coordinates[1], _coordinates[2]}} {}
-        Point::Point(const Point_3 & point):coordinates{{CGAL::to_double(point.x()), CGAL::to_double(point.y()), CGAL::to_double(point.z())}} {}
-        Point::Point(const Point & other): coordinates(other.coordinates) {}
-        Point::Point(Point && other): coordinates(std::move(other.coordinates)) {}
-        Point::~Point(void){}
+        Point::Point(void)
+            : coordinates{{0, 0, 0}} {}
+        Point::Point(double x, double y, double z)
+            : coordinates{{x, y, z}} {}
+        Point::Point(double _coordinates[3])
+            : coordinates{{_coordinates[0], _coordinates[1], _coordinates[2]}} {}
+        Point::Point(const Point_3 & point)
+            : coordinates{{CGAL::to_double(point.x()), CGAL::to_double(point.y()), CGAL::to_double(point.z())}} {}
+        Point::Point(Lib3dsPoint const& point)
+            : coordinates{{static_cast<double>(point.pos[0]), static_cast<double>(point.pos[1]), static_cast<double>(point.pos[2])}} {}
+        Point::Point(Point const& other)
+            : coordinates(other.coordinates) {}
+        Point::Point(Point && other)
+            : coordinates(std::move(other.coordinates)) {}
+        Point::~Point(void) {}
         
         double Point::x(void) const noexcept
         {
@@ -36,7 +44,7 @@ namespace urban
             swap(coordinates, other.coordinates);
         }
 
-        Point & Point::operator=(const Point & other) noexcept
+        Point & Point::operator=(Point const& other) noexcept
         {
             coordinates = other.coordinates;
             return *this;
@@ -49,7 +57,7 @@ namespace urban
             return *this;
         }
 
-        Point & Point::operator+=(const Vector & translation)
+        Point & Point::operator+=(Vector const& translation)
         {
             coordinates.at(0) += translation.x();
             coordinates.at(1) += translation.y();
@@ -63,28 +71,28 @@ namespace urban
             return Bbox(coordinates);
         }
 
-        std::ostream & operator<<(std::ostream & os, const Point & point)
+        std::ostream & operator<<(std::ostream & os, Point const& point)
         {
             os << point.coordinates.at(0) << " " << point.coordinates.at(1) << " " << point.coordinates.at(2);
             return os;
         }
         
-        Vector operator-(const Point & lhs, const Point & rhs)
+        Vector operator-(Point const& lhs, Point const& rhs)
         {
             return Vector(rhs, lhs);
         }
 
-        Point & operator+(Point & lhs, const Vector & rhs)
+        Point & operator+(Point & lhs, Vector const& rhs)
         {
             return lhs += rhs;
         }
 
-        bool operator==(const Point & lhs, const Point & rhs)
+        bool operator==(Point const& lhs, Point const& rhs)
         {
             return (rhs - lhs) == shadow::Vector();
         }
         
-        bool operator!=(const Point & lhs, const Point & rhs)
+        bool operator!=(Point const& lhs, Point const& rhs)
         {
             return !(rhs == lhs);
         }
@@ -95,7 +103,7 @@ namespace urban
         lhs.swap(rhs);
     }
 
-    shadow::Vector normal_to(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third)
+    shadow::Vector normal_to(shadow::Point const& first, shadow::Point const& second, shadow::Point const& third)
     {
         shadow::Vector v(first, second);
         v ^= shadow::Vector(second, third);

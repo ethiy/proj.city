@@ -1,5 +1,7 @@
 #include "raster_projection.h"
 
+#include <Imagine/LinAlg.h>
+
 #include <iterator>
 #include <algorithm>
 #include <iomanip>
@@ -59,6 +61,13 @@ namespace urban
         size_t RasterPrint::get_width(void) const noexcept
         {
             return width;
+        }
+
+        size_t RasterPrint::get_data_index(const size_t i, const size_t j) const noexcept
+        {
+            if(i>height && j>width)
+                throw std::out_of_range("You iz out of rangez!!");
+            return i * width + j;
         }
 
         shadow::Point RasterPrint::get_reference_point() const noexcept

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
+#include "../../shadow/Point/point.h"
 
 #include <ogr_geometry.h>
 
@@ -11,21 +12,21 @@ namespace urban
      * @param point a CGAL Point_2
      * @return a pointer to an OGR Point
      */
-    OGRPoint* to_ogr(const Point_2 & point);
+    OGRPoint* to_ogr(const Point_2 & point, const shadow::Point & reference_point);
 
     /**
      * construct OGRPolygon from a CGAL Polygon
      * @param polygon a CGAL Polygon
      * @return a pointer to an OGR Linear Ring
      */
-    OGRLinearRing* to_ogr(const Polygon & polygon);
+    OGRLinearRing* to_ogr(const Polygon & polygon, const shadow::Point & reference_point);
     
     /**
      * construct OGRPolygon from a CGAL Polygon with holes
      * @param polygon_with_holes a CGAL Polygon with holes
      * @return a pointer to an OGR polygon
      */
-    OGRPolygon* to_ogr(const Polygon_with_holes & polygon_with_holes);
+    OGRPolygon* to_ogr(const Polygon_with_holes & polygon_with_holes, const shadow::Point & reference_point);
     
     /**
      * construct Point_2 from a OGRPoint

@@ -19,7 +19,7 @@ namespace urban
     {
         FileHandler<std::fstream>::FileHandler(void) {}
 
-        FileHandler<std::fstream>::FileHandler(boost::filesystem::path _filepath, std::map<std::string, bool> _modes)
+        FileHandler<std::fstream>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes)
             : filepath(_filepath), modes(_modes) {}
 
         FileHandler<std::fstream>::~FileHandler(void) {}
@@ -46,7 +46,7 @@ namespace urban
 
                     /*Read Lines*/
                     std::vector<std::string> lines;
-                    read_lines(file, std::back_inserter(lines));
+                    readlines(file, std::back_inserter(lines));
                     if (lines.empty())
                     {
                         error_message << "This file: " << filepath.string() << " is empty!";
@@ -134,7 +134,7 @@ namespace urban
                                 std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                                faces.emplace(std::make_pair(idx++, shadow::Face(n, indexes)));
+                                faces.emplace(std::make_pair(idx++, shadow::Face(indexes)));
                                 indexes.clear();
                                 sline.clear();
                             });

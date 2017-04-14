@@ -41,10 +41,11 @@ namespace urban
             double get_plane_height(const InexactPoint_2 & inexact_point) const;
             double get_height(const Point_2 & point) const;
             double get_height(const InexactPoint_2 & inexact_point) const;
+            double get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const;
             double area(void) const;
             Bbox_2 bbox(void) const;
 
-            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const;
+            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot, std::vector<short> & pixel_access) const;
 
             bool has_same_border(const FacePrint & other) const;
             bool has_same_plane(const FacePrint & other) const;
@@ -67,7 +68,7 @@ namespace urban
             bool contains(const Point_2 & point) const;
             bool contains(const InexactPoint_2 & inexact_point) const;
 
-            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition) const;
+            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, const shadow::Point & reference_point) const;
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;
@@ -78,9 +79,12 @@ namespace urban
         bool operator==(const FacePrint & lhs, const FacePrint & rhs);
         bool operator!=(const FacePrint & lhs, const FacePrint & rhs);
     }
-
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs);
     
-    /** Compute FacePrint area*/
+    /**
+     * Compute FacePrint area.
+     * @param facet a facet projection
+     * @return area of the facet projection
+     */
     double area(const projection::FacePrint & facet);
 }
