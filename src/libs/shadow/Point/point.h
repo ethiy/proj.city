@@ -2,6 +2,8 @@
 
 #include "../../geometry_definitions.h"
 
+#include <lib3ds/mesh.h>
+
 #include <array>
 #include <ostream>
 
@@ -13,7 +15,7 @@ namespace urban
         class Bbox;
 
         /** 
-         * @ingroup shadow
+         * @ingroup shadow_group
          * @brief Point class representing a 3D Point.
          * 
          * Shadow Point is member class of Shadow Mesh:
@@ -25,8 +27,9 @@ namespace urban
             Point(void);
             Point(double x, double y, double z);
             Point(double _coordinates[3]);
-            Point(const Point_3 & point);
-            Point(const Point & other);
+            Point(Point_3 const& point);
+            Point(Lib3dsPoint const& point);
+            Point(Point const& other);
             Point(Point && other);
             ~Point(void);
 
@@ -35,22 +38,21 @@ namespace urban
             double z(void) const noexcept;
 
             void swap(Point & other);
-
-            Point & operator=(const Point & other) noexcept;
+            Point & operator=(Point const& other) noexcept;
             Point & operator=(Point && other) noexcept;
 
-            Point & operator+=(const Vector & translation);
+            Point & operator+=(Vector const& translation);
 
             Bbox bbox(void) const;
         private:
             std::array<double, 3> coordinates;
-            friend std::ostream & operator<<(std::ostream & os, const Point & point);
+            friend std::ostream & operator<<(std::ostream & os, Point const& point);
         };
-        Vector operator-(const Point & lhs, const Point & rhs);
-        Point & operator+(Point & lhs, const Vector & rhs);
-        bool operator==(const Point & lhs, const Point & rhs);
-        bool operator!=(const Point & lhs, const Point & rhs);
+        Vector operator-(Point const& lhs, Point const& rhs);
+        Point & operator+(Point & lhs, Vector const& rhs);
+        bool operator==(Point const& lhs, Point const& rhs);
+        bool operator!=(Point const& lhs, Point const& rhs);
     }
     void swap(shadow::Point & lhs, shadow::Point & rhs);
-    shadow::Vector normal_to(const shadow::Point & first, const shadow::Point & second, const shadow::Point & third);
+    shadow::Vector normal_to(shadow::Point const& first, shadow::Point const& second, shadow::Point const& third);
 }

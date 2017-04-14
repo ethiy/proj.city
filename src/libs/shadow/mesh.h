@@ -46,100 +46,83 @@ namespace urban
 
             /**
              * Empty Mesh constructor.
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(size_t, const std::vector<size_t> &)
-             * @see Mesh(size_t, size_t, size_t);
-             * @see ~Mesh(void)
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Mesh const& other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
             Mesh(void);
-
             /**
              * Copy constructor.
              * @param other a Mesh
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
-            Mesh(const Mesh & other);
-
+            Mesh(Mesh const& other);
             /**
              * Move constructor.
              * @param other a Mesh
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Mesh const& other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
             Mesh(Mesh && other);
-
             /**
              * Constructor cconverting from Lib3dsMesh.
              * @param lib3ds_mesh lib3ds mesh structure
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Mesh const& other);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
             Mesh(Lib3dsMesh* lib3ds_mesh);
-
             /**
              * General constructor. 
              * @param polyhedron Polyhedron_3 structure
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
-            Mesh(const Polyhedron & polyhedron);
-
+            Mesh(Polyhedron const& polyhedron);
             /**
              * General constructor. 
              * @param _name mesh name
              * @param _points points coordinates
              * @param _faces facets
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Mesh const& other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
-            Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces);
-            
-            /**
-             * General constructor. 
-             * @param _name mesh name
-             * @param _points points coordinates
-             * @param _faces facets
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
-             */
-            Mesh(std::string _name, const std::map<size_t, Point> & _points, const std::map<size_t, Face> & _faces, const Bbox & _bounding_box);
-
+            Mesh(std::string _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const& _faces);
             /** 
              * Destructor.
-             * @see Mesh(void)
-             * @see Mesh(Mesh &&)
-             * @see Mesh(Lib3dsMesh*)
-             * @see Mesh(const Polyhedron &)
-             * @see Mesh(std::string, std::map<size_t, Point>, std::map<size_t, Face>)
-             * @see ~Mesh(void)
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Mesh const& other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see ~Mesh(void);
              */
             ~Mesh(void);
-
 
             /**
              * Swap `this` with `other`.
@@ -147,42 +130,27 @@ namespace urban
              * @see swap(shadow::Mesh &, shadow::Mesh &)
              */
             void swap(Mesh & other);
-
-
             /**
              * Copy assignement operator.
              * @param other an other mesh to copy
              * @see operator=(Mesh &&)
              */
-            Mesh & operator=(const Mesh & other) noexcept;
-
-
+            Mesh & operator=(Mesh const& other) noexcept;
             /**
              * Move assignement operator.
              * @param other an other face to copy
-             * @see operator=(const Mesh &)
+             * @see operator=(Mesh const&)
              */
             Mesh & operator=(Mesh && other) noexcept;
 
 
-            /**
-             * Points iterator
-             */
+            /** Points iterator */
             typedef std::map<size_t, Point>::iterator points_iterator;
-
-            /**
-             * Points constant iterator
-             */
+            /** Points constant iterator */
             typedef std::map<size_t, Point>::const_iterator points_const_iterator;
-            
-            /**
-             * Faces iterator
-             */
+            /** Faces iterator */
             typedef std::map<size_t, Face>::iterator faces_iterator;
-
-            /**
-             * Faces constant iterator
-             */
+            /** Faces constant iterator */
             typedef std::map<size_t, Face>::const_iterator faces_const_iterator;
 
             /**
@@ -190,43 +158,36 @@ namespace urban
              * @return begin points iterator
              */
             points_iterator points_begin(void) noexcept;
-            
             /**
              * Access constant begin points iterator
              * @return constant begin points iterator
              */
             points_const_iterator points_cbegin(void) const noexcept;
-            
             /**
              * Access end points iterator
              * @return end points iterator
              */
             points_iterator points_end(void) noexcept;
-            
             /**
              * Access constant end points iterator
              * @return constant end points iterator
              */
             points_const_iterator points_cend(void) const noexcept;
-            
             /**
              * Access begin faces iterator
              * @return begin faces iterator
              */
             faces_iterator faces_begin(void) noexcept;
-            
             /**
              * Access constant begin faces iterator
              * @return constant begin faces iterator
              */
             faces_const_iterator faces_cbegin(void) const noexcept;
-            
             /**
              * Access end faces iterator
              * @return end faces iterator
              */
             faces_iterator faces_end(void) noexcept;
-            
             /**
              * Access constant end faces iterator
              * @return constant end faces iterator
@@ -239,51 +200,37 @@ namespace urban
              * @return mesh name
              */
             std::string get_name(void) const noexcept;
-
             /**
              * Access number of points.
              * @return number of points defining the mesh
              */
             size_t points_size(void) const noexcept;
-
             /**
              * Access Mesh coordinates.
              * @return Mesh coordinates map
              */
             std::map<size_t, Point> get_points(void) const noexcept;
-
             /**
              * Access number of facets.
              * @return number of facets defining the mesh
              */
             size_t faces_size(void) const noexcept;
-            
             /**
              * Access Mesh facets.
              * @return facets defining the mesh
              */
             std::map<size_t, Face> get_faces(void) const noexcept;
-
-
             /**
              * Access The bounding box.
              * @return the bounding box of the mesh
              */
             Bbox bbox(void) const noexcept;
 
-            /** 
-             * Access index of halfedge.
-             * logarithmic complexity due to the use of std::map
-             * @param h halfedge to lookup
-             * @return index of the halfedge
-             */
-            size_t get_index(const Polyhedron::Halfedge & h);
-
             /**
              * Returns 3ds mesh structure.
              * @return pointer to `Lib3dsMesh`
              */
-            Lib3dsMesh* to_3ds(void);
+            Lib3dsMesh* to_3ds(void) const;
         private:
             /** Mesh name*/
             std::string name;
@@ -293,8 +240,16 @@ namespace urban
             std::map<size_t, Face> faces;
             /** Bounding box*/
             Bbox bounding_box;
+
             /** Compute bounding box internal method*/
             void compute_bbox(void);
+            /** 
+             * Access index of halfedge.
+             * logarithmic complexity due to the use of std::map
+             * @param h halfedge to lookup
+             * @return index of the halfedge
+             */
+            size_t get_index(Polyhedron::Halfedge const& h);
 
             /** 
              * Writes Mesh to output stream.
@@ -302,7 +257,7 @@ namespace urban
              * @param mesh the Mesh to write
              * @return the output stream
              */
-            friend std::ostream& operator<<(std::ostream & os, const Mesh & mesh);
+            friend std::ostream& operator<<(std::ostream & os, Mesh const& mesh);
         };
 
         /**
@@ -311,7 +266,7 @@ namespace urban
         * @param rhs right-hand Mesh.
         $ @return true if both Meshes are equal
         */
-        bool operator==(const shadow::Mesh & lhs, const shadow::Mesh & rhs);
+        bool operator==(Mesh const& lhs, Mesh const& rhs);
 
         /**
         * Comparison operator
@@ -319,7 +274,7 @@ namespace urban
         * @param rhs right-hand Mesh.
         $ @return true if both Meshes are inequal
         */
-        bool operator!=(const shadow::Mesh & lhs, const shadow::Mesh & rhs);
+        bool operator!=(Mesh const& lhs, Mesh const& rhs);
     }
     /** @} */ // end of shadow_group
 

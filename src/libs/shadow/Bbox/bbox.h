@@ -10,7 +10,7 @@ namespace urban
     namespace shadow
     {
         /** 
-         * @ingroup shadow
+         * @ingroup shadow_group
          * @brief Bbox class representing a 3D Bounding box.
          * 
          * Shadow Bbox is member class of Shadow Mesh:
@@ -22,56 +22,56 @@ namespace urban
             /**
              * Empty Bbox constructor.
              * The empty bounding box is definned with a lower left corner point at (∞,∞,∞) and with upper right corner point at (−∞,−∞,−∞)
-             * @see Bbox(const Bbox &)
-             * @see Bbox(Bbox &&)
-             * @see Bbox(const std::array<double, 3> &);
-             * @see Bbox(double , double , double , double , double , double );
+             * @see Bbox(Bbox const& other);
+             * @see Bbox(Bbox && other);
+             * @see Bbox(std::array<double, 3> const& coordinates);
+             * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
             Bbox(void);
             /**
              * Classic constructor.
              * @see Bbox(void);
-             * @see Bbox(const Bbox &)
-             * @see Bbox(Bbox &&)
-             * @see Bbox(const std::array<double, 3> &);
+             * @see Bbox(Bbox const& other);
+             * @see Bbox(Bbox && other);
+             * @see Bbox(std::array<double, 3> const& coordinates);
              * @see ~Bbox(void)
              */
             Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
             /**
              * Bbox constructor from point coordinates.
              * @see Bbox(void);
-             * @see Bbox(const Bbox &)
-             * @see Bbox(Bbox &&)
-             * @see Bbox(double , double , double , double , double , double );
+             * @see Bbox(Bbox const& other);
+             * @see Bbox(Bbox && other);
+             * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
-            Bbox(const std::array<double, 3> & coordinates);
+            Bbox(std::array<double, 3> const& coordinates);
             /**
              * Bbox copy constructor.
              * @see Bbox(void);
-             * @see Bbox(Bbox &&)
-             * @see Bbox(const std::array<double, 3> &);
-             * @see Bbox(double , double , double , double , double , double );
+             * @see Bbox(Bbox && other);
+             * @see Bbox(std::array<double, 3> const& coordinates);
+             * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
-            Bbox(const Bbox & other);
+            Bbox(Bbox const& other);
             /**
              * Bbox move constructor.
              * @see Bbox(void);
-             * @see Bbox(const Bbox &)
-             * @see Bbox(const std::array<double, 3> &);
-             * @see Bbox(double , double , double , double , double , double );
+             * @see Bbox(Bbox const& other);
+             * @see Bbox(std::array<double, 3> const& coordinates);
+             * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
             Bbox(Bbox && other);
             /**
              * Bbox destructor.
              * @see Bbox(void);
-             * @see Bbox(const Bbox &)
-             * @see Bbox(Bbox &&)
-             * @see Bbox(const std::array<double, 3> &);
-             * @see Bbox(double , double , double , double , double , double );
+             * @see Bbox(Bbox const& other);
+             * @see Bbox(Bbox && other);
+             * @see Bbox(std::array<double, 3> const& coordinates);
+             * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              */
             ~Bbox(void);
 
@@ -149,12 +149,12 @@ namespace urban
              * @return this copy of other
              * @see operator=(Bbox && other) noexcept;
              */
-            Bbox & operator=(const Bbox & other) noexcept;
+            Bbox & operator=(Bbox const& other) noexcept;
             /**
              * Move assignement operator.
              * @param other an other Bbox
              * @return this
-             * @see operator=(const Bbox & other) noexcept;
+             * @see operator=(Bbox const& other) noexcept;
              */
             Bbox & operator=(Bbox && other) noexcept;
 
@@ -162,9 +162,9 @@ namespace urban
              * plus operator.
              * @param other an other Bbox
              * @return bounding box union
-             * @see operator+(const Bbox & lhs, const Bbox & rhs);
+             * @see operator+(Bbox const& lhs, Bbox const& rhs);
              */
-            Bbox & operator+=(const Bbox & other);
+            Bbox & operator+=(Bbox const& other);
 
             /**
              * Convert shadow Bbox to CGAL::Bbox_3.
@@ -180,7 +180,7 @@ namespace urban
             * @param bbox the bbox to stream
             * @return the output stream
             */
-            friend std::ostream & operator<<(std::ostream & os, const Bbox & bbox);
+            friend std::ostream & operator<<(std::ostream & os, Bbox const& bbox);
         };
         
         /**
@@ -188,9 +188,9 @@ namespace urban
          * @param lhs a Bbox
          * @param rhs a Bbox
          * @return bounding box union
-         * @see operator+(const Bbox & lhs, const Bbox & rhs);
+         * @see operator+(Bbox const& lhs, Bbox const& rhs);
          */
-        Bbox operator+(const Bbox & lhs, const Bbox & rhs);
+        Bbox operator+(Bbox const& lhs, Bbox const& rhs);
     }
     /**
      * Swap `lhs` with `rhs`.

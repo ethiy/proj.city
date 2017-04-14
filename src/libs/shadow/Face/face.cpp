@@ -14,16 +14,33 @@ namespace urban
 {
     namespace shadow
     {
-        Face::Face(void): degree(0) {}
-        Face::Face(Face const& other): degree(other.degree), points(other.points){}
-        Face::Face(Face && other): degree(std::move(other.degree)), points(std::move(other.points)){}
-        Face::Face(std::initializer_list<size_t> initializer):degree(initializer.size()), points(initializer)
+        Face::Face(void)
+            : degree(0) {}
+        Face::Face(Face const& other)
+            : degree(other.degree), points(other.points) {}
+        Face::Face(Face && other)
+            : degree(std::move(other.degree)), points(std::move(other.points)) {}
+        Face::Face(std::initializer_list<size_t> initializer)
+            : degree(initializer.size()), points(initializer)
         {
             if(degree<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
-        Face::Face(size_t first, size_t second, size_t third): degree(3), points{{first, second, third}}{}
-        Face::~Face(void){}
+        Face::Face(std::vector<size_t> const& indices)
+            : degree(indices.size()), points(indices)
+        {
+            if(degree<3)
+                throw std::logic_error("You must have at least three vertices to define a face!");
+        }
+        Face::Face(size_t first, size_t second, size_t third, bool orientation)
+            : degree(3)
+        {
+            if(orientation)
+                points = std::vector<size_t>{{first, second, third}};
+            else
+                points = std::vector<size_t>{{first, third, second}};
+        }
+        Face::~Face(void) {}
 
         void Face::swap(Face & other)
         {

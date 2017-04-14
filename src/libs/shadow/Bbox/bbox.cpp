@@ -11,40 +11,40 @@ namespace urban
     namespace shadow
     {
         Bbox::Bbox(void)
-        : extreemes{{
-            std::numeric_limits<double>::infinity(),
-            - std::numeric_limits<double>::infinity(),
-            std::numeric_limits<double>::infinity(),
-            - std::numeric_limits<double>::infinity(),
-            std::numeric_limits<double>::infinity(),
-            - std::numeric_limits<double>::infinity()
-        }} {}
-
+            : extreemes{{
+                std::numeric_limits<double>::infinity(),
+                - std::numeric_limits<double>::infinity(),
+                std::numeric_limits<double>::infinity(),
+                - std::numeric_limits<double>::infinity(),
+                std::numeric_limits<double>::infinity(),
+                - std::numeric_limits<double>::infinity()
+            }}
+        {}
         Bbox::Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
-        : extreemes{{
-            xmin,
-            xmax,
-            ymin,
-            ymax,
-            zmin,
-            zmax
-        }} {}
-
+            : extreemes{{
+                xmin,
+                xmax,
+                ymin,
+                ymax,
+                zmin,
+                zmax
+            }}
+        {}
         Bbox::Bbox(const std::array<double, 3> & coordinates)
-        : extreemes{{
-            coordinates.at(0),
-            coordinates.at(0),
-            coordinates.at(1),
-            coordinates.at(1),
-            coordinates.at(2),
-            coordinates.at(2),
-        }} {}
-
-        Bbox::Bbox(const Bbox & other): extreemes(other.extreemes) {}
-
-        Bbox::Bbox(Bbox && other): extreemes(std::move(other.extreemes)) {}
-
-        Bbox::~Bbox(void){}
+            : extreemes{{
+                coordinates.at(0),
+                coordinates.at(0),
+                coordinates.at(1),
+                coordinates.at(1),
+                coordinates.at(2),
+                coordinates.at(2),
+            }}
+        {}
+        Bbox::Bbox(const Bbox & other)
+            : extreemes(other.extreemes) {}
+        Bbox::Bbox(Bbox && other)
+            : extreemes(std::move(other.extreemes)) {}
+        Bbox::~Bbox(void) {}
 
         double Bbox::xmin(void) const noexcept
         {

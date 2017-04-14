@@ -36,8 +36,9 @@ namespace urban
              * Empty Face constructor.
              * @see Face(Face const& other);
              * @see Face(Face && other);
-             * @see Face(std::initializer<size_t> initializer)
-             * @see Face(size_t first, size_t second, size_t third);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(void);
@@ -46,8 +47,9 @@ namespace urban
              * @param other a Face
              * @see Face(void);
              * @see Face(Face && other);
-             * @see Face(std::initializer<size_t> initializer)
-             * @see Face(size_t first, size_t second, size_t third);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(Face const& other);
@@ -57,7 +59,8 @@ namespace urban
              * @see Face(void);
              * @see Face(Face const&)
              * @see Face(std::initializer_list<size_t> initializer);
-             * @see Face(size_t first, size_t second, size_t third);
+             * @see Face(std::vector const& indices);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(Face && other);
@@ -68,10 +71,23 @@ namespace urban
              * @see Face(void);
              * @see Face(Face const&);
              * @see Face(Face &&);
-             * @see Face(size_t first, size_t second, size_t third);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              * @see ~Face(void);
              */
             Face(std::initializer_list<size_t> initializer);
+            /**
+             * STL Vector constructor. 
+             * @throws std::logic_error
+             * @param indices vector containing point indices
+             * @see Face(void);
+             * @see Face(Face const&);
+             * @see Face(Face &&);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
+             * @see ~Face(void);
+             */
+            Face(std::vector<size_t> const& indices);
             /**
              * Triagular face constructor. 
              * @param first point index
@@ -81,16 +97,17 @@ namespace urban
              * @see Face(Face const& other);
              * @see Face(Face && other);
              * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::vector const& indices);
              * @see ~Face(void);
              */
-            Face(size_t first, size_t second, size_t third);
+            Face(size_t first, size_t second, size_t third, bool orientation);
             /** 
              * Destructor.
              * @see Face(void)
              * @see Face(Face const& other)
              * @see Face(Face && other)
              * @see Face(std::initializer_list<size_t> initializer)
-             * @see Face(size_t first, size_t second, size_t third);
+             * @see Face(size_t first, size_t second, size_t third, bool orientation);
              */
             ~Face(void);
 
