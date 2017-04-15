@@ -164,7 +164,7 @@ SCENARIO("Occlusion management")
         {
             std::stringstream auxilary;
             auxilary << test_proj;
-            REQUIRE(auxilary.str() == "Name: test_mesh_projected_xy\nBounding box: -18 -14 -2 10\nFace Projections: 4\nThe Polygon describing borders :3 -10 6 -18 -14 -2 -13  0 \nThe supporting plane coefficients : -17 -40 312 -2426\n\nThe Polygon describing borders :3 -18 9 -18 -14 -10 6  0 \nThe supporting plane coefficients : -149 32 184 -3154\n\nThe Polygon describing borders :3 -10 6 -2 -13 -2 10  0 \nThe supporting plane coefficients : 160 48 184 -160\n\nThe Polygon describing borders :3 -18 9 -10 6 -2 10  0 \nThe supporting plane coefficients : -4 120 56 -1208\n\nProjected surface: \n4 -18 -14 -2 -13 -2 10 -18 9  0 \n");
+            REQUIRE(auxilary.str() == "Name: test_mesh_projected_xy\nBounding box: -18 -14 -2 10\nReference Point: 0 0 0\nESPG index: 2154\nFace Projections: 4\nThe Polygon describing borders :3 -10 6 -18 -14 -2 -13  0 \nThe supporting plane coefficients : -17 -40 312 -2426\n\nThe Polygon describing borders :3 -18 9 -18 -14 -10 6  0 \nThe supporting plane coefficients : -149 32 184 -3154\n\nThe Polygon describing borders :3 -10 6 -2 -13 -2 10  0 \nThe supporting plane coefficients : 160 48 184 -160\n\nThe Polygon describing borders :3 -18 9 -10 6 -2 10  0 \nThe supporting plane coefficients : -4 120 56 -1208\n\nProjected surface: \n4 -18 -14 -2 -13 -2 10 -18 9  0 \n");
         }
     }
 }

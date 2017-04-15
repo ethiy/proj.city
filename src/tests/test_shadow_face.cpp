@@ -6,19 +6,6 @@
 
 SCENARIO("Face manipulation:")
 {
-    GIVEN("Two indexes")
-    {
-        urban::shadow::Face facet{{145,45}};
-        WHEN("the triangle is created")
-        {
-            THEN("The constructor throws")
-            {
-                REQUIRE_THROWS(facet);
-            }
-        }
-
-    }
-
     GIVEN("Three indexes" )
     {
         std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {45, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 61.1764)}};

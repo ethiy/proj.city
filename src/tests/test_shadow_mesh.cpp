@@ -42,9 +42,17 @@ SCENARIO("shadow::Mesh manipulation:")
             urban::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
-                std::ostringstream auxilary;
+                std::ostringstream auxilary, _auxilary;
                 auxilary << u_mesh;
-                REQUIRE( auxilary.str() == "Name: \nBounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764\nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1\n" );
+                _auxilary << "Name: " << std::endl
+                          << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
+                          << "Points: " << std::endl
+                          << "Point 0 : 15.5343 -13.4504 60.8789" << std::endl
+                          << "Point 1 : 15.7204 -13.188 60.8789" << std::endl
+                          << "Point 2 : 15.7204 -13.188 61.1764" << std::endl
+                          << "Faces: " << std::endl
+                          << "Face 0 : 3 0 2 1" << std::endl;
+                REQUIRE( auxilary.str() == _auxilary.str() );
             }
         }
         WHEN( "mesh points and faces are accessed:")
@@ -85,12 +93,20 @@ SCENARIO("shadow::Mesh manipulation:")
             urban::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
-                std::ostringstream auxilary;
+                std::ostringstream auxilary, _auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
                 std::free(_mesh);
                 auxilary << _u_mesh;
-                REQUIRE( auxilary.str() == "Name: \nBounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764\nPoints: \nPoint 0 : 15.5343 -13.4504 60.8789\nPoint 1 : 15.7204 -13.188 60.8789\nPoint 2 : 15.7204 -13.188 61.1764\nFaces: \nFace 0 : 3 0 2 1\n" );
+                _auxilary << "Name: " << std::endl
+                          << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
+                          << "Points: " << std::endl
+                          << "Point 0 : 15.5343 -13.4504 60.8789" << std::endl
+                          << "Point 1 : 15.7204 -13.188 60.8789" << std::endl
+                          << "Point 2 : 15.7204 -13.188 61.1764" << std::endl
+                          << "Faces: " << std::endl
+                          << "Face 0 : 3 0 2 1" << std::endl;
+                REQUIRE( auxilary.str() == _auxilary.str() );
             }
         }
 
