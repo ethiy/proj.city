@@ -42,7 +42,6 @@ namespace urban
      * @return an inexact point centroid
      */
     InexactPoint_2 centroid(const Polygon_with_holes & polygon);
-
     
     /**
      * Sorting heuristic functors

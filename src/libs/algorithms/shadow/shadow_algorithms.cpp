@@ -11,87 +11,81 @@
 
 namespace urban
 {
-    shadow::Face transform(shadow::Face & face, const std::map<size_t, size_t> map)
+    shadow::Face & transform(shadow::Face & face, std::map<size_t, size_t> const& map)
     {
         std::vector<size_t> mapped_indexes(face.get_degree());
-
         std::transform(
             std::begin(face),
             std::end(face),
             std::begin(mapped_indexes),
-            [&map](const size_t index)
+            [&map](size_t const index)
             {
                 return map.at(index);
             }
         );
-
-        return shadow::Face(mapped_indexes);
+        face = shadow::Face(mapped_indexes);
+        return face;
     }
 
 
-    bool connectable(const shadow::Mesh & lhs, const shadow::Mesh & rhs, std::map<size_t, size_t> & suture_points)
+    std::map<size_t, size_t> & connectable(shadow::Mesh const& lhs, shadow::Mesh const& rhs, std::map<size_t, size_t> & suture_points)
     {
         if(!suture_points.empty())
             throw std::logic_error("The map must be empty");
         
-        std::map<size_t, shadow::Point> l_coordinates(lhs.get_points()),
-                                r_coordinates(rhs.get_points());
-        
         std::for_each(
-            std::begin(l_coordinates),
-            std::end(l_coordinates),
-            [&r_coordinates, &suture_points](const std::pair<size_t, shadow::Point> & p)
+            lhs.points_cbegin(),
+            lhs.points_cend(),
+            [&suture_points, &rhs](std::pair<size_t, shadow::Point> const& p)
             {
-                auto suture_point = find_if(
-                    std::begin(r_coordinates),
-                    std::end(r_coordinates),
-                    [&p](const std::pair<size_t, shadow::Point> & q)
+                auto suture_point = std::find_if(
+                    rhs.points_cbegin(),
+                    rhs.points_cend(),
+                    [&p](std::pair<size_t, shadow::Point> const& q)
                     {
                         return p.second == q.second;
                     }
                 );
 
-                if(suture_point != std::end(r_coordinates))
+                if(suture_point != rhs.points_cend())
                     suture_points.emplace(std::make_pair(suture_point->first, p.first));
             }
         );
 
-        return !suture_points.empty();
+        return suture_points;
     }
 
-    shadow::Mesh stitch(const shadow::Mesh & lhs, const shadow::Mesh & rhs, const std::map<size_t, size_t> & suture_points)
+    shadow::Mesh stitch(shadow::Mesh const& lhs, shadow::Mesh const& rhs, std::map<size_t, size_t> const& suture_points)
     {
-        std::map<size_t, shadow::Point> l_coordinates(lhs.get_points()),
-                                r_coordinates(rhs.get_points());
+        std::map<size_t, shadow::Point> l_coordinates(lhs.get_points());
         
-        std::map<size_t, shadow::Face> l_faces(lhs.get_faces()),
-                                r_faces(rhs.get_faces());
+        std::map<size_t, shadow::Face>  l_faces(lhs.get_faces()),
+                                        r_faces(rhs.get_faces());
 
-        size_t shift(l_coordinates.size());
+        size_t shift(lhs.points_size());
         std::map<size_t, size_t> stitcher;
         std::for_each(
-            std::begin(r_coordinates),
-            std::end(r_coordinates),
-            [&l_coordinates, &shift, &suture_points, &stitcher](const std::pair<size_t, shadow::Point> & p)
+            rhs.points_cbegin(),
+            rhs.points_cend(),
+            [&l_coordinates, &shift, &suture_points, &stitcher](std::pair<size_t, shadow::Point> const& p)
             {
-                size_t index(p.first);
                 auto suture_point = std::find_if(
                     std::begin(suture_points),
                     std::end(suture_points),
-                    [index](const std::pair<size_t, size_t> & q)
+                    [&p](std::pair<size_t, size_t> const& map_r_l)
                     {
-                        return q.first == index;
+                        return map_r_l.first == p.first;
                     }
                 );
 
                 if(suture_point == std::end(suture_points))
                 {
-                    stitcher.emplace(std::make_pair(index, index + shift));
-                    l_coordinates.emplace(std::make_pair(index + shift, p.second));
+                    stitcher.emplace(std::make_pair(p.first, p.first + shift));
+                    l_coordinates.emplace(std::make_pair(p.first + shift, p.second));
                 }
                 else
                 {
-                    stitcher.emplace(std::make_pair(index, suture_points.at(p.first)));
+                    stitcher.emplace(std::make_pair(p.first, suture_points.at(p.first)));
                     shift--;
                 }
             }
@@ -107,7 +101,7 @@ namespace urban
                 auto found = std::find_if(
                     std::begin(l_faces),
                     std::end(l_faces),
-                    [&mapped_face](const std::pair<size_t, shadow::Face> q)
+                    [&mapped_face](std::pair<size_t, shadow::Face> const& q)
                     {
                         return q.second == mapped_face.second;
                     }
@@ -117,7 +111,7 @@ namespace urban
                     l_faces.emplace(mapped_face);
             }
         );
-        
+
         return shadow::Mesh(
             lhs.get_name() + "_" + rhs.get_name(),
             l_coordinates,
@@ -125,40 +119,43 @@ namespace urban
         );
     }
 
-    std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & connex_meshes, const shadow::Mesh & mesh)
+    std::vector<shadow::Mesh> & stitch(std::vector<shadow::Mesh> & connex_meshes, shadow::Mesh & mesh)
     {
-        std::vector<shadow::Mesh> result;
-        result.reserve(connex_meshes.size() + 1);
-        
-        shadow::Mesh snowball(mesh);
+        std::vector<shadow::Mesh> local_buffer;
+        local_buffer.reserve(connex_meshes.size() + 1);
 
         std::for_each(
             std::begin(connex_meshes),
             std::end(connex_meshes),
-            [&snowball, &result](const shadow::Mesh & connex_mesh)
+            [&mesh, &local_buffer](shadow::Mesh & connex_mesh)
             {
-                std::map<size_t,size_t> suture_points;
-                if(connectable(connex_mesh, snowball, suture_points))
-                    snowball = stitch(connex_mesh, snowball, suture_points);
+                std::map<size_t, size_t> suture_points;
+                suture_points = connectable(connex_mesh, mesh, suture_points);
+                if(!suture_points.empty())
+                    mesh = stitch(connex_mesh, mesh, suture_points);
                 else
-                    result.push_back(connex_mesh);
+                    local_buffer.push_back(connex_mesh);
             }
         );
 
-        result.push_back(snowball);
-        return result;
+        local_buffer.push_back(mesh);
+        
+        connex_meshes = std::move(local_buffer);
+        return connex_meshes;
     }
 
-    std::vector<shadow::Mesh> stitch(const std::vector<shadow::Mesh> & meshes)
+    std::vector<shadow::Mesh> & stitch(std::vector<shadow::Mesh> & meshes)
     {
-       return std::accumulate(
+       auto buffer = std::accumulate(
            std::begin(meshes),
            std::end(meshes),
            std::vector<shadow::Mesh>(),
-           [](const std::vector<shadow::Mesh> & result, const shadow::Mesh & mesh)
+           [](std::vector<shadow::Mesh> & connex_meshes, shadow::Mesh & mesh)
            {
-               return stitch(result, mesh);
+               return stitch(connex_meshes, mesh);
            }
        );
+       meshes = std::move(buffer);
+       return meshes;
     }
 }

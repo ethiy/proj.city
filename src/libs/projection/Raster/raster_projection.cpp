@@ -1,7 +1,5 @@
 #include "raster_projection.h"
 
-#include <Imagine/LinAlg.h>
-
 #include <iterator>
 #include <algorithm>
 #include <iomanip>

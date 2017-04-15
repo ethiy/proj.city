@@ -26,19 +26,17 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-toolchain"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{boost,cmake}"
-  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{eigen3,qt5}"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-eigen3"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
-  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-gdal"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{gdal,tinyxml2}"
   - ps: |
-		New-Item -ItemType Directory -Path .\3rParty
+        New-Item -ItemType Directory -Path .\3rParty
         Set-Location 3rParty
-  - cmd: git clone https://github.com/Ethiy/imagine-pp.git
-  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/imagine-pp; mkdir build; cd build; /mingw64/bin/cmake -G'Unix Makefiles' .. ; make -j4; make install"
   - appveyor DownloadFile https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lib3ds/lib3ds-1.3.0.zip
   - 7z x lib3ds-1.3.0.zip
-  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/lib3ds-1.3.0/; ./configure; make -j4; make install"
+  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/lib3ds-1.3.0/; ./configure; make -j4; make install"
 build_script:
   - ps: New-Item -ItemType Directory -Path ..\build\MSYS2
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; /mingw64/bin/cmake -G'Unix Makefiles' -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../.. ; make -j4"
 test_script:
-  - IF NOT "%APPVEYOR_REPO_BRANCH%" == "master" C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; ./tests -a"
+  - IF NOT "%APPVEYOR_REPO_BRANCH%" == "master" C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; ./tests/tests -a"

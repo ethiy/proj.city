@@ -104,7 +104,6 @@ namespace urban
         }
 
 
-
         double FacePrint::get_height(const Point_2 & point) const
         {
             return !is_degenerate() * contains(point) * get_plane_height(point) ;
@@ -154,7 +153,6 @@ namespace urban
                         }
                     );
         }
-        
         Bbox_2 FacePrint::bbox(void) const
         {
             return border.bbox();

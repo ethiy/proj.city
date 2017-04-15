@@ -227,7 +227,7 @@ namespace urban
                         std::begin(rotated_points)
                     );
                     result = std::inner_product(
-                        std::begin(rhs.points),
+                        std::begin(lhs.points),
                         std::end(lhs.points),
                         std::begin(rotated_points),
                         true,
