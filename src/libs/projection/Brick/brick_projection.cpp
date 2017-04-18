@@ -17,19 +17,21 @@ namespace urban
     {
         BrickPrint::BrickPrint(void)
             : name("no_name") {}
-        BrickPrint::BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box, const shadow::Point & _reference_point, unsigned short _espg_index)
+        BrickPrint::BrickPrint(shadow::Point const& _reference_point)
+            : name("no_name"), reference_point(_reference_point) {}
+        BrickPrint::BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short _espg_index)
             : name(_name + "_xy"),
               bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())),
               reference_point(_reference_point),
               espg_index(_espg_index)
               {}
-        BrickPrint::BrickPrint(const FacePrint & face_projection)
+        BrickPrint::BrickPrint(FacePrint const& face_projection)
             : name("contains_only_one_facet"),
               projected_facets(std::list<FacePrint>{{face_projection}}),
               projected_surface(Polygon_set(face_projection.get_polygon())),
               bounding_box(face_projection.bbox())
               {}
-        BrickPrint::BrickPrint(const std::string & _name, OGRLayer* projection_layer): name(_name)
+        BrickPrint::BrickPrint(std::string const& _name, OGRLayer* projection_layer): name(_name)
         {
             projection_layer->ResetReading();
 
@@ -43,7 +45,7 @@ namespace urban
                 bounding_box += facet.bbox();
             }
         }
-        BrickPrint::BrickPrint(const BrickPrint & other)
+        BrickPrint::BrickPrint(BrickPrint const& other)
             : name(other.name),
               bounding_box(other.bounding_box),
               reference_point(other.reference_point),
@@ -72,7 +74,7 @@ namespace urban
             swap(projected_surface, other.projected_surface);
         }
             
-        BrickPrint & BrickPrint::operator=(const BrickPrint & other)
+        BrickPrint & BrickPrint::operator=(BrickPrint const& other)
         {
             name = other.name;
             bounding_box = other.bounding_box;
@@ -94,17 +96,22 @@ namespace urban
             return *this;
         }
 
-        BrickPrint & BrickPrint::operator+=(const BrickPrint & other)
+        BrickPrint & BrickPrint::operator+=(BrickPrint const& other)
         {
             if(espg_index != other.espg_index || reference_point != other.reference_point)
+            {
+                std::cout << name << " " << other.name << std::endl;
+                std::cout << espg_index << " " << other.espg_index << std::endl;
+                std::cout << reference_point << " " << other.reference_point << std::endl;
                 throw std::logic_error("Cannot sum two brick projections with a different projection system nor a different reference point");
+            }
             name += "_" + other.name;
             if(projected_surface.do_intersect(other.projected_surface))
             {
                 std::for_each(
                     std::begin(other.projected_facets),
                     std::end(other.projected_facets),
-                    [this](const FacePrint & facet)
+                    [this](FacePrint const& facet)
                     {
                         insert(facet);
                     }
@@ -154,23 +161,23 @@ namespace urban
         }
 
 
-        bool BrickPrint::contains(const Point_2 & point) const
+        bool BrickPrint::contains(Point_2 const& point) const
         {
             return projected_surface.oriented_side(point) != CGAL::ON_NEGATIVE_SIDE;
         }
 
-        bool BrickPrint::contains(const InexactPoint_2 & inexact_point) const
+        bool BrickPrint::contains(InexactPoint_2 const& inexact_point) const
         {
             InexactToExact to_exact;
             return contains(to_exact(inexact_point));
         }
 
-        bool BrickPrint::in_domain(const Point_2 & point) const
+        bool BrickPrint::in_domain(Point_2 const& point) const
         {
             return CGAL::do_overlap(bounding_box, point.bbox());
         }
 
-        bool BrickPrint::contains(const FacePrint & facet) const
+        bool BrickPrint::contains(FacePrint const& facet) const
         {
             Polygon_set shallow_copy(projected_surface);
             shallow_copy.intersection(facet.get_polygon());
@@ -179,26 +186,26 @@ namespace urban
             return _inter.size() == 1 && _inter.front() == facet.get_polygon();
         }
 
-        bool BrickPrint::overlaps(const Polygon & polygon) const
+        bool BrickPrint::overlaps(Polygon const& polygon) const
         {
             Polygon_set shallow_copy(projected_surface);
             shallow_copy.intersection(polygon);
             return !shallow_copy.is_empty();
         }
         
-        bool BrickPrint::overlaps(const Polygon_with_holes & polygon) const
+        bool BrickPrint::overlaps(Polygon_with_holes const& polygon) const
         {
             Polygon_set shallow_copy(projected_surface);
             shallow_copy.intersection(polygon);
             return !shallow_copy.is_empty();
         }
 
-        bool BrickPrint::overlaps(const FacePrint & facet) const
+        bool BrickPrint::overlaps(FacePrint const& facet) const
         {
             return overlaps(facet.get_polygon());
         }
 
-        bool BrickPrint::is_under(const FacePrint & facet) const
+        bool BrickPrint::is_under(FacePrint const& facet) const
         {
             bool under(false);
 
@@ -224,7 +231,7 @@ namespace urban
             std::for_each(
                 std::begin(projected_facets),
                 std::end(projected_facets),
-                [&diff](const FacePrint & facet)
+                [&diff](FacePrint const& facet)
                 {
                     return diff.difference(facet.get_polygon());
                 }
@@ -232,14 +239,14 @@ namespace urban
             return diff.is_empty();
         }
 
-        bool BrickPrint::has_same_footprint(const BrickPrint & other) const
+        bool BrickPrint::has_same_footprint(BrickPrint const& other) const
         {
             Polygon_set l_copy(projected_surface),
                         r_copy(other.projected_surface);
             l_copy.symmetric_difference(r_copy);
             return l_copy.is_empty();
         }
-        bool BrickPrint::has_same_facets(const BrickPrint & other) const
+        bool BrickPrint::has_same_facets(BrickPrint const& other) const
         {
             bool result(false);
             if(projected_facets.size() == other.projected_facets.size())
@@ -250,7 +257,7 @@ namespace urban
                     std::end(projected_facets),
                     std::begin(other.projected_facets),
                     std::begin(results),
-                    [](const FacePrint & l_face, const FacePrint & r_face)
+                    [](FacePrint const& l_face, FacePrint const& r_face)
                     {
                         return l_face == r_face;
                     }
@@ -268,7 +275,7 @@ namespace urban
             return result;
         }
 
-        void BrickPrint::insert(const FacePrint & new_facet)
+        void BrickPrint::insert(FacePrint const& new_facet)
         {
             if(projected_facets.empty())
                 projected_facets.push_back(new_facet);
@@ -302,7 +309,7 @@ namespace urban
         }
 
 
-        double BrickPrint::get_height(const Point_2 & point) const
+        double BrickPrint::get_height(Point_2 const& point) const
         {
             double height(0.);
             if(contains(point))
@@ -310,7 +317,7 @@ namespace urban
                     std::begin(projected_facets),
                     std::end(projected_facets),
                     height,
-                    [&point](double & result_height, const FacePrint & facet)
+                    [&point](double & result_height, FacePrint const& facet)
                     {
                         return result_height + facet.get_height(point);
                     }
@@ -318,7 +325,7 @@ namespace urban
             return height;
         }
 
-        double BrickPrint::get_height(const InexactPoint_2 & inexact_point) const
+        double BrickPrint::get_height(InexactPoint_2 const& inexact_point) const
         {
             double height(0.);
             if(contains(inexact_point))
@@ -326,7 +333,7 @@ namespace urban
                     std::begin(projected_facets),
                     std::end(projected_facets),
                     height,
-                    [&inexact_point](double & result_height, const FacePrint & facet)
+                    [&inexact_point](double & result_height, FacePrint const& facet)
                     {
                         return result_height + facet.get_height(inexact_point);
                     }
@@ -362,7 +369,7 @@ namespace urban
             );
         }
 
-        std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection)
+        std::ostream & operator<<(std::ostream & os, BrickPrint const& brick_projection)
         {
             os << "Name: " << brick_projection.name << std::endl
                << "Bounding box: " << brick_projection.bounding_box << std::endl
@@ -377,12 +384,12 @@ namespace urban
             return os;
         }
 
-        BrickPrint & operator+(BrickPrint & lhs, const BrickPrint & rhs)
+        BrickPrint & operator+(BrickPrint & lhs, BrickPrint const& rhs)
         {
             return lhs += rhs;
         }
 
-        bool operator==(const BrickPrint & lhs, const BrickPrint & rhs)
+        bool operator==(BrickPrint const& lhs, BrickPrint const& rhs)
         {
             return  lhs.espg_index == rhs.espg_index
                     &&
@@ -393,7 +400,7 @@ namespace urban
                     lhs.has_same_facets(rhs);
         }
 
-        bool operator!=(const BrickPrint & lhs, const BrickPrint & rhs)
+        bool operator!=(BrickPrint const& lhs, BrickPrint const& rhs)
         {
             return !(lhs == rhs);
         }

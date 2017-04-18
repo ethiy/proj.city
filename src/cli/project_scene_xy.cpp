@@ -108,6 +108,15 @@ int main(int argc, const char** argv)
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
 
+        std::for_each(
+            std::begin(urban_objects),
+            std::end(urban_objects),
+            [](urban::Brick const& brick)
+            {
+                std::cout << brick.get_name() << std::endl;
+            }
+        );
+
         // std::cout << "Saving brick duals... " << std::flush;
         // boost::filesystem::path dual_dir(root / "dual_graphs");
         // boost::filesystem::create_directory(dual_dir);
@@ -140,7 +149,7 @@ int main(int argc, const char** argv)
         urban::projection::BrickPrint scene_projection = std::accumulate(
             std::begin(projections_xy),
             std::end(projections_xy),
-            urban::projection::BrickPrint(),
+            urban::projection::BrickPrint(pivot),
             [](urban::projection::BrickPrint & rhs, const urban::projection::BrickPrint & lhs)
             {
                 return rhs + lhs;

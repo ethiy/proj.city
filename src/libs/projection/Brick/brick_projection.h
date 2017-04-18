@@ -19,19 +19,20 @@ namespace urban
         {
         public:
             BrickPrint(void);
-            BrickPrint(const std::string & _name, const Bbox_3 & _bounding_box, const shadow::Point & reference_point, unsigned short espg_index);
-            BrickPrint(const FacePrint & face_projection);
-            BrickPrint(const std::string & _name, OGRLayer* projection_layer);
-            BrickPrint(const BrickPrint & other);
+            BrickPrint(shadow::Point const& _reference_point);
+            BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short espg_index);
+            BrickPrint(FacePrint const& face_projection);
+            BrickPrint(std::string const& _name, OGRLayer* projection_layer);
+            BrickPrint(BrickPrint const& other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
 
             void swap(BrickPrint & other);
             
-            BrickPrint & operator=(const BrickPrint & other);
+            BrickPrint & operator=(BrickPrint const& other);
             BrickPrint & operator=(BrickPrint && other);
 
-            BrickPrint & operator+=(const BrickPrint & other);
+            BrickPrint & operator+=(BrickPrint const& other);
 
             Bbox_2 bbox(void) const noexcept;
             std::string get_name(void) const noexcept;
@@ -44,20 +45,20 @@ namespace urban
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            bool in_domain(const Point_2 & point) const;
-            bool contains(const Point_2 & point) const;
-            bool contains(const InexactPoint_2 & inexact_point) const;
-            bool contains(const FacePrint & facet) const;
-            bool overlaps(const Polygon & polygon) const;
-            bool overlaps(const Polygon_with_holes & polygon) const;
-            bool overlaps(const FacePrint & facet) const;
-            bool is_under(const FacePrint &) const;
+            bool in_domain(Point_2 const& point) const;
+            bool contains(Point_2 const& point) const;
+            bool contains(InexactPoint_2 const& inexact_point) const;
+            bool contains(FacePrint const& facet) const;
+            bool overlaps(Polygon const& polygon) const;
+            bool overlaps(Polygon_with_holes const& polygon) const;
+            bool overlaps(FacePrint const& facet) const;
+            bool is_under(FacePrint const&) const;
             bool check_integrity(void) const;
 
-            void insert(const FacePrint & facet);
+            void insert(FacePrint const& facet);
 
-            double get_height(const Point_2 &) const;
-            double get_height(const InexactPoint_2 & inexact_point) const;
+            double get_height(Point_2 const&) const;
+            double get_height(InexactPoint_2 const& inexact_point) const;
 
             void to_ogr(GDALDataset* file) const;
         private:
@@ -68,15 +69,15 @@ namespace urban
             std::list<FacePrint> projected_facets;
             Polygon_set projected_surface;
 
-            bool has_same_footprint(const BrickPrint & other) const;
-            bool has_same_facets(const BrickPrint & other) const;
+            bool has_same_footprint(BrickPrint const& other) const;
+            bool has_same_facets(BrickPrint const& other) const;
 
-            friend std::ostream & operator<<(std::ostream & os, const BrickPrint & brick_projection);
-            friend bool operator==(const BrickPrint & lhs, const BrickPrint & rhs);
-            friend bool operator!=(const BrickPrint & lhs, const BrickPrint & rhs);
+            friend std::ostream & operator<<(std::ostream & os, BrickPrint const& brick_projection);
+            friend bool operator==(BrickPrint const& lhs, BrickPrint const& rhs);
+            friend bool operator!=(BrickPrint const& lhs, BrickPrint const& rhs);
         };
 
-        BrickPrint & operator+(BrickPrint & lhs, const BrickPrint & rhs);
+        BrickPrint & operator+(BrickPrint & lhs, BrickPrint const& rhs);
     }
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 }
