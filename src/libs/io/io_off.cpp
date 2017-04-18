@@ -168,7 +168,7 @@ namespace urban
             return mesh;
         }
 
-        void FileHandler<std::fstream>::write(shadow::Mesh mesh)
+        void FileHandler<std::fstream>::write(shadow::Mesh const& mesh)
         {
             std::ostringstream error_message;
 

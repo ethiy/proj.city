@@ -81,7 +81,7 @@ int main(int argc, const char** argv)
             std::remove_if(
                 std::begin(meshes),
                 std::end(meshes),
-                [](const urban::shadow::Mesh & mesh)
+                [](urban::shadow::Mesh const& mesh)
                 {
                     return mesh.get_name().at(0) == 'F' || mesh.get_name().at(0) == 'M';
                 }
@@ -100,7 +100,7 @@ int main(int argc, const char** argv)
             std::begin(stitched_roofs),
             std::end(stitched_roofs),
             std::begin(urban_objects),
-            [&pivot](const urban::shadow::Mesh & mesh)
+            [&pivot](urban::shadow::Mesh const& mesh)
             {
                 urban::Brick brick(mesh, pivot);
                 return urban::prune(brick);
@@ -108,14 +108,14 @@ int main(int argc, const char** argv)
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
 
-        std::for_each(
-            std::begin(urban_objects),
-            std::end(urban_objects),
-            [](urban::Brick const& brick)
-            {
-                std::cout << brick.get_name() << std::endl;
-            }
-        );
+        // std::for_each(
+        //     std::begin(urban_objects),
+        //     std::end(urban_objects),
+        //     [](urban::Brick const& brick)
+        //     {
+        //         std::cout << brick.get_name() << std::endl;
+        //     }
+        // );
 
         // std::cout << "Saving brick duals... " << std::flush;
         // boost::filesystem::path dual_dir(root / "dual_graphs");
@@ -123,7 +123,7 @@ int main(int argc, const char** argv)
         // std::for_each(
         //     std::begin(urban_objects),
         //     std::end(urban_objects),
-        //     [&dual_dir, &input_path](const urban::Brick & brick)
+        //     [&dual_dir, &input_path](urban::Brick const& brick)
         //     {
         //         urban::io::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
         //         as << brick;
@@ -138,7 +138,7 @@ int main(int argc, const char** argv)
             std::begin(urban_objects),
             std::end(urban_objects),
             std::begin(projections_xy),
-            [](const urban::Brick & brick)
+            [](urban::Brick const& brick)
             {
                 return urban::project(brick);
             }
@@ -150,7 +150,7 @@ int main(int argc, const char** argv)
             std::begin(projections_xy),
             std::end(projections_xy),
             urban::projection::BrickPrint(pivot),
-            [](urban::projection::BrickPrint & rhs, const urban::projection::BrickPrint & lhs)
+            [](urban::projection::BrickPrint & rhs, urban::projection::BrickPrint const& lhs)
             {
                 return rhs + lhs;
             }
@@ -165,7 +165,7 @@ int main(int argc, const char** argv)
         std::for_each(
             std::begin(projections_xy),
             std::end(projections_xy),
-            [&vector_dir, &input_path, &modes](const urban::projection::BrickPrint & projection)
+            [&vector_dir, &input_path, &modes](urban::projection::BrickPrint const& projection)
             {
                 urban::io::FileHandler<GDALDriver> victors(
                     "GML",
@@ -186,7 +186,7 @@ int main(int argc, const char** argv)
             std::begin(projections_xy),
             std::end(projections_xy),
             std::begin(raster_projections),
-            [&pivot, pixel_size](const urban::projection::BrickPrint & projection)
+            [&pivot, pixel_size](urban::projection::BrickPrint const& projection)
             {
                 return urban::rasterize(projection, pixel_size, pivot);
             }
@@ -201,7 +201,7 @@ int main(int argc, const char** argv)
         std::for_each(
             std::begin(raster_projections),
             std::end(raster_projections),
-            [&raster_dir, &input_path, &modes](const urban::projection::RasterPrint & rasta)
+            [&raster_dir, &input_path, &modes](urban::projection::RasterPrint const& rasta)
             {
                 urban::io::FileHandler<GDALDriver> rastafari(
                     "GTiff",
@@ -213,7 +213,7 @@ int main(int argc, const char** argv)
         );
         std::cout << "Done" << std::flush << std::endl;
     }
-    catch(const std::exception& except)
+    catch(std::exception const& except)
     {
         std::cerr << except.what() << std::flush << std::endl;
     }

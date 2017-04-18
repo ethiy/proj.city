@@ -24,7 +24,7 @@ namespace urban
             ~FileHandler(void);
 
             shadow::Mesh read(void);
-            void write(shadow::Mesh);
+            void write(shadow::Mesh const& mesh);
 
         private:
             std::fstream file;

@@ -59,7 +59,7 @@ namespace urban
             shadow::Point reference_point;
             size_t height;
             size_t width;
-            double pixel_size;
+            double pixel_size = 0.6;
             std::vector<double> image_matrix;
 
             friend std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection);

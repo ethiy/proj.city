@@ -13,7 +13,7 @@ namespace urban
     class SurfaceBuilder: public CGAL::Modifier_base<HDS>
     {
     public:
-        SurfaceBuilder(shadow::Mesh _shadow_mesh): shadow_mesh(_shadow_mesh){}
+        SurfaceBuilder(shadow::Mesh const& _shadow_mesh): shadow_mesh(_shadow_mesh){}
         void operator()(HDS & target)
         {
             CGAL::Polyhedron_incremental_builder_3<HDS> incremental_builder( target, true);

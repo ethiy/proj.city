@@ -63,8 +63,6 @@ namespace urban
 
         size_t RasterPrint::get_data_index(const size_t i, const size_t j) const noexcept
         {
-            if(i>height && j>width)
-                throw std::out_of_range("You iz out of rangez!!");
             return i * width + j;
         }
 
