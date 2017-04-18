@@ -99,12 +99,7 @@ namespace urban
         BrickPrint & BrickPrint::operator+=(BrickPrint const& other)
         {
             if(espg_index != other.espg_index || reference_point != other.reference_point)
-            {
-                std::cout << name << " " << other.name << std::endl;
-                std::cout << espg_index << " " << other.espg_index << std::endl;
-                std::cout << reference_point << " " << other.reference_point << std::endl;
                 throw std::logic_error("Cannot sum two brick projections with a different projection system nor a different reference point");
-            }
             name += "_" + other.name;
             if(projected_surface.do_intersect(other.projected_surface))
             {

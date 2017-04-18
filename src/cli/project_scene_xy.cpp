@@ -73,10 +73,9 @@ int main(int argc, const char** argv)
         urban::io::FileHandler<Lib3dsFile> handler(input_path, modes);
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = handler.read();
-        std::cout << "Done" << std::flush << std::endl;
+        std::cout << meshes.size() << " Done" << std::flush << std::endl;
 
         std::cout << "Filtering Meshes... " << std::flush;
-        std::vector<urban::shadow::Mesh> roofs;
         meshes.erase(
             std::remove_if(
                 std::begin(meshes),
@@ -94,6 +93,15 @@ int main(int argc, const char** argv)
         std::vector<urban::shadow::Mesh> stitched_roofs = urban::stitch(meshes);
         std::cout << stitched_roofs.size() << " Done" << std::flush << std::endl;
 
+        std::for_each(
+            std::begin(meshes),
+            std::end(meshes),
+            [](urban::shadow::Mesh const& mesh)
+            {
+                std::cout << mesh.get_name() << std::endl;
+            }
+        );
+
         std::cout << "Loading to Scene Bricks... " << std::flush;
         std::vector<urban::Brick> urban_objects(stitched_roofs.size());
         std::transform(
@@ -103,7 +111,8 @@ int main(int argc, const char** argv)
             [&pivot](urban::shadow::Mesh const& mesh)
             {
                 urban::Brick brick(mesh, pivot);
-                return urban::prune(brick);
+                std::cout << brick.get_name() << std::endl;
+                return brick;
             }
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
@@ -145,21 +154,24 @@ int main(int argc, const char** argv)
         );
         std::cout << "Done" << std::flush << std::endl;
 
-        std::cout << "Summing Projections... " << std::flush;
-        urban::projection::BrickPrint scene_projection = std::accumulate(
-            std::begin(projections_xy),
-            std::end(projections_xy),
-            urban::projection::BrickPrint(pivot),
-            [](urban::projection::BrickPrint & rhs, urban::projection::BrickPrint const& lhs)
-            {
-                return rhs + lhs;
-            }
-        );
-        std::cout << "Done" << std::flush << std::endl;
+        // std::cout << "Summing Projections... " << std::flush;
+        // urban::projection::BrickPrint scene_projection = std::accumulate(
+        //     std::begin(projections_xy),
+        //     std::end(projections_xy),
+        //     urban::projection::BrickPrint(pivot),
+        //     [](urban::projection::BrickPrint & rhs, urban::projection::BrickPrint const& lhs)
+        //     {
+        //         std::cout << lhs.get_name() << std::endl;
+        //         urban::projection::BrickPrint buffer = rhs + lhs;
+        //         std::cout << sizeof(buffer) << std::endl;
+        //         return buffer;
+        //     }
+        // );
+        // std::cout << "Done" << std::flush << std::endl;
         
         std::cout << "Saving vector projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
-        victor.write(scene_projection);
+        // urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
+        // victor.write(scene_projection);
         boost::filesystem::path vector_dir(root / "vectors");
         boost::filesystem::create_directory(vector_dir);
         std::for_each(
@@ -180,7 +192,7 @@ int main(int argc, const char** argv)
 
 
         std::cout << "rasterizing projections... " << std::flush;
-        urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, pixel_size, pivot);
+        // urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, pixel_size, pivot);
         std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
         std::transform(
             std::begin(projections_xy),
@@ -194,8 +206,8 @@ int main(int argc, const char** argv)
         std::cout << "Done" << std::flush << std::endl;
 
         std::cout << "Saving raster projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
-        rastaf.write(global_rasta);
+        // urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
+        // rastaf.write(global_rasta);
         boost::filesystem::path raster_dir(root / "rasters");
         boost::filesystem::create_directory(raster_dir);
         std::for_each(

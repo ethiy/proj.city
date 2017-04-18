@@ -13,7 +13,7 @@ namespace urban
             std::begin(_rotations),
             std::end(_rotations),
             std::begin(rotations),
-            [norm, u](const std::pair<double, Vector_3> & angle_axis) mutable
+            [norm, &u](const std::pair<double, Vector_3> & angle_axis) mutable
             {
                 norm = std::sqrt(to_double(angle_axis.second * angle_axis.second));
                 u = angle_axis.second / norm;

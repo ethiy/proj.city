@@ -300,7 +300,7 @@ namespace urban
                     std::all_of(
                         border.holes_begin(),
                         border.holes_end(),
-                        [point](Polygon hole)
+                        [&point](Polygon hole)
                         {
                             return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
                         }
