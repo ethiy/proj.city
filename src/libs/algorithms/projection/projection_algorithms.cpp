@@ -142,7 +142,7 @@ namespace urban
                         std::for_each(
                             std::begin(superposition),
                             std::end(superposition),
-                            [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes intersection)
+                            [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes const& intersection)
                             {
                                 Point_2 intersection_point(
                                     CGAL::centroid(
