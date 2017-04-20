@@ -147,16 +147,7 @@ namespace urban
     }
 
 
-    Heuristic::Heuristic(void){}
-    Heuristic::Heuristic(const Heuristic &){}
-    Heuristic::Heuristic(Heuristic &&){}
-    Heuristic::~Heuristic(void){}
-
-    SimpleHeuristic::SimpleHeuristic(void){}
-    SimpleHeuristic::SimpleHeuristic(const SimpleHeuristic &){}
-    SimpleHeuristic::SimpleHeuristic(SimpleHeuristic &&){}
-    SimpleHeuristic::~SimpleHeuristic(void){}
-    bool SimpleHeuristic::operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
+    bool SimpleHeuristic::operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b)
     {
         /* If one of the faces is perpendicular do not bother changing order
          */
@@ -177,16 +168,13 @@ namespace urban
                     facet_b.outer_boundary()[2]
                 )
             );
-            greater = facet_b.get_plane_height(point_b) < facet_a.get_plane_height(point_a);
+            ExactToInexact to_inexact;
+            greater = facet_b.get_plane_height(to_inexact(point_b)) < facet_a.get_plane_height(to_inexact(point_a));
         }
         return greater;
     }
 
-    NaiveHeuristic::NaiveHeuristic(void){}
-    NaiveHeuristic::NaiveHeuristic(const NaiveHeuristic &){}
-    NaiveHeuristic::NaiveHeuristic(NaiveHeuristic &&){}
-    NaiveHeuristic::~NaiveHeuristic(void){}
-    bool NaiveHeuristic::operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b)
+    bool NaiveHeuristic::operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b)
     {
         bool greater(false); 
         if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
@@ -207,7 +195,9 @@ namespace urban
                     return facet_b.get_plane_height(A) < facet_b.get_plane_height(B);
                 }
             );
-            greater = facet_b.get_plane_height(*m_b) < facet_a.get_plane_height(*m_a);
+            
+            ExactToInexact to_inexact;
+            greater = facet_b.get_plane_height(to_inexact(*m_b)) < facet_a.get_plane_height(to_inexact(*m_a));
         }
         return greater;
     }

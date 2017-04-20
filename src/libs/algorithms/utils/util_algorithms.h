@@ -48,29 +48,29 @@ namespace urban
      */
     struct Heuristic
     {
-        Heuristic(void);
-        Heuristic(const Heuristic & other);
-        Heuristic(Heuristic && other);
-        virtual ~Heuristic(void);
-        virtual bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b) = 0;
+        Heuristic(void) {}
+        Heuristic(const Heuristic & ) {}
+        Heuristic(Heuristic && ) {}
+        virtual ~Heuristic(void) {}
+        virtual bool operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b) = 0;
     };
 
     struct SimpleHeuristic : public Heuristic
     {
-        SimpleHeuristic(void);
-        SimpleHeuristic(const SimpleHeuristic & other);
-        SimpleHeuristic(SimpleHeuristic && other);
-        ~SimpleHeuristic(void);
-        bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b);
+        SimpleHeuristic(void) {}
+        SimpleHeuristic(SimpleHeuristic const& other): Heuristic(other) {}
+        SimpleHeuristic(SimpleHeuristic && ) {}
+        ~SimpleHeuristic(void) {}
+        bool operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b);
     };
 
     // To be checked
     struct NaiveHeuristic : public Heuristic
     {
-        NaiveHeuristic(void);
-        NaiveHeuristic(const NaiveHeuristic & other);
-        NaiveHeuristic(NaiveHeuristic && other);
-        ~NaiveHeuristic(void);
-        bool operator()(const projection::FacePrint & facet_a, const projection::FacePrint & facet_b);
+        NaiveHeuristic(void) {}
+        NaiveHeuristic(NaiveHeuristic const& other): Heuristic(other) {}
+        NaiveHeuristic(NaiveHeuristic && ) {}
+        ~NaiveHeuristic(void) {}
+        bool operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b);
     };
 }
