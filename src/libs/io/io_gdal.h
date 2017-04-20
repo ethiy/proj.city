@@ -35,7 +35,7 @@ namespace urban
             void write(const projection::RasterPrint & raster_image) const;
         private:
             std::string driver_name;
-            bool raster;
+            bool raster = false;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
         };

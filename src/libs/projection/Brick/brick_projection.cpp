@@ -27,9 +27,9 @@ namespace urban
               {}
         BrickPrint::BrickPrint(FacePrint const& face_projection)
             : name("contains_only_one_facet"),
+              bounding_box(face_projection.bbox()),
               projected_facets(std::list<FacePrint>{{face_projection}}),
-              projected_surface(Polygon_set(face_projection.get_polygon())),
-              bounding_box(face_projection.bbox())
+              projected_surface(Polygon_set(face_projection.get_polygon()))
               {}
         BrickPrint::BrickPrint(std::string const& _name, OGRLayer* projection_layer): name(_name)
         {

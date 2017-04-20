@@ -173,23 +173,25 @@ namespace urban
             Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), degree-2));
             if(is_convex(coordinates))
             {
+                Lib3dsFace* current = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), 1));
                 std::transform(
                     std::next(std::begin(points), 1),
                     std::prev(std::end(points), 1),
                     std::next(std::begin(points), 2),
                     face,
-                    [this, &coordinates](size_t b, size_t c)
+                    [this, &coordinates, current](size_t b, size_t c)
                     {
-                        Lib3dsFace current;
                         auto init = std::initializer_list<size_t>({points.at(0), b, c});
-                        std::copy(std::begin(init), std::end(init), current.points);
+                        std::copy(std::begin(init), std::end(init), current->points);
                         Vector n(normal_to(coordinates.at(points.at(0)), coordinates.at(b), coordinates.at(c)));
-                        current.normal[0] = static_cast<float>(n.x());
-                        current.normal[1] = static_cast<float>(n.y());
-                        current.normal[2] = static_cast<float>(n.z());
-                        return current;
+                        current->normal[0] = static_cast<float>(n.x());
+                        current->normal[1] = static_cast<float>(n.y());
+                        current->normal[2] = static_cast<float>(n.z());
+                        return *current;
                     }
                 );
+                if(current)
+                    std::free(current);
             }
             else
                 throw std::logic_error("Cannot convert non convex faces to 3ds for now");

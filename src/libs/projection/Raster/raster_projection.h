@@ -57,8 +57,8 @@ namespace urban
         private:
             std::string name;
             shadow::Point reference_point;
-            size_t height;
-            size_t width;
+            size_t height = 0;
+            size_t width = 0;
             double pixel_size = 0.6;
             std::vector<double> image_matrix;
 

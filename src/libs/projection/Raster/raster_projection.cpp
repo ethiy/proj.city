@@ -193,6 +193,8 @@ namespace urban
 
         std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection)
         {
+            std::ios::fmtflags flag_buffer( os.flags() );
+
             os << "Name : " << raster_projection.name << std::endl
                << "Reference (Top left) Point : " << raster_projection.reference_point << std::endl
                << "Height : " << raster_projection.height << std::endl
@@ -215,6 +217,8 @@ namespace urban
                 }
             }            
             os << "]" << std::endl;
+
+            os.flags(flag_buffer);
             return os;
         }
 

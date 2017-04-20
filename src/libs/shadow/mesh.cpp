@@ -196,7 +196,7 @@ namespace urban
         Lib3dsMesh* Mesh::to_3ds(void) const
         {
             Lib3dsMesh* mesh = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), 1));
-            strcpy(mesh->name, const_cast<char*>(name.c_str()));
+            strncpy(mesh->name, name.c_str(), 63);
             mesh->points = static_cast<Lib3dsWord>(points.size());
             mesh->pointL = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint), mesh->points));
 
