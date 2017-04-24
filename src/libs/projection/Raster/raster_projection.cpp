@@ -11,25 +11,41 @@ namespace urban
     namespace projection
     {
         RasterPrint::RasterPrint(void) {}
-
         RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size, const std::vector<double> & image_array)
-            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(image_array)
+            : name(_name),
+              reference_point(_reference_point),
+              height(_height),
+              width(_width),
+              pixel_size(_pixel_size),
+              image_matrix(image_array),
+              pixel_access(_height * _width, 1)
         {
             if(image_array.size() != _width * _height)
                 throw std::logic_error("the image array should contain exaclty width * height elements");
         }
-
         RasterPrint::RasterPrint(const std::string & _name, const shadow::Point & _reference_point, const size_t _height, const size_t _width, double _pixel_size)
-            : name(_name), reference_point(_reference_point), height(_height), width(_width), pixel_size(_pixel_size), image_matrix(_height * _width, _reference_point.z()) {}
-
+            : name(_name),
+              reference_point(_reference_point),
+              height(_height),
+              width(_width),
+              pixel_size(_pixel_size),
+              image_matrix(_height * _width, 0.),
+              pixel_access(_height * _width, 0)
+        {}
         RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], const size_t _height, const size_t _width, GDALRasterBand* raster_band)
-            : name(_name), reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)), height(_height), width(_width), pixel_size(geographic_transform[1]), image_matrix(_height * _width)
+            : name(_name),
+              reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)),
+              height(_height),
+              width(_width),
+              pixel_size(geographic_transform[1]),
+              image_matrix(_height * _width, 0.),
+              pixel_access(_height * _width, 1)
         {
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
                 throw std::logic_error("this case is not treated here");
             
             double* buffer = reinterpret_cast<double*>(calloc(sizeof(double), _width * _height));
-            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_Float64,0, 0);
+            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_Float64, 0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
             std::copy(
@@ -38,11 +54,24 @@ namespace urban
                 std::begin(image_matrix)
             );
         }
-
-        RasterPrint::RasterPrint(const RasterPrint & other)
-            : name(other.name), reference_point(other.reference_point), height(other.height), width(other.width), pixel_size(other.pixel_size), image_matrix(other.image_matrix) {}
+        RasterPrint::RasterPrint(RasterPrint const& other)
+            : name(other.name),
+              reference_point(other.reference_point),
+              height(other.height),
+              width(other.width),
+              pixel_size(other.pixel_size),
+              image_matrix(other.image_matrix),
+              pixel_access(other.pixel_access)
+        {}
         RasterPrint::RasterPrint(RasterPrint && other)
-            : name(std::move(other.name)), reference_point(std::move(other.reference_point)), height(std::move(other.height)), width(std::move(other.width)), pixel_size(std::move(other.pixel_size)), image_matrix(std::move(other.image_matrix)) {}
+            : name(std::move(other.name)),
+              reference_point(std::move(other.reference_point)),
+              height(std::move(other.height)),
+              width(std::move(other.width)),
+              pixel_size(std::move(other.pixel_size)),
+              image_matrix(std::move(other.image_matrix)),
+              pixel_access(std::move(other.pixel_access))
+        {}
         RasterPrint::~RasterPrint(void) {}
 
 
@@ -61,7 +90,7 @@ namespace urban
             return width;
         }
 
-        size_t RasterPrint::get_data_index(const size_t i, const size_t j) const noexcept
+        size_t RasterPrint::get_index(const size_t i, const size_t j) const noexcept
         {
             return i * width + j;
         }
@@ -85,10 +114,13 @@ namespace urban
         {
             return image_matrix.data();
         }
-
-        const double* RasterPrint::data(void) const noexcept
+        double const* RasterPrint::data(void) const noexcept
         {
             return image_matrix.data();
+        }
+        std::vector<short> const& RasterPrint::pixel_hits(void) const noexcept
+        {
+            return pixel_access;
         }
 
         void RasterPrint::swap(RasterPrint & other)
@@ -100,6 +132,7 @@ namespace urban
             swap(width, other.width);
             swap(pixel_size, other.pixel_size);
             swap(image_matrix, other.image_matrix);
+            swap(pixel_access, other.pixel_access);
         }
 
         double & RasterPrint::at(const size_t i, const size_t j)
@@ -108,12 +141,23 @@ namespace urban
                 throw std::out_of_range("You iz out of rangez!!");
             return image_matrix.at(i * width + j);
         }
-
-        const double & RasterPrint::at(const size_t i, const size_t j) const
+        double const& RasterPrint::at(const size_t i, const size_t j) const
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
             return image_matrix.at(i * width + j);
+        }
+        short & RasterPrint::hit(const size_t i, const size_t j)
+        {
+            if(i>height && j>width)
+                throw std::out_of_range("You iz out of rangez!!");
+            return pixel_access.at(i * width + j);
+        }
+        const short & RasterPrint::hit(const size_t i, const size_t j) const
+        {
+            if(i>height && j>width)
+                throw std::out_of_range("You iz out of rangez!!");
+            return pixel_access.at(i * width + j);
         }
 
         RasterPrint::iterator RasterPrint::begin(void) noexcept
@@ -133,7 +177,7 @@ namespace urban
             return image_matrix.cend();
         }
 
-        RasterPrint & RasterPrint::operator=(const RasterPrint & other) noexcept
+        RasterPrint & RasterPrint::operator=(RasterPrint const& other) noexcept
         {
             name = other.name;
             reference_point = other.reference_point;
@@ -141,6 +185,7 @@ namespace urban
             width = other.width;
             pixel_size = other.pixel_size;
             image_matrix = other.image_matrix;
+            pixel_access = other.pixel_access;
 
             return *this;
         }
@@ -153,11 +198,12 @@ namespace urban
             width = std::move(other.width);
             pixel_size = std::move(other.pixel_size);
             image_matrix = std::move(other.image_matrix);
+            pixel_access = std::move(other.pixel_access);
             
             return *this;
         }
 
-        RasterPrint & RasterPrint::operator+=(const RasterPrint & other)
+        RasterPrint & RasterPrint::operator+=(RasterPrint const& other)
         {
             if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
@@ -174,7 +220,7 @@ namespace urban
             return *this;
         }
         
-        RasterPrint & RasterPrint::operator-=(const RasterPrint & other)
+        RasterPrint & RasterPrint::operator-=(RasterPrint const& other)
         {
             if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
@@ -191,9 +237,9 @@ namespace urban
             return *this;
         }
 
-        std::ostream & operator<<(std::ostream & os, const RasterPrint & raster_projection)
+        std::ostream & operator<<(std::ostream & os, RasterPrint const& raster_projection)
         {
-            std::ios::fmtflags flag_buffer( os.flags() );
+            std::ios::fmtflags flag_buffer = os.flags();
 
             os << "Name : " << raster_projection.name << std::endl
                << "Reference (Top left) Point : " << raster_projection.reference_point << std::endl
@@ -222,17 +268,17 @@ namespace urban
             return os;
         }
 
-        RasterPrint & operator+(RasterPrint & lhs, const RasterPrint & rhs)
+        RasterPrint & operator+(RasterPrint & lhs, RasterPrint const& rhs)
         {
             return lhs += rhs;
         }
 
-        RasterPrint & operator-(RasterPrint & lhs, const RasterPrint & rhs)
+        RasterPrint & operator-(RasterPrint & lhs, RasterPrint const& rhs)
         {
             return lhs -= rhs;
         }
 
-        bool operator==(const RasterPrint & lhs, const RasterPrint & rhs)
+        bool operator==(RasterPrint const& lhs, RasterPrint const& rhs)
         {
             bool result(
                 std::abs(lhs.pixel_size - rhs.pixel_size) < std::numeric_limits<double>::epsilon()
@@ -266,7 +312,7 @@ namespace urban
             return result;
         }
         
-        bool operator!=(RasterPrint & lhs, const RasterPrint & rhs)
+        bool operator!=(RasterPrint & lhs, RasterPrint const& rhs)
         {
             return !(lhs == rhs);
         }

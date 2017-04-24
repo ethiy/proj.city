@@ -46,7 +46,7 @@ namespace urban
             double area(void) const;
             Bbox_2 bbox(void) const;
 
-            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot, std::vector<short> & pixel_access) const;
+            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const;
 
             bool has_same_border(FacePrint const& other) const;
             bool has_same_plane(FacePrint const& other) const;
