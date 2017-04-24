@@ -19,9 +19,9 @@ namespace urban
         {
         public:
             RasterPrint(void);
-            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, size_t const _height, size_t const _width, double _pixel_size, std::vector<double> const& image_array);
-            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, size_t const _height, size_t const _width, double _pixel_size);
-            RasterPrint(std::string const& _name, double const geographic_transform[6], size_t const _height, size_t const _width, GDALRasterBand* raster_band);
+            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, size_t const& _height, size_t const& _width, double _pixel_size, std::vector<double> const& image_array);
+            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, size_t const& _height, size_t const& _width, double _pixel_size);
+            RasterPrint(std::string const& _name, double const geographic_transform[6], size_t const& _height, size_t const& _width, GDALRasterBand* raster_band);
             RasterPrint(RasterPrint const& other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
@@ -29,7 +29,7 @@ namespace urban
             std::string get_name(void) const noexcept;
             size_t get_height(void) const noexcept;
             size_t get_width(void) const noexcept;
-            size_t get_index(const size_t i, const size_t j) const noexcept;
+            size_t get_index(size_t const& i, size_t const& j) const noexcept;
             shadow::Point get_reference_point() const noexcept;
             double get_pixel_size() const noexcept;
             std::array<double, 6> get_geographic_transform(void) const;
@@ -39,10 +39,12 @@ namespace urban
 
             void swap(RasterPrint & other);
 
-            double & at(const size_t i, const size_t j);
-            const double & at(const size_t i, const size_t j) const;
-            short & hit(const size_t i, const size_t j);
-            const short & hit(const size_t i, const size_t j) const;
+            double & at(size_t const& i, size_t const& j);
+            const double & at(size_t const& i, size_t const& j) const;
+            short & hit(size_t const& i, size_t const& j);
+            const short & hit(size_t const& i, size_t const& j) const;
+
+            double & update(size_t const& i, size_t const& j, double const& height, bool const& hit);
 
             typedef std::vector<double>::iterator iterator;
             typedef std::vector<double>::const_iterator const_iterator;

@@ -87,14 +87,14 @@ namespace urban
             return Vector_3(supporting_plane.a(), supporting_plane.b(), supporting_plane.c());
         }
 
-        double FacePrint::get_plane_height(const Point_2 & point) const
+        double FacePrint::get_plane_height(Point_2 const& point) const
         {
             if( supporting_plane.c() == 0)
                 throw std::overflow_error("The supporting plane is vertical!");
             return to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
         }
 
-        double FacePrint::get_plane_height(const InexactPoint_2 & inexact_point) const
+        double FacePrint::get_plane_height(InexactPoint_2 const& inexact_point) const
         {
             ExactToInexact to_inexact;
             if( std::abs(to_inexact(supporting_plane.c())) < std::numeric_limits<double>::epsilon() )
@@ -103,12 +103,12 @@ namespace urban
         }
 
 
-        double FacePrint::get_height(const Point_2 & point) const
+        double FacePrint::get_height(Point_2 const& point) const
         {
             return !is_degenerate() * contains(point) * get_plane_height(point) ;
         }
 
-        double FacePrint::get_height(const InexactPoint_2 & inexact_point) const
+        double FacePrint::get_height(InexactPoint_2 const& inexact_point) const
         {
             return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
@@ -140,9 +140,9 @@ namespace urban
                     std::begin(weights),
                     std::end(weights),
                     std::begin(pixel_inter),
-                    0.,
+                    double(0.),
                     std::plus<double>(),
-                    [this](double const parts, Polygon_with_holes const& part)
+                    [this](double const& parts, Polygon_with_holes const& part)
                     {
                         return get_plane_height(urban::centroid(part)) / parts;
                     }
@@ -202,18 +202,13 @@ namespace urban
                     [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](size_t const& index)
                     {
                         bool hit(false);
-                        double buffer = raster_projection.at(i_min + index/w, j_min + index%w);
-                        double n = static_cast<double>(raster_projection.hit(i_min + index/w, j_min + index%w));
                         double height = get_height(
                             bae.xmin() + static_cast<double>(index%w) * pixel_size,
                             bae.ymax() - static_cast<double>(index/w) * pixel_size,
                             pixel_size,
                             hit
                         );
-                        std::cout << buffer << " + " << height << " / ";
-                        raster_projection.at(i_min + index/w, j_min + index%w) = (n * buffer + height ) / (n + 1 * hit);
-                        raster_projection.hit(i_min + index/w, j_min + index%w) += 1 * hit;
-                        std::cout << raster_projection.hit(i_min + index/w, j_min + index%w) << std::endl;
+                        std::cout << raster_projection.update(i_min + index/w, j_min + index%w, height, hit) << std::endl;
                     }
                 );
 
@@ -284,21 +279,21 @@ namespace urban
             return border.outer_boundary().is_empty();
         }
 
-        bool FacePrint::contains(const Point_2 & point) const
+        bool FacePrint::contains(Point_2 const& point) const
         {
             return  border.outer_boundary().bounded_side(point) != CGAL::ON_UNBOUNDED_SIDE
                     &&
                     std::all_of(
                         border.holes_begin(),
                         border.holes_end(),
-                        [&point](Polygon hole)
+                        [&point](Polygon const& hole)
                         {
                             return hole.bounded_side(point) != CGAL::ON_BOUNDED_SIDE;
                         }
                     );
         }
 
-        bool FacePrint::contains(const InexactPoint_2 & inexact_point) const
+        bool FacePrint::contains(InexactPoint_2 const& inexact_point) const
         {
             InexactToExact to_exact;
             return contains(to_exact(inexact_point));
@@ -338,7 +333,7 @@ namespace urban
         lhs.swap(rhs);
     }
 
-    double area(const projection::FacePrint & facet)
+    double area(projection::FacePrint const& facet)
     {
         return facet.area();
     }
