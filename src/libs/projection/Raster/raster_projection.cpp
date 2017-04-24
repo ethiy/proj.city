@@ -160,12 +160,6 @@ namespace urban
             return pixel_access.at(i * width + j);
         }
 
-        double & RasterPrint::update(size_t const& i, size_t const& j, double const& height, bool const& hit)
-        {
-            image_matrix.at(i * width + j) = (pixel_access.at(i * width + j) * image_matrix.at(i * width + j) + height) / (pixel_access.at(i * width + j) + 1 * hit);
-            return image_matrix.at(i * width + j);
-        }
-
         RasterPrint::iterator RasterPrint::begin(void) noexcept
         {
             return image_matrix.begin();

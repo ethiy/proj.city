@@ -148,7 +148,6 @@ namespace urban
                     }
                 );
             }
-            std::cout << " " << mean_height << " " << std::endl;
             return mean_height;
         }
 
@@ -208,7 +207,8 @@ namespace urban
                             pixel_size,
                             hit
                         );
-                        std::cout << raster_projection.update(i_min + index/w, j_min + index%w, height, hit) << std::endl;
+                        if(hit)
+                            raster_projection.at(i_min + index/w, j_min + index%w) = (raster_projection.at(i_min + index/w, j_min + index%w) * raster_projection.hit(i_min + index/w, j_min + index%w) + height) / (++raster_projection.hit(i_min + index/w, j_min + index%w));
                     }
                 );
 

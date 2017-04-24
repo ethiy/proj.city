@@ -44,8 +44,6 @@ namespace urban
             short & hit(size_t const& i, size_t const& j);
             const short & hit(size_t const& i, size_t const& j) const;
 
-            double & update(size_t const& i, size_t const& j, double const& height, bool const& hit);
-
             typedef std::vector<double>::iterator iterator;
             typedef std::vector<double>::const_iterator const_iterator;
 
