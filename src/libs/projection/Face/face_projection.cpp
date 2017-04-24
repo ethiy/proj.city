@@ -22,7 +22,7 @@ namespace urban
     namespace projection
     {
         FacePrint::FacePrint(void){}
-        FacePrint::FacePrint(const Polygon_with_holes & _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
+        FacePrint::FacePrint(Polygon_with_holes const& _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
             if(facet_definition->GetFieldCount() < 4)
@@ -54,14 +54,13 @@ namespace urban
             swap(supporting_plane, other.supporting_plane);
         }
 
-        FacePrint & FacePrint::operator=(const FacePrint & other)
+        FacePrint & FacePrint::operator=(const FacePrint & other) noexcept
         {
             border = other.border;
             supporting_plane = other.supporting_plane;
             return *this;
         }
-
-        FacePrint & FacePrint::operator=(FacePrint && other)
+        FacePrint & FacePrint::operator=(FacePrint && other) noexcept
         {
             border = std::move(other.border);
             supporting_plane = std::move(other.supporting_plane);
@@ -134,11 +133,18 @@ namespace urban
                 std::begin(pixel_inter),
                 std::end(pixel_inter),
                 0.,
-                [this](double & height, const Polygon_with_holes & pixel_part)
+                [this](double & height, Polygon_with_holes const& pixel_part)
                 {
-                    return height + get_plane_height(CGAL::centroid(pixel_part.outer_boundary()[0], pixel_part.outer_boundary()[1], pixel_part.outer_boundary()[2]));
+                    std::cout << pixel_part << std::endl;
+                    std::cout << urban::centroid(pixel_part) << std::endl;
+                    return height + get_plane_height(urban::centroid(pixel_part));
                 }
             );
+        }
+
+        InexactPoint_2 FacePrint::centroid(void) const
+        {
+            return urban::centroid(border);
         }
 
         double FacePrint::area(void) const
@@ -287,10 +293,13 @@ namespace urban
             */
             return is_perpendicular() || ( holes_begin() != holes_end() && std::abs(area()) < std::numeric_limits<double>::epsilon() );
         }
-
         bool FacePrint::is_perpendicular(void) const
         {
             return supporting_plane.c() == 0;
+        }
+        bool FacePrint::is_empty(void) const
+        {
+            return border.outer_boundary().is_empty();
         }
 
         bool FacePrint::contains(const Point_2 & point) const
