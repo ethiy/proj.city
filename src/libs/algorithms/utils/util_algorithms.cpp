@@ -1,5 +1,7 @@
 #include "util_algorithms.h"
 
+#include <CGAL/centroid.h>
+
 #include <iterator>
 
 namespace urban
@@ -52,14 +54,14 @@ namespace urban
         return CGAL::collinear(*first, *(first + 1), *(first + 2));
     }
 
-    void extrem_points(std::vector<Point_2> & points)
+    std::pair<Point_2, Point_2> extrem_points(std::vector<Point_2> const& points)
     {
-        Point_2 A(points[0]), B(points[1]);
+        Point_2 A(points.at(0)), B(points.at(1));
         double AB(.0), AC(.0), BC(.0);
         std::for_each(
             std::next(std::begin(points), 2),
             std::end(points),
-            [&A, &B, &AB, &AC, &BC](Point_2 C)
+            [&A, &B, &AB, &AC, &BC](Point_2 const& C)
             {
                 AB = to_double(CGAL::squared_distance(A, B));
                 AC = to_double(CGAL::squared_distance(A, C));
@@ -73,75 +75,40 @@ namespace urban
                 }
             }
         );
-        points.clear();
-        points.push_back(A);
-        points.push_back(B);
+        return std::make_pair(A, B);
     }
 
-    InexactPoint_2 centroid(const InexactPolygon & polygon)
+    InexactPoint_2 centroid(InexactPolygon const& polygon)
     {
-        InexactPolygon::Vertex_const_circulator circulator = polygon.vertices_circulator();
-        InexactPolygon::Vertex_const_circulator next_circulator = std::next(polygon.vertices_circulator(), 1);
-
-        InexactVector_2 centroid = CGAL::NULL_VECTOR;
-        do
-        {
-            centroid =  centroid
-                        +
-                        ((*circulator - CGAL::ORIGIN) + (*next_circulator - CGAL::ORIGIN))
-                         *
-                        CGAL::determinant(*circulator - CGAL::ORIGIN, *next_circulator - CGAL::ORIGIN)
-                         /
-                        6.;
-        }while(++circulator != polygon.vertices_circulator());
-
-        return CGAL::ORIGIN + centroid / polygon.area();
+        return CGAL::centroid(polygon.vertices_begin(), polygon.vertices_end(), CGAL::Dimension_tag<0>());
     }
-
-    InexactPoint_2 centroid(const InexactPolygon_with_holes & polygon)
+    InexactPoint_2 centroid(InexactPolygon_with_holes const& polygon)
     {
         return centroid(polygon.outer_boundary());
     }
-
-    InexactPoint_2 centroid(const Polygon & polygon)
+    InexactPoint_2 centroid(Polygon const& polygon)
     {
         ExactToInexact to_inexact;
-        Polygon::Vertex_const_circulator circulator = polygon.vertices_circulator();
-        Polygon::Vertex_const_circulator next_circulator = std::next(polygon.vertices_circulator(), 1);
-
-        InexactVector_2 centroid = CGAL::NULL_VECTOR;
-        double area = to_inexact(polygon.area());
-
-        if(to_inexact(polygon.area()) < std::numeric_limits<double>::epsilon())
-        {
-            centroid = ((to_inexact(*circulator) - CGAL::ORIGIN) + (to_inexact(*next_circulator) - CGAL::ORIGIN)) / 2.;
-        }
-        else
-        {
-            InexactPoint_2 v_0, v_1;
-            do
+        std::vector<InexactPoint_2> buffer(polygon.size());
+        std::transform(
+            polygon.vertices_begin(),
+            polygon.vertices_end(),
+            std::begin(buffer),
+            [&to_inexact](Point_2 const& point)
             {
-                v_0 = to_inexact(*circulator);
-                v_1 = to_inexact(*next_circulator);
-                std::cout << v_0 << " " << v_1 << std::endl;
-                centroid =  centroid
-                            +
-                            ((v_0 - CGAL::ORIGIN) + (v_1 - CGAL::ORIGIN))
-                            *
-                            CGAL::determinant(v_0 - CGAL::ORIGIN, v_1 - CGAL::ORIGIN)
-                            /
-                            6.
-                            /
-                            area;
-                std::cout << centroid << std::endl;
-                ++next_circulator;
-                ++circulator;
-            }while(circulator != std::prev(polygon.vertices_circulator(), 1));
-        }
-        return CGAL::ORIGIN + centroid;
+                return to_inexact(point);
+            }
+        );
+        buffer.erase(
+            std::unique(
+                std::begin(buffer),
+                std::end(buffer)
+            ),
+            std::end(buffer)
+        );
+        return centroid(InexactPolygon(std::begin(buffer), std::end(buffer)));
     }
-
-    InexactPoint_2 centroid(const Polygon_with_holes & polygon)
+    InexactPoint_2 centroid(Polygon_with_holes const& polygon)
     {
         return centroid(polygon.outer_boundary());
     }
