@@ -79,3 +79,8 @@ You can check the projects [docker file](https://github.com/Ethiy/3DSceneModel/b
     ```bash
     apt install lib3ds-dev
     ```
+
+
+## License
+
+This work is the result of a PhD thesis financed by `IGN France`. It is available as an open source project under the `GPL v3.0` License. If you want to have this program under a different License you should contact `IGN France`.
