@@ -16,42 +16,66 @@ Playing with 3D formats.
 
 In order to build this project you need first to check for these dependencies:
 
- * Boost Libraries: (> v1.58.0)
- * CGAL Library: (> v4.9)
- * GDAL Library: (> v2.1.0)
- * Lib3ds Library: (> v1.3.0)
- * Imagine ++ Library:(> v4.3.1)
- * Catch Library: (> v1.6.0)
+* Boost Libraries: (> `v1.58.0`)
+* CGAL Library: (> `v4.7-4`)
+* GDAL Library: (> `v2.0`)
+* lib3ds Library: (`v1.3.0`)
+* Catch Library: (> `v1.6.0`)
+* Docopt.cpp Library: (> `v0.6.2`)
 
- This project builds on the three main platforms:
+ This project is tested on these three main platforms:
 
- * Ubuntu: (v16.04)
- * Darwin: (> xcode v8)
- * Windows: (MinGW w64)
+* Ubuntu: (`v16.04`)
+* Darwin: (> `xcode v8`)
+* Windows: (MinGW w64)
 
  We explain here how to get these listed dependencies and how to build for each platform:
 
-### Linux
+### Cross Platform dependencies
 
-You can check the [docker file] (https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an example. We will use `aptitude` the available package manager for most dependencies:
+* Catch:
+    Catch is a header only library available on [`Github`](https://github.com/philsquared/Catch). You do not need to install it as a CMake module installs it as an external project.
 
-This project uses only  `filesystem` and `system` boost libraries. However, since CGAL uses other libraries it may be wise to get all of them:
-```bash
-apt install libboost-all-dev
-```
+* Docopt.cpp:
+    `docopt.cpp` is a fun argument parser library available on [`Github`](https://github.com/docopt/docopt.cpp). You do not need to install it also as a CMake module installs it as an external project.
 
-CGAL v4.9 is available in the official repositories:
-```bash
-apt install libcgal-dev
-```
 
-GDAL > v2.0 is not available in the official repositories. You need to add the unstable ppa before hand:
-```bash
-apt update && apt upgade
-apt install software-properties-common # It contains `add-apt-repository` command
-add-apt-repository ppa:ubuntugis/ubuntugis-unstable # adds ubuntugis/ubuntugis-unstable ppa
-apt update && apt upgade
-apt install libgdal-dev
-```
+### Ubuntu `v16.04`
 
-You should know that this will also upgrade `Qgis`, for instance. You can force `aptitude` to freeze `Qgis` for instance, or you can download the source form the official release [website](https://trac.osgeo.org/gdal/wiki/DownloadSource) and build `GDAL`.
+You can check the projects [docker file](https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an inspiration. We will use `aptitude` the available package manager for most dependencies:
+
+* Boost:
+    This project uses only  `filesystem` and `system` boost libraries. However, since CGAL uses other libraries it may be wise to get all of them:
+
+    ```bash
+    apt install libboost-all-dev
+    ```
+
+* CGAL:
+    CGAL `v4.7-4` is available in the official repositories:
+
+    ```bash
+    apt install libcgal-dev
+    ```
+
+* GDAL:
+    GDAL > `v2.0` is not available in the official repositories.
+
+    The easiest way to get a newer version would be through the unstable `ubuntugis` ppa:
+
+    ```bash
+    apt update && apt upgade
+    apt install software-properties-common # If not installed, it contains `add-apt-repository` command
+    add-apt-repository ppa:ubuntugis/ubuntugis-unstable # adds ubuntugis/ubuntugis-unstable ppa
+    apt update && apt upgade
+    apt install libgdal-dev
+    ```
+
+    You should know that this will also upgrade `Qgis`. You can force `aptitude` to freeze `Qgis` for instance, or you can download the source form the official release [website](https://trac.osgeo.org/gdal/wiki/DownloadSource) and build `GDAL`.
+
+* Lib3ds:
+    lib3ds `v1.3.0` is available in the official repositories:
+
+    ```bash
+    apt install lib3ds-dev
+    ```
