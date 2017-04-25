@@ -36,9 +36,9 @@ namespace urban
     public:
         /**
          * Default constructor.
-         * @see Brick(const Brick & other)
+         * @see Brick(Brick const& other)
          * @see Brick(Brick && other)
-         * @see Brick(const shadow::Mesh & mesh)
+         * @see Brick(shadow::Mesh const& mesh)
          * @see ~Brick(void)
          */
         Brick(void);
@@ -47,16 +47,16 @@ namespace urban
          * @param other an other brick
          * @see Brick(void)
          * @see Brick(Brick && other)
-         * @see Brick(const shadow::Mesh & mesh)
+         * @see Brick(shadow::Mesh const& mesh)
          * @see ~Brick(void)
          */
-        Brick(const Brick & other);
+        Brick(Brick const& other);
         /**
          * Move constructor.
          * @param other an other brick
          * @see Brick(void)
-         * @see Brick(const Brick & other)
-         * @see Brick(const shadow::Mesh & mesh)
+         * @see Brick(Brick const& other)
+         * @see Brick(shadow::Mesh const& mesh)
          * @see ~Brick(void)
          */
         Brick(Brick && other);
@@ -65,28 +65,28 @@ namespace urban
          * @param mesh Shadow Mesh
          * @param _reference_point reference point
          * @see Brick(void)
-         * @see Brick(const Brick & other)
+         * @see Brick(Brick const& other)
          * @see Brick(Brick && other)
          * @see ~Brick(void)
          */
-        Brick(const shadow::Mesh & mesh, const shadow::Point & _reference_point);
+        Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point);
         /**
          * Constructor from Shadow Mesh.
          * @param mesh Shadow Mesh
          * @param _reference_point reference point
          * @param _epsg_index epsg index
          * @see Brick(void)
-         * @see Brick(const Brick & other)
+         * @see Brick(Brick const& other)
          * @see Brick(Brick && other)
          * @see ~Brick(void)
          */
-        Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _epsg_index);
+        Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index);
         /**
          * Default destructor.
          * @see Brick(void)
-         * @see Brick(const Brick & other)
+         * @see Brick(Brick const& other)
          * @see Brick(Brick && other)
-         * @see Brick(const shadow::Mesh & mesh)
+         * @see Brick(shadow::Mesh const& mesh)
          */
         ~Brick(void);
 
@@ -102,11 +102,11 @@ namespace urban
          * @param other an other brick to copy
          * @see operator=(Brick &&)
          */
-        Brick & operator=(const Brick & other) noexcept;
+        Brick & operator=(Brick const& other) noexcept;
         /**
          * Move assignement operator.
          * @param other an other brick to move
-         * @see operator=(const Brick &)
+         * @see operator=(Brick const&)
          */
         Brick & operator=(Brick && other) noexcept;
 
@@ -310,6 +310,20 @@ namespace urban
          * @return `this` brick modified
          */
         Brick & join_facet(Halfedge_handle & h);
+
+        /** 
+         * Get facets adjacent to a facet
+         * @param facet a brick facet
+         * @return handle to facets adjacent to facet
+         */
+        std::vector<Brick::Facet_const_handle> facet_adjacents(Brick::Facet const& facet) const;
+
+        /** 
+         * Get facet adjacency matrix (dual matrix)
+         * @param h halfedge handle to join its incidents facets
+         * @return the facet adjacency matrix
+         */
+        std::vector<bool> facet_adjacency_matrix(void) const;
     private:
         /** Brick name */
         std::string name;
@@ -328,14 +342,14 @@ namespace urban
          * @param brick the brick to stream
          * @return the output stream
          */
-        friend std::ostream& operator<<(std::ostream & os, const Brick & brick);
+        friend std::ostream& operator<<(std::ostream & os, Brick const& brick);
         /**
          * Outstreaming the dual adjacency graph
          * @param as the output stream
          * @param brick the brick to stream
          * @return the output stream
          */
-        friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, const Brick & brick);
+        friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, Brick const& brick);
         #ifdef CGAL_USE_GEOMVIEW
         /**
          * Outstreaming Brick to GeomView
@@ -343,7 +357,7 @@ namespace urban
          * @param brick the brick to stream
          * @return the output stream
          */
-        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, const Brick & brick);
+        friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, Brick const& brick);
         #endif // CGAL_USE_GEOMVIEW
     };
     /** @} */ // end of urban

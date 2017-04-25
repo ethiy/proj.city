@@ -12,17 +12,17 @@
 namespace urban
 {
     Brick::Brick(void): name("no name"){}
-    Brick::Brick(const Brick & other)
+    Brick::Brick(Brick const& other)
         :name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), surface(other.surface), bounding_box(other.bounding_box){}
     Brick::Brick(Brick && other)
         : name(std::move(other.name)), reference_point(std::move(other.reference_point)), epsg_index(std::move(other.epsg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
-    Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point)
+    Brick::Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point)
         : name(mesh.get_name()), reference_point(_reference_point), bounding_box(mesh.bbox().to_cgal())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);
     }
-    Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _epsg_index)
+    Brick::Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index)
         : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index), bounding_box(mesh.bbox().to_cgal())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
@@ -38,7 +38,7 @@ namespace urban
         swap(bounding_box, other.bounding_box);
     }
 
-    Brick & Brick::operator=(const Brick & other) noexcept
+    Brick & Brick::operator=(Brick const& other) noexcept
     {
         name = other.name;
         reference_point = other.reference_point;
@@ -172,7 +172,7 @@ namespace urban
         return std::find_if(
             halfedges_begin(),
             halfedges_end(),
-            [](const Polyhedron::Halfedge & halfedge)
+            [](Polyhedron::Halfedge const& halfedge)
             {
                 bool joignable = !halfedge.is_border_edge();
                 if(joignable)
@@ -225,12 +225,12 @@ namespace urban
                     std::begin(buffer),
                     std::end(buffer),
                     std::back_inserter(combining_edges),
-                    [&combining_edges](const Brick::Halfedge_handle & h)
+                    [&combining_edges](Brick::Halfedge_handle const& h)
                     {
                         return std::none_of(
                             std::begin(combining_edges),
                             std::end(combining_edges),
-                            [&h](const Brick::Halfedge_handle & present)
+                            [&h](Brick::Halfedge_handle const& present)
                             {
                                 return  (present->vertex()->point() == h->vertex()->point() && present->opposite()->vertex()->point() == h->opposite()->vertex()->point())
                                         ||
@@ -251,7 +251,7 @@ namespace urban
         return *this;
     }
 
-    Point_3 Brick::centroid(const Brick::Facet & facet) const
+    Point_3 Brick::centroid(Brick::Facet const& facet) const
     {
         Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
         Vector_3 n = normal(facet);
@@ -271,13 +271,13 @@ namespace urban
         return CGAL::ORIGIN + centroid / area(facet);
     }
 
-    Vector_3 Brick::normal(const Brick::Facet & facet) const
+    Vector_3 Brick::normal(Brick::Facet const& facet) const
     {
         Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
         return CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
     }
 
-    double Brick::area(const Brick::Facet & facet) const
+    double Brick::area(Brick::Facet const& facet) const
     {
         Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
         Vector_3 n = normal(facet);
@@ -290,35 +290,82 @@ namespace urban
 
         return area;
     }
+    
+    std::vector<Brick::Facet_const_handle> Brick::facet_adjacents(Brick::Facet const& facet) const
+    {
+        std::vector<Brick::Facet_const_handle> adjacents;
+        adjacents.reserve(facet.facet_degree());
 
-    std::ostream & operator<<(std::ostream &os, const Brick & brick)
+        auto circulator = facet.facet_begin();
+
+        do
+        {
+            if(!circulator->is_border())
+                adjacents.push_back(circulator->opposite()->facet());
+        }while(++circulator != facet.facet_begin());
+        return adjacents;
+    }
+
+    std::vector<bool> Brick::facet_adjacency_matrix(void) const
+    {
+        std::size_t&& n = facets_size();
+        std::vector<Brick::Facet_const_handle> facets(n);
+        std::transform(
+            facets_cbegin(),
+            facets_cend(),
+            std::begin(facets),
+            [](Brick::Facet const& facet)
+            {
+                return &facet;
+            }
+        );
+        std::vector<bool> adjacency(n * n);
+
+        std::vector<Brick::Facet_const_handle> line_adjacents;
+        for(std::size_t line(0); line != n; ++line)
+        {
+            line_adjacents = facet_adjacents(*facets.at(line));
+
+            for(auto adjacent : line_adjacents)
+            {
+                auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
+                auto index = std::distance(std::begin(facets), placeholder);
+                adjacency.at( line * n + index) = true;
+            }
+
+            line_adjacents.clear();
+        }   
+
+        return adjacency;
+    }
+
+    std::ostream & operator<<(std::ostream &os, Brick const& brick)
     {
         os  << "# Name: " << brick.name << std::endl
             << brick.surface;
         return os;
     }
 
-    io::Adjacency_stream & operator<<(io::Adjacency_stream & as, const Brick & brick)
+    io::Adjacency_stream & operator<<(io::Adjacency_stream & as, Brick const& brick)
     {
-        std::map<std::size_t, Brick::Facet_const_handle> facets;
-        std::map<std::size_t, std::vector<std::size_t> > adjacences;
-
-        std::size_t index(0);
         std::for_each(
             brick.facets_cbegin(),
             brick.facets_cend(),
-            [&as, &brick, &facets, &index](const Brick::Facet & facet)
+            [&as, &brick](Brick::Facet const& facet)
             {
                 as << facet.facet_degree() << " " << brick.area(facet) << " " << brick.centroid(facet) << brick.normal(facet) << std::endl;
-                facets.emplace(std::make_pair(index, &facet));
             }
         );
+
+        std::vector<bool> matrix = brick.facet_adjacency_matrix();
+
+        as << matrix << std::endl;
 
         return as;
     }
 
     #ifdef CGAL_USE_GEOMVIEW
-    CGAL::Geomview_stream & operator<<(CGAL::Geomview_stream &gs, const Brick & brick)
+    CGAL::Geomview_stream & operator<<(CGAL::Geomview_stream &gs, Brick const& brick)
     {
         gs << brick.surface;
         return gs;

@@ -44,7 +44,6 @@ int main(int argc, const char** argv)
         boost::filesystem::path input_path(arguments.at("<filename>").asString());
         boost::filesystem::path root(input_path.parent_path());
         boost::filesystem::path scene_tree_file(root / (input_path.stem().string() + ".XML"));
-                std::cout << scene_tree_file.string() << std::flush << std::endl;
 
         tinyxml2::XMLDocument scene_tree;
         auto error = scene_tree.LoadFile(scene_tree_file.string().c_str());
@@ -93,15 +92,6 @@ int main(int argc, const char** argv)
         std::vector<urban::shadow::Mesh> stitched_roofs = urban::stitch(meshes);
         std::cout << stitched_roofs.size() << " Done" << std::flush << std::endl;
 
-        std::for_each(
-            std::begin(meshes),
-            std::end(meshes),
-            [](urban::shadow::Mesh const& mesh)
-            {
-                std::cout << mesh.get_name() << std::endl;
-            }
-        );
-
         std::cout << "Loading to Scene Bricks... " << std::flush;
         std::vector<urban::Brick> urban_objects(stitched_roofs.size());
         std::transform(
@@ -110,35 +100,24 @@ int main(int argc, const char** argv)
             std::begin(urban_objects),
             [&pivot](urban::shadow::Mesh const& mesh)
             {
-                urban::Brick brick(mesh, pivot);
-                std::cout << brick.get_name() << std::endl;
-                return brick;
+                return urban::Brick(mesh, pivot);
             }
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
 
-        // std::for_each(
-        //     std::begin(urban_objects),
-        //     std::end(urban_objects),
-        //     [](urban::Brick const& brick)
-        //     {
-        //         std::cout << brick.get_name() << std::endl;
-        //     }
-        // );
-
-        // std::cout << "Saving brick duals... " << std::flush;
-        // boost::filesystem::path dual_dir(root / "dual_graphs");
-        // boost::filesystem::create_directory(dual_dir);
-        // std::for_each(
-        //     std::begin(urban_objects),
-        //     std::end(urban_objects),
-        //     [&dual_dir, &input_path](urban::Brick const& brick)
-        //     {
-        //         urban::io::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
-        //         as << brick;
-        //     }
-        // );
-        // std::cout << " Done" << std::flush << std::endl;
+        std::cout << "Saving brick duals... " << std::flush;
+        boost::filesystem::path dual_dir(root / "dual_graphs");
+        boost::filesystem::create_directory(dual_dir);
+        std::for_each(
+            std::begin(urban_objects),
+            std::end(urban_objects),
+            [&dual_dir, &input_path](urban::Brick const& brick)
+            {
+                urban::io::Adjacency_stream as(std::fstream(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out));
+                as << brick;
+            }
+        );
+        std::cout << " Done" << std::flush << std::endl;
 
 
         std::cout << "Projecting on XY... " << std::flush;
@@ -160,18 +139,6 @@ int main(int argc, const char** argv)
         {
             scene_projection += projection;
         }
-        // urban::projection::BrickPrint scene_projection = std::accumulate(
-        //     std::begin(projections_xy),
-        //     std::end(projections_xy),
-        //     urban::projection::BrickPrint(pivot),
-        //     [](urban::projection::BrickPrint & rhs, urban::projection::BrickPrint const& lhs)
-        //     {
-        //         std::cout << lhs.get_name() << std::endl;
-        //         urban::projection::BrickPrint buffer = rhs + lhs;
-        //         std::cout << sizeof(projections_xy) << std::endl;
-        //         return buffer;
-        //     }
-        // );
         std::cout << "Done" << std::flush << std::endl;
         
         std::cout << "Saving vector projections... " << std::flush;

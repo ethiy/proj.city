@@ -2,6 +2,11 @@
 
 #include <ostream>
 
+#include <vector>
+#include <iterator>
+
+#include <stdexcept>
+
 namespace urban
 {
     namespace io
@@ -53,9 +58,23 @@ namespace urban
             * @return reference to the Adjacency_stream
             */
             template<typename T>
-            Adjacency_stream & operator<<(const T & value)
+            Adjacency_stream & operator<<(T const& value)
             {
                 ios << value; 
+                return *this;
+            }
+
+            /**
+            * Defines operator<< for a matrix.
+            * @param matrix matrix to output
+            * @return reference to the Adjacency_stream
+            */
+            Adjacency_stream & operator<<(std::vector<bool> const& matrix)
+            {
+                if(std::sqrt(matrix.size()) * std::sqrt(matrix.size()) != matrix.size())
+                    throw std::logic_error("The adjacency matrix must be square!");
+
+                std::copy(std::begin(matrix), std::end(matrix), std::ostream_iterator<bool>(ios, " "));
                 return *this;
             }
 
