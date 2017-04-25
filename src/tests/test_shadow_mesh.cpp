@@ -96,7 +96,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::ostringstream auxilary, _auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
-                std::free(_mesh);
+                lib3ds_mesh_free(_mesh);
                 auxilary << _u_mesh;
                 _auxilary << "Name: " << std::endl
                           << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
@@ -110,7 +110,7 @@ SCENARIO("shadow::Mesh manipulation:")
             }
         }
 
-        std::free(test_mesh);
+        lib3ds_mesh_free(test_mesh);
     }
 
     GIVEN("Two stitchable shadow meshes:")
