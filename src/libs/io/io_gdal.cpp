@@ -160,7 +160,7 @@ namespace urban
                             throw std::runtime_error("GDAL could not retrieve any registered Geometric Transform");
                         
                         GDALRasterBand* raster_band = file->GetRasterBand(1);
-                        raster_projection = projection::RasterPrint(filepath.stem().string(), geographic_transform, epsg_buffer, static_cast<size_t>(file->GetRasterYSize()), static_cast<size_t>(file->GetRasterXSize()), raster_band);
+                        raster_projection = projection::RasterPrint(filepath.stem().string(), geographic_transform, epsg_buffer, static_cast<std::size_t>(file->GetRasterYSize()), static_cast<std::size_t>(file->GetRasterXSize()), raster_band);
                         GDALClose(dynamic_cast<GDALDatasetH>(file));
                     }
                     else
@@ -203,7 +203,7 @@ namespace urban
                         throw std::runtime_error(error_message.str());
                     }
 
-                    size_t height(raster_image.get_height()),
+                    std::size_t height(raster_image.get_height()),
                            width(raster_image.get_width());
                     double adfGeoTransform[6];
 

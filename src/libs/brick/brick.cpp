@@ -78,12 +78,12 @@ namespace urban
         return reference_point;
     }
 
-    size_t Brick::vertices_size(void) const
+    std::size_t Brick::vertices_size(void) const
     {
         return surface.size_of_vertices();
     }
 
-    size_t Brick::facets_size(void) const
+    std::size_t Brick::facets_size(void) const
     {
         return surface.size_of_facets();
     }
@@ -300,10 +300,10 @@ namespace urban
 
     io::Adjacency_stream & operator<<(io::Adjacency_stream & as, const Brick & brick)
     {
-        std::map<size_t, Brick::Facet_const_handle> facets;
-        std::map<size_t, std::vector<size_t> > adjacences;
+        std::map<std::size_t, Brick::Facet_const_handle> facets;
+        std::map<std::size_t, std::vector<std::size_t> > adjacences;
 
-        size_t index(0);
+        std::size_t index(0);
         std::for_each(
             brick.facets_cbegin(),
             brick.facets_cend(),

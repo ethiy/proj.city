@@ -50,7 +50,7 @@ namespace urban
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(void);
@@ -61,7 +61,7 @@ namespace urban
              * @see Mesh(Mesh && other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(Mesh const& other);
@@ -73,7 +73,7 @@ namespace urban
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(Mesh && other);
@@ -84,7 +84,7 @@ namespace urban
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(Lib3dsMesh* lib3ds_mesh);
@@ -94,7 +94,7 @@ namespace urban
              * @see Mesh(void);
              * @see Mesh(Mesh && other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(Polyhedron const& polyhedron);
@@ -108,10 +108,10 @@ namespace urban
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
-            Mesh(std::string _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const& _faces);
+            Mesh(std::string _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces);
             /** 
              * Destructor.
              * @see Mesh(void);
@@ -119,7 +119,7 @@ namespace urban
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const & _faces);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             ~Mesh(void);
@@ -145,13 +145,13 @@ namespace urban
 
 
             /** Points iterator */
-            typedef std::map<size_t, Point>::iterator points_iterator;
+            typedef std::map<std::size_t, Point>::iterator points_iterator;
             /** Points constant iterator */
-            typedef std::map<size_t, Point>::const_iterator points_const_iterator;
+            typedef std::map<std::size_t, Point>::const_iterator points_const_iterator;
             /** Faces iterator */
-            typedef std::map<size_t, Face>::iterator faces_iterator;
+            typedef std::map<std::size_t, Face>::iterator faces_iterator;
             /** Faces constant iterator */
-            typedef std::map<size_t, Face>::const_iterator faces_const_iterator;
+            typedef std::map<std::size_t, Face>::const_iterator faces_const_iterator;
 
             /**
              * Access begin points iterator
@@ -204,22 +204,22 @@ namespace urban
              * Access number of points.
              * @return number of points defining the mesh
              */
-            size_t points_size(void) const noexcept;
+            std::size_t points_size(void) const noexcept;
             /**
              * Access Mesh coordinates.
              * @return Mesh coordinates map
              */
-            std::map<size_t, Point> get_points(void) const noexcept;
+            std::map<std::size_t, Point> get_points(void) const noexcept;
             /**
              * Access number of facets.
              * @return number of facets defining the mesh
              */
-            size_t faces_size(void) const noexcept;
+            std::size_t faces_size(void) const noexcept;
             /**
              * Access Mesh facets.
              * @return facets defining the mesh
              */
-            std::map<size_t, Face> get_faces(void) const noexcept;
+            std::map<std::size_t, Face> get_faces(void) const noexcept;
             /**
              * Access The bounding box.
              * @return the bounding box of the mesh
@@ -235,9 +235,9 @@ namespace urban
             /** Mesh name*/
             std::string name;
             /** Coordinates*/
-            std::map<size_t, Point> points;
+            std::map<std::size_t, Point> points;
             /** Faces*/
-            std::map<size_t, Face> faces;
+            std::map<std::size_t, Face> faces;
             /** Bounding box*/
             Bbox bounding_box;
 
@@ -249,7 +249,7 @@ namespace urban
              * @param h halfedge to lookup
              * @return index of the halfedge
              */
-            size_t get_index(Polyhedron::Halfedge const& h);
+            std::size_t get_index(Polyhedron::Halfedge const& h);
 
             /** 
              * Writes Mesh to output stream.

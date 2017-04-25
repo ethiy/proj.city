@@ -22,7 +22,7 @@ namespace urban
         Mesh::Mesh(Lib3dsMesh* lib3ds_mesh)
             : name(lib3ds_mesh->name)
         {
-            size_t it(0);
+            std::size_t it(0);
             std::for_each(
                 lib3ds_mesh->pointL,
                 lib3ds_mesh->pointL + lib3ds_mesh->points,
@@ -65,7 +65,7 @@ namespace urban
 
         Mesh::Mesh(Polyhedron const& polyhedron)
         {
-            size_t it(0);
+            std::size_t it(0);
             std::for_each(
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
@@ -81,8 +81,8 @@ namespace urban
                 polyhedron.facets_end(),
                 [&it, this](Polyhedron::Facet const& facet)
                 {
-                    size_t face_degree(facet.facet_degree());
-                    std::vector<size_t> face_points(face_degree);
+                    std::size_t face_degree(facet.facet_degree());
+                    std::vector<std::size_t> face_points(face_degree);
                     face_points[0] = get_index(*(facet.facet_begin()));
                     std::transform(
                         std::next(facet.facet_begin(), 1),
@@ -99,7 +99,7 @@ namespace urban
             compute_bbox();
         }
 
-        Mesh::Mesh(std::string _name, std::map<size_t, Point> const& _points, std::map<size_t, Face> const& _faces)
+        Mesh::Mesh(std::string _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces)
             : name(_name), points(_points), faces(_faces)
         {
             compute_bbox();
@@ -172,19 +172,19 @@ namespace urban
         {
             return name;
         }
-        size_t Mesh::points_size(void) const noexcept
+        std::size_t Mesh::points_size(void) const noexcept
         {
             return points.size();
         }
-        std::map<size_t, Point> Mesh::get_points(void) const noexcept
+        std::map<std::size_t, Point> Mesh::get_points(void) const noexcept
         {
             return points;
         }
-        size_t Mesh::faces_size(void) const noexcept
+        std::size_t Mesh::faces_size(void) const noexcept
         {
             return faces.size();
         }
-        std::map<size_t, Face> Mesh::get_faces(void) const noexcept
+        std::map<std::size_t, Face> Mesh::get_faces(void) const noexcept
         {
             return faces;
         }
@@ -204,7 +204,7 @@ namespace urban
                 std::begin(points),
                 std::end(points),
                 mesh->pointL,
-                [](std::pair<size_t, Point> p)
+                [](std::pair<std::size_t, Point> p)
                 {
                     Lib3dsPoint point;
                     auto init = std::initializer_list<double>({p.second.x(), p.second.y(), p.second.z()});
@@ -218,7 +218,7 @@ namespace urban
                     std::begin(faces), 
                     std::end(faces),
                     0,
-                    [](int & size, std::pair<size_t, Face> const& f)
+                    [](int & size, std::pair<std::size_t, Face> const& f)
                         {
                             return size + static_cast<int>(f.second.get_degree()) - 2;
                         }
@@ -231,7 +231,7 @@ namespace urban
                 std::begin(faces),
                 std::end(faces),
                 mesh->faceL,
-                [this](std::pair<size_t, Face> const& t)
+                [this](std::pair<std::size_t, Face> const& t)
                 {
                     return *t.second.to_3ds(points);
                 }
@@ -251,7 +251,7 @@ namespace urban
             std::for_each(
                 std::begin(mesh.points),
                 std::end(mesh.points),
-                [&os](std::pair<size_t, Point> const& p)
+                [&os](std::pair<std::size_t, Point> const& p)
                 {
                     os << "Point " << p.first << " : " << p.second << std::endl;
                 }
@@ -262,7 +262,7 @@ namespace urban
             std::for_each(
                 std::begin(mesh.faces),
                 std::end(mesh.faces),
-                [&os](std::pair<size_t, Face> const& t)
+                [&os](std::pair<std::size_t, Face> const& t)
                 {
                     os << "Face " << t.first << " : " << t.second << std::endl;
                 }
@@ -277,20 +277,20 @@ namespace urban
                 std::begin(points),
                 std::end(points),
                 Bbox(),
-                [](Bbox & box, std::pair<size_t, Point> const& point)
+                [](Bbox & box, std::pair<std::size_t, Point> const& point)
                 {
                     return box + point.second.bbox();
                 }
             );
         }
 
-        size_t Mesh::get_index(Polyhedron::Halfedge const& halfedge)
+        std::size_t Mesh::get_index(Polyhedron::Halfedge const& halfedge)
         {
-            size_t index(0);
+            std::size_t index(0);
             auto point_handle = std::find_if(
                 std::begin(points),
                 std::end(points),
-                [&halfedge](std::pair<size_t, Point> const& p)
+                [&halfedge](std::pair<std::size_t, Point> const& p)
                 {
                     return p.second == Point(halfedge.vertex()->point());
                 }
@@ -313,7 +313,7 @@ namespace urban
                     rhs.points_cbegin(),
                     true,
                     std::logical_and<bool>(),
-                    [](std::pair<size_t, Point> const& l_point_pair, std::pair<size_t, Point> const& r_point_pair)
+                    [](std::pair<std::size_t, Point> const& l_point_pair, std::pair<std::size_t, Point> const& r_point_pair)
                     {
                         return l_point_pair.second == r_point_pair.second;
                     }
@@ -326,7 +326,7 @@ namespace urban
                         rhs.faces_cbegin(),
                         true,
                         std::logical_and<bool>(),
-                        [](std::pair<size_t, Face> const& l_face_pair, std::pair<size_t, Face> const& r_face_pair)
+                        [](std::pair<std::size_t, Face> const& l_face_pair, std::pair<std::size_t, Face> const& r_face_pair)
                         {
                             return l_face_pair.second == r_face_pair.second;
                         }

@@ -36,7 +36,7 @@ namespace urban
 
             Bbox_2 bbox(void) const noexcept;
             std::string get_name(void) const noexcept;
-            size_t size(void) const noexcept;
+            std::size_t size(void) const noexcept;
 
             typedef std::list<FacePrint>::iterator iterator;
             typedef std::list<FacePrint>::const_iterator const_iterator;

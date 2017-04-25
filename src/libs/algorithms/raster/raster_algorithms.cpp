@@ -9,8 +9,8 @@ namespace urban
 {
     projection::RasterPrint rasterize(projection::BrickPrint const& brick_projection, double const& pixel_size, shadow::Point const& pivot, unsigned short const& epsg_code)
     {
-        size_t h = static_cast<size_t>(std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size));
-        size_t w = static_cast<size_t>(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size));
+        std::size_t h = static_cast<std::size_t>(std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size));
+        std::size_t w = static_cast<std::size_t>(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size));
         return std::accumulate(
             brick_projection.cbegin(),
             brick_projection.cend(),

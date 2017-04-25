@@ -11,7 +11,7 @@ namespace urban
     namespace projection
     {
         RasterPrint::RasterPrint(void) {}
-        RasterPrint::RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, size_t const& _height, size_t const& _width, double const& _pixel_size)
+        RasterPrint::RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, std::size_t const& _height, std::size_t const& _width, double const& _pixel_size)
             : name(_name),
               reference_point(_reference_point),
               epsg_index(_epsg_index),
@@ -21,7 +21,7 @@ namespace urban
               image_matrix(_height * _width, 0.),
               pixel_access(_height * _width, 0)
         {}
-        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], int const& _epsg_index, size_t const& _height, size_t const& _width, GDALRasterBand* raster_band)
+        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
             : name(_name),
               reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)),
               height(_height),
@@ -73,17 +73,17 @@ namespace urban
             return name;
         }
 
-        size_t const& RasterPrint::get_height(void) const noexcept
+        std::size_t const& RasterPrint::get_height(void) const noexcept
         {
             return height;
         }
 
-        size_t const& RasterPrint::get_width(void) const noexcept
+        std::size_t const& RasterPrint::get_width(void) const noexcept
         {
             return width;
         }
 
-        size_t RasterPrint::get_index(size_t const& i, size_t const& j) const noexcept
+        std::size_t RasterPrint::get_index(std::size_t const& i, std::size_t const& j) const noexcept
         {
             return i * width + j;
         }
@@ -129,25 +129,25 @@ namespace urban
             swap(pixel_access, other.pixel_access);
         }
 
-        double & RasterPrint::at(size_t const& i, size_t const& j)
+        double & RasterPrint::at(std::size_t const& i, std::size_t const& j)
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
             return image_matrix.at(i * width + j);
         }
-        double const& RasterPrint::at(size_t const& i, size_t const& j) const
+        double const& RasterPrint::at(std::size_t const& i, std::size_t const& j) const
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
             return image_matrix.at(i * width + j);
         }
-        short & RasterPrint::hit(size_t const& i, size_t const& j)
+        short & RasterPrint::hit(std::size_t const& i, std::size_t const& j)
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
             return pixel_access.at(i * width + j);
         }
-        const short & RasterPrint::hit(size_t const& i, size_t const& j) const
+        const short & RasterPrint::hit(std::size_t const& i, std::size_t const& j) const
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
@@ -260,7 +260,7 @@ namespace urban
             
             os << std::setprecision(6) << std::fixed;
 
-            for(size_t it(0); it < raster_projection.height * raster_projection.width; ++it)
+            for(std::size_t it(0); it < raster_projection.height * raster_projection.width; ++it)
             {
                 os << raster_projection.image_matrix.at(it); 
                 if((it + 1) % raster_projection.width)

@@ -19,16 +19,16 @@ namespace urban
         {
         public:
             RasterPrint(void);
-            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, size_t const& _height, size_t const& _width, double const& _pixel_size);
-            RasterPrint(std::string const& _name, double const geographic_transform[6], int const& _epsg_index, size_t const& _height, size_t const& _width, GDALRasterBand* raster_band);
+            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, std::size_t const& _height, std::size_t const& _width, double const& _pixel_size);
+            RasterPrint(std::string const& _name, double const geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band);
             RasterPrint(RasterPrint const& other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
 
             std::string const& get_name(void) const noexcept;
-            size_t const& get_height(void) const noexcept;
-            size_t const& get_width(void) const noexcept;
-            size_t get_index(size_t const& i, size_t const& j) const noexcept;
+            std::size_t const& get_height(void) const noexcept;
+            std::size_t const& get_width(void) const noexcept;
+            std::size_t get_index(std::size_t const& i, std::size_t const& j) const noexcept;
             shadow::Point const& get_reference_point() const noexcept;
             double const& get_pixel_size() const noexcept;
             std::array<double, 6> get_geographic_transform(void) const;
@@ -38,10 +38,10 @@ namespace urban
 
             void swap(RasterPrint & other);
 
-            double & at(size_t const& i, size_t const& j);
-            const double & at(size_t const& i, size_t const& j) const;
-            short & hit(size_t const& i, size_t const& j);
-            const short & hit(size_t const& i, size_t const& j) const;
+            double & at(std::size_t const& i, std::size_t const& j);
+            const double & at(std::size_t const& i, std::size_t const& j) const;
+            short & hit(std::size_t const& i, std::size_t const& j);
+            const short & hit(std::size_t const& i, std::size_t const& j) const;
 
             typedef std::vector<double>::iterator iterator;
             typedef std::vector<double>::const_iterator const_iterator;
@@ -62,8 +62,8 @@ namespace urban
             std::string name;
             shadow::Point reference_point;
             unsigned short epsg_index = 2154;
-            size_t height = 0;
-            size_t width = 0;
+            std::size_t height = 0;
+            std::size_t width = 0;
             double pixel_size = 0.6;
             std::vector<double> image_matrix;
             std::vector<short> pixel_access;

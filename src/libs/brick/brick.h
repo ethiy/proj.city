@@ -134,12 +134,12 @@ namespace urban
          * Get the number of vertices
          * @return number of vertices
          */
-        size_t vertices_size(void) const;
+        std::size_t vertices_size(void) const;
         /**
          * Get the number of facets
          * @return number of facets
          */
-        size_t facets_size(void) const;
+        std::size_t facets_size(void) const;
 
         /** Halfedge handle */
         typedef Polyhedron::Halfedge_handle Halfedge_handle;

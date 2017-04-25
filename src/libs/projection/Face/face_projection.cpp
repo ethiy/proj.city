@@ -183,22 +183,22 @@ namespace urban
                  */
                 Bbox_2 bae = border.bbox();
                 double pixel_size = raster_projection.get_pixel_size();
-                size_t  i_min = static_cast<size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
-                        j_min = static_cast<size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
-                size_t  w = static_cast<size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
-                        h = static_cast<size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
+                std::size_t  i_min = static_cast<std::size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
+                        j_min = static_cast<std::size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
+                std::size_t  w = static_cast<std::size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
+                        h = static_cast<std::size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
                 if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
                 {
                     std::stringstream error_message("Oh noooz!! I iz outsidez ze box");
                     error_message << i_min + h << " > " << raster_projection.get_height() << " or " << j_min + w << " > " << raster_projection.get_width();
                     throw std::runtime_error(error_message.str());
                 }
-                std::vector<size_t> indexes(w * h);
+                std::vector<std::size_t> indexes(w * h);
                 std::iota(std::begin(indexes), std::end(indexes), 0);
                 std::for_each(
                     std::begin(indexes),
                     std::end(indexes),
-                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](size_t const& index)
+                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](std::size_t const& index)
                     {
                         bool hit(false);
                         double height = get_height(
@@ -222,7 +222,7 @@ namespace urban
             bool result = std::distance(border.holes_begin(), border.holes_end()) == std::distance(other.border.holes_begin(), other.border.holes_end());
             if(result)
             {
-                std::vector<bool> results(static_cast<size_t>(std::distance(border.holes_begin(), border.holes_end())));
+                std::vector<bool> results(static_cast<std::size_t>(std::distance(border.holes_begin(), border.holes_end())));
                 std::transform(
                     border.holes_begin(),
                     border.holes_end(),

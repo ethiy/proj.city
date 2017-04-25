@@ -19,7 +19,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
     {
         urban::shadow::Mesh test_mesh(
             "test_mesh",
-            std::map<size_t, urban::shadow::Point>
+            std::map<std::size_t, urban::shadow::Point>
             {
                 {0, urban::shadow::Point(-10, 6, 8)},
                 {1, urban::shadow::Point(-18, -14, 5)},
@@ -28,7 +28,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 {4, urban::shadow::Point(-2, 10, 0)},
                 {5, urban::shadow::Point(-18, 9, 1)}
             },
-            std::map<size_t, urban::shadow::Face>
+            std::map<std::size_t, urban::shadow::Face>
             {
                 {0, urban::shadow::Face{{0, 1, 2}}},
                 {1, urban::shadow::Face{{4, 3, 5}}},

@@ -38,8 +38,8 @@ int main(int, char **)
         #ifdef CGAL_USE_GEOMVIEW
         CGAL::Geomview_stream geomview_stream;
         geomview_stream.set_bg_color(CGAL::Color(0, 127, 200));
-        size_t pigment(1);
-        size_t all(meshes.size());
+        std::size_t pigment(1);
+        std::size_t all(meshes.size());
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
