@@ -195,16 +195,18 @@ namespace urban
 
         Lib3dsMesh* Mesh::to_3ds(void) const
         {
-            Lib3dsMesh* mesh = reinterpret_cast<Lib3dsMesh*>(calloc(sizeof(Lib3dsMesh), 1));
-            strncpy(mesh->name, name.c_str(), 63);
+            char name_buffer[64];
+            strncpy(name_buffer, name.c_str(), 63);
+
+            Lib3dsMesh* mesh = lib3ds_mesh_new(name_buffer);
             mesh->points = static_cast<Lib3dsWord>(points.size());
-            mesh->pointL = reinterpret_cast<Lib3dsPoint*>(calloc(sizeof(Lib3dsPoint), mesh->points));
+            lib3ds_mesh_new_point_list(mesh, mesh->points);
 
             std::transform(
                 std::begin(points),
                 std::end(points),
                 mesh->pointL,
-                [](std::pair<std::size_t, Point> p)
+                [](std::pair<std::size_t, Point> const& p)
                 {
                     Lib3dsPoint point;
                     auto init = std::initializer_list<double>({p.second.x(), p.second.y(), p.second.z()});
