@@ -179,7 +179,7 @@ namespace urban
             if(!is_degenerate())
             {
                 /**
-                 * 'bb(ox)' pronounced in french could mean babe alias bae
+                 * 'bb(ox)' pronounced in french could mean babe alias bae.
                  */
                 Bbox_2 bae = border.bbox();
                 double pixel_size = raster_projection.get_pixel_size();
@@ -211,7 +211,14 @@ namespace urban
                             raster_projection.at(i_min + index/w, j_min + index%w) = (raster_projection.at(i_min + index/w, j_min + index%w) * raster_projection.hit(i_min + index/w, j_min + index%w) + height) / (++raster_projection.hit(i_min + index/w, j_min + index%w));
                     }
                 );
-
+                std::for_each(
+                    std::begin(indexes),
+                    std::end(indexes),
+                    [&raster_projection, i_min, j_min, w, &pivot](std::size_t const& index)
+                    {
+                        raster_projection.at(i_min + index/w, j_min + index%w) += (raster_projection.hit(i_min + index/w, j_min + index%w) != 0) * pivot.z();
+                    }
+                );
             }
             
             return raster_projection;
