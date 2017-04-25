@@ -19,10 +19,9 @@ namespace urban
         class FileHandler<std::fstream>
         {
         public:
-            FileHandler(void);
-            FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
+            FileHandler(boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes);
             ~FileHandler(void);
-
+            
             shadow::Mesh read(void);
             void write(shadow::Mesh const& mesh);
 

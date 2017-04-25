@@ -17,9 +17,7 @@ namespace urban
 {
     namespace io
     {
-        FileHandler<std::fstream>::FileHandler(void) {}
-
-        FileHandler<std::fstream>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes)
+        FileHandler<std::fstream>::FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
             : filepath(_filepath), modes(_modes) {}
 
         FileHandler<std::fstream>::~FileHandler(void) {}

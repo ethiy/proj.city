@@ -21,7 +21,7 @@ namespace urban
               image_matrix(_height * _width, 0.),
               pixel_access(_height * _width, 0)
         {}
-        RasterPrint::RasterPrint(const std::string & _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
+        RasterPrint::RasterPrint(std::string const& _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
             : name(_name),
               reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)),
               height(_height),

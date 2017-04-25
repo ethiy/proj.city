@@ -14,7 +14,7 @@ namespace urban
         const std::list<std::string> tested_raster_formats{{"GTiff"}};
 
         FileHandler<GDALDriver>::FileHandler(void) {}
-        FileHandler<GDALDriver>::FileHandler(const std::string & _driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes)
+        FileHandler<GDALDriver>::FileHandler(std::string const& _driver_name, boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes)
         {
             if(driver_name == "ESRI Shapefile")
                 std::cout << "You may face a problem with polygon orientations while reading." << std::endl;
