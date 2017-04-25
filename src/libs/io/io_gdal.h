@@ -26,18 +26,24 @@ namespace urban
         {
         public:
             FileHandler(void);
-            FileHandler(const std::string & driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
+            FileHandler(std::string const& driver_name, boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~FileHandler(void);
 
-            template<class return_class> return_class read(void) const;
+            template<class P>
+            P read(void) const;
 
-            void write(const projection::BrickPrint & brick_projection) const;
-            void write(const projection::RasterPrint & raster_image) const;
+            void write(projection::BrickPrint const& brick_projection) const;
+            void write(projection::RasterPrint const& raster_image) const;
         private:
             std::string driver_name;
             bool raster = false;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
         };
+        
+        template<>
+        projection::BrickPrint FileHandler<GDALDriver>::read(void) const;
+        template<>
+        projection::RasterPrint FileHandler<GDALDriver>::read(void) const;
     }
 }
