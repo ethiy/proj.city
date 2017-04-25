@@ -20,8 +20,7 @@ namespace urban
         class FileHandler<Lib3dsFile>
         {
         public:
-            FileHandler(void);
-            FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes);
+            FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~FileHandler(void);
 
             std::vector<shadow::Mesh> read(void);
