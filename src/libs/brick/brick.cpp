@@ -13,17 +13,17 @@ namespace urban
 {
     Brick::Brick(void): name("no name"){}
     Brick::Brick(const Brick & other)
-        :name(other.name), reference_point(other.reference_point), espg_index(other.espg_index), surface(other.surface), bounding_box(other.bounding_box){}
+        :name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), surface(other.surface), bounding_box(other.bounding_box){}
     Brick::Brick(Brick && other)
-        : name(std::move(other.name)), reference_point(std::move(other.reference_point)), espg_index(std::move(other.espg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
+        : name(std::move(other.name)), reference_point(std::move(other.reference_point)), epsg_index(std::move(other.epsg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
     Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point)
         : name(mesh.get_name()), reference_point(_reference_point), bounding_box(mesh.bbox().to_cgal())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);
     }
-    Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _espg_index)
-        : name(mesh.get_name()), reference_point(_reference_point), espg_index(_espg_index), bounding_box(mesh.bbox().to_cgal())
+    Brick::Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _epsg_index)
+        : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index), bounding_box(mesh.bbox().to_cgal())
     {
         SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
         surface.delegate(builder);
@@ -42,7 +42,7 @@ namespace urban
     {
         name = other.name;
         reference_point = other.reference_point;
-        espg_index = other.espg_index;
+        epsg_index = other.epsg_index;
         surface = other.surface;
         bounding_box = other.bounding_box;
         return *this;
@@ -52,7 +52,7 @@ namespace urban
     {
         name = std::move(other.name);
         reference_point = std::move(other.reference_point);
-        espg_index = std::move(other.espg_index);
+        epsg_index = std::move(other.epsg_index);
         surface = std::move(other.surface);
         bounding_box = std::move(other.bounding_box);
         return *this;
@@ -68,9 +68,9 @@ namespace urban
         return bounding_box;
     }
 
-    unsigned short Brick::get_espg(void) const noexcept
+    unsigned short Brick::get_epsg(void) const noexcept
     {
-        return espg_index;
+        return epsg_index;
     }
 
     shadow::Point Brick::get_reference_point(void) const noexcept

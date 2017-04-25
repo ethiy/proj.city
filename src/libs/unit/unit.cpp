@@ -6,9 +6,9 @@
 namespace urban
 {
     Unit::Unit(void) {}
-    Unit::Unit(const shadow::Point & _reference_point, unsigned char _espg_index, const std::vector<Brick> & _bricks): reference_point(_reference_point), espg_index(_espg_index), bricks(_bricks) {}
-    Unit::Unit(const Unit & other): name(other.name), reference_point(other.reference_point), espg_index(other.espg_index), bricks(other.bricks) {}
-    Unit::Unit(const Unit & other): name(std::move(other.name)), reference_point(std::move(other.reference_point)), espg_index(std::move(other.espg_index)), bricks(std::move(other.bricks)) {}
+    Unit::Unit(const shadow::Point & _reference_point, unsigned char _epsg_index, const std::vector<Brick> & _bricks): reference_point(_reference_point), epsg_index(_epsg_index), bricks(_bricks) {}
+    Unit::Unit(const Unit & other): name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), bricks(other.bricks) {}
+    Unit::Unit(const Unit & other): name(std::move(other.name)), reference_point(std::move(other.reference_point)), epsg_index(std::move(other.epsg_index)), bricks(std::move(other.bricks)) {}
     Unit::~Unit(void) {}
 
     void Unit::swap(Unit & other)
@@ -16,7 +16,7 @@ namespace urban
         using std::swap;
         swap(name, other.name);
         swap(reference_point, other.reference_point);
-        swap(espg_index, other.espg_index);
+        swap(epsg_index, other.epsg_index);
         swap(bricks, other.bricks);
     }
 
@@ -24,7 +24,7 @@ namespace urban
     {
         name = other.name;
         reference_point = other.reference_point;
-        espg_index = other.espg_index;
+        epsg_index = other.epsg_index;
         bricks = other.bricks;
         return *this;
     }
@@ -33,7 +33,7 @@ namespace urban
     {
         name = std::move(other.name);
         reference_point = std::move(other.reference_point);
-        espg_index = std::move(other.espg_index);
+        epsg_index = std::move(other.epsg_index);
         bricks = std::move(other.bricks);
         return *this;
     }

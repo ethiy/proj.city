@@ -19,19 +19,18 @@ namespace urban
         {
         public:
             RasterPrint(void);
-            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, size_t const& _height, size_t const& _width, double _pixel_size, std::vector<double> const& image_array);
-            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, size_t const& _height, size_t const& _width, double _pixel_size);
-            RasterPrint(std::string const& _name, double const geographic_transform[6], size_t const& _height, size_t const& _width, GDALRasterBand* raster_band);
+            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, size_t const& _height, size_t const& _width, double const& _pixel_size);
+            RasterPrint(std::string const& _name, double const geographic_transform[6], int const& _epsg_index, size_t const& _height, size_t const& _width, GDALRasterBand* raster_band);
             RasterPrint(RasterPrint const& other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
 
-            std::string get_name(void) const noexcept;
-            size_t get_height(void) const noexcept;
-            size_t get_width(void) const noexcept;
+            std::string const& get_name(void) const noexcept;
+            size_t const& get_height(void) const noexcept;
+            size_t const& get_width(void) const noexcept;
             size_t get_index(size_t const& i, size_t const& j) const noexcept;
-            shadow::Point get_reference_point() const noexcept;
-            double get_pixel_size() const noexcept;
+            shadow::Point const& get_reference_point() const noexcept;
+            double const& get_pixel_size() const noexcept;
             std::array<double, 6> get_geographic_transform(void) const;
             std::vector<short> const& pixel_hits(void) const noexcept;
             double* data(void) noexcept;
@@ -48,8 +47,10 @@ namespace urban
             typedef std::vector<double>::const_iterator const_iterator;
 
             iterator begin(void) noexcept;
+            const_iterator begin(void) const noexcept;
             const_iterator cbegin(void) const noexcept;
             iterator end(void) noexcept;
+            const_iterator end(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
             RasterPrint & operator=(RasterPrint const& other) noexcept;
@@ -60,6 +61,7 @@ namespace urban
         private:
             std::string name;
             shadow::Point reference_point;
+            unsigned short epsg_index = 2154;
             size_t height = 0;
             size_t width = 0;
             double pixel_size = 0.6;

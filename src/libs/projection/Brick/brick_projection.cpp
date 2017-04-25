@@ -19,11 +19,11 @@ namespace urban
             : name("no_name") {}
         BrickPrint::BrickPrint(shadow::Point const& _reference_point)
             : name("no_name"), reference_point(_reference_point) {}
-        BrickPrint::BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short _espg_index)
+        BrickPrint::BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short _epsg_index)
             : name(_name + "_xy"),
               bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())),
               reference_point(_reference_point),
-              espg_index(_espg_index)
+              epsg_index(_epsg_index)
               {}
         BrickPrint::BrickPrint(FacePrint const& face_projection)
             : name("contains_only_one_facet"),
@@ -49,7 +49,7 @@ namespace urban
             : name(other.name),
               bounding_box(other.bounding_box),
               reference_point(other.reference_point),
-              espg_index(other.espg_index),
+              epsg_index(other.epsg_index),
               projected_facets(other.projected_facets),
               projected_surface(other.projected_surface)
               {}
@@ -57,7 +57,7 @@ namespace urban
             : name(std::move(other.name)),
               bounding_box(std::move(other.bounding_box)),
               reference_point(std::move(other.reference_point)),
-              espg_index(std::move(other.espg_index)),
+              epsg_index(std::move(other.epsg_index)),
               projected_facets(std::move(other.projected_facets)),
               projected_surface(std::move(other.projected_surface))
               {}
@@ -69,7 +69,7 @@ namespace urban
             swap(name, other.name);
             swap(bounding_box, other.bounding_box);
             swap(reference_point, other.reference_point);
-            swap(espg_index, other.espg_index);
+            swap(epsg_index, other.epsg_index);
             swap(projected_facets, other.projected_facets);
             swap(projected_surface, other.projected_surface);
         }
@@ -79,7 +79,7 @@ namespace urban
             name = other.name;
             bounding_box = other.bounding_box;
             reference_point = other.reference_point;
-            espg_index = other.espg_index;
+            epsg_index = other.epsg_index;
             std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::back_inserter(projected_facets));
             projected_surface = other.projected_surface;
             return *this;
@@ -90,7 +90,7 @@ namespace urban
             name = std::move(other.name);
             bounding_box = std::move(other.bounding_box);
             reference_point = std::move(other.reference_point);
-            espg_index = std::move(other.espg_index);
+            epsg_index = std::move(other.epsg_index);
             std::move(std::begin(other.projected_facets), std::end(other.projected_facets), std::back_inserter(projected_facets));
             projected_surface = std::move(other.projected_surface);
             return *this;
@@ -98,7 +98,7 @@ namespace urban
 
         BrickPrint & BrickPrint::operator+=(BrickPrint const& other)
         {
-            if(espg_index != other.espg_index || reference_point != other.reference_point)
+            if(epsg_index != other.epsg_index || reference_point != other.reference_point)
                 throw std::logic_error("Cannot sum two brick projections with a different projection system nor a different reference point");
             name += "_" + other.name;
             if(projected_surface.do_intersect(other.projected_surface))
@@ -369,7 +369,7 @@ namespace urban
             os << "Name: " << brick_projection.name << std::endl
                << "Bounding box: " << brick_projection.bounding_box << std::endl
                << "Reference Point: " << brick_projection.reference_point << std::endl
-               << "ESPG index: " << brick_projection.espg_index << std::endl
+               << "EPSG index: " << brick_projection.epsg_index << std::endl
                << "Face Projections: " << brick_projection.projected_facets.size() << std::endl;
             std::copy(std::begin(brick_projection.projected_facets), std::end(brick_projection.projected_facets), std::ostream_iterator<FacePrint>(os, "\n"));
             std::vector<Polygon_with_holes> copy;
@@ -386,7 +386,7 @@ namespace urban
 
         bool operator==(BrickPrint const& lhs, BrickPrint const& rhs)
         {
-            return  lhs.espg_index == rhs.espg_index
+            return  lhs.epsg_index == rhs.epsg_index
                     &&
                     lhs.reference_point == rhs.reference_point
                     &&

@@ -74,13 +74,13 @@ namespace urban
          * Constructor from Shadow Mesh.
          * @param mesh Shadow Mesh
          * @param _reference_point reference point
-         * @param _espg_index espg index
+         * @param _epsg_index epsg index
          * @see Brick(void)
          * @see Brick(const Brick & other)
          * @see Brick(Brick && other)
          * @see ~Brick(void)
          */
-        Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _espg_index);
+        Brick(const shadow::Mesh & mesh,const shadow::Point & _reference_point, unsigned short _epsg_index);
         /**
          * Default destructor.
          * @see Brick(void)
@@ -121,10 +121,10 @@ namespace urban
          */
         Bbox_3 bbox(void) const noexcept;
         /**
-         * Access brick espg.
-         * @return brick espg
+         * Access brick epsg.
+         * @return brick epsg
          */
-        unsigned short get_espg(void) const noexcept;
+        unsigned short get_epsg(void) const noexcept;
         /**
          * Access brick reference point.
          * @return brick reference point
@@ -315,8 +315,8 @@ namespace urban
         std::string name;
         /** Reference Point */
         shadow::Point reference_point;
-        /** Projection system ESPG code*/
-        unsigned short espg_index = 2154;
+        /** Projection system EPSG code*/
+        unsigned short epsg_index = 2154;
         /** The 3D surface*/
         Polyhedron surface;
         /** Bounding box*/

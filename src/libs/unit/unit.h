@@ -14,7 +14,7 @@ namespace urban
     public:
         /**
          * Void Constructor
-         * @see Unit(const shadow::Point & _reference_point, unsigned char _espg_index, const std::vector<Brick> & _bricks)
+         * @see Unit(const shadow::Point & _reference_point, unsigned char _epsg_index, const std::vector<Brick> & _bricks)
          * @see Unit(const Unit & other)
          * @see Unit(Unit && other)
          * @see ~Unit()
@@ -23,19 +23,19 @@ namespace urban
         /**
          * CLassic constructor
          * @param _reference_point reference point
-         * @param _espg_index espg index of the geodesic projection
+         * @param _epsg_index epsg index of the geodesic projection
          * @param _bricks bricks making a unit
          * @see Unit()
          * @see Unit(const Unit & other)
          * @see Unit(Unit && other)
          * @see ~Unit()
          **/
-        Unit(const shadow::Point & _reference_point, unsigned char _espg_index, const std::vector<Brick> & _bricks);
+        Unit(const shadow::Point & _reference_point, unsigned char _epsg_index, const std::vector<Brick> & _bricks);
         /**
          * Copy constructor
          * @param other other Unit
          * @see Unit()
-         * @see Unit(const shadow::Point & _reference_point, unsigned char _espg_index, const std::vector<Brick> & _bricks)
+         * @see Unit(const shadow::Point & _reference_point, unsigned char _epsg_index, const std::vector<Brick> & _bricks)
          * @see Unit(Unit && other)
          * @see ~Unit()
          **/
@@ -44,7 +44,7 @@ namespace urban
          * Move constructor
          * @param other other Unit rvalue
          * @see Unit()
-         * @see Unit(const shadow::Point & _reference_point, unsigned char _espg_index, const std::vector<Brick> & _bricks)
+         * @see Unit(const shadow::Point & _reference_point, unsigned char _epsg_index, const std::vector<Brick> & _bricks)
          * @see Unit(const Unit & other)
          * @see ~Unit()
          **/
@@ -52,7 +52,7 @@ namespace urban
         /**
          * Distructor
          * @see Unit()
-         * @see Unit(const shadow::Point & _reference_point, unsigned char _espg_index, const std::vector<Brick> & _bricks)
+         * @see Unit(const shadow::Point & _reference_point, unsigned char _epsg_index, const std::vector<Brick> & _bricks)
          * @see Unit(const Unit & other)
          * @see Unit(Unit && other)
          */
@@ -89,7 +89,7 @@ namespace urban
     private:
         std::string name;
         shadow::Point reference_point;
-        unsigned char espg_index = 2154;
+        unsigned char epsg_index = 2154;
         Polyhedron surface;
     };
 
