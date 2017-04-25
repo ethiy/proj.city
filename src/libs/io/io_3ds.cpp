@@ -36,13 +36,13 @@ namespace urban
             }
             if(modes["write"])
             {
-                file = reinterpret_cast<Lib3dsFile*>(calloc(sizeof(Lib3dsFile), 1));
+                file = lib3ds_file_new();
             }
         }
 
         FileHandler<Lib3dsFile>::~FileHandler(void)
         {
-            std::free(file);
+           lib3ds_file_free(file);
         }
 
 
