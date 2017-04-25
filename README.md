@@ -80,6 +80,9 @@ You can check the projects [docker file](https://github.com/Ethiy/3DSceneModel/b
     apt install lib3ds-dev
     ```
 
+### Darwin
+
+### MinGW w64
 
 ## License
 
