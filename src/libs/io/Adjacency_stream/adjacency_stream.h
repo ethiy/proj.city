@@ -27,14 +27,6 @@ namespace urban
             */
             Adjacency_stream(std::iostream & _ios): ios(_ios) {}
             /**
-            * rvalue constructor
-            * @param _ios rvalue reference to input/output stream
-            * @see Adjacency_stream(std::iostream & _ios)
-            * @see Adjacency_stream(Adjacency_stream & other)
-            * @see Adjacency_stream(Adjacency_stream && other)
-            */
-            Adjacency_stream(std::iostream && _ios): ios(_ios) {}
-            /**
             * Copy constructor
             * @param other reference to Adjacency stream
             * @see Adjacency_stream(std::iostream & _ios)
@@ -42,14 +34,6 @@ namespace urban
             * @see Adjacency_stream(Adjacency_stream && other)
             */
             Adjacency_stream(Adjacency_stream & other): ios(other.ios) {}
-            /**
-            * Move constructor
-            * @param other reference to Adjacency stream
-            * @see Adjacency_stream(std::iostream & _ios)
-            * @see Adjacency_stream(std::iostream && _ios)
-            * @see Adjacency_stream(Adjacency_stream & other)
-            */
-            Adjacency_stream(Adjacency_stream && other): ios(other.ios) {}
 
             /**
             * Defines operator<< for this stream.
@@ -71,10 +55,16 @@ namespace urban
             */
             Adjacency_stream & operator<<(std::vector<bool> const& matrix)
             {
-                if(std::sqrt(matrix.size()) * std::sqrt(matrix.size()) != matrix.size())
+                auto n = std::sqrt(matrix.size());
+                if(n * n != matrix.size())
                     throw std::logic_error("The adjacency matrix must be square!");
 
-                std::copy(std::begin(matrix), std::end(matrix), std::ostream_iterator<bool>(ios, " "));
+                for(std::size_t row(0); row != n; ++row)
+                {
+                    for(std::size_t col(0); col != n - 1; ++col)
+                        ios << matrix.at(row * n + col) << " ";
+                    ios << matrix.at(row * n + (n-1)) << std::endl;
+                }
                 return *this;
             }
 

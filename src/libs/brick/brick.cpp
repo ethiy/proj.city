@@ -321,6 +321,9 @@ namespace urban
         );
         std::vector<bool> adjacency(n * n);
 
+        for(std::size_t diag(0); diag != n; ++diag)
+            adjacency.at(diag * n + diag) = true;
+
         std::vector<Brick::Facet_const_handle> line_adjacents;
         for(std::size_t line(0); line != n; ++line)
         {
