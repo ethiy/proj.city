@@ -68,8 +68,7 @@ int main(int argc, const char** argv)
 
         std::cout << "The shadow point : " << pivot << std::flush << std::endl;
 
-        std::map<std::string,bool> modes{{"write", true}, {"read", true}};
-        urban::io::FileHandler<Lib3dsFile> handler(input_path, modes);
+        urban::io::FileHandler<Lib3dsFile> handler(input_path, std::map<std::string,bool>{{"read", true}});
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = handler.read();
         std::cout << meshes.size() << " Done" << std::flush << std::endl;
@@ -140,6 +139,8 @@ int main(int argc, const char** argv)
             scene_projection += projection;
         }
         std::cout << "Done" << std::flush << std::endl;
+
+        std::map<std::string,bool>&& modes{{"write", true}};
         
         std::cout << "Saving vector projections... " << std::flush;
         urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);

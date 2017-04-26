@@ -297,11 +297,11 @@ namespace urban
         adjacents.reserve(facet.facet_degree());
 
         auto circulator = facet.facet_begin();
-
         do
         {
-            if(!circulator->is_border())
-                adjacents.push_back(circulator->opposite()->facet());
+            auto buff = circulator->opposite()->facet();
+            if(!circulator->is_border() && buff != NULL)
+                adjacents.push_back(buff);
         }while(++circulator != facet.facet_begin());
         return adjacents;
     }
@@ -329,8 +329,11 @@ namespace urban
             for(auto adjacent : line_adjacents)
             {
                 auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
-                auto index = std::distance(std::begin(facets), placeholder);
-                adjacency.at( line * n + index) = true;
+                if(placeholder != std::end(facets))
+                {
+                    long index = std::distance(std::begin(facets), placeholder);
+                    adjacency.at(line * n + index) = true;
+                }
             }
 
             line_adjacents.clear();
