@@ -37,22 +37,22 @@ SCENARIO("shadow::Mesh manipulation:")
         init1 = std::initializer_list<float>({15.7204f, -13.188f, 61.1764f});
         std::copy(std::begin(init1), std::end(init1), (test_mesh->pointL + 2)->pos);
 
+        urban::shadow::Mesh _u_mesh(
+            "",
+            std::map<size_t, urban::shadow::Point>{
+                {0, urban::shadow::Point(15.5343, -13.4504, 60.8789)},
+                {1, urban::shadow::Point(15.7204, -13.188, 60.8789)},
+                {2, urban::shadow::Point(15.7204, -13.188, 61.1764)}
+            },
+            std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}}
+        );
+
         WHEN( "the mesh is created:")
         {
             urban::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
-                std::ostringstream auxilary, _auxilary;
-                auxilary << u_mesh;
-                _auxilary << "Name: " << std::endl
-                          << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
-                          << "Points: " << std::endl
-                          << "Point 0 : 15.5343 -13.4504 60.8789" << std::endl
-                          << "Point 1 : 15.7204 -13.188 60.8789" << std::endl
-                          << "Point 2 : 15.7204 -13.188 61.1764" << std::endl
-                          << "Faces: " << std::endl
-                          << "Face 0 : 3 0 2 1" << std::endl;
-                REQUIRE( auxilary.str() == _auxilary.str() );
+                REQUIRE( u_mesh == _u_mesh );
             }
         }
         WHEN( "mesh points and faces are accessed:")
@@ -70,7 +70,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(points),
                     std::end(points),
-                    [&_auxilary](std::pair<size_t, urban::shadow::Point> p)
+                    [&_auxilary](std::pair<size_t, urban::shadow::Point> const& p)
                     {
                         _auxilary << "Point " << p.first << " : " << p.second.x() << " " << p.second.y() << " " << p.second.z() << std::endl;
                     }
@@ -79,7 +79,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(faces),
                     std::end(faces),
-                    [&_auxilary](std::pair<size_t, urban::shadow::Face> t)
+                    [&_auxilary](std::pair<size_t, urban::shadow::Face> const& t)
                     {
                         _auxilary << "Face " << t.first << " : " << t.second << std::endl;
                     }
@@ -93,24 +93,15 @@ SCENARIO("shadow::Mesh manipulation:")
             urban::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
-                std::ostringstream auxilary, _auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
-                std::free(_mesh);
-                auxilary << _u_mesh;
-                _auxilary << "Name: " << std::endl
-                          << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
-                          << "Points: " << std::endl
-                          << "Point 0 : 15.5343 -13.4504 60.8789" << std::endl
-                          << "Point 1 : 15.7204 -13.188 60.8789" << std::endl
-                          << "Point 2 : 15.7204 -13.188 61.1764" << std::endl
-                          << "Faces: " << std::endl
-                          << "Face 0 : 3 0 2 1" << std::endl;
-                REQUIRE( auxilary.str() == _auxilary.str() );
+                if(_mesh)
+                    std::free(_mesh);
+                REQUIRE( u_mesh == _u_mesh );
             }
         }
-
-        std::free(test_mesh);
+        if(test_mesh)
+            std::free(test_mesh);
     }
 
     GIVEN("Two stitchable shadow meshes:")
