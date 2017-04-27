@@ -42,7 +42,7 @@ In order to build this project you need first to check for these dependencies:
 
 ### Ubuntu `v16.04`
 
-You can check the projects [docker file](https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an inspiration. We will use `aptitude` the available package manager for most dependencies:
+You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an inspiration. We will use `aptitude` the available package manager for most dependencies:
 
 * Boost:
     This project uses only  `filesystem` and `system` boost libraries. However, since CGAL uses other libraries it may be wise to get all of them:
@@ -81,6 +81,17 @@ You can check the projects [docker file](https://github.com/Ethiy/3DSceneModel/b
     ```
 
 ### Darwin
+
+You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/blob/master/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personnally, I prefer the later.
+
+| Dependency   | `brew`        | `port`        |
+|:------------:|:-------------:|:-------------:|
+| Installation | `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` | You should follow the instructions on [`port` official website](https://www.macports.org/install.php) |
+| Update       | `brew update` | `port selfupdate && port upgrade outdated` |
+| Boost        | `brew install boost` | `port install boost` |
+| CGAL         | `brew install cgal` | `port install cgal` |
+| GDAL         | You can find the lastest release in this [website](http://www.kyngchaos.com/software/frameworks) | `port install gdal` |
+| lib3ds       | `brew install lib3ds` | `port install lib3ds` |
 
 ### MinGW w64
 
