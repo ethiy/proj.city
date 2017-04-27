@@ -20,25 +20,25 @@ namespace urban
             : degree(other.degree), points(other.points) {}
         Face::Face(Face && other)
             : degree(std::move(other.degree)), points(std::move(other.points)) {}
-        Face::Face(std::initializer_list<size_t> initializer)
+        Face::Face(std::initializer_list<std::size_t> initializer)
             : degree(initializer.size()), points(initializer)
         {
             if(degree<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
-        Face::Face(std::vector<size_t> const& indices)
+        Face::Face(std::vector<std::size_t> const& indices)
             : degree(indices.size()), points(indices)
         {
             if(degree<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
-        Face::Face(size_t first, size_t second, size_t third, bool orientation)
+        Face::Face(std::size_t first, std::size_t second, std::size_t third, bool orientation)
             : degree(3)
         {
             if(orientation)
-                points = std::vector<size_t>{{first, second, third}};
+                points = std::vector<std::size_t>{{first, second, third}};
             else
-                points = std::vector<size_t>{{first, third, second}};
+                points = std::vector<std::size_t>{{first, third, second}};
         }
         Face::~Face(void) {}
 
@@ -62,16 +62,16 @@ namespace urban
             return *this;
         }
 
-        size_t & Face::operator[](size_t index)
+        std::size_t & Face::operator[](std::size_t index)
         {
             return points[index];
         }
-        size_t const& Face::operator[](size_t index) const
+        std::size_t const& Face::operator[](std::size_t index) const
         {
             return points[index];
         }        
 
-        size_t Face::get_degree(void) const noexcept
+        std::size_t Face::get_degree(void) const noexcept
         {
             return degree;
         }
@@ -106,11 +106,11 @@ namespace urban
             std::rotate(std::begin(points), std::next(std::begin(points), n), std::end(points));
         }
 
-        Face::iterator Face::find(size_t index)
+        Face::iterator Face::find(std::size_t index)
         {
             return std::find(std::begin(points), std::end(points), index);
         }
-        bool Face::overide(size_t index, size_t new_index)
+        bool Face::overide(std::size_t index, std::size_t new_index)
         {
             auto placeholder = find(index);
             bool success( placeholder != std::end(points));
@@ -119,7 +119,7 @@ namespace urban
             return success;
         }
 
-        bool Face::is_convex(std::map<size_t, Point> const& coordinates) const
+        bool Face::is_convex(std::map<std::size_t, Point> const& coordinates) const
         {
             if(coordinates.size() < degree)
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
@@ -166,7 +166,7 @@ namespace urban
             return convexity;
         }
 
-        Lib3dsFace* Face::to_3ds(std::map<size_t, Point> const& coordinates) const
+        Lib3dsFace* Face::to_3ds(std::map<std::size_t, Point> const& coordinates) const
         {
             if(coordinates.size() < degree)
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
@@ -179,9 +179,9 @@ namespace urban
                     std::prev(std::end(points), 1),
                     std::next(std::begin(points), 2),
                     face,
-                    [this, &coordinates, current](size_t b, size_t c)
+                    [this, &coordinates, current](std::size_t b, std::size_t c)
                     {
-                        auto init = std::initializer_list<size_t>({points.at(0), b, c});
+                        auto init = std::initializer_list<std::size_t>({points.at(0), b, c});
                         std::copy(std::begin(init), std::end(init), current->points);
                         Vector n(normal_to(coordinates.at(points.at(0)), coordinates.at(b), coordinates.at(c)));
                         current->normal[0] = static_cast<float>(n.x());
@@ -221,7 +221,7 @@ namespace urban
                 result = (placeholder != std::end(rhs.points));
                 if(result)
                 {
-                    std::vector<size_t> rotated_points(lhs.get_degree());
+                    std::vector<std::size_t> rotated_points(lhs.get_degree());
                     std::rotate_copy(
                         std::begin(rhs.points),
                         placeholder,
@@ -234,7 +234,7 @@ namespace urban
                         std::begin(rotated_points),
                         true,
                         std::logical_and<bool>(),
-                        std::equal_to<size_t>()
+                        std::equal_to<std::size_t>()
                     );
                 }
             }

@@ -58,8 +58,8 @@ SCENARIO("shadow::Mesh manipulation:")
         WHEN( "mesh points and faces are accessed:")
         {
             urban::shadow::Mesh u_mesh(test_mesh);
-            std::map<size_t, urban::shadow::Point> points = u_mesh.get_points();
-            std::map<size_t, urban::shadow::Face> faces = u_mesh.get_faces();
+            std::map<std::size_t, urban::shadow::Point> points = u_mesh.get_points();
+            std::map<std::size_t, urban::shadow::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
             {
                 std::ostringstream auxilary, _auxilary;
@@ -96,12 +96,12 @@ SCENARIO("shadow::Mesh manipulation:")
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
                 if(_mesh)
-                    std::free(_mesh);
+                    lib3ds_mesh_free(_mesh);
                 REQUIRE( u_mesh == _u_mesh );
             }
         }
         if(test_mesh)
-            std::free(test_mesh);
+            lib3ds_mesh_free(test_mesh);
     }
 
     GIVEN("Two stitchable shadow meshes:")
@@ -109,13 +109,13 @@ SCENARIO("shadow::Mesh manipulation:")
         std::vector<urban::shadow::Mesh> meshes{{
             urban::shadow::Mesh(
                 "first",
-                std::map<size_t, urban::shadow::Point>{{0, urban::shadow::Point(0., 0., 0.)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {3, urban::shadow::Point(6.28, -.2, -.5)}, {2, urban::shadow::Point(4.1, 2.368, 1.2589)}, {4, urban::shadow::Point(-.25, 2.12, .98)}},
-                std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 1, 4}}}, {1, urban::shadow::Face{{1, 3, 2}}}, {2, urban::shadow::Face{{1, 2, 4}}}}
+                std::map<std::size_t, urban::shadow::Point>{{0, urban::shadow::Point(0., 0., 0.)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {3, urban::shadow::Point(6.28, -.2, -.5)}, {2, urban::shadow::Point(4.1, 2.368, 1.2589)}, {4, urban::shadow::Point(-.25, 2.12, .98)}},
+                std::map<std::size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 1, 4}}}, {1, urban::shadow::Face{{1, 3, 2}}}, {2, urban::shadow::Face{{1, 2, 4}}}}
             ),
             urban::shadow::Mesh(
                 "second",
-                std::map<size_t, urban::shadow::Point>{{0, urban::shadow::Point(-.549, -8.2, -10.54)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {2, urban::shadow::Point(1.54, -7.98, -5.97)}, {3, urban::shadow::Point(1.014, -6.32, -7.12)}, {4, urban::shadow::Point(6.28, -.2, -.5)}, {5, urban::shadow::Point(0., 0., 0.)}, {6, urban::shadow::Point(-5., -4.95, -9.23)}},
-                std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}, {1, urban::shadow::Face{{1, 2, 4}}}, {2, urban::shadow::Face{{4, 2, 3}}}, {3, urban::shadow::Face{{5, 0, 1}}}, {4, urban::shadow::Face{{5, 6, 0}}}}
+                std::map<std::size_t, urban::shadow::Point>{{0, urban::shadow::Point(-.549, -8.2, -10.54)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {2, urban::shadow::Point(1.54, -7.98, -5.97)}, {3, urban::shadow::Point(1.014, -6.32, -7.12)}, {4, urban::shadow::Point(6.28, -.2, -.5)}, {5, urban::shadow::Point(0., 0., 0.)}, {6, urban::shadow::Point(-5., -4.95, -9.23)}},
+                std::map<std::size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}, {1, urban::shadow::Face{{1, 2, 4}}}, {2, urban::shadow::Face{{4, 2, 3}}}, {3, urban::shadow::Face{{5, 0, 1}}}, {4, urban::shadow::Face{{5, 6, 0}}}}
             )
         }};
         WHEN("they are stitched together")

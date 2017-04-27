@@ -78,7 +78,7 @@ SCENARIO("Face manipulation:")
         
         WHEN("Convexity is checked with the wrong number of points")
         {
-            std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {45, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 61.1764)}};
+            std::map<std::size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {45, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 61.1764)}};
             THEN("It throws")
             {
                 REQUIRE_THROWS_AS(facet.is_convex(coord), std::out_of_range );
@@ -87,7 +87,7 @@ SCENARIO("Face manipulation:")
 
         WHEN("Convexity is checked for a non simple polygon")
         {
-            std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {85, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
+            std::map<std::size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {85, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {97, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
             THEN("It does not checkout ")
             {
                 REQUIRE(!facet.is_convex(coord));
@@ -96,7 +96,7 @@ SCENARIO("Face manipulation:")
 
         WHEN("Convexity is checked for a convex rectangle")
         {
-            std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
+            std::map<std::size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
             THEN("It does checkout ")
             {
                 REQUIRE(facet.is_convex(coord));
@@ -105,7 +105,7 @@ SCENARIO("Face manipulation:")
 
         WHEN("Convexity is checked for a non convex (simple) rectangle")
         {
-            std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -14., 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
+            std::map<std::size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -14., 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
             THEN("It does checkout ")
             {
                 REQUIRE( !facet.is_convex(coord));
@@ -114,7 +114,7 @@ SCENARIO("Face manipulation:")
 
         WHEN("A convex facet is transformed to Lib3dsFace")
         {
-            std::map<size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
+            std::map<std::size_t, urban::shadow::Point> coord{{145, urban::shadow::Point(15.5343, -13.4504, 60.8789)}, {97, urban::shadow::Point(15.7204, -13.188, 60.8789)}, {85, urban::shadow::Point(15.65, -12.988, 60.8789)}, {45, urban::shadow::Point(15.65, -14.325, 60.8789)}};
             Lib3dsFace* face_3ds = facet.to_3ds(coord);
             THEN("the output checks")
             {

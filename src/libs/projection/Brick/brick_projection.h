@@ -20,7 +20,7 @@ namespace urban
         public:
             BrickPrint(void);
             BrickPrint(shadow::Point const& _reference_point);
-            BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short espg_index);
+            BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short epsg_index);
             BrickPrint(FacePrint const& face_projection);
             BrickPrint(std::string const& _name, OGRLayer* projection_layer);
             BrickPrint(BrickPrint const& other);
@@ -36,7 +36,7 @@ namespace urban
 
             Bbox_2 bbox(void) const noexcept;
             std::string get_name(void) const noexcept;
-            size_t size(void) const noexcept;
+            std::size_t size(void) const noexcept;
 
             typedef std::list<FacePrint>::iterator iterator;
             typedef std::list<FacePrint>::const_iterator const_iterator;
@@ -65,7 +65,7 @@ namespace urban
             std::string name;
             Bbox_2 bounding_box;
             shadow::Point reference_point;
-            unsigned short espg_index = 2154;
+            unsigned short epsg_index = 2154;
             std::list<FacePrint> projected_facets;
             Polygon_set projected_surface;
 

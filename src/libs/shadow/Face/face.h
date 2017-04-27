@@ -36,9 +36,9 @@ namespace urban
              * Empty Face constructor.
              * @see Face(Face const& other);
              * @see Face(Face && other);
-             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::initializer_list<std::size_t> initializer);
              * @see Face(std::vector const& indices);
-             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(void);
@@ -47,9 +47,9 @@ namespace urban
              * @param other a Face
              * @see Face(void);
              * @see Face(Face && other);
-             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::initializer_list<std::size_t> initializer);
              * @see Face(std::vector const& indices);
-             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(Face const& other);
@@ -58,9 +58,9 @@ namespace urban
              * @param other a Face
              * @see Face(void);
              * @see Face(Face const&)
-             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::initializer_list<std::size_t> initializer);
              * @see Face(std::vector const& indices);
-             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
              * @see ~Face(void)
              */
             Face(Face && other);
@@ -71,10 +71,10 @@ namespace urban
              * @see Face(void);
              * @see Face(Face const&);
              * @see Face(Face &&);
-             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
              * @see ~Face(void);
              */
-            Face(std::initializer_list<size_t> initializer);
+            Face(std::initializer_list<std::size_t> initializer);
             /**
              * STL Vector constructor. 
              * @throws std::logic_error
@@ -82,12 +82,12 @@ namespace urban
              * @see Face(void);
              * @see Face(Face const&);
              * @see Face(Face &&);
-             * @see Face(size_t first, size_t second, size_t third, bool orientation);
-             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
+             * @see Face(std::initializer_list<std::size_t> initializer);
              * @see Face(std::vector const& indices);
              * @see ~Face(void);
              */
-            Face(std::vector<size_t> const& indices);
+            Face(std::vector<std::size_t> const& indices);
             /**
              * Triagular face constructor. 
              * @param first point index
@@ -96,18 +96,18 @@ namespace urban
              * @see Face(void);
              * @see Face(Face const& other);
              * @see Face(Face && other);
-             * @see Face(std::initializer_list<size_t> initializer);
+             * @see Face(std::initializer_list<std::size_t> initializer);
              * @see Face(std::vector const& indices);
              * @see ~Face(void);
              */
-            Face(size_t first, size_t second, size_t third, bool orientation);
+            Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
             /** 
              * Destructor.
              * @see Face(void)
              * @see Face(Face const& other)
              * @see Face(Face && other)
-             * @see Face(std::initializer_list<size_t> initializer)
-             * @see Face(size_t first, size_t second, size_t third, bool orientation);
+             * @see Face(std::initializer_list<std::size_t> initializer)
+             * @see Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
              */
             ~Face(void);
 
@@ -135,24 +135,24 @@ namespace urban
              * @param index point index to access
              * @return reference to the requested element
              */
-            size_t & operator[](size_t index);
+            std::size_t & operator[](std::size_t index);
             /**
              * Access operator[].
              * @param index point index to access
              * @return constant reference to the requested element
              */
-            size_t const& operator[](size_t index) const;
+            std::size_t const& operator[](std::size_t index) const;
             
             /**
              * Access Facet degree.
              * @return facet degree
              */
-            size_t get_degree(void) const noexcept;
+            std::size_t get_degree(void) const noexcept;
 
             /** Iterator over face vertices */
-            typedef std::vector<size_t>::iterator iterator;
+            typedef std::vector<std::size_t>::iterator iterator;
             /** Constant iterator over face vertices */
-            typedef std::vector<size_t>::const_iterator const_iterator;
+            typedef std::vector<std::size_t>::const_iterator const_iterator;
 
             /**
              * Access begin iterator.
@@ -194,21 +194,21 @@ namespace urban
              * @param index the index to find inside the facet
              * @return iterator to the index (it sould be unique)
              */
-            iterator find(size_t index);
+            iterator find(std::size_t index);
             /**
              * Find an index and overide it.
              * @param old_index the index to overide
              * @param new_index the index to overide with
              * @return true if successful
              */
-            bool overide(size_t old_index, size_t new_index);
+            bool overide(std::size_t old_index, std::size_t new_index);
 
             /**
              * Evaluates if facet is convex based on points coordinates.
              * @param coordinates map associating point indexes to their coordinates
              * @return true if facet is convex
              */
-            bool is_convex(std::map<size_t, Point> const& coordinates) const;
+            bool is_convex(std::map<std::size_t, Point> const& coordinates) const;
 
             /**
              * Writes to a 3ds face structure.
@@ -216,12 +216,12 @@ namespace urban
              * @return pointer to `Lib3dsFace` list
              * @throws std::logic_error
              */
-            Lib3dsFace * to_3ds(std::map<size_t, Point> const& coordinates) const;
+            Lib3dsFace * to_3ds(std::map<std::size_t, Point> const& coordinates) const;
         private:
             /** Face degree */
-            size_t degree;
+            std::size_t degree;
             /** Points array */
-            std::vector<size_t> points;
+            std::vector<std::size_t> points;
 
             /**
             * Check if two faces are equal:
