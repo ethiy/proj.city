@@ -236,38 +236,22 @@ namespace urban
 
         bool BrickPrint::has_same_footprint(BrickPrint const& other) const
         {
-            Polygon_set l_copy(projected_surface),
-                        r_copy(other.projected_surface);
-            l_copy.symmetric_difference(r_copy);
+            Polygon_set l_copy(projected_surface);
+            l_copy.symmetric_difference(other.projected_surface);
             return l_copy.is_empty();
         }
         bool BrickPrint::has_same_facets(BrickPrint const& other) const
         {
-            bool result(false);
-            if(projected_facets.size() == other.projected_facets.size())
+            bool equality(projected_facets.size() == other.projected_facets.size());
+            if(equality)
             {
-                std::vector<bool> results(projected_facets.size());
-                std::transform(
+                equality = std::is_permutation(
                     std::begin(projected_facets),
                     std::end(projected_facets),
-                    std::begin(other.projected_facets),
-                    std::begin(results),
-                    [](FacePrint const& l_face, FacePrint const& r_face)
-                    {
-                        return l_face == r_face;
-                    }
-                );
-                result = std::accumulate(
-                    std::begin(results),
-                    std::end(results),
-                    true,
-                    [](bool & all, const bool r)
-                    {
-                        return all && r;
-                    }
+                    std::begin(other.projected_facets)
                 );
             }
-            return result;
+            return equality;
         }
 
         void BrickPrint::insert(FacePrint const& new_facet)

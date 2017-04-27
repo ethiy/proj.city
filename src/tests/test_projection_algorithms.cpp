@@ -304,9 +304,92 @@ SCENARIO("Occlusion management")
         urban::projection::BrickPrint test_proj = urban::project(test_brick);
         THEN("The output checks:")
         {
-            std::stringstream auxilary;
-            auxilary << test_proj;
-            REQUIRE(auxilary.str() == "Name: test_mesh_xy\nBounding box: -18 -14 -2 10\nReference Point: 0 0 0\nEPSG index: 2154\nFace Projections: 4\nThe Polygon describing borders :3 -10 6 -18 -14 -2 -13  0 \nThe supporting plane coefficients : -17 -40 312 -2426\n\nThe Polygon describing borders :3 -18 9 -18 -14 -10 6  0 \nThe supporting plane coefficients : -149 32 184 -3154\n\nThe Polygon describing borders :3 -10 6 -2 -13 -2 10  0 \nThe supporting plane coefficients : 160 48 184 -160\n\nThe Polygon describing borders :3 -18 9 -10 6 -2 10  0 \nThe supporting plane coefficients : -4 120 56 -1208\n\nProjected surface: \n4 -18 -14 -2 -13 -2 10 -18 9  0 \n");
+            std::vector<urban::Point_2> buffer{{
+                urban::Point_2(-10, 6),
+                urban::Point_2(-18, -14),
+                urban::Point_2(-2, -13)
+            }};
+            
+            std::vector<urban::projection::FacePrint> _result{{
+                urban::projection::FacePrint(
+                    urban::Polygon_with_holes(
+                        urban::Polygon(
+                            std::begin(buffer),
+                            std::end(buffer)                            
+                        )
+                    ),
+                    urban::Plane_3(-17, -40, 312, -2426)
+                )
+            }};
+
+            buffer.clear();
+            buffer = std::vector<urban::Point_2>{{
+                urban::Point_2(-18, 9),
+                urban::Point_2(-18, -14),
+                urban::Point_2(-10, 6)
+            }};
+
+            _result.push_back(
+                urban::projection::FacePrint(
+                    urban::Polygon_with_holes(
+                        urban::Polygon(
+                            std::begin(buffer),
+                            std::end(buffer)                            
+                        )
+                    ),
+                    urban::Plane_3(-149, 32, 184, -3154)
+                )
+            );
+
+            buffer.clear();
+            buffer = std::vector<urban::Point_2>{{
+                urban::Point_2(-10, 6),
+                urban::Point_2(-2, -13),
+                urban::Point_2(-2, 10)
+            }};
+
+            _result.push_back(
+                urban::projection::FacePrint(
+                    urban::Polygon_with_holes(
+                        urban::Polygon(
+                            std::begin(buffer),
+                            std::end(buffer)                            
+                        )
+                    ),
+                    urban::Plane_3(160, 48, 184, -160)
+                )
+            );
+
+            buffer.clear();
+            buffer = std::vector<urban::Point_2>{{
+                urban::Point_2(-18, 9),
+                urban::Point_2(-10, 6),
+                urban::Point_2(-2, 10)
+            }};
+
+            _result.push_back(
+                urban::projection::FacePrint(
+                    urban::Polygon_with_holes(
+                        urban::Polygon(
+                            std::begin(buffer),
+                            std::end(buffer)                            
+                        )
+                    ),
+                    urban::Plane_3(-4, 120, 56, -1208)
+                )
+            );
+
+            urban::projection::BrickPrint _test_proj(
+                "test_mesh_xy",
+                urban::Bbox_3(-18, -14, 0, -2, 10, 0),
+                urban::shadow::Point(),
+                2154
+            );
+
+            for(auto & facet : _result)
+                _test_proj.insert(facet);
+
+            REQUIRE(test_proj == _test_proj);
         }
     }
 }
