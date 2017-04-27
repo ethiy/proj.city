@@ -271,7 +271,7 @@ SCENARIO("Occlusion management")
                     )
                 );
 
-                REQUIRE(rhs == _rhs && result == _result);
+                REQUIRE((rhs == _rhs && result == _result));
             }
         }
     }
