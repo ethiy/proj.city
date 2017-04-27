@@ -120,9 +120,9 @@ namespace urban
             InexactToExact to_exact;
             std::vector<Point_2> pixel_corners{{
                 to_exact(InexactPoint_2(top_left_x, top_left_y)),
-                to_exact(InexactPoint_2(top_left_x + pixel_size, top_left_y)),
+                to_exact(InexactPoint_2(top_left_x, top_left_y - pixel_size)),
                 to_exact(InexactPoint_2(top_left_x + pixel_size, top_left_y - pixel_size)),
-                to_exact(InexactPoint_2(top_left_x, top_left_y - pixel_size))
+                to_exact(InexactPoint_2(top_left_x + pixel_size, top_left_y))
             }};
             
             std::vector<Polygon_with_holes> pixel_inter;
@@ -209,14 +209,6 @@ namespace urban
                         );
                         if(hit)
                             raster_projection.at(i_min + index/w, j_min + index%w) = (raster_projection.at(i_min + index/w, j_min + index%w) * raster_projection.hit(i_min + index/w, j_min + index%w) + height) / (++raster_projection.hit(i_min + index/w, j_min + index%w));
-                    }
-                );
-                std::for_each(
-                    std::begin(indexes),
-                    std::end(indexes),
-                    [&raster_projection, i_min, j_min, w, &pivot](std::size_t const& index)
-                    {
-                        raster_projection.at(i_min + index/w, j_min + index%w) += (raster_projection.hit(i_min + index/w, j_min + index%w) != 0) * pivot.z();
                     }
                 );
             }

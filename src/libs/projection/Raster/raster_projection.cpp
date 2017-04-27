@@ -10,7 +10,8 @@ namespace urban
 {
     namespace projection
     {
-        RasterPrint::RasterPrint(void) {}
+        RasterPrint::RasterPrint(void)
+        {}
         RasterPrint::RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, std::size_t const& _height, std::size_t const& _width, double const& _pixel_size)
             : name(_name),
               reference_point(_reference_point),
@@ -28,7 +29,8 @@ namespace urban
               width(_width),
               pixel_size(geographic_transform[1]),
               image_matrix(_height * _width, 0.),
-              pixel_access(_height * _width, 1)
+              pixel_access(_height * _width, 1),
+              offset(true)
         {
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
                 throw std::logic_error("this case is not treated here");
@@ -39,11 +41,8 @@ namespace urban
             CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_Float64, 0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
-            std::copy(
-                buffer,
-                buffer + _width * _height,
-                std::begin(image_matrix)
-            );
+
+            std::copy(buffer, buffer + _width * _height, std::begin(image_matrix));
         }
         RasterPrint::RasterPrint(RasterPrint const& other)
             : name(other.name),
@@ -53,7 +52,8 @@ namespace urban
               width(other.width),
               pixel_size(other.pixel_size),
               image_matrix(other.image_matrix),
-              pixel_access(other.pixel_access)
+              pixel_access(other.pixel_access),
+              offset(other.offset)
         {}
         RasterPrint::RasterPrint(RasterPrint && other)
             : name(std::move(other.name)),
@@ -63,9 +63,11 @@ namespace urban
               width(std::move(other.width)),
               pixel_size(std::move(other.pixel_size)),
               image_matrix(std::move(other.image_matrix)),
-              pixel_access(std::move(other.pixel_access))
+              pixel_access(std::move(other.pixel_access)),
+              offset(std::move(other.offset))
         {}
-        RasterPrint::~RasterPrint(void) {}
+        RasterPrint::~RasterPrint(void)
+        {}
 
 
         std::string const& RasterPrint::get_name(void) const noexcept
@@ -119,6 +121,7 @@ namespace urban
         void RasterPrint::swap(RasterPrint & other)
         {
             using std::swap;
+
             swap(name, other.name);
             swap(reference_point, other.reference_point);
             swap(epsg_index, other.epsg_index);
@@ -127,6 +130,7 @@ namespace urban
             swap(pixel_size, other.pixel_size);
             swap(image_matrix, other.image_matrix);
             swap(pixel_access, other.pixel_access);
+            swap(offset, other.offset);
         }
 
         double & RasterPrint::at(std::size_t const& i, std::size_t const& j)
@@ -189,6 +193,7 @@ namespace urban
             pixel_size = other.pixel_size;
             image_matrix = other.image_matrix;
             pixel_access = other.pixel_access;
+            offset = other.offset;
 
             return *this;
         }
@@ -203,8 +208,20 @@ namespace urban
             pixel_size = std::move(other.pixel_size);
             image_matrix = std::move(other.image_matrix);
             pixel_access = std::move(other.pixel_access);
+            offset = std::move(other.offset);
             
             return *this;
+        }
+
+        void RasterPrint::horizontal_offset(void)
+        {
+            if(!offset)
+            {
+                for(std::size_t index(0); index != height * width; ++index)
+                    image_matrix.at(index) += pixel_access.at(index) * reference_point.z();
+
+                offset = true;
+            }
         }
 
         RasterPrint & RasterPrint::operator+=(RasterPrint const& other)

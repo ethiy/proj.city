@@ -37,6 +37,8 @@ namespace urban
             const double* data(void) const noexcept;
 
             void swap(RasterPrint & other);
+            RasterPrint & operator=(RasterPrint const& other) noexcept;
+            RasterPrint & operator=(RasterPrint && other) noexcept;
 
             double & at(std::size_t const& i, std::size_t const& j);
             const double & at(std::size_t const& i, std::size_t const& j) const;
@@ -53,8 +55,7 @@ namespace urban
             const_iterator end(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            RasterPrint & operator=(RasterPrint const& other) noexcept;
-            RasterPrint & operator=(RasterPrint && other) noexcept;
+            void horizontal_offset(void);
 
             RasterPrint & operator+=(RasterPrint const& other);
             RasterPrint & operator-=(RasterPrint const& other);
@@ -67,6 +68,7 @@ namespace urban
             double pixel_size = 0.6;
             std::vector<double> image_matrix;
             std::vector<short> pixel_access;
+            bool offset = false;
 
             friend std::ostream & operator<<(std::ostream & os, RasterPrint const& raster_projection);
             friend bool operator==(RasterPrint const& lhs, RasterPrint const& rhs);
@@ -77,6 +79,4 @@ namespace urban
         bool operator!=(RasterPrint & lhs, RasterPrint const& rhs);
     }
     void swap(projection::RasterPrint & lhs, projection::RasterPrint & rhs);
-
-    
 }

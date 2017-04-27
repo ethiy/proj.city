@@ -11,7 +11,8 @@ namespace urban
     {
         std::size_t h = static_cast<std::size_t>(std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size));
         std::size_t w = static_cast<std::size_t>(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size));
-        return std::accumulate(
+        
+        projection::RasterPrint raster_image = std::accumulate(
             brick_projection.cbegin(),
             brick_projection.cend(),
             projection::RasterPrint(
@@ -22,10 +23,14 @@ namespace urban
                 w,
                 pixel_size
             ),
-            [&pivot](projection::RasterPrint result, const projection::FacePrint & face_projection)
+            [&pivot](projection::RasterPrint result, projection::FacePrint const& face_projection)
             {
                 return face_projection.rasterize_to(result, pivot);
             }
         );
+
+        raster_image.horizontal_offset();
+        
+        return raster_image;
     }
 }
