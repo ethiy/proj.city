@@ -218,7 +218,7 @@ namespace urban
             if(!offset)
             {
                 for(std::size_t index(0); index != height * width; ++index)
-                    image_matrix.at(index) += pixel_access.at(index) * reference_point.z();
+                    image_matrix.at(index) += (pixel_access.at(index) != 0) * reference_point.z();
 
                 offset = true;
             }
