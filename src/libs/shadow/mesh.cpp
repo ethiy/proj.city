@@ -304,7 +304,7 @@ namespace urban
             return index;
         }
 
-        bool operator==(const shadow::Mesh & lhs, const shadow::Mesh & rhs)
+        bool operator==(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
         {
             bool equal(lhs.points_size() == rhs.points_size() && lhs.faces_size() == rhs.faces_size());
             if(equal)
@@ -338,7 +338,7 @@ namespace urban
             return equal;
         }
 
-        bool operator!=(const shadow::Mesh & lhs, const shadow::Mesh & rhs)
+        bool operator!=(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
         {
             return !(lhs == rhs);
         }        
