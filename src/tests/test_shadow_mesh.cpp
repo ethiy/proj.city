@@ -40,9 +40,9 @@ SCENARIO("shadow::Mesh manipulation:")
         urban::shadow::Mesh _u_mesh(
             "",
             std::map<size_t, urban::shadow::Point>{
-                {0, urban::shadow::Point(15.5343, -13.4504, 60.8789)},
-                {1, urban::shadow::Point(15.7204, -13.188, 60.8789)},
-                {2, urban::shadow::Point(15.7204, -13.188, 61.1764)}
+                {0, urban::shadow::Point(15.5343f, -13.4504f, 60.8789f)},
+                {1, urban::shadow::Point(15.7204f, -13.188f, 60.8789f)},
+                {2, urban::shadow::Point(15.7204f, -13.188f, 61.1764f)}
             },
             std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}}
         );
