@@ -23,7 +23,7 @@ namespace urban
                 w,
                 pixel_size
             ),
-            [&pivot](projection::RasterPrint result, projection::FacePrint const& face_projection)
+            [&pivot](projection::RasterPrint & result, projection::FacePrint const& face_projection)
             {
                 return face_projection.rasterize_to(result, pivot);
             }

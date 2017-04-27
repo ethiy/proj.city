@@ -95,13 +95,11 @@ SCENARIO("shadow::Mesh manipulation:")
             {
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
-                if(_mesh)
-                    lib3ds_mesh_free(_mesh);
+                lib3ds_mesh_free(_mesh);
                 REQUIRE( u_mesh == _u_mesh );
             }
         }
-        if(test_mesh)
-            lib3ds_mesh_free(test_mesh);
+        lib3ds_mesh_free(test_mesh);
     }
 
     GIVEN("Two stitchable shadow meshes:")
