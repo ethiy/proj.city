@@ -50,7 +50,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
             }
         }
     }
@@ -66,7 +66,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
             }
         }
 
@@ -77,7 +77,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
             }
         }
     }
@@ -125,7 +125,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the writter throws")
             {
-                REQUIRE_THROWS_AS(handler.write(mesh), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(handler.write(mesh));
             }
         }
     }

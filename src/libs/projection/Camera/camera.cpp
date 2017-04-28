@@ -8,25 +8,25 @@ namespace urban
     {
         Camera::Camera(void) : name("N/A"), calibration(Affine_transformation_2()), position(Vector_3()), orientation(Affine_transformation_3()) {}
 
-        Camera::Camera(const std::string & _name, double focal_distance, double scale_factor_x, double scale_factor_y, const Vector_2 & principal_point, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
+        Camera::Camera(std::string const& _name, double focal_distance, double scale_factor_x, double scale_factor_y, const Vector_2 & principal_point, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
         : name(_name),
         calibration(Affine_transformation_2(focal_distance * scale_factor_x, .0, to_double(principal_point.x()), .0, focal_distance * scale_factor_y, to_double(principal_point.y()))),
         position(_position),
         orientation(rotation_transform(_rotations)) {}
 
-        Camera::Camera(const std::string & _name, double focal_distance, const Vector_2 & principal_point, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
+        Camera::Camera(std::string const& _name, double focal_distance, const Vector_2 & principal_point, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
         : name(_name),
         calibration(Affine_transformation_2(focal_distance, .0, to_double(principal_point.x()), .0, focal_distance, to_double(principal_point.y()))),
         position(_position),
         orientation(rotation_transform(_rotations)) {}
 
-        Camera::Camera(const std::string & _name, const Affine_transformation_2 & _calibration, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
+        Camera::Camera(std::string const& _name, const Affine_transformation_2 & _calibration, const Vector_3 & _position, const std::map<double, Vector_3> & _rotations)
         : name(_name),
         calibration(_calibration),
         position(_position),
         orientation(rotation_transform(_rotations)) {}
 
-        Camera::Camera(const std::string & _name, const Affine_transformation_2 & _calibration, const Vector_3 & _position, const Affine_transformation_3 & _orientation)
+        Camera::Camera(std::string const& _name, const Affine_transformation_2 & _calibration, const Vector_3 & _position, const Affine_transformation_3 & _orientation)
         : name(_name),
         calibration(_calibration),
         position(_position),

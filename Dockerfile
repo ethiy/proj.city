@@ -29,6 +29,6 @@ RUN mkdir build && mkdir build/linux
 WORKDIR build/xenial
 RUN cmake ../..
 RUN cmake ../..
-RUN make -j4 all
+RUN make -j `nproc` all
 RUN ./tests/tests
 RUN rm *.off *.3ds *.gml *.xsd *.geotiff

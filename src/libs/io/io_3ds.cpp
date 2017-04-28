@@ -6,12 +6,43 @@ namespace urban
 {
     namespace io
     {
-        FileHandler<Lib3dsFile>::FileHandler(void) {}
-        FileHandler<Lib3dsFile>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): filepath(_filepath), modes(_modes) {}
+        FileHandler<Lib3dsFile>::FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
+            : filepath(_filepath), modes(_modes) 
+        {
+            std::ostringstream error_message;
+
+            if(modes["read"] && modes["write"])
+            {
+                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                throw boost::filesystem::filesystem_error("Simultanious reading and writing access is forbidden", ec);
+            }
+
+            if(!modes["read"] && !modes["write"])
+            {
+                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                throw boost::filesystem::filesystem_error("You have to specify access type", ec);
+            }
+
+            if(modes["read"])
+            {
+                if(boost::filesystem::is_regular_file(filepath))
+                    file = lib3ds_file_load(filepath.string().c_str());
+                else
+                {
+                    error_message << "This file \"" << filepath.string() << "\" cannot be found! You should check the file path";
+                    boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                    throw boost::filesystem::filesystem_error(error_message.str(), ec);
+                }
+            }
+            if(modes["write"])
+            {
+                file = lib3ds_file_new();
+            }
+        }
 
         FileHandler<Lib3dsFile>::~FileHandler(void)
         {
-            std::free(file);
+           lib3ds_file_free(file);
         }
 
 
@@ -22,21 +53,11 @@ namespace urban
             
             if (modes["read"])
             {
-                if (boost::filesystem::is_regular_file(filepath))
+                Lib3dsMesh *p_meshes = file->meshes;
+                while (p_meshes)
                 {
-                    file = lib3ds_file_load(filepath.string().c_str());
-                    Lib3dsMesh *p_meshes = file->meshes;
-                    while (p_meshes)
-                    {
-                        meshes.push_back(urban::shadow::Mesh(p_meshes));
-                        p_meshes = p_meshes->next;
-                    }
-                }
-                else
-                {
-                    error_message << "This file \"" << filepath.string() << "\" cannot be found! You should check the file path";
-                    boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                    throw boost::filesystem::filesystem_error(error_message.str(), ec);
+                    meshes.push_back(urban::shadow::Mesh(p_meshes));
+                    p_meshes = p_meshes->next;
                 }
             }
             else
@@ -54,13 +75,12 @@ namespace urban
 
             if (modes["write"])
             {
-                file = reinterpret_cast<Lib3dsFile*>(calloc(sizeof(Lib3dsFace), 1));
                 file->meshes = meshes[0].to_3ds();
                 Lib3dsMesh *current = file->meshes;
                 std::for_each(
                     std::next(std::begin(meshes), 1),
                     std::end(meshes),
-                    [&current](urban::shadow::Mesh mesh) {
+                    [&current](urban::shadow::Mesh const& mesh) {
                         current->next = mesh.to_3ds();
                         current = current->next;
                     });

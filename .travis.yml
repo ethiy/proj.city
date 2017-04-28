@@ -14,6 +14,28 @@ branches:
 matrix:
   include:
     - os: linux
+      dist: trusty
+      compiler: gcc
+      language: cpp
+      sudo: required
+      cache:
+        apt: true
+      before_install:
+        - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+        - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+        - sudo apt-get update -qq
+        - sudo apt-get install -y build-essential g++-4.8 cmake
+        - sudo apt-get install -y libboost-filesystem-dev libboost-system-dev libboost-regex-dev lib3ds-dev libtinyxml2-dev libcgal-dev libcgal-qt5-dev libqt5opengl5-dev libgdal-dev
+      script:
+        - mkdir -p build && mkdir -p build/trusty && cd build/trusty
+        - cmake ../..
+        - cmake ../..
+        - make -j4
+        - ./tests/tests
+        - rm *.off *.3ds *.gml *.xsd *.geotiff
+
+
+    - os: linux
       services:
         - docker
       script:

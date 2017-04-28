@@ -37,29 +37,29 @@ SCENARIO("shadow::Mesh manipulation:")
         init1 = std::initializer_list<float>({15.7204f, -13.188f, 61.1764f});
         std::copy(std::begin(init1), std::end(init1), (test_mesh->pointL + 2)->pos);
 
+        urban::shadow::Mesh _u_mesh(
+            "",
+            std::map<size_t, urban::shadow::Point>{
+                {0, urban::shadow::Point(15.5343f, -13.4504f, 60.8789f)},
+                {1, urban::shadow::Point(15.7204f, -13.188f, 60.8789f)},
+                {2, urban::shadow::Point(15.7204f, -13.188f, 61.1764f)}
+            },
+            std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}}
+        );
+
         WHEN( "the mesh is created:")
         {
             urban::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
-                std::ostringstream auxilary, _auxilary;
-                auxilary << u_mesh;
-                _auxilary << "Name: " << std::endl
-                          << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
-                          << "Points: " << std::endl
-                          << "Point 0 : 15.5343 -13.4504 60.8789" << std::endl
-                          << "Point 1 : 15.7204 -13.188 60.8789" << std::endl
-                          << "Point 2 : 15.7204 -13.188 61.1764" << std::endl
-                          << "Faces: " << std::endl
-                          << "Face 0 : 3 0 2 1" << std::endl;
-                REQUIRE( auxilary.str() == _auxilary.str() );
+                REQUIRE( u_mesh == _u_mesh );
             }
         }
         WHEN( "mesh points and faces are accessed:")
         {
             urban::shadow::Mesh u_mesh(test_mesh);
-            std::map<size_t, urban::shadow::Point> points = u_mesh.get_points();
-            std::map<size_t, urban::shadow::Face> faces = u_mesh.get_faces();
+            std::map<std::size_t, urban::shadow::Point> points = u_mesh.get_points();
+            std::map<std::size_t, urban::shadow::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
             {
                 std::ostringstream auxilary, _auxilary;
@@ -70,7 +70,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(points),
                     std::end(points),
-                    [&_auxilary](std::pair<size_t, urban::shadow::Point> p)
+                    [&_auxilary](std::pair<size_t, urban::shadow::Point> const& p)
                     {
                         _auxilary << "Point " << p.first << " : " << p.second.x() << " " << p.second.y() << " " << p.second.z() << std::endl;
                     }
@@ -79,7 +79,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 std::for_each(
                     std::begin(faces),
                     std::end(faces),
-                    [&_auxilary](std::pair<size_t, urban::shadow::Face> t)
+                    [&_auxilary](std::pair<size_t, urban::shadow::Face> const& t)
                     {
                         _auxilary << "Face " << t.first << " : " << t.second << std::endl;
                     }
@@ -93,24 +93,13 @@ SCENARIO("shadow::Mesh manipulation:")
             urban::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
-                std::ostringstream auxilary, _auxilary;
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
                 urban::shadow::Mesh _u_mesh(_mesh);
-                std::free(_mesh);
-                auxilary << _u_mesh;
-                _auxilary << "Name: " << std::endl
-                          << "Bounding box: 15.5343 15.7204 -13.4504 -13.188 60.8789 61.1764" << std::endl
-                          << "Points: " << std::endl
-                          << "Point 0 : 15.5343 -13.4504 60.8789" << std::endl
-                          << "Point 1 : 15.7204 -13.188 60.8789" << std::endl
-                          << "Point 2 : 15.7204 -13.188 61.1764" << std::endl
-                          << "Faces: " << std::endl
-                          << "Face 0 : 3 0 2 1" << std::endl;
-                REQUIRE( auxilary.str() == _auxilary.str() );
+                lib3ds_mesh_free(_mesh);
+                REQUIRE( u_mesh == _u_mesh );
             }
         }
-
-        std::free(test_mesh);
+        lib3ds_mesh_free(test_mesh);
     }
 
     GIVEN("Two stitchable shadow meshes:")
@@ -118,13 +107,13 @@ SCENARIO("shadow::Mesh manipulation:")
         std::vector<urban::shadow::Mesh> meshes{{
             urban::shadow::Mesh(
                 "first",
-                std::map<size_t, urban::shadow::Point>{{0, urban::shadow::Point(0., 0., 0.)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {3, urban::shadow::Point(6.28, -.2, -.5)}, {2, urban::shadow::Point(4.1, 2.368, 1.2589)}, {4, urban::shadow::Point(-.25, 2.12, .98)}},
-                std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 1, 4}}}, {1, urban::shadow::Face{{1, 3, 2}}}, {2, urban::shadow::Face{{1, 2, 4}}}}
+                std::map<std::size_t, urban::shadow::Point>{{0, urban::shadow::Point(0., 0., 0.)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {3, urban::shadow::Point(6.28, -.2, -.5)}, {2, urban::shadow::Point(4.1, 2.368, 1.2589)}, {4, urban::shadow::Point(-.25, 2.12, .98)}},
+                std::map<std::size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 1, 4}}}, {1, urban::shadow::Face{{1, 3, 2}}}, {2, urban::shadow::Face{{1, 2, 4}}}}
             ),
             urban::shadow::Mesh(
                 "second",
-                std::map<size_t, urban::shadow::Point>{{0, urban::shadow::Point(-.549, -8.2, -10.54)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {2, urban::shadow::Point(1.54, -7.98, -5.97)}, {3, urban::shadow::Point(1.014, -6.32, -7.12)}, {4, urban::shadow::Point(6.28, -.2, -.5)}, {5, urban::shadow::Point(0., 0., 0.)}, {6, urban::shadow::Point(-5., -4.95, -9.23)}},
-                std::map<size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}, {1, urban::shadow::Face{{1, 2, 4}}}, {2, urban::shadow::Face{{4, 2, 3}}}, {3, urban::shadow::Face{{5, 0, 1}}}, {4, urban::shadow::Face{{5, 6, 0}}}}
+                std::map<std::size_t, urban::shadow::Point>{{0, urban::shadow::Point(-.549, -8.2, -10.54)}, {1, urban::shadow::Point(3.5, 1.325, 0.58)}, {2, urban::shadow::Point(1.54, -7.98, -5.97)}, {3, urban::shadow::Point(1.014, -6.32, -7.12)}, {4, urban::shadow::Point(6.28, -.2, -.5)}, {5, urban::shadow::Point(0., 0., 0.)}, {6, urban::shadow::Point(-5., -4.95, -9.23)}},
+                std::map<std::size_t, urban::shadow::Face>{{0, urban::shadow::Face{{0, 2, 1}}}, {1, urban::shadow::Face{{1, 2, 4}}}, {2, urban::shadow::Face{{4, 2, 3}}}, {3, urban::shadow::Face{{5, 0, 1}}}, {4, urban::shadow::Face{{5, 6, 0}}}}
             )
         }};
         WHEN("they are stitched together")

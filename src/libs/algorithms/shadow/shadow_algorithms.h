@@ -13,7 +13,7 @@ namespace urban
      * @param map bijective map changing indexes on a face
      * @return mapped Face
      */
-    shadow::Face & transform(shadow::Face & face, std::map<size_t, size_t> const& map);
+    shadow::Face & transform(shadow::Face & face, std::map<std::size_t, std::size_t> const& map);
 
     /**
      * Check if two meshes have common points
@@ -22,7 +22,7 @@ namespace urban
      * @param suture_points a map: index second mesh |--> index of common point in first mesh
      * @return suture points map
      */
-    std::map<size_t, size_t> & connectable(shadow::Mesh const& lhs, shadow::Mesh const& rhs, std::map<size_t, size_t> & suture_points);
+    std::map<std::size_t, std::size_t> & connectable(shadow::Mesh const& lhs, shadow::Mesh const& rhs, std::map<std::size_t, std::size_t> & suture_points);
     
     /**
      * Stitch two meshes
@@ -31,7 +31,7 @@ namespace urban
      * @param suture_points a map index second mesh |--> index of common point in first mesh
      * @return lhs U rhs
      */
-    shadow::Mesh stitch(shadow::Mesh const& lhs, shadow::Mesh const& rhs, std::map<size_t, size_t> const& suture_points);
+    shadow::Mesh stitch(shadow::Mesh const& lhs, shadow::Mesh const& rhs, std::map<std::size_t, std::size_t> const& suture_points);
     
     /**
      * Stitch a mesh to set of connex meshes

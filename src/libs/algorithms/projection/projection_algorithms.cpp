@@ -10,14 +10,14 @@
 
 namespace urban
 {
-    projection::BrickPrint project(const Brick & brick)
+    projection::BrickPrint project(Brick const& brick)
     {
-        projection::BrickPrint projection(brick.get_name(), brick.bbox(), brick.get_reference_point(), brick.get_espg());
+        projection::BrickPrint projection(brick.get_name(), brick.bbox(), brick.get_reference_point(), brick.get_epsg());
         std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
         std::for_each(
             std::begin(projected_facets),
             std::end(projected_facets),
-            [&projection](projection::FacePrint facet)
+            [&projection](projection::FacePrint const& facet)
             {
                 projection.insert(facet);
             }
@@ -25,7 +25,7 @@ namespace urban
         return projection;
     }
 
-    std::vector<projection::FacePrint> project_xy(const Brick & brick)
+    std::vector<projection::FacePrint> project_xy(Brick const& brick)
     {
         std::vector<projection::FacePrint> facets(brick.facets_size());
 
@@ -34,7 +34,7 @@ namespace urban
             brick.facets_cbegin(),
             brick.facets_cend(),
             std::begin(facets),
-            [&facet_points](const Brick::Facet & facet)
+            [&facet_points](Brick::Facet const& facet)
             {
                 projection::FacePrint projected_facet;
                 /**
@@ -92,7 +92,7 @@ namespace urban
                 std::end(facets),
                 [](const projection::FacePrint & facet)
                 {
-                    return facet.is_perpendicular();
+                    return facet.is_empty() || facet.is_perpendicular();
                 }
             ),
             std::end(facets)
@@ -101,8 +101,8 @@ namespace urban
         /** 
          * >> Heuristic sorting in order to have the minimum number of occlusions to deal with;
          */
-        SimpleHeuristic heuristic;
-        std::sort(std::begin(facets), std::end(facets), heuristic);
+        //SimpleHeuristic heuristic;
+        //std::sort(std::begin(facets), std::end(facets), heuristic);
         return facets;
     }
 
@@ -142,7 +142,7 @@ namespace urban
                         std::for_each(
                             std::begin(superposition),
                             std::end(superposition),
-                            [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes intersection)
+                            [&lhs, &rhs, &first_parts_occluded, &second_parts_occluded](Polygon_with_holes const& intersection)
                             {
                                 Point_2 intersection_point(
                                     CGAL::centroid(

@@ -14,7 +14,7 @@ namespace urban
         const std::list<std::string> tested_raster_formats{{"GTiff"}};
 
         FileHandler<GDALDriver>::FileHandler(void) {}
-        FileHandler<GDALDriver>::FileHandler(const std::string & _driver_name, const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes)
+        FileHandler<GDALDriver>::FileHandler(std::string const& _driver_name, boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes)
         {
             if(driver_name == "ESRI Shapefile")
                 std::cout << "You may face a problem with polygon orientations while reading." << std::endl;
@@ -148,14 +148,19 @@ namespace urban
                             throw std::runtime_error(error_message.str());
                         }
                         
+                        int epsg_buffer(2154);
                         const char * spatial_reference_system_name = file->GetProjectionRef();
+                        if(spatial_reference_system_name)
+                        {
+                            epsg_buffer = OGRSpatialReference(spatial_reference_system_name).GetEPSGGeogCS();
+                        }
 
                         double geographic_transform[6] = {0,1,0,0,0,1};
                         if( file->GetGeoTransform( geographic_transform ) != CE_None )
                             throw std::runtime_error("GDAL could not retrieve any registered Geometric Transform");
                         
                         GDALRasterBand* raster_band = file->GetRasterBand(1);
-                        raster_projection = projection::RasterPrint(filepath.stem().string(), geographic_transform, static_cast<size_t>(file->GetRasterYSize()), static_cast<size_t>(file->GetRasterXSize()), raster_band);
+                        raster_projection = projection::RasterPrint(filepath.stem().string(), geographic_transform, epsg_buffer, static_cast<std::size_t>(file->GetRasterYSize()), static_cast<std::size_t>(file->GetRasterXSize()), raster_band);
                         GDALClose(dynamic_cast<GDALDatasetH>(file));
                     }
                     else
@@ -198,8 +203,8 @@ namespace urban
                         throw std::runtime_error(error_message.str());
                     }
 
-                    size_t height(raster_image.get_height()),
-                           width(raster_image.get_width());
+                    std::size_t height(raster_image.get_height()),
+                                width(raster_image.get_width());
                     double adfGeoTransform[6];
 
                     double* gdal_buffer = const_cast<double*>(raster_image.data());

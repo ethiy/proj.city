@@ -17,9 +17,7 @@ namespace urban
 {
     namespace io
     {
-        FileHandler<std::fstream>::FileHandler(void) {}
-
-        FileHandler<std::fstream>::FileHandler(const boost::filesystem::path & _filepath, const std::map<std::string, bool> & _modes)
+        FileHandler<std::fstream>::FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
             : filepath(_filepath), modes(_modes) {}
 
         FileHandler<std::fstream>::~FileHandler(void) {}
@@ -83,7 +81,7 @@ namespace urban
                         /*Parsing sizes*/
                         std::vector<long> sizes(3);
                         std::istringstream _sizes(lines[1]);
-                        std::copy(std::istream_iterator<size_t>(_sizes), std::istream_iterator<size_t>(), std::begin(sizes));
+                        std::copy(std::istream_iterator<std::size_t>(_sizes), std::istream_iterator<std::size_t>(), std::begin(sizes));
                         if (sizes.size() != 3)
                             throw std::range_error("Error parsing the second line! There should be 3 integers.");
                         if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
@@ -92,11 +90,11 @@ namespace urban
                             throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
                         /*Parsing vertex points*/
-                        std::vector<std::string> buffer_lines(static_cast<size_t>(sizes[0]));
+                        std::vector<std::string> buffer_lines(static_cast<std::size_t>(sizes[0]));
                         std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::begin(buffer_lines));
-                        size_t idx(0);
+                        std::size_t idx(0);
 
-                        std::map<size_t, shadow::Point> points;
+                        std::map<std::size_t, shadow::Point> points;
                         std::vector<double> coordinates;
                         coordinates.reserve(3);
                         std::istringstream sline;
@@ -118,12 +116,12 @@ namespace urban
                         buffer_lines.clear();
                         sline.clear();
 
-                        std::map<size_t, shadow::Face> faces;
-                        buffer_lines.resize(static_cast<size_t>(sizes[1]));
+                        std::map<std::size_t, shadow::Face> faces;
+                        buffer_lines.resize(static_cast<std::size_t>(sizes[1]));
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
 
-                        std::vector<size_t> indexes;
-                        size_t n(0);
+                        std::vector<std::size_t> indexes;
+                        std::size_t n(0);
                         std::for_each(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
@@ -131,7 +129,7 @@ namespace urban
                                 sline.str(line);
                                 sline >> n;
                                 indexes.resize(n);
-                                std::copy(std::istream_iterator<size_t>(sline), std::istream_iterator<size_t>(), std::begin(indexes));
+                                std::copy(std::istream_iterator<std::size_t>(sline), std::istream_iterator<std::size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
                                 faces.emplace(std::make_pair(idx++, shadow::Face(indexes)));
@@ -168,7 +166,7 @@ namespace urban
             return mesh;
         }
 
-        void FileHandler<std::fstream>::write(shadow::Mesh mesh)
+        void FileHandler<std::fstream>::write(shadow::Mesh const& mesh)
         {
             std::ostringstream error_message;
 
@@ -192,7 +190,7 @@ namespace urban
                 std::for_each(
                     mesh.points_cbegin(),
                     mesh.points_cend(),
-                    [this](std::pair<size_t, shadow::Point> p)
+                    [this](std::pair<std::size_t, shadow::Point> p)
                     {
                         file << p.second << std::endl;
                     }
@@ -202,7 +200,7 @@ namespace urban
                 std::for_each(
                     mesh.faces_cbegin(),
                     mesh.faces_cend(),
-                    [this](std::pair<size_t, shadow::Face> p)
+                    [this](std::pair<std::size_t, shadow::Face> p)
                     {
                         file << p.second << std::endl;
                     }
