@@ -71,11 +71,13 @@ set(Off_HEADER
 set(IO_HEADERS
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_3ds.h"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_scene.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_off.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_gdal.h"
 )
 set(IO_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_3ds.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_scene.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_off.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_gdal.cpp"
 )

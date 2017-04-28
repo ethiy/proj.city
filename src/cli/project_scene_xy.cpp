@@ -1,4 +1,5 @@
 #include "../libs/urban.h"
+#include "../libs/io/io_scene.h"
 
 #include <docopt.h>
 
@@ -43,28 +44,10 @@ int main(int argc, const char** argv)
 
         boost::filesystem::path input_path(arguments.at("<filename>").asString());
         boost::filesystem::path root(input_path.parent_path());
-        boost::filesystem::path scene_tree_file(root / (input_path.stem().string() + ".XML"));
+        boost::filesystem::path scene_tree_filepath(root / (input_path.stem().string() + ".XML"));
 
-        tinyxml2::XMLDocument scene_tree;
-        auto error = scene_tree.LoadFile(scene_tree_file.string().c_str());
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-
-        double  x_offset(0),
-                y_offset(0),
-                z_offset(0);
-        
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        
-        urban::shadow::Point pivot(x_offset, y_offset, z_offset);
+        urban::io::FileHandler<tinyxml2::XMLDocument> scene_tree_file(scene_tree_filepath);
+        urban::shadow::Point pivot = scene_tree_file.pivot();
 
         std::cout << "The shadow point : " << pivot << std::flush << std::endl;
 
