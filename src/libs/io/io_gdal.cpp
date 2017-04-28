@@ -204,7 +204,7 @@ namespace urban
                     }
 
                     std::size_t height(raster_image.get_height()),
-                           width(raster_image.get_width());
+                                width(raster_image.get_width());
                     double adfGeoTransform[6];
 
                     double* gdal_buffer = const_cast<double*>(raster_image.data());
