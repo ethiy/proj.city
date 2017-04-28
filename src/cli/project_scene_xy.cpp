@@ -99,7 +99,8 @@ int main(int argc, const char** argv)
             std::begin(urban_objects),
             [&pivot](urban::shadow::Mesh const& mesh)
             {
-                return urban::Brick(mesh, pivot);
+                urban::Brick brick(mesh, pivot);
+                return urban::prune(brick);
             }
         );
         std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
