@@ -1,6 +1,6 @@
 # 3DSceneModel
 
-[![GitHub license](https://img.shields.io/badge/license-AGPL-blue.svg)](https://raw.githubusercontent.com/Ethiy/3DSceneModel/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/Ethiy/3DSceneModel/master/LICENSE)
 
 | Environment              | Status        |
 | ------------------------ |:-------------:|
