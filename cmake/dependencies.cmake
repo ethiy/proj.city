@@ -1,26 +1,11 @@
 set(LIBS "")
 set(LIBS_DIRS "")
-
-# Find Lib3ds
-include(cmake/modules/free3ds.cmake)
-
-include_directories(SYSTEM ${LIB3DS_INCLUDE_DIRS})
-list(APPEND LIBS ${LIB3DS_LIBRARIES})
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 # Find Boost
 FIND_PACKAGE(Boost REQUIRED filesystem system)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIR})
-else(Boost_FOUND)
-    set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/local/boost_1_60_0/")
-    set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/local/boost_1_60_0/lib64-msvc-14.0")
-    Find_PACKAGE(Boost REQUIRED filesystem)
-    if(Boost_FOUND)
-        INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-    endif(Boost_FOUND)
-endif(Boost_FOUND)
 
-set(Boost_USE_STATIC_LIBS        OFF)
+set(Boost_USE_STATIC_LIBS        ON)
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME     OFF)
 set(BOOST_ALL_DYN_LINK           OFF)
@@ -33,6 +18,27 @@ FIND_PACKAGE(CGAL REQUIRED)
 include( ${CGAL_USE_FILE} ) 
 include_directories(${CGAL_INCLUDE_DIRS})
 list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
+
+# Find GDAL
+find_package(GDAL REQUIRED)
+include_directories(${GDAL_INCLUDE_DIR})
+list(APPEND LIBS ${GDAL_LIBRARY})
+
+# Find Lib3ds
+find_package(Lib3ds REQUIRED)
+
+include_directories(SYSTEM ${Lib3ds_INCLUDE_DIR})
+list(APPEND LIBS ${Lib3ds_LIBRARIES})
+
+# Find TinyXML2
+find_package(TinyXML2 REQUIRED)
+include_directories(SYSTEM ${TINYXML2_INCLUDE_DIR})
+list(APPEND LIBS ${TINYXML2_LIBRARIES})
+
+# Find Docopt
+include(cmake/modules/docopt.cmake)
+include_directories(SYSTEM ${Docopt_INCLUDE_DIRS})
+list(APPEND LIBS ${Docopt_LIBRARIES})
 
 # Find Catch
 include(cmake/modules/catch.cmake)

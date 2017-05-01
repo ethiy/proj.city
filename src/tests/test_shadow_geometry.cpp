@@ -1,6 +1,6 @@
-#include "../libs/Shadow/Point/point.h"
-#include "../libs/Shadow/Vector/vector.h"
-#include "../libs/Shadow/Bbox/bbox.h"
+#include "../libs/shadow/Point/point.h"
+#include "../libs/shadow/Vector/vector.h"
+#include "../libs/shadow/Bbox/bbox.h"
 
 #include <limits>
 #include <cmath>
@@ -9,25 +9,24 @@
 
 SCENARIO("Point manipulation:")
 {
-    GIVEN("Point coordinates")
+    GIVEN("Point coordinates:")
     {
-        urban::shadow::Point point(15.5343f, -13.4504f, 60.8789f);
-        WHEN("the point is created")
+        urban::shadow::Point point(15.5343, -13.4504, 60.8789);
+        WHEN("Out stream created")
         {
             THEN("The output checks:")
             {
-                std::ostringstream auxilary, _auxilary;
-                auxilary << point.x() << " " << point.y() << " " << point.z();
-                _auxilary << point;
-                REQUIRE(auxilary.str() == _auxilary.str());
+                std::ostringstream auxilary;
+                auxilary << point;
+                REQUIRE(auxilary.str() == "15.5343 -13.4504 60.8789");
             }
         }
     }
 
     GIVEN("Two Point coordinates")
     {
-        urban::shadow::Point origin(15.5343f, -13.4504f, 60.8789f);
-        urban::shadow::Point target(15.7204f, -13.188f, 61.1764f);
+        urban::shadow::Point origin(15.5343, -13.4504, 60.8789);
+        urban::shadow::Point target(15.7204, -13.188, 61.1764);
         WHEN("the vector is created")
         {
             urban::shadow::Vector v(origin, target);
@@ -35,16 +34,16 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << v.x() << " " << v.y() << " " << v.z();
-                REQUIRE(auxilary.str() == "0.1861 0.262401 0.297501");
+                REQUIRE(auxilary.str() == "0.1861 0.2624 0.2975");
             }
         }
     }
         
     GIVEN("Thee Point coordinates")
     {
-        urban::shadow::Point first(15.5343f, -13.4504f, 60.8789f);
-        urban::shadow::Point second(15.7204f, -13.188f, 60.8789f);
-        urban::shadow::Point third(15.7204f, -13.188f, 61.1764f);
+        urban::shadow::Point first(15.5343, -13.4504, 60.8789);
+        urban::shadow::Point second(15.7204, -13.188, 60.8789);
+        urban::shadow::Point third(15.7204, -13.188, 61.1764);
         WHEN("one vector is created")
         {
             urban::shadow::Vector v(first, second);
@@ -52,7 +51,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << v.x() << " " << v.y() << " " << v.z();
-                REQUIRE(auxilary.str() == "0.1861 0.262401 0");
+                REQUIRE(auxilary.str() == "0.1861 0.2624 0");
             }
         }
         WHEN("two points are substructed")
@@ -62,7 +61,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << u.x() << " " << u.y() << " " << u.z();
-                REQUIRE(auxilary.str() == "0 0 0.297501");
+                REQUIRE(auxilary.str() == "0 0 0.2975");
             }
         }
         WHEN("A point is translated")
@@ -108,7 +107,7 @@ SCENARIO("Point manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << n;
-                REQUIRE(auxilary.str() == "0.0780643 -0.0553649 0");
+                REQUIRE(auxilary.str() == "0.078064 -0.0553647 0");
             }
         }
         WHEN("the normal of the plane defined accordingly is computed")
@@ -127,7 +126,7 @@ SCENARIO("Point manipulation:")
             urban::shadow::Vector n(urban::normal_to(first, second, third));
             THEN("the output checks:")
             {
-                REQUIRE(urban::determinant(n, u, v) == n * (u ^ v));
+                REQUIRE(std::abs(urban::determinant(n, u, v) - n * (u ^ v)) < std::numeric_limits<double>::epsilon());
             }
         }
         WHEN("determinant of colinear vectors")

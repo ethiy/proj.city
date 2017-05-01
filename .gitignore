@@ -4,10 +4,7 @@
 .vscode
 
 # Qt creator
-*.user
+CMakeLists.txt.user
 
 # Build files
 build
-
-# Urban 3d resources
-ressources/UrbanModels/*
