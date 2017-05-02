@@ -82,6 +82,12 @@ namespace urban
             Scene & operator=(Scene && other);
 
             /**
+             * Access pivot point
+             * @return pivot points
+             */
+            shadow::Point get_pivot(void) const noexcept;
+
+            /**
              * * Structure a vector of meshes
              * @param meshes a vector of meshes to structure
              * @return a map of mesh vectors structured according to the structure

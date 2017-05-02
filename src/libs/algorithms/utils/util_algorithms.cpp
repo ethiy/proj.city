@@ -78,15 +78,6 @@ namespace urban
         return std::make_pair(A, B);
     }
 
-    std::map<std::string, urban::shadow::Mesh> order(std::vector<urban::shadow::Mesh> const& meshes)
-    {
-        std::map<std::string, urban::shadow::Mesh> ordered_meshes;
-        for(auto const& mesh : meshes)
-        {
-            ordered_meshes.emplace(mesh.get_name(), mesh);
-        }
-        return ordered_meshes;
-    }
 
     InexactPoint_2 centroid(InexactPolygon const& polygon)
     {

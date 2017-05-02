@@ -4,6 +4,13 @@
 
 namespace urban
 {
+    /** 
+     * Order a Vector of meshes by name
+     * @param meshes vector of meshes.
+     * @retrurn a map of name order meshes
+     */
+    std::map<std::string, urban::shadow::Mesh> order(std::vector<urban::shadow::Mesh> const& meshes);
+
     namespace scene
     {
         Scene::Scene(void)
@@ -45,6 +52,11 @@ namespace urban
             return *this;
         }
 
+        shadow::Point Scene::get_pivot(void) const noexcept
+        {
+            return pivot;
+        }
+
         std::map<std::size_t, std::vector<urban::shadow::Mesh> > Scene::cluster(std::vector<shadow::Mesh> const& meshes) const
         {
             std::map<std::size_t, std::vector<urban::shadow::Mesh> > buildings;
@@ -82,4 +94,15 @@ namespace urban
             lhs.swap(rhs);
         }
     }
+
+    std::map<std::string, urban::shadow::Mesh> order(std::vector<urban::shadow::Mesh> const& meshes)
+    {
+        std::map<std::string, urban::shadow::Mesh> ordered_meshes;
+        for(auto const& mesh : meshes)
+        {
+            ordered_meshes.emplace(mesh.get_name(), mesh);
+        }
+        return ordered_meshes;
+    }
+
 }
