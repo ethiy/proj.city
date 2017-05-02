@@ -17,15 +17,16 @@ set(Shadow_SRC
 add_library(urban_shadow ${Shadow_HEADERS} ${Shadow_SRC})
 target_link_libraries(urban_shadow ${LIBS})
 
-# Brick
-set(Brick_HEADERS
-    "${3DSceneModel_SOURCE_DIR}/src/libs/brick/brick.h"
+# Scene
+set(Scene_HEADERS
+    "${3DSceneModel_SOURCE_DIR}/src/libs/scene/brick/brick.h"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/scene/building.h"
 )
-set(Brick_SRC
-    "${3DSceneModel_SOURCE_DIR}/src/libs/brick/brick.cpp"
+set(Scene_SRC
+    "${3DSceneModel_SOURCE_DIR}/src/libs/scene/brick/brick.cpp"
 )
 
-add_library(urban_brick ${Brick_HEADERS} ${Brick_SRC} ${Shadow_HEADERS})
+add_library(urban_brick ${Scene_HEADERS} ${Scene_SRC} ${Shadow_HEADERS})
 target_link_libraries(urban_brick urban_shadow ${LIBS})
 
 # Projections
@@ -39,7 +40,7 @@ set(Projection_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/projection/Raster/raster_projection.cpp"
 )
 
-add_library(urban_projection ${Projection_HEADER} ${Projection_SRC} ${Brick_HEADERS} ${Algorithms_HEADER})
+add_library(urban_projection ${Projection_HEADER} ${Projection_SRC} ${Scene_HEADERS} ${Algorithms_HEADER})
 target_link_libraries(urban_projection urban_algorithms ${LIBS})
 
 # Algorithms
@@ -55,7 +56,7 @@ set(Algorithms_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/algorithms/utils/util_algorithms.cpp"
 )
 
-add_library(urban_algorithms ${Algorithms_HEADER} ${Algorithms_SRC} ${Brick_HEADERS} ${Shadow_HEADERS} ${Projection_HEADER})
+add_library(urban_algorithms ${Algorithms_HEADER} ${Algorithms_SRC} ${Scene_HEADERS} ${Shadow_HEADERS} ${Projection_HEADER})
 target_link_libraries(urban_algorithms urban_brick urban_shadow urban_projection ${LIBS})
 
 # Input/Output

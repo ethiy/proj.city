@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../geometry_definitions.h"
+#include "../../geometry_definitions.h"
 
-#include "../shadow/mesh.h"
+#include "../../shadow/mesh.h"
 
-#include "../io/Adjacency_stream/adjacency_stream.h"
+#include "../../io/Adjacency_stream/adjacency_stream.h"
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>

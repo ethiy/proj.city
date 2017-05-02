@@ -7,7 +7,7 @@
 #include "io/io_3ds.h"
 #include "../libs/io/io_scene.h"
 
-#include "brick/brick.h"
+#include "scene/building.h"
 
 #include "projection/projection.h"
 

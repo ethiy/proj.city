@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
-#include "../../brick/brick.h"
+#include "../../scene/brick/brick.h"
 #include "../../projection/projection.h"
 
 #include <vector>
