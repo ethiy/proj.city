@@ -27,8 +27,8 @@ set(Scene_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/scene/building.cpp"
 )
 
-add_library(urban_brick ${Scene_HEADERS} ${Scene_SRC} ${Shadow_HEADERS})
-target_link_libraries(urban_brick urban_shadow ${LIBS})
+add_library(urban_scene ${Scene_HEADERS} ${Scene_SRC} ${Shadow_HEADERS})
+target_link_libraries(urban_scene urban_shadow ${LIBS})
 
 # Projections
 set(Projection_HEADER
@@ -58,7 +58,7 @@ set(Algorithms_SRC
 )
 
 add_library(urban_algorithms ${Algorithms_HEADER} ${Algorithms_SRC} ${Scene_HEADERS} ${Shadow_HEADERS} ${Projection_HEADER})
-target_link_libraries(urban_algorithms urban_brick urban_shadow urban_projection ${LIBS})
+target_link_libraries(urban_algorithms urban_scene urban_shadow urban_projection ${LIBS})
 
 # Input/Output
 set(Line_HEADER
@@ -91,4 +91,4 @@ target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
 add_library(urban SHARED ${urban_HEADER})
 link_directories(urban ${LIBS_DIRS})
-target_link_libraries(urban urban_shadow urban_io urban_brick urban_projection urban_algorithms ${LIBS})
+target_link_libraries(urban urban_shadow urban_io urban_scene urban_projection urban_algorithms ${LIBS})
