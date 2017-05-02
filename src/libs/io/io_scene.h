@@ -25,6 +25,7 @@ namespace urban
             ~FileHandler(void);
             
             shadow::Point pivot(void) const;
+            unsigned short epsg_code(void) const;
             std::map<std::size_t, std::set<std::string> > buildings(void) const;
         private:
             tinyxml2::XMLDocument scene_tree;

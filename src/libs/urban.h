@@ -5,6 +5,7 @@
 #include "io/io_off.h"
 #include "io/io_gdal.h"
 #include "io/io_3ds.h"
+#include "../libs/io/io_scene.h"
 
 #include "brick/brick.h"
 
