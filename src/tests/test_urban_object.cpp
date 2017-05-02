@@ -20,7 +20,7 @@ SCENARIO("Urban Brick manipulation:")
 
         WHEN("the urban Brick is constructed")
         {
-            urban::Brick hammerhead(mesh, urban::shadow::Point());
+            urban::scene::Brick hammerhead(mesh, urban::shadow::Point());
 
             THEN("the output checks")
             {
