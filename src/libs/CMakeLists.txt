@@ -24,6 +24,7 @@ set(Scene_HEADERS
 )
 set(Scene_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/scene/brick/brick.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/scene/building.cpp"
 )
 
 add_library(urban_brick ${Scene_HEADERS} ${Scene_SRC} ${Shadow_HEADERS})
