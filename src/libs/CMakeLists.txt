@@ -21,10 +21,12 @@ target_link_libraries(urban_shadow ${LIBS})
 set(Scene_HEADERS
     "${3DSceneModel_SOURCE_DIR}/src/libs/scene/brick/brick.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/scene/building.h"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/scene/scene.h"
 )
 set(Scene_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/scene/brick/brick.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/scene/building.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/scene/scene.cpp"
 )
 
 add_library(urban_scene ${Scene_HEADERS} ${Scene_SRC} ${Shadow_HEADERS})
@@ -84,7 +86,7 @@ set(IO_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_gdal.cpp"
 )
 
-add_library(urban_io ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Projection_HEADER} ${Line_HEADER} ${Adjacency_HEADER} ${Off_HEADER})
+add_library(urban_io ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Projection_HEADER} ${Line_HEADER} ${Adjacency_HEADER} ${Off_HEADER} ${Scene_HEADERS})
 target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 
 # urban
