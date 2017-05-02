@@ -90,84 +90,84 @@ int main(int argc, const char** argv)
         // std::cout << " Done" << std::flush << std::endl;
 
 
-        // std::cout << "Projecting on XY... " << std::flush;
-        // std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
-        // std::transform(
-        //     std::begin(urban_objects),
-        //     std::end(urban_objects),
-        //     std::begin(projections_xy),
-        //     [](urban::scene::Brick const& brick)
-        //     {
-        //         return urban::project(brick);
-        //     }
-        // );
-        // std::cout << "Done" << std::flush << std::endl;
+        std::cout << "Projecting on XY... " << std::flush;
+        std::vector<urban::projection::BrickPrint> projections_xy(buildings.size());
+        std::transform(
+            std::begin(buildings),
+            std::end(buildings),
+            std::begin(projections_xy),
+            [](urban::scene::Building const& building)
+            {
+                return urban::project(building);
+            }
+        );
+        std::cout << "Done" << std::flush << std::endl;
 
-        // std::cout << "Summing Projections... " << std::flush;
-        // urban::projection::BrickPrint scene_projection(pivot);
-        // for(auto projection : projections_xy)
-        // {
-        //     scene_projection += projection;
-        // }
-        // std::cout << "Done" << std::flush << std::endl;
+        std::cout << "Summing Projections... " << std::flush;
+        urban::projection::BrickPrint scene_projection(pivot);
+        for(auto projection : projections_xy)
+        {
+            scene_projection += projection;
+        }
+        std::cout << "Done" << std::flush << std::endl;
 
-        // std::map<std::string,bool>&& modes{{"write", true}};
+        std::map<std::string,bool>&& modes{{"write", true}};
         
-        // std::cout << "Saving vector projections... " << std::flush;
-        // urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
-        // victor.write(scene_projection);
-        // boost::filesystem::path vector_dir(root / "vectors");
-        // boost::filesystem::create_directory(vector_dir);
-        // std::for_each(
-        //     std::begin(projections_xy),
-        //     std::end(projections_xy),
-        //     [&vector_dir, &input_path, &modes](urban::projection::BrickPrint const& projection)
-        //     {
-        //         urban::io::FileHandler<GDALDriver> victors(
-        //             "GML",
-        //             boost::filesystem::path(vector_dir / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
-        //             modes
-        //         );
-        //         victors.write(projection);
-        //     }
-        // );
+        std::cout << "Saving vector projections... " << std::flush;
+        urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
+        victor.write(scene_projection);
+        boost::filesystem::path vector_dir(root / "vectors");
+        boost::filesystem::create_directory(vector_dir);
+        std::for_each(
+            std::begin(projections_xy),
+            std::end(projections_xy),
+            [&vector_dir, &input_path, &modes](urban::projection::BrickPrint const& projection)
+            {
+                urban::io::FileHandler<GDALDriver> victors(
+                    "GML",
+                    boost::filesystem::path(vector_dir / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
+                    modes
+                );
+                victors.write(projection);
+            }
+        );
 
-        // std::cout << "Done" << std::flush << std::endl;
+        std::cout << "Done" << std::flush << std::endl;
 
 
-        // std::cout << "rasterizing projections... " << std::flush;
-        // urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, pixel_size, pivot);
-        // std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
-        // std::transform(
-        //     std::begin(projections_xy),
-        //     std::end(projections_xy),
-        //     std::begin(raster_projections),
-        //     [&pivot, pixel_size](urban::projection::BrickPrint const& projection)
-        //     {
-        //         return urban::rasterize(projection, pixel_size, pivot);
-        //     }
-        // );
-        // std::cout << "Done" << std::flush << std::endl;
+        std::cout << "rasterizing projections... " << std::flush;
+        urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, pixel_size, pivot);
+        std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
+        std::transform(
+            std::begin(projections_xy),
+            std::end(projections_xy),
+            std::begin(raster_projections),
+            [&pivot, pixel_size](urban::projection::BrickPrint const& projection)
+            {
+                return urban::rasterize(projection, pixel_size, pivot);
+            }
+        );
+        std::cout << "Done" << std::flush << std::endl;
 
-        // std::cout << "Saving raster projections... " << std::flush;
-        // urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
-        // rastaf.write(global_rasta);
-        // boost::filesystem::path raster_dir(root / "rasters");
-        // boost::filesystem::create_directory(raster_dir);
-        // std::for_each(
-        //     std::begin(raster_projections),
-        //     std::end(raster_projections),
-        //     [&raster_dir, &input_path, &modes](urban::projection::RasterPrint const& rasta)
-        //     {
-        //         urban::io::FileHandler<GDALDriver> rastafari(
-        //             "GTiff",
-        //             boost::filesystem::path(raster_dir / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
-        //             modes
-        //         );
-        //         rastafari.write(rasta);
-        //     }
-        // );
-        // std::cout << "Done" << std::flush << std::endl;
+        std::cout << "Saving raster projections... " << std::flush;
+        urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
+        rastaf.write(global_rasta);
+        boost::filesystem::path raster_dir(root / "rasters");
+        boost::filesystem::create_directory(raster_dir);
+        std::for_each(
+            std::begin(raster_projections),
+            std::end(raster_projections),
+            [&raster_dir, &input_path, &modes](urban::projection::RasterPrint const& rasta)
+            {
+                urban::io::FileHandler<GDALDriver> rastafari(
+                    "GTiff",
+                    boost::filesystem::path(raster_dir / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
+                    modes
+                );
+                rastafari.write(rasta);
+            }
+        );
+        std::cout << "Done" << std::flush << std::endl;
     }
     catch(std::exception const& except)
     {
