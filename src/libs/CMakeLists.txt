@@ -52,6 +52,7 @@ set(Algorithms_HEADER
 )
 set(Algorithms_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/algorithms/brick/brick_algorithms.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/algorithms/building/building_algorithms.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/algorithms/ogr/ogr_algorithms.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/algorithms/raster/raster_algorithms.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/algorithms/projection/projection_algorithms.cpp"
