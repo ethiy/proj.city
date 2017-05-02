@@ -25,6 +25,17 @@ namespace urban
         return projection;
     }
 
+    projection::BrickPrint project(const scene::Building & building)
+    {
+        projection::BrickPrint projection;
+        for(auto const& brick : building)
+        {
+            projection += project(brick);
+        }
+        return projection;
+    }
+
+
     std::vector<projection::FacePrint> project_xy(scene::Brick const& brick)
     {
         std::vector<projection::FacePrint> facets(brick.facets_size());

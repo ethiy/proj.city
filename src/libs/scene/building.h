@@ -76,6 +76,45 @@ namespace urban
              @see Building & operator=(Building && other);
              */
             Building & operator=(Building && other);
+
+            std::size_t size(void) const noexcept;
+
+            /** Iterator */
+            using iterator = std::vector<Brick>::iterator;
+            /** Constant Iterator */            
+            using const_iterator = std::vector<Brick>::const_iterator;
+
+            /**
+             Returns the end iterator.
+             @return iterator at the begining.
+             */
+            iterator begin(void) noexcept;
+            /**
+             Returns the constant begin iterator.
+             @return constant iterator at the begining.
+             */
+            const_iterator begin(void) const noexcept;
+            /**
+             Returns the constant begin iterator.
+             @return constant iterator at the begining.
+             */
+            const_iterator cbegin(void) const noexcept;
+
+            /**
+             Returns the begin iterator.
+             @return iterator at the end.
+             */
+            iterator end(void) noexcept;
+            /**
+             Returns the constant end iterator.
+             @return constant iterator at the end.
+             */
+            const_iterator end(void) const noexcept;
+            /**
+             Returns the constant end iterator.
+             @return constant iterator at the end.
+             */
+            const_iterator cend(void) const noexcept;
         private:
             /** identifier */
             std::size_t id;

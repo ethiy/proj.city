@@ -2,6 +2,9 @@
 
 #include "../algorithms/brick/brick_algorithms.h"
 
+#include <iterator>
+#include <algorithm>
+
 namespace urban
 {
     namespace scene
@@ -17,8 +20,7 @@ namespace urban
                 std::begin(bricks),
                 [&pivot](shadow::Mesh const& mesh)
                 {
-                    Brick brick(mesh, pivot);
-                    return urban::prune(brick);
+                    return Brick(mesh, pivot);
                 }
             );
         }
@@ -51,6 +53,36 @@ namespace urban
             bricks = std::move(other.bricks);
 
             return *this;
+        }
+
+        std::size_t Building::size(void) const noexcept
+        {
+            return bricks.size();
+        }
+
+        Building::iterator Building::begin(void) noexcept
+        {
+            return bricks.begin();
+        }
+        Building::const_iterator Building::begin(void) const noexcept
+        {
+            return bricks.begin();
+        }
+        Building::const_iterator Building::cbegin(void) const noexcept
+        {
+            return bricks.cbegin();
+        }
+        Building::iterator Building::end(void) noexcept
+        {
+            return bricks.end();
+        }
+        Building::const_iterator Building::end(void) const noexcept
+        {
+            return bricks.end();
+        }
+        Building::const_iterator Building::cend(void) const noexcept
+        {
+            return bricks.cend();
         }
 
         void swap(Building & lhs, Building & rhs)
