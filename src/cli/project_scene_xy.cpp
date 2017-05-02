@@ -1,5 +1,4 @@
 #include "../libs/urban.h"
-#include "../libs/io/io_scene.h"
 
 #include <docopt.h>
 
@@ -48,6 +47,7 @@ int main(int argc, const char** argv)
 
         urban::io::FileHandler<tinyxml2::XMLDocument> scene_tree_file(scene_tree_filepath);
         urban::shadow::Point pivot = scene_tree_file.pivot();
+        std::map<std::size_t, std::set<std::string> > building_clusters = scene_tree_file.buildings();
 
         std::cout << "The shadow point : " << pivot << std::flush << std::endl;
 
@@ -55,6 +55,33 @@ int main(int argc, const char** argv)
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = handler.read();
         std::cout << meshes.size() << " Done" << std::flush << std::endl;
+
+        std::map<std::size_t, std::vector<urban::shadow::Mesh> > buildings;
+
+        std::vector<urban::shadow::Mesh> buffer_meshes;
+        for(auto const& building_pair : building_clusters)
+        {
+            buffer_meshes.reserve(building_pair.second.size());
+            std::transform(
+                std::begin(building_pair.second),
+                std::end(building_pair.second),
+                std::back_inserter(buffer_meshes),
+                [&meshes](std::string const& mesh_name)
+                {
+                    auto placeholder = std::find_if(
+                        std::begin(meshes),
+                        std::end(meshes),
+                        [&mesh_name](urban::shadow::Mesh const& mesh)
+                        {
+                            return mesh.get_name() == mesh_name;
+                        }
+                    );
+                    return *placeholder;
+                }
+            );
+            buildings.emplace(building_pair.first, buffer_meshes);
+            buffer_meshes.clear();
+        }
 
         std::cout << "Filtering Meshes... " << std::flush;
         meshes.erase(
