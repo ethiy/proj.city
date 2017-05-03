@@ -56,6 +56,11 @@ namespace urban
         {
             return pivot;
         }
+        
+        unsigned short Scene::get_epsg(void) const noexcept
+        {
+            return epsg_code;
+        }
 
         std::map<std::size_t, std::vector<urban::shadow::Mesh> > Scene::cluster(std::vector<shadow::Mesh> const& meshes) const
         {
@@ -66,25 +71,15 @@ namespace urban
 
             for(auto const& building : structure)
             {
-                buffer_meshes = std::vector<urban::shadow::Mesh>(building.second.size());
-                std::transform(
-                    std::begin(building.second),
-                    std::end(building.second),
-                    std::begin(buffer_meshes),
-                    [&ordered_meshes](std::string const& mesh_name)
-                    {
-                        auto placeholder = std::find_if(
-                            std::begin(ordered_meshes),
-                            std::end(ordered_meshes),
-                            [&mesh_name](std::pair<std::string, urban::shadow::Mesh> const& mesh)
-                            {
-                                return mesh.first == mesh_name;
-                            }
-                        );
-                        return placeholder->second;
-                    }
-                );
+                buffer_meshes.reserve(building.second.size());
+                for(auto const& mesh_name : building.second)
+                {
+                    auto placeholder = ordered_meshes.find(mesh_name);
+                    if(placeholder != std::end(ordered_meshes))
+                        buffer_meshes.push_back(placeholder->second);
+                }
                 buildings.emplace(building.first, buffer_meshes);
+                buffer_meshes.clear();
             }
             return buildings;
         }

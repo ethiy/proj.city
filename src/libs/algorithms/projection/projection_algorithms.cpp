@@ -27,7 +27,7 @@ namespace urban
 
     projection::BrickPrint project(const scene::Building & building)
     {
-        projection::BrickPrint projection;
+        projection::BrickPrint projection(building.pivot());
         for(auto const& brick : building)
         {
             projection += project(brick);

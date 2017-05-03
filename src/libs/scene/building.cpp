@@ -11,8 +11,8 @@ namespace urban
     {
         Building::Building(void)
         {}
-        Building::Building(std::size_t const& _id, std::vector<shadow::Mesh> const& meshes, shadow::Point const& pivot)
-            : id(_id), bricks(meshes.size())
+        Building::Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot, unsigned short _epsg_code)
+            : id(_id), reference_point(pivot), epsg_code(_epsg_code), bricks(meshes.size())
         {
             std::transform(
                 std::begin(meshes),
@@ -25,10 +25,10 @@ namespace urban
             );
         }
         Building::Building(Building const& other)
-            : id(other.id), bricks(other.bricks)
+            : id(other.id), reference_point(other.reference_point), epsg_code(other.epsg_code), bricks(other.bricks)
         {}
         Building::Building(Building && other)
-            : id(std::move(other.id)), bricks(std::move(other.bricks))
+            : id(std::move(other.id)), reference_point(std::move(other.reference_point)), epsg_code(std::move(other.epsg_code)), bricks(std::move(other.bricks))
         {}
         Building::~Building(void)
         {}
@@ -38,12 +38,16 @@ namespace urban
             using std::swap;
             swap(id, other.id);
             swap(bricks, other.bricks);
+            swap(reference_point, other.reference_point);
+            swap(epsg_code, other.epsg_code);
         }
 
         Building & Building::operator=(Building const& other)
         {
             id = other.id;
             bricks = other.bricks;
+            reference_point = other.reference_point;
+            epsg_code = other.epsg_code;
 
             return *this;
         }
@@ -51,8 +55,20 @@ namespace urban
         {
             id = std::move(other.id);
             bricks = std::move(other.bricks);
+            reference_point = std::move(other.reference_point);
+            epsg_code = std::move(other.epsg_code);
 
             return *this;
+        }
+
+        shadow::Point Building::pivot(void) const noexcept
+        {
+            return reference_point;
+        }
+
+        std::size_t Building::identifier(void) const noexcept
+        {
+            return id;
         }
 
         std::size_t Building::size(void) const noexcept

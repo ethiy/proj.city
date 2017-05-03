@@ -22,12 +22,13 @@ namespace urban
               * @param _id building identifier
               * @param meshes stitched meshes that constitute the building
               * @param pivot reference point
+              * @param _epsg_code projection system epsg code
               * @see Building(void);
               * @see Building(Building const& other);
               * @see Building(Building&& other);
               * @see ~Building(void);
              */
-            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
+            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot, unsigned short _epsg_code = 2154);
             /**
               * Copy Constructor.
               * @param other Building to copy
@@ -77,6 +78,21 @@ namespace urban
              */
             Building & operator=(Building && other);
 
+            /** 
+             * Access the reference point.
+             * @return the reference point
+             */
+            shadow::Point pivot(void) const noexcept;
+            /** 
+             * Access the id.
+             * @return the id
+             */
+            std::size_t identifier(void) const noexcept;
+
+            /** 
+             * Access the number of bricks.
+             * @return number of bricks
+             */
             std::size_t size(void) const noexcept;
 
             /** Iterator */
@@ -118,6 +134,10 @@ namespace urban
         private:
             /** identifier */
             std::size_t id;
+            /** Reference Point */
+            shadow::Point reference_point;
+            /** Projection system EPSG code*/
+            unsigned short epsg_code = 2154;
             /** Bricks */
             std::vector<Brick> bricks;
         };

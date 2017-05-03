@@ -86,6 +86,11 @@ namespace urban
              * @return pivot points
              */
             shadow::Point get_pivot(void) const noexcept;
+            /**
+             * Access the EPSG projection system code
+             * @return the EPSG projection system code
+             */
+            unsigned short get_epsg(void) const noexcept;
 
             /**
              * * Structure a vector of meshes
