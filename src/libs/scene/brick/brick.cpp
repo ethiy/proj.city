@@ -310,8 +310,21 @@ namespace urban
 
         std::vector<bool> Brick::facet_adjacency_matrix(void) const
         {
-            std::size_t&& n = facets_size();
-            std::vector<Brick::Facet_const_handle> facets(n);
+            std::vector<bool> adjacency(facets_size() * facets_size(), false);
+            return facet_adjacency_matrix(adjacency, 0);
+        }
+
+        std::vector<bool> & Brick::facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const
+        {
+            std::size_t n = static_cast<std::size_t>(std::floor(std::sqrt(matrix.size())));
+            std::size_t size = facets_size();
+
+            if(n * n != matrix.size())
+                throw std::logic_error("The adjacency matrix must be square!");
+            if(n < offset + facets_size())
+                throw std::underflow_error("The matrix cannot hold the whole brick!");
+
+            std::vector<Brick::Facet_const_handle> facets(size);
             std::transform(
                 facets_cbegin(),
                 facets_cend(),
@@ -321,13 +334,12 @@ namespace urban
                     return &facet;
                 }
             );
-            std::vector<bool> adjacency(n * n);
 
-            for(std::size_t diag(0); diag != n; ++diag)
-                adjacency.at(diag * n + diag) = true;
+            for(std::size_t diag(offset); diag != size + offset; ++diag)
+                matrix.at(diag * size + diag) = true;
 
             std::vector<Brick::Facet_const_handle> line_adjacents;
-            for(std::size_t line(0); line != n; ++line)
+            for(std::size_t line(0); line != size; ++line)
             {
                 line_adjacents = facet_adjacents(*facets.at(line));
 
@@ -336,15 +348,14 @@ namespace urban
                     auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
                     if(placeholder != std::end(facets))
                     {
-                        long index = std::distance(std::begin(facets), placeholder);
-                        adjacency.at(line * n + index) = true;
+                        long index = std::distance(std::begin(facets), placeholder) + offset;
+                        matrix.at((line + offset) * size + index) = true;
                     }
                 }
 
                 line_adjacents.clear();
             }   
-
-            return adjacency;
+            return matrix;
         }
 
         std::ostream & operator<<(std::ostream &os, Brick const& brick)

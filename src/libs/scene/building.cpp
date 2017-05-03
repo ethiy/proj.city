@@ -4,6 +4,7 @@
 
 #include <iterator>
 #include <algorithm>
+#include <numeric>
 
 namespace urban
 {
@@ -71,6 +72,20 @@ namespace urban
             return id;
         }
 
+        std::string Building::get_name(void) const noexcept
+        {
+            std::stringstream _name(bricks.front().get_name());
+            std::for_each(
+                std::next(std::begin(bricks)),
+                std::end(bricks),
+                [&_name](Brick const& brick)
+                {
+                    _name << "_" << brick.get_name();
+                }
+            );
+            return _name.str();
+        }
+
         std::size_t Building::size(void) const noexcept
         {
             return bricks.size();
@@ -99,6 +114,49 @@ namespace urban
         Building::const_iterator Building::cend(void) const noexcept
         {
             return bricks.cend();
+        }
+
+        io::Adjacency_stream & operator<<(io::Adjacency_stream & as, Building const& building)
+        {
+            std::vector<std::size_t> cummulative_sizes(building.size() + 1, 0);
+            std::transform(
+                std::begin(building.bricks),
+                std::end(building.bricks),
+                std::next(std::begin(cummulative_sizes)),
+                [&as](Brick const& brick)
+                {
+                    as << brick.facets_size() << " ";
+                    return brick.facets_size();
+                }
+            );
+            as << std::endl;
+
+            std::partial_sum(
+                std::begin(cummulative_sizes),
+                std::end(cummulative_sizes),
+                std::begin(cummulative_sizes)
+            );
+
+            std::vector<bool> dual_matrix(cummulative_sizes.back() * cummulative_sizes.back(), false);
+
+            std::size_t brick_index(0);
+            for(auto const& brick : building.bricks)
+            {
+                std::for_each(
+                    brick.facets_cbegin(),
+                    brick.facets_cend(),
+                    [&as, &brick](Brick::Facet const& facet)
+                    {
+                        as << facet.facet_degree() << " " << brick.area(facet) << " " << brick.centroid(facet) << " " << brick.normal(facet) << std::endl;
+                    }
+                );
+
+                dual_matrix = brick.facet_adjacency_matrix(dual_matrix, cummulative_sizes.at(brick_index++));
+            }
+
+            as << dual_matrix << std::endl;
+
+            return as;
         }
 
         void swap(Building & lhs, Building & rhs)

@@ -88,6 +88,11 @@ namespace urban
              * @return the id
              */
             std::size_t identifier(void) const noexcept;
+            /** 
+             * Concatenate brick names
+             * @return the concatenated names of bricks
+             */
+            std::string get_name(void) const noexcept;
 
             /** 
              * Access the number of bricks.
@@ -140,6 +145,14 @@ namespace urban
             unsigned short epsg_code = 2154;
             /** Bricks */
             std::vector<Brick> bricks;
+
+            /**
+            * Outstreaming the dual adjacency graph
+            * @param as the output stream
+            * @param building the building to stream
+            * @return the output stream
+            */
+            friend io::Adjacency_stream & operator<<(io::Adjacency_stream & as, Building const& building);
         };
 
         /**

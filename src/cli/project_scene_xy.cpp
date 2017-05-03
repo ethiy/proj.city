@@ -55,39 +55,51 @@ int main(int argc, const char** argv)
         std::map<std::size_t, std::vector<urban::shadow::Mesh> > building_meshes = scene.cluster(meshes);
         for(auto & building_mesh : building_meshes)
         {
+            building_mesh.second.erase(
+                std::remove_if(
+                    std::begin(building_mesh.second),
+                    std::end(building_mesh.second),
+                    [](urban::shadow::Mesh const& mesh)
+                    {
+                        return mesh.get_name().at(0) == 'F';
+                    }
+                ),
+                std::end(building_mesh.second)
+            );
             building_mesh.second = urban::stitch(building_mesh.second);
         }
         std::cout << "Done" << std::flush << std::endl;
 
         std::cout << "Loading Buildings... " << std::flush;
         auto pivot = scene.get_pivot();
+        auto epsg_code = scene.get_epsg();
         std::vector<urban::scene::Building> buildings(building_meshes.size());
         std::transform(
             std::begin(building_meshes),
             std::end(building_meshes),
             std::begin(buildings),
-            [&pivot](std::pair<std::size_t, std::vector<urban::shadow::Mesh> > const& building_mesh)
+            [&pivot, epsg_code](std::pair<std::size_t, std::vector<urban::shadow::Mesh> > const& building_mesh)
             {
-                urban::scene::Building building(building_mesh.first, building_mesh.second, pivot);
+                urban::scene::Building building(building_mesh.first, building_mesh.second, pivot, epsg_code);
                 return urban::prune(building);
             }
         );
         std::cout << buildings.size() << " Done" << std::flush << std::endl;
 
-        // std::cout << "Saving brick duals... " << std::flush;
-        // boost::filesystem::path dual_dir(root / "dual_graphs");
-        // boost::filesystem::create_directory(dual_dir);
-        // std::for_each(
-        //     std::begin(urban_objects),
-        //     std::end(urban_objects),
-        //     [&dual_dir, &input_path](urban::scene::Brick const& brick)
-        //     {
-        //         std::fstream adjacency_file(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out);
-        //         urban::io::Adjacency_stream as(adjacency_file);
-        //         as << brick;
-        //     }
-        // );
-        // std::cout << " Done" << std::flush << std::endl;
+        std::cout << "Saving brick duals... " << std::flush;
+        boost::filesystem::path dual_dir(root / "dual_graphs");
+        boost::filesystem::create_directory(dual_dir);
+        std::for_each(
+            std::begin(buildings),
+            std::end(buildings),
+            [&dual_dir, &input_path](urban::scene::Building const& building)
+            {
+                std::fstream adjacency_file(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + building.get_name() + ".txt")).string(), std::ios::out);
+                urban::io::Adjacency_stream as(adjacency_file);
+                as << building;
+            }
+        );
+        std::cout << " Done" << std::flush << std::endl;
 
 
         std::cout << "Projecting on XY... " << std::flush;

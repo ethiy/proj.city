@@ -322,10 +322,16 @@ namespace urban
 
             /** 
             * Get facet adjacency matrix (dual matrix)
-            * @param h halfedge handle to join its incidents facets
             * @return the facet adjacency matrix
             */
             std::vector<bool> facet_adjacency_matrix(void) const;
+            /** 
+            * Write facet adjacency matrix to building matrix
+            * @param matrix the matrix to write on
+            * @param offset the index of the block where to write
+            * @return the matrix
+            */
+            std::vector<bool> & facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const;
         private:
             /** Brick name */
             std::string name;
