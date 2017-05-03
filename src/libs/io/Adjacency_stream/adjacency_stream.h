@@ -5,6 +5,8 @@
 #include <vector>
 #include <iterator>
 
+#include <cmath>
+
 #include <stdexcept>
 
 namespace urban
@@ -55,7 +57,7 @@ namespace urban
             */
             Adjacency_stream & operator<<(std::vector<bool> const& matrix)
             {
-                auto n = std::sqrt(matrix.size());
+                std::size_t n = static_cast<std::size_t>(std::floor(std::sqrt(matrix.size())));
                 if(n * n != matrix.size())
                     throw std::logic_error("The adjacency matrix must be square!");
 
