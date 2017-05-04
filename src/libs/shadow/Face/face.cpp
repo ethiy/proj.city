@@ -51,8 +51,7 @@ namespace urban
         Face & Face::operator=(Face const& other) noexcept
         {
             degree = other.degree;
-            points.resize(degree);
-            std::copy(std::begin(other.points), std::begin(other.points), std::begin(points));
+            points = other.points;
             return *this;
         }
         Face & Face::operator=(Face && other) noexcept

@@ -51,18 +51,17 @@ namespace urban
                 /**
                  * >> Copying 3D points to 2D Point vector
                  */
-                facet_points.clear();
-                facet_points.resize(facet.facet_degree());
+                facet_points = std::vector<Point_2>(facet.facet_degree());
 
                 /** Start with the first point*/
                 auto halfedge = facet.halfedge();
                 Point_3 vertex(halfedge->vertex()->point());
-                facet_points[0] = Point_2(vertex.x(), vertex.y());
+                facet_points.at(0) = Point_2(vertex.x(), vertex.y());
                 std::transform(
-                    std::next(facet.facet_begin(), 1),
+                    std::next(facet.facet_begin()),
                     std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
-                    std::next(std::begin(facet_points), 1),
-                    [&vertex](const Polyhedron::Halfedge & h)
+                    std::next(std::begin(facet_points)),
+                    [&vertex](Polyhedron::Halfedge const& h)
                     {
                         return Point_2(h.vertex()->point().x(), h.vertex()->point().y());
                     }
