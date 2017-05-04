@@ -1,6 +1,6 @@
 #include "face.h"
 
-#include "../Vector/vector.h"
+#include "../Geometry/vector.h"
 
 #include <algorithm>
 #include <iterator>

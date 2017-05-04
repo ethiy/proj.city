@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../algorithms/projection/projection_algorithms.h"
-#include "../../shadow/Point/point.h"
+#include "../../shadow/Geometry/point.h"
 
 #include <gdal_priv.h>
 

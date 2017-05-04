@@ -1,5 +1,5 @@
-#include "../libs/shadow/Point/point.h"
-#include "../libs/shadow/Vector/vector.h"
+#include "../libs/shadow/Geometry/point.h"
+#include "../libs/shadow/Geometry/vector.h"
 #include "../libs/shadow/Bbox/bbox.h"
 
 #include <limits>

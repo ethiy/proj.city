@@ -3,16 +3,16 @@ set(Shadow_HEADERS
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Bbox/bbox.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Face/face.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Geometry/cartesian_coordinates.h"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Point/point.h"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Vector/vector.h"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Geometry/point.h"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Geometry/vector.h"
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/mesh.h"
 )
 set(Shadow_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Bbox/bbox.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Face/face.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Geometry/cartesian_coordinates.cpp"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Point/point.cpp"
-    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Vector/vector.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Geometry/point.cpp"
+    "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/Geometry/vector.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/shadow/mesh.cpp"
 )
 

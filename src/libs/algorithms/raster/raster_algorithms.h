@@ -2,7 +2,7 @@
 
 #include "../../projection/Raster/raster_projection.h"
 #include "../../projection/Brick/brick_projection.h"
-#include "../../shadow/Point/point.h"
+#include "../../shadow/Geometry/point.h"
 
 #include <vector>
 
