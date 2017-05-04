@@ -84,6 +84,11 @@ namespace urban
              */
             shadow::Point pivot(void) const noexcept;
             /** 
+             * Access the projection system epsg code.
+             * @return this projection system epsg code
+             */
+            unsigned short get_epsg(void) const noexcept;
+            /** 
              * Access the id.
              * @return the id
              */
@@ -93,6 +98,18 @@ namespace urban
              * @return the concatenated names of bricks
              */
             std::string get_name(void) const noexcept;
+
+            /** 
+             * Checks if Building is empty.
+             * @return if this is empty
+             */
+            bool is_empty(void) const noexcept;
+            
+            /** 
+             * Computes the Building bounding box.
+             * @return this bounding box
+             */
+            Bbox_3 bbox(void) const;
 
             /** 
              * Access the number of bricks.

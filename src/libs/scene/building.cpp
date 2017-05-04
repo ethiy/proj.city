@@ -67,6 +67,11 @@ namespace urban
             return reference_point;
         }
 
+        unsigned short Building::get_epsg(void) const noexcept
+        {
+            return epsg_code;
+        }
+
         std::size_t Building::identifier(void) const noexcept
         {
             return id;
@@ -84,6 +89,24 @@ namespace urban
                 }
             );
             return _name.str();
+        }
+
+        bool Building::is_empty(void) const noexcept
+        {
+            return bricks.empty();
+        }
+
+        Bbox_3 Building::bbox(void) const
+        {
+            return std::accumulate(
+                std::begin(bricks),
+                std::end(bricks),
+                Bbox_3(),
+                [](Bbox_3 & building_bbox, Brick const& brick)
+                {
+                    return building_bbox + brick.bbox();
+                }
+            );
         }
 
         std::size_t Building::size(void) const noexcept

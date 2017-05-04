@@ -137,7 +137,7 @@ int main(int argc, const char** argv)
             {
                 urban::io::FileHandler<GDALDriver> victors(
                     "GML",
-                    boost::filesystem::path(vector_dir / (input_path.stem().string() + projection.get_name() + ".gml")),
+                    boost::filesystem::path(vector_dir / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
                     modes
                 );
                 victors.write(projection);
@@ -173,7 +173,7 @@ int main(int argc, const char** argv)
             {
                 urban::io::FileHandler<GDALDriver> rastafari(
                     "GTiff",
-                    boost::filesystem::path(raster_dir / (input_path.stem().string() + rasta.get_name() + ".tiff")),
+                    boost::filesystem::path(raster_dir / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
                     modes
                 );
                 rastafari.write(rasta);
