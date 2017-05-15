@@ -203,6 +203,20 @@ int main(int argc, const char** argv)
         std::cout << "Saving vector projections... " << std::flush;
         urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (arguments.input_path.stem().string() + ".gml")), modes);
         victor.write(scene_projection);
+        if(arguments.labels)
+        {
+            boost::filesystem::path label_dir(root / "labels");
+            boost::filesystem::create_directory(label_dir);
+            for(auto const& projection : projections_xy)
+            {
+                urban::io::FileHandler<GDALDriver> labelers(
+                    "ESRI shapefile",
+                    boost::filesystem::path(label_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".shp")),
+                    modes
+                );
+                labelers.write(projection);
+            }
+        }
         if(arguments.buildings)
         {
             boost::filesystem::path vector_dir(root / "vectors");
