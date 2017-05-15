@@ -34,7 +34,7 @@ int main(int argc, const char** argv)
             USAGE,
             { argv + 1, argv + argc },
             true,
-            "project_scene_xy 0.0.0-dev"
+            "project_scene_xy " + std::string(VERSION)
         );
         std::stringstream sconverter(arguments.at("--pixel_size").asString());
         double pixel_size(1);
