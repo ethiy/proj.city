@@ -1,5 +1,5 @@
-#include "../libs/IO/io_off.h"
-#include "../libs/IO/Line/line.h"
+#include "../libs/io/io_off.h"
+#include "../libs/io/Line/line.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -34,7 +34,7 @@ SCENARIO("Input/Output from OFF file:")
 
                 std::istringstream _auxilary(auxilary.str());
                 std::vector<std::string> lines;
-                urban::io::read_lines(_auxilary, std::back_inserter(lines));
+                urban::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
@@ -50,7 +50,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
             }
         }
     }
@@ -66,7 +66,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
             }
         }
 
@@ -77,7 +77,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(urban::shadow::Mesh mesh = handler.read(), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
             }
         }
     }
@@ -96,12 +96,12 @@ SCENARIO("Input/Output from OFF file:")
             file_name << unique_name << ".off";
 
             std::map<std::string, bool> modes{{"write", true}};
-            urban::io::FileHandler<std::fstream> handler(file_name.str(), modes);
+            urban::io::FileHandler<std::fstream> handler(boost::filesystem::path(file_name.str()), modes);
             handler.write(mesh);
 
             THEN("the input should check")
             {
-                urban::io::FileHandler<std::fstream> checker_handler(file_name.str(), _modes);
+                urban::io::FileHandler<std::fstream> checker_handler(boost::filesystem::path(file_name.str()), _modes);
                 urban::shadow::Mesh written_mesh = checker_handler.read();
 
                 std::ostringstream auxilary, out;
@@ -109,7 +109,7 @@ SCENARIO("Input/Output from OFF file:")
 
                 std::istringstream _auxilary(auxilary.str());
                 std::vector<std::string> lines;
-                urban::io::read_lines(_auxilary, std::back_inserter(lines));
+                urban::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
@@ -125,7 +125,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the writter throws")
             {
-                REQUIRE_THROWS_AS(handler.write(mesh), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(handler.write(mesh));
             }
         }
     }

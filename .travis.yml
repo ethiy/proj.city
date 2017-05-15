@@ -25,13 +25,22 @@ matrix:
       cache:
         directories:
           - $HOME/Library/Caches/Homebrew
-          - ./external/Catch/src/Catch-External
+          - ./external
+          - $HOME/3rdParty
       compiler: clang
       before_install:
         - brew update
         - brew outdated boost || brew upgrade boost
         - brew outdated cgal || brew upgrade cgal
         - brew install lib3ds
+        - brew install tinyxml2
+        - git pull origin master
+        - mkdir -p 3rdParty && cd 3rdParty
+        - mkdir -p GDAL && cd GDAL
+        - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-2.1.dmg
+        - sudo hdiutil attach GDAL_Complete-2.1.dmg
+        - sudo installer -package "/Volumes/GDAL Complete/GDAL Complete.pkg" -target /
+        - cd $TRAVIS_BUILD_DIR
         - mkdir build
         - mkdir build/darwin
       install:
@@ -39,4 +48,3 @@ matrix:
         - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
       script:
         - make -j4 all
-        - ./test_exec -a

@@ -1,5 +1,5 @@
-#include "../libs/UrbanObject/brick.h"
-#include "../libs/IO/io_off.h"
+#include "../libs/brick/brick.h"
+#include "../libs/io/io_off.h"
 
 #include <boost/filesystem.hpp>
 
@@ -20,7 +20,7 @@ SCENARIO("Urban Brick manipulation:")
 
         WHEN("the urban Brick is constructed")
         {
-            urban::Brick hammerhead(mesh);
+            urban::Brick hammerhead(mesh, urban::shadow::Point());
 
             THEN("the output checks")
             {

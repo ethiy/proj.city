@@ -1,6 +1,6 @@
-#include "../libs/Shadow/Point/point.h"
-#include "../libs/Shadow/Vector/vector.h"
-#include "../libs/Shadow/Bbox/bbox.h"
+#include "../libs/shadow/Point/point.h"
+#include "../libs/shadow/Vector/vector.h"
+#include "../libs/shadow/Bbox/bbox.h"
 
 #include <limits>
 #include <cmath>
@@ -9,17 +9,16 @@
 
 SCENARIO("Point manipulation:")
 {
-    GIVEN("Point coordinates")
+    GIVEN("Point coordinates:")
     {
         urban::shadow::Point point(15.5343, -13.4504, 60.8789);
-        WHEN("the point is created")
+        WHEN("Out stream created")
         {
             THEN("The output checks:")
             {
-                std::ostringstream auxilary, _auxilary;
-                auxilary << point.x() << " " << point.y() << " " << point.z();
-                _auxilary << point;
-                REQUIRE(auxilary.str() == _auxilary.str());
+                std::ostringstream auxilary;
+                auxilary << point;
+                REQUIRE(auxilary.str() == "15.5343 -13.4504 60.8789");
             }
         }
     }

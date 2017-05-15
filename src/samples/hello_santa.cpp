@@ -30,7 +30,7 @@ int main(int, char **)
             std::begin(urban_objects),
             [](urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh);
+                return urban::Brick(mesh, urban::shadow::Point());
             }
         );
 
@@ -38,12 +38,12 @@ int main(int, char **)
         #ifdef CGAL_USE_GEOMVIEW
         CGAL::Geomview_stream geomview_stream;
         geomview_stream.set_bg_color(CGAL::Color(0, 127, 200));
-        size_t pigment(1);
-        size_t all(meshes.size());
+        std::size_t pigment(1);
+        std::size_t all(meshes.size());
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&](urban::Brick & obj)
+            [&geomview_stream, pigment, all](urban::Brick & obj) mutable
             {
                 geomview_stream << CGAL::Color(250 * (pigment - 1) / all, 0, 250 * pigment / all) << obj;
                 pigment++;

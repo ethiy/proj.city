@@ -1,4 +1,4 @@
-#include "../libs/IO/io_3ds.h"
+#include "../libs/io/io_3ds.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -36,12 +36,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
         
         WHEN("the reading mode is not chosen")
         {
-            std::map<std::string,bool> modes;
+            std::map<std::string,bool> modes{{"write", true}};
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( std::vector<urban::shadow::Mesh> meshes = handler.read() );
+                REQUIRE_THROWS( handler.read() );
             }
         }
     }
@@ -53,22 +53,20 @@ SCENARIO("Input/Output from 3dsMAX file:")
         WHEN("the reading mode is chosen")
         {
             std::map<std::string,bool> modes{{"read", true}};
-            urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( std::vector<urban::shadow::Mesh> meshes = handler.read() );
+                REQUIRE_THROWS( urban::io::FileHandler<Lib3dsFile> handler(filepath, modes) );
             }
         }
-        
-        WHEN("the reading mode is not chosen")
+
+        WHEN("No mode is chosen")
         {
             std::map<std::string,bool> modes;
-            urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( std::vector<urban::shadow::Mesh> meshes = handler.read() );
+                REQUIRE_THROWS( urban::io::FileHandler<Lib3dsFile> handler(filepath, modes) );
             }
         }
     }
@@ -88,12 +86,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
 
             std::map<std::string,bool> modes{{"write", true}};
-            urban::io::FileHandler<Lib3dsFile> handler(file_name.str(), modes);
+            urban::io::FileHandler<Lib3dsFile> handler(boost::filesystem::path(file_name.str()), modes);
             handler.write(meshes);
 
             THEN("the output checks")
             {
-                urban::io::FileHandler<Lib3dsFile> checker_handler(file_name.str(), _modes);
+                urban::io::FileHandler<Lib3dsFile> checker_handler(boost::filesystem::path(file_name.str()), _modes);
                 std::vector<urban::shadow::Mesh> written_meshes = checker_handler.read();
 
                 std::ostringstream auxilary;
@@ -107,12 +105,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
         
         WHEN("the writing mode is not chosen")
         {
-            std::map<std::string,bool> modes;
+            std::map<std::string,bool> modes{{"read", true}};
             urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS_AS(handler.write(meshes), boost::filesystem::filesystem_error);
+                REQUIRE_THROWS(handler.write(meshes));
             }
         }
     }

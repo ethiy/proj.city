@@ -23,14 +23,14 @@ int main(int, char **)
             std::begin(urban_objects),
             [](const urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh);
+                return urban::Brick(mesh, urban::shadow::Point());
             }
         );
 
         std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
         std::transform(
-            std::begin(meshes),
-            std::end(meshes),
+            std::begin(urban_objects),
+            std::end(urban_objects),
             std::begin(projections_xy),
             [](const urban::Brick & brick)
             {
