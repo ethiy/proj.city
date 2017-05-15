@@ -230,7 +230,11 @@ namespace urban
 
         void BrickPrint::to_ogr(GDALDataset* file) const
         {
-            OGRLayer* projection_layer = file->CreateLayer("projection_xy", NULL, wkbPolygon, NULL);
+            OGRSpatialReference spatial_reference_system;
+            spatial_reference_system.importFromEPSG(
+                epsg_index
+            );
+            OGRLayer* projection_layer = file->CreateLayer("projection_xy", &spatial_reference_system, wkbPolygon, NULL);
             if(projection_layer == NULL)
                 throw std::runtime_error("GDAL could not create a projection layer");
             int width(static_cast<int>(projected_facets.size()));
