@@ -17,33 +17,74 @@ R"(project_scene_xy.
 
     Usage:
       project_scene_xy <filename> [--pixel_size=<size>]
+      project_scene_xy <filename> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
       project_scene_xy (-h | --help)
       project_scene_xy --version
     Options:
       -h --help             Show this screen.
       --version             Show version.
       --pixel_size=<size>   Pixel size [default: 1].
+      --rasterize           Rasterize projections.
+      --buildings           Save projections per building.
+      --graphs              Save the Facets dual graph for buildings.
+      --labels              Save vector projections with error fields.
 )";
+
+struct Arguments
+{
+public:
+    Arguments(std::map<std::string, docopt::value> const& docopt_args)
+        : input_path(docopt_args.at("<filename>").asString()),
+          rasterize(docopt_args.at("--rasterize")),
+          buildings(docopt_args.at("--buildings")),
+          graphs(docopt_args.at("--graphs")),
+          labels(docopt_args.at("--labels"))
+    {
+        std::stringstream sconverter(docopt_args.at("--pixel_size").asString());
+        sconverter >> pixel_size;
+    }
+    ~Arguments(void)
+    {}
+
+    boost::filesystem::path input_path;
+    double pixel_size = 1;
+    bool rasterize = false;
+    bool buildings = false;
+    bool graphs = false;
+    bool labels = false;
+};
+
+std::ostream & operator <<(std::ostream & os, Arguments & arguments)
+{
+    os << "Arguments:" << std::endl
+       << "  Input path: " << arguments.input_path << std::endl
+       << "  Pixel size: " << arguments.pixel_size << std::endl
+       << "  Rasterize: " << arguments.rasterize << std::endl
+       << "  Buildings: " << arguments.buildings << std::endl
+       << "  Graphs: " << arguments.graphs << std::endl
+       << "  Labels: " << arguments.labels << std::endl;
+    return os;
+}
+
 
 int main(int argc, const char** argv)
 {
     try
     {
         std::cout << "Parsing arguments... " << std::flush;
-        std::map<std::string, docopt::value> arguments = docopt::docopt(
-            USAGE,
-            { argv + 1, argv + argc },
-            true,
-            "project_scene_xy " + std::string(VERSION)
+        Arguments arguments(
+            docopt::docopt(
+                USAGE,
+                { argv + 1, argv + argc },
+                true,
+                "project_scene_xy " + std::string(VERSION)
+            )
         );
-        std::stringstream sconverter(arguments.at("--pixel_size").asString());
-        double pixel_size(1);
-        sconverter >> pixel_size;
         std::cout << "Done" << std::flush << std::endl;
+        std::cout << arguments << std::endl;
 
-        boost::filesystem::path input_path(arguments.at("<filename>").asString());
-        boost::filesystem::path root(input_path.parent_path());
-        boost::filesystem::path scene_tree_filepath(root / (input_path.stem().string() + ".XML"));
+        boost::filesystem::path root(arguments.input_path.parent_path());
+        boost::filesystem::path scene_tree_filepath(root / (arguments.input_path.stem().string() + ".XML"));
 
         urban::io::FileHandler<tinyxml2::XMLDocument> scene_tree_file(scene_tree_filepath);
         urban::shadow::Point pivot = scene_tree_file.pivot();
@@ -51,7 +92,7 @@ int main(int argc, const char** argv)
 
         std::cout << "The shadow point : " << pivot << std::flush << std::endl;
 
-        urban::io::FileHandler<Lib3dsFile> handler(input_path, std::map<std::string,bool>{{"read", true}});
+        urban::io::FileHandler<Lib3dsFile> handler(arguments.input_path, std::map<std::string,bool>{{"read", true}});
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = handler.read();
         std::cout << meshes.size() << " Done" << std::flush << std::endl;
@@ -121,9 +162,9 @@ int main(int argc, const char** argv)
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&dual_dir, &input_path](urban::Brick const& brick)
+            [&dual_dir, &arguments](urban::Brick const& brick)
             {
-                std::fstream adjacency_file(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out);
+                std::fstream adjacency_file(boost::filesystem::path(dual_dir / (arguments.input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out);
                 urban::io::Adjacency_stream as(adjacency_file);
                 as << brick;
             }
@@ -155,18 +196,18 @@ int main(int argc, const char** argv)
         std::map<std::string,bool>&& modes{{"write", true}};
         
         std::cout << "Saving vector projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
+        urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (arguments.input_path.stem().string() + ".gml")), modes);
         victor.write(scene_projection);
         boost::filesystem::path vector_dir(root / "vectors");
         boost::filesystem::create_directory(vector_dir);
         std::for_each(
             std::begin(projections_xy),
             std::end(projections_xy),
-            [&vector_dir, &input_path, &modes](urban::projection::BrickPrint const& projection)
+            [&vector_dir, &arguments, &modes](urban::projection::BrickPrint const& projection)
             {
                 urban::io::FileHandler<GDALDriver> victors(
                     "GML",
-                    boost::filesystem::path(vector_dir / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
+                    boost::filesystem::path(vector_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".gml")),
                     modes
                 );
                 victors.write(projection);
@@ -177,32 +218,32 @@ int main(int argc, const char** argv)
 
 
         std::cout << "rasterizing projections... " << std::flush;
-        urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, pixel_size, pivot);
+        urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, arguments.pixel_size, pivot);
         std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
         std::transform(
             std::begin(projections_xy),
             std::end(projections_xy),
             std::begin(raster_projections),
-            [&pivot, pixel_size](urban::projection::BrickPrint const& projection)
+            [&pivot, &arguments](urban::projection::BrickPrint const& projection)
             {
-                return urban::rasterize(projection, pixel_size, pivot);
+                return urban::rasterize(projection, arguments.pixel_size, pivot);
             }
         );
         std::cout << "Done" << std::flush << std::endl;
 
         std::cout << "Saving raster projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
+        urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (arguments.input_path.stem().string() + ".tiff")), modes);
         rastaf.write(global_rasta);
         boost::filesystem::path raster_dir(root / "rasters");
         boost::filesystem::create_directory(raster_dir);
         std::for_each(
             std::begin(raster_projections),
             std::end(raster_projections),
-            [&raster_dir, &input_path, &modes](urban::projection::RasterPrint const& rasta)
+            [&raster_dir, &arguments, &modes](urban::projection::RasterPrint const& rasta)
             {
                 urban::io::FileHandler<GDALDriver> rastafari(
                     "GTiff",
-                    boost::filesystem::path(raster_dir / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
+                    boost::filesystem::path(raster_dir / (arguments.input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
                     modes
                 );
                 rastafari.write(rasta);
