@@ -24,7 +24,7 @@ SCENARIO("Input/Output from OFF file:")
         WHEN("reading in text mode")
         {
             std::map<std::string, bool> modes{{"read", true}};
-            urban::io::FileHandler<std::fstream> handler(filepath, modes);
+            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
             urban::shadow::Mesh mesh = handler.read();
 
             THEN("the output checks")
@@ -46,7 +46,7 @@ SCENARIO("Input/Output from OFF file:")
         WHEN("the reading mode is not chosen")
         {
             std::map<std::string, bool> modes;
-            urban::io::FileHandler<std::fstream> handler(filepath, modes);
+            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
 
             THEN("the reader throws")
             {
@@ -62,7 +62,7 @@ SCENARIO("Input/Output from OFF file:")
         WHEN("the reading mode is chosen")
         {
             std::map<std::string, bool> modes{{"read", true}};
-            urban::io::FileHandler<std::fstream> handler(filepath, modes);
+            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
 
             THEN("the reader throws")
             {
@@ -73,7 +73,7 @@ SCENARIO("Input/Output from OFF file:")
         WHEN("the reading mode is not chosen")
         {
             std::map<std::string, bool> modes;
-            urban::io::FileHandler<std::fstream> handler(filepath, modes);
+            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
 
             THEN("the reader throws")
             {
@@ -86,7 +86,7 @@ SCENARIO("Input/Output from OFF file:")
     {
         boost::filesystem::path _filepath("../../ressources/3dModels/OFF/hammerhead.off");
         std::map<std::string, bool> _modes{{"read", true}};
-        urban::io::FileHandler<std::fstream> _handler(_filepath, _modes);
+        urban::io::FileHandler<urban::io::Off_stream> _handler(_filepath, _modes);
         urban::shadow::Mesh mesh = _handler.read();
 
         WHEN("the writing mode is chosen")
@@ -96,12 +96,12 @@ SCENARIO("Input/Output from OFF file:")
             file_name << unique_name << ".off";
 
             std::map<std::string, bool> modes{{"write", true}};
-            urban::io::FileHandler<std::fstream> handler(boost::filesystem::path(file_name.str()), modes);
+            urban::io::FileHandler<urban::io::Off_stream> handler(boost::filesystem::path(file_name.str()), modes);
             handler.write(mesh);
 
             THEN("the input should check")
             {
-                urban::io::FileHandler<std::fstream> checker_handler(boost::filesystem::path(file_name.str()), _modes);
+                urban::io::FileHandler<urban::io::Off_stream> checker_handler(boost::filesystem::path(file_name.str()), _modes);
                 urban::shadow::Mesh written_mesh = checker_handler.read();
 
                 std::ostringstream auxilary, out;
@@ -121,7 +121,7 @@ SCENARIO("Input/Output from OFF file:")
         WHEN("the writing mode is not chosen")
         {
             std::map<std::string, bool> modes{{"write", false}};
-            urban::io::FileHandler<std::fstream> handler("./hammerhead.off", modes);
+            urban::io::FileHandler<urban::io::Off_stream> handler("./hammerhead.off", modes);
 
             THEN("the writter throws")
             {
