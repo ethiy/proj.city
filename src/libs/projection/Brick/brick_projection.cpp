@@ -18,7 +18,7 @@ namespace urban
         BrickPrint::BrickPrint(void)
             : name("no_name") {}
         BrickPrint::BrickPrint(shadow::Point const& _reference_point)
-            : name("no_name"), reference_point(_reference_point) {}
+            : reference_point(_reference_point) {}
         BrickPrint::BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short _epsg_index)
             : name(_name + "_xy"),
               bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())),

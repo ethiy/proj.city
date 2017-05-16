@@ -16,6 +16,11 @@ namespace urban
         FileHandler<tinyxml2::XMLDocument>::~FileHandler(void)
         {}
 
+        scene::Scene FileHandler<tinyxml2::XMLDocument>::read(void) const
+        {
+            return scene::Scene(pivot(), epsg_code(), structure());
+        }
+
         shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(void) const
         {
             double  x_offset(0),
@@ -43,7 +48,7 @@ namespace urban
             return static_cast<unsigned short>(epsg_code);
         }
 
-        std::map<std::size_t, std::pair< std::set<std::string>, std::set<std::string> > > FileHandler<tinyxml2::XMLDocument>::buildings(void) const
+        std::map<std::size_t, std::pair< std::set<std::string>, std::set<std::string> > > FileHandler<tinyxml2::XMLDocument>::structure(void) const
         {
             std::map<std::size_t, std::pair< std::set<std::string>, std::set<std::string> > > buildings;
 

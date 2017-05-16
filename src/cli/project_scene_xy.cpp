@@ -90,73 +90,45 @@ int main(int argc, const char** argv)
         urban::io::FileHandler<tinyxml2::XMLDocument> scene_tree_file(
             boost::filesystem::path(root / (arguments.input_path.stem().string() + ".XML"))
         );
-        urban::shadow::Point pivot = scene_tree_file.pivot();
-        std::map<std::size_t, std::set<std::string> > building_clusters = scene_tree_file.buildings();
+        urban::scene::Scene scene = scene_tree_file.read();
         std::cout << "Done." << std::flush << std::endl;
-        std::cout << "The shadow point : " << pivot << std::flush << std::endl;
 
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<Lib3dsFile>(arguments.input_path, std::map<std::string,bool>{{"read", true}}).read();
         std::cout << meshes.size() << " meshes ; Done." << std::flush << std::endl;
-
-        std::map<std::size_t, std::vector<urban::shadow::Mesh> > buildings;
-
-        std::vector<urban::shadow::Mesh> buffer_meshes;
-        for(auto const& building_pair : building_clusters)
+        std::map<std::size_t, std::vector<urban::shadow::Mesh> > building_meshes = scene.cluster(meshes);
+        for(auto & building_mesh : building_meshes)
         {
-            buffer_meshes.reserve(building_pair.second.size());
-            std::transform(
-                std::begin(building_pair.second),
-                std::end(building_pair.second),
-                std::back_inserter(buffer_meshes),
-                [&meshes](std::string const& mesh_name)
-                {
-                    auto placeholder = std::find_if(
-                        std::begin(meshes),
-                        std::end(meshes),
-                        [&mesh_name](urban::shadow::Mesh const& mesh)
-                        {
-                            return mesh.get_name() == mesh_name;
-                        }
-                    );
-                    return *placeholder;
-                }
+            building_mesh.second.erase(
+                std::remove_if(
+                    std::begin(building_mesh.second),
+                    std::end(building_mesh.second),
+                    [](urban::shadow::Mesh const& mesh)
+                    {
+                        return mesh.get_name().at(0) == 'F';
+                    }
+                ),
+                std::end(building_mesh.second)
             );
-            buildings.emplace(building_pair.first, buffer_meshes);
-            buffer_meshes.clear();
+            building_mesh.second = urban::stitch(building_mesh.second);
         }
+        std::cout << "Done" << std::flush << std::endl;
 
-        std::cout << "Filtering Meshes... " << std::flush;
-        meshes.erase(
-            std::remove_if(
-                std::begin(meshes),
-                std::end(meshes),
-                [](urban::shadow::Mesh const& mesh)
-                {
-                    return mesh.get_name().at(0) == 'F' || mesh.get_name().at(0) == 'M';
-                }
-            ),
-            std::end(meshes)
-        );
-        std::cout << "Done." << std::flush << std::endl;
-
-        std::cout << "Stitching roofs... " << std::flush;
-        std::vector<urban::shadow::Mesh> stitched_roofs = urban::stitch(meshes);
-        std::cout << stitched_roofs.size() << " Done." << std::flush << std::endl;
-
-        std::cout << "Loading to Scene Bricks... " << std::flush;
-        std::vector<urban::Brick> urban_objects(stitched_roofs.size());
+        std::cout << "Loading Buildings... " << std::flush;
+        auto pivot = scene.get_pivot();
+        auto epsg_code = scene.get_epsg();
+        std::vector<urban::scene::Building> buildings(building_meshes.size());
         std::transform(
-            std::begin(stitched_roofs),
-            std::end(stitched_roofs),
-            std::begin(urban_objects),
-            [&pivot](urban::shadow::Mesh const& mesh)
+            std::begin(building_meshes),
+            std::end(building_meshes),
+            std::begin(buildings),
+            [&pivot, epsg_code](std::pair<std::size_t, std::vector<urban::shadow::Mesh> > const& building_mesh)
             {
-                urban::Brick brick(mesh, pivot);
-                return urban::prune(brick);
+                urban::scene::Building building(building_mesh.first, building_mesh.second, pivot, epsg_code);
+                return urban::prune(building);
             }
         );
-        std::cout << urban_objects.size() << " Done." << std::flush << std::endl;
+        std::cout << buildings.size() << " Done" << std::flush << std::endl;
 
         if(arguments.graphs)
         {
@@ -178,14 +150,14 @@ int main(int argc, const char** argv)
 
 
         std::cout << "Projecting on XY... " << std::flush;
-        std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
+        std::vector<urban::projection::BrickPrint> projections_xy(buildings.size());
         std::transform(
-            std::begin(urban_objects),
-            std::end(urban_objects),
+            std::begin(buildings),
+            std::end(buildings),
             std::begin(projections_xy),
-            [](urban::Brick const& brick)
+            [](urban::scene::Building const& building)
             {
-                return urban::project(brick);
+                return urban::project(building);
             }
         );
         std::cout << "Done." << std::flush << std::endl;

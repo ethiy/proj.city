@@ -5,9 +5,10 @@
 #include "io/io_off.h"
 #include "io/io_gdal.h"
 #include "io/io_3ds.h"
-#include "../libs/io/io_scene.h"
+#include "io/io_scene.h"
 
-#include "brick/brick.h"
+#include "scene/building.h"
+#include "scene/scene.h"
 
 #include "projection/projection.h"
 

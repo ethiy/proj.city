@@ -13,7 +13,7 @@
 
 namespace urban
 {
-    double border_length(Brick & brick)
+    double border_length(scene::Brick & brick)
     {
         return std::accumulate(
             brick.border_halfedges_begin(),
@@ -26,7 +26,7 @@ namespace urban
         );
     }
 
-    Brick & affine_transform(Brick & brick, const Affine_transformation_3 & affine_transformation)
+    scene::Brick & affine_transform(scene::Brick & brick, const Affine_transformation_3 & affine_transformation)
     {
         std::transform(
             brick.points_begin(),
@@ -40,42 +40,42 @@ namespace urban
         return brick;
     }
 
-    Brick & translate(Brick & brick, const Vector_3 & offset)
+    scene::Brick & translate(scene::Brick & brick, const Vector_3 & offset)
     {
         Affine_transformation_3 translation(CGAL::TRANSLATION, offset);
         return affine_transform(brick, translation);
     }
 
-    Brick & scale(Brick & brick, double scale)
+    scene::Brick & scale(scene::Brick & brick, double scale)
     {
         Affine_transformation_3 scaling(CGAL::SCALING, scale);
         return affine_transform(brick, scaling);
     }
 
-    Brick & rotate(Brick & brick, const Vector_3 & axis, double angle)
+    scene::Brick & rotate(scene::Brick & brick, const Vector_3 & axis, double angle)
     {
         std::map<double, Vector_3> _rotation{{angle, axis}};
         Affine_transformation_3 rotation(rotation_transform(_rotation));
         return affine_transform(brick, rotation);
     }
 
-    Brick & rotate(Brick & brick, const std::map<double, Vector_3> & _rotations)
+    scene::Brick & rotate(scene::Brick & brick, const std::map<double, Vector_3> & _rotations)
     {
         Affine_transformation_3 rotation(rotation_transform(_rotations));
         return affine_transform(brick, rotation);
     }
 
 
-    void plane_equations(Brick& brick)
+    void plane_equations(scene::Brick& brick)
     {
         std::transform(
             brick.facets_begin(),
             brick.facets_end(),
             brick.planes_begin(),
-            [](Brick::Facet & facet)
+            [](scene::Brick::Facet & facet)
             {
-                Brick::Halfedge_handle halfedge = facet.halfedge();
-                return Brick::Facet::Plane_3(
+                scene::Brick::Halfedge_handle halfedge = facet.halfedge();
+                return scene::Brick::Facet::Plane_3(
                     halfedge->vertex()->point(),
                     halfedge->next()->vertex()->point(),
                     halfedge->next()->next()->vertex()->point()
@@ -84,9 +84,9 @@ namespace urban
         );
     }
 
-    Brick & prune(Brick & brick)
+    scene::Brick & prune(scene::Brick & brick)
     {
-        std::vector<Brick::Halfedge_handle> prunables = brick.pruning_halfedges();
+        std::vector<scene::Brick::Halfedge_handle> prunables = brick.pruning_halfedges();
         for(auto prunable : prunables)
         {
             brick = brick.join_facet(prunable);
@@ -94,13 +94,13 @@ namespace urban
         return brick;
     }
 
-    double area(Brick& brick)
+    double area(scene::Brick& brick)
     {
         return std::accumulate(
             brick.facets_begin(),
             brick.facets_end(),
             .0,
-            [&brick](double & area, Brick::Facet & facet)
+            [&brick](double & area, scene::Brick::Facet & facet)
             {
                 return area + brick.area(facet);
             }

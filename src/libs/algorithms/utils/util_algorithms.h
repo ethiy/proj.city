@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
+#include "../../shadow/mesh.h"
 #include "../../projection/Face/face_projection.h"
 
 #include <ogr_geometry.h>
@@ -19,6 +20,7 @@ namespace urban
 
     /** Get extrems from coliear points*/
     std::pair<Point_2, Point_2> extrem_points(std::vector<Point_2> & points);
+
 
     /** Get an approximate centroid
      * @param polygon an inexact polygon

@@ -1,6 +1,6 @@
 #include "../libs/io/io_gdal.h"
 #include "../libs/algorithms/algorithms.h"
-#include "../libs/brick/brick.h"
+#include "../libs/scene/brick/brick.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -40,7 +40,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 {7, urban::shadow::Face{{1, 3, 2}}}
             }
         );
-        urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh, urban::shadow::Point()));
+        urban::projection::BrickPrint test_proj = urban::project(urban::scene::Brick(test_mesh, urban::shadow::Point()));
 
         std::ostringstream file_name;
         std::map<std::string,bool> modes{{"write", true}, {"read", true}};
