@@ -28,7 +28,7 @@ namespace urban
               * @see Building(Building&& other);
               * @see ~Building(void);
              */
-            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot, unsigned short _epsg_code = 2154);
+            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, std::vector<urban::shadow::Mesh> const& _walls, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
             /**
               * Copy Constructor.
               * @param other Building to copy
@@ -111,48 +111,81 @@ namespace urban
              */
             Bbox_3 bbox(void) const;
 
+            std::size_t roofs_size(void) const noexcept;
+            std::size_t walls_size(void) const noexcept;
             /** 
              * Access the number of bricks.
              * @return number of bricks
              */
             std::size_t size(void) const noexcept;
-
             /** Iterator */
             using iterator = std::vector<Brick>::iterator;
             /** Constant Iterator */            
             using const_iterator = std::vector<Brick>::const_iterator;
 
             /**
-             * Returns the end iterator.
+             * Returns the iterator at the begining of roofs.
              * @return iterator at the begining.
              */
-            iterator begin(void) noexcept;
+            iterator roofs_begin(void) noexcept;
             /**
-             * Returns the constant begin iterator.
+             * Returns the constant begin iterator of roofs.
              * @return constant iterator at the begining.
              */
-            const_iterator begin(void) const noexcept;
+            const_iterator roofs_begin(void) const noexcept;
             /**
-             * Returns the constant begin iterator.
+             * Returns the constant begin iterator of roofs.
              * @return constant iterator at the begining.
              */
-            const_iterator cbegin(void) const noexcept;
+            const_iterator roofs_cbegin(void) const noexcept;
 
             /**
-             * Returns the begin iterator.
+             * Returns the begin iterator of roofs.
              * @return iterator at the end.
              */
-            iterator end(void) noexcept;
+            iterator roofs_end(void) noexcept;
             /**
-             * Returns the constant end iterator.
+             * Returns the constant end iterator of roofs.
              * @return constant iterator at the end.
              */
-            const_iterator end(void) const noexcept;
+            const_iterator roofs_end(void) const noexcept;
             /**
-             * Returns the constant end iterator.
+             * Returns the constant end iterator of roofs.
              * @return constant iterator at the end.
              */
-            const_iterator cend(void) const noexcept;
+            const_iterator roofs_cend(void) const noexcept;
+
+            /**
+             * Returns the iterator at the begining of walls.
+             * @return iterator at the begining.
+             */
+            iterator walls_begin(void) noexcept;
+            /**
+             * Returns the constant begin iterator of walls.
+             * @return constant iterator at the begining.
+             */
+            const_iterator walls_begin(void) const noexcept;
+            /**
+             * Returns the constant begin iterator of walls.
+             * @return constant iterator at the begining.
+             */
+            const_iterator walls_cbegin(void) const noexcept;
+
+            /**
+             * Returns the begin iterator of walls.
+             * @return iterator at the end.
+             */
+            iterator walls_end(void) noexcept;
+            /**
+             * Returns the constant end iterator of walls.
+             * @return constant iterator at the end.
+             */
+            const_iterator walls_end(void) const noexcept;
+            /**
+             * Returns the constant end iterator of walls.
+             * @return constant iterator at the end.
+             */
+            const_iterator walls_cend(void) const noexcept;
         private:
             /** identifier */
             std::size_t id;
@@ -160,8 +193,10 @@ namespace urban
             shadow::Point reference_point;
             /** Projection system EPSG code*/
             unsigned short epsg_code = 2154;
-            /** Bricks */
-            std::vector<Brick> bricks;
+            /** Roofs */
+            std::vector<Brick> roofs;
+            /** Walls */
+            std::vector<Brick> walls;
 
             /**
             * Outstreaming the dual adjacency graph
@@ -169,7 +204,7 @@ namespace urban
             * @param building the building to stream
             * @return the output stream
             */
-            friend io::Adjacency_stream & operator<<(io::Adjacency_stream & as, Building const& building);
+            friend io::Adjacency_stream & operator <<(io::Adjacency_stream & as, Building const& building);
         };
 
         /**

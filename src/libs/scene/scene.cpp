@@ -15,7 +15,7 @@ namespace urban
     {
         Scene::Scene(void)
         {}
-        Scene::Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, std::set<std::string> > const& _structure)
+        Scene::Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BStructure> const& _structure)
             :pivot(_pivot), epsg_code(_epsg_code), structure(_structure)
         {}
         Scene::Scene(Scene const& other)

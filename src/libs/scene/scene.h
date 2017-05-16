@@ -10,6 +10,51 @@ namespace urban
 {
     namespace scene
     {
+        class BStructure
+        {
+        public:
+            BStructure(std::set<std::string> _roofs, std::set<std::string> _walls)
+                : roofs(_roofs), walls(_walls)
+            {}
+            BStructure(BStructure const& other)
+                : roofs(other.roofs), walls(other.walls)
+            {}
+            BStructure(BStructure && other)
+                : roofs(std::move(other.roofs)), walls(std::move(other.walls))
+            {}
+            ~BStructure(void) {}
+
+            void swap(BStructure & other)
+            {
+                using std::swap;
+                swap(roofs, other.roofs);
+                swap(walls, other.walls);
+            }
+            BStructure & operator =(BStructure const& other)
+            {
+                roofs = other.roofs;
+                walls = other.walls;
+
+                return *this;
+            }
+            BStructure & operator =(BStructure && other)
+            {
+                roofs = std::move(other.roofs);
+                walls = std::move(other.walls);
+
+                return *this;
+            }
+
+        private:
+            std::set<std::string> roofs;
+            std::set<std::string> walls;
+        };
+
+        void swap(BStructure & lhs, BStructure & rhs)
+        {
+            lhs.swap(rhs);
+        }
+
         class Scene
         {
         public:
@@ -31,7 +76,7 @@ namespace urban
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
-            Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, std::set<std::string> > const& _structure);
+            Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BStructure > const& _structure);
             /**
              * Copy Constructor.
              * @param other Scene to copy
@@ -65,7 +110,6 @@ namespace urban
              * @see void swap(Scene & lhs, Scene & rhs);
              */
             void swap(Scene & other);
-
             /**
              * Copy assignement operator.
              * @param other Scene to copy
@@ -104,7 +148,7 @@ namespace urban
             /** EPSG projection system code */
             unsigned short epsg_code = 2154;
             /** Scene Structure */
-            std::map<std::size_t, std::set<std::string> > structure;
+            std::map<std::size_t, BStructure > structure;
         };
 
         /**
