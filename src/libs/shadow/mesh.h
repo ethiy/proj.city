@@ -108,10 +108,23 @@ namespace urban
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(Polyhedron const& polyhedron);
-             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
+             * @see Mesh(std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(std::string _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces);
+            /**
+             * General constructor. 
+             * @param _points points coordinates
+             * @param _faces facets
+             * @see Mesh(void);
+             * @see Mesh(Mesh && other);
+             * @see Mesh(Mesh const& other);
+             * @see Mesh(Lib3dsMesh* lib3ds_mesh);
+             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
+             * @see ~Mesh(void);
+             */
+            Mesh(std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces);
             /** 
              * Destructor.
              * @see Mesh(void);
@@ -194,6 +207,11 @@ namespace urban
              */
             faces_const_iterator faces_cend(void) const noexcept;
             
+
+            /**
+             * Name the mesh
+             */
+            void set_name(std::string const& _name) noexcept;
 
             /**
              * Access Mesh name

@@ -36,24 +36,24 @@ namespace urban
             Adjacency_stream(Adjacency_stream & other): ios(other.ios) {}
 
             /**
-            * Defines operator<< for this stream.
+            * Defines operator << for this stream.
             * @tparam T output value type
             * @param value value to output
             * @return reference to the Adjacency_stream
             */
             template<typename T>
-            Adjacency_stream & operator<<(T const& value)
+            Adjacency_stream & operator <<(T const& value)
             {
                 ios << value; 
                 return *this;
             }
 
             /**
-            * Defines operator<< for a matrix.
+            * Defines operator << for a matrix.
             * @param matrix matrix to output
             * @return reference to the Adjacency_stream
             */
-            Adjacency_stream & operator<<(std::vector<bool> const& matrix)
+            Adjacency_stream & operator <<(std::vector<bool> const& matrix)
             {
                 auto n = std::sqrt(matrix.size());
                 if(n * n != matrix.size())
@@ -69,11 +69,11 @@ namespace urban
             }
 
             /**
-            * Defines operator<< for this stream.
+            * Defines operator << for this stream.
             * @param func function applied to output stream
             * @return reference to the Adjacency_stream
             */
-            Adjacency_stream & operator<<(std::ostream& (*func)(std::ostream&) )
+            Adjacency_stream & operator <<(std::ostream& (*func)(std::ostream&) )
             {
                 func(ios);
                 return *this;
