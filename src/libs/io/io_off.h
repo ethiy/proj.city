@@ -3,9 +3,9 @@
 #include "io.h"
 
 #include "../shadow/mesh.h"
+#include "Off_stream/off_stream.h"
 
 #include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 
 #include <fstream>
 #include <map>
@@ -16,7 +16,7 @@ namespace urban
     namespace io
     {
         template<>
-        class FileHandler<std::fstream>
+        class FileHandler<Off_stream>
         {
         public:
             FileHandler(boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes);
