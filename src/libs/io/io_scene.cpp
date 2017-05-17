@@ -48,7 +48,7 @@ namespace urban
             return static_cast<unsigned short>(epsg_code);
         }
 
-        std::map<std::size_t, scene::BStructure > FileHandler<tinyxml2::XMLDocument>::structure(void) const
+        std::map<std::size_t, scene::BComposition > FileHandler<tinyxml2::XMLDocument>::structure(void) const
         {
             std::map<std::size_t, std::pair< std::set<std::string>, std::set<std::string> > > buildings;
 
@@ -92,7 +92,7 @@ namespace urban
                 buildings.emplace(
                     std::make_pair(
                         id,
-                        scene::BStructure(
+                        scene::BComposition(
                             roofs,
                             walls
                         )

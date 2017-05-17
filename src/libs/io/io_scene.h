@@ -26,7 +26,7 @@ namespace urban
 
             shadow::Point pivot(void) const;
             unsigned short epsg_code(void) const;
-            std::map<std::size_t, scene::BStructure > structure(void) const;
+            std::map<std::size_t, scene::BComposition > structure(void) const;
         };
     }
 }

@@ -10,34 +10,33 @@ namespace urban
 {
     namespace scene
     {
-        class BStructure
+        struct BComposition
         {
-        public:
-            BStructure(std::set<std::string> _roofs, std::set<std::string> _walls)
+            BComposition(std::set<std::string> _roofs, std::set<std::string> _walls)
                 : roofs(_roofs), walls(_walls)
             {}
-            BStructure(BStructure const& other)
+            BComposition(BComposition const& other)
                 : roofs(other.roofs), walls(other.walls)
             {}
-            BStructure(BStructure && other)
+            BComposition(BComposition && other)
                 : roofs(std::move(other.roofs)), walls(std::move(other.walls))
             {}
-            ~BStructure(void) {}
+            ~BComposition(void) {}
 
-            void swap(BStructure & other)
+            void swap(BComposition & other)
             {
                 using std::swap;
                 swap(roofs, other.roofs);
                 swap(walls, other.walls);
             }
-            BStructure & operator =(BStructure const& other)
+            BComposition & operator =(BComposition const& other)
             {
                 roofs = other.roofs;
                 walls = other.walls;
 
                 return *this;
             }
-            BStructure & operator =(BStructure && other)
+            BComposition & operator =(BComposition && other)
             {
                 roofs = std::move(other.roofs);
                 walls = std::move(other.walls);
@@ -45,12 +44,11 @@ namespace urban
                 return *this;
             }
 
-        private:
             std::set<std::string> roofs;
             std::set<std::string> walls;
         };
 
-        void swap(BStructure & lhs, BStructure & rhs)
+        void swap(BComposition & lhs, BComposition & rhs)
         {
             lhs.swap(rhs);
         }
@@ -76,7 +74,7 @@ namespace urban
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
-            Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BStructure > const& _structure);
+            Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BComposition > const& _structure);
             /**
              * Copy Constructor.
              * @param other Scene to copy
@@ -136,19 +134,24 @@ namespace urban
              */
             unsigned short get_epsg(void) const noexcept;
 
+            std::vector<urban::shadow::Mesh> roofs(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
+            std::vector<urban::shadow::Mesh> roofs(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;
+            std::vector<urban::shadow::Mesh> walls(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
+            std::vector<urban::shadow::Mesh> walls(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;
+
             /**
              * * Structure a vector of meshes
              * @param meshes a vector of meshes to structure
              * @return a map of mesh vectors structured according to the structure
              */
-            std::map<std::size_t, std::vector<urban::shadow::Mesh> > cluster(std::vector<shadow::Mesh> const& meshes) const;
+            std::map<std::size_t, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > cluster(std::vector<shadow::Mesh> const& meshes) const;
         private:
             /** Pivot */
             urban::shadow::Point pivot;
             /** EPSG projection system code */
             unsigned short epsg_code = 2154;
             /** Scene Structure */
-            std::map<std::size_t, BStructure > structure;
+            std::map<std::size_t, BComposition > structure;
         };
 
         /**

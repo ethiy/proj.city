@@ -10,12 +10,13 @@ namespace urban
      * @retrurn a map of name order meshes
      */
     std::map<std::string, urban::shadow::Mesh> order(std::vector<urban::shadow::Mesh> const& meshes);
+    std::vector<urban::shadow::Mesh> select(std::set<std::string> const& names, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes);
 
     namespace scene
     {
         Scene::Scene(void)
         {}
-        Scene::Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BStructure> const& _structure)
+        Scene::Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BComposition> const& _structure)
             :pivot(_pivot), epsg_code(_epsg_code), structure(_structure)
         {}
         Scene::Scene(Scene const& other)
@@ -62,25 +63,40 @@ namespace urban
             return epsg_code;
         }
 
-        std::map<std::size_t, std::vector<urban::shadow::Mesh> > Scene::cluster(std::vector<shadow::Mesh> const& meshes) const
+        std::vector<urban::shadow::Mesh> Scene::roofs(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const
         {
-            std::map<std::size_t, std::vector<urban::shadow::Mesh> > buildings;
+            return roofs(identifier, order(meshes));
+        }
+        std::vector<urban::shadow::Mesh> Scene::roofs(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const
+        {
+            return select(structure.at(identifier).roofs, ordered_meshes);
+        }
+        std::vector<urban::shadow::Mesh> Scene::walls(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const
+        {
+            return walls(identifier, order(meshes));
+        }
+        std::vector<urban::shadow::Mesh> Scene::walls(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const
+        {
+            return select(structure.at(identifier).walls, ordered_meshes);
+        }
+
+        std::map<std::size_t, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > Scene::cluster(std::vector<shadow::Mesh> const& meshes) const
+        {
+            std::map<std::size_t, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > buildings;
 
             auto ordered_meshes = order(meshes);
-            std::vector<urban::shadow::Mesh> buffer_meshes;
 
-            for(auto const& building : structure)
+            for(auto const& _building : structure)
             {
-                buffer_meshes.reserve(building.second.size());
-                for(auto const& mesh_name : building.second)
-                {
-                    auto placeholder = ordered_meshes.find(mesh_name);
-                    if(placeholder != std::end(ordered_meshes))
-                        buffer_meshes.push_back(placeholder->second);
-                }
-                buildings.emplace(building.first, buffer_meshes);
-                buffer_meshes.clear();
+                buildings.emplace(
+                    _building.first,
+                    std::make_pair(
+                        roofs(_building.first, ordered_meshes),
+                        walls(_building.first, ordered_meshes)
+                    )
+                );
             }
+
             return buildings;
         }
 
@@ -98,6 +114,19 @@ namespace urban
             ordered_meshes.emplace(mesh.get_name(), mesh);
         }
         return ordered_meshes;
+    }
+
+    std::vector<urban::shadow::Mesh> select(std::set<std::string> const& names, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes)
+    {
+        std::vector<urban::shadow::Mesh> selected;
+        selected.reserve(names.size());
+        for(auto const& mesh_name : names)
+        {
+            auto placeholder = ordered_meshes.find(mesh_name);
+            if(placeholder != std::end(ordered_meshes))
+                selected.push_back(placeholder->second);
+        }
+        return selected;
     }
 
 }
