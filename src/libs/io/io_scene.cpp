@@ -50,7 +50,7 @@ namespace urban
 
         std::map<std::size_t, scene::BComposition > FileHandler<tinyxml2::XMLDocument>::structure(void) const
         {
-            std::map<std::size_t, std::pair< std::set<std::string>, std::set<std::string> > > buildings;
+            std::map<std::size_t, scene::BComposition> buildings;
 
             tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")
                                                                         ->FirstChildElement("CityModel")
