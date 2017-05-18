@@ -96,7 +96,7 @@ int main(int argc, const char** argv)
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<Lib3dsFile>(arguments.input_path, std::map<std::string,bool>{{"read", true}}).read();
         std::cout << meshes.size() << " meshes ; Done." << std::flush << std::endl;
-        std::map<std::size_t, std::vector<urban::shadow::Mesh> > building_meshes = scene.cluster(meshes);
+        std::map<std::size_t, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > building_meshes = scene.cluster(meshes);
         for(auto & building_mesh : building_meshes)
         {
             building_mesh.second.erase(
