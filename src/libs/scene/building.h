@@ -2,6 +2,9 @@
 
 #include "brick/brick.h"
 
+#include "../algorithms/brick/brick_algorithms.h"
+#include "../projection/Brick/brick_projection.h"
+
 namespace urban
 {
     namespace scene
@@ -64,14 +67,14 @@ namespace urban
             void swap(Building & other);
 
             /**
-             * Copy assignement operator.
+             * Copy assignment operator.
              * @param other Building to be copyied
              * @return the Building copy
              * @see Building & operator=(Building && other);
              */
             Building & operator=(Building const& other);
             /**
-             * Move assignement operator.
+             * Move assignment operator.
              * @param other Building to be moved
              * @return the moved Building
              * @see Building & operator=(Building && other);
@@ -186,7 +189,12 @@ namespace urban
              * @return constant iterator at the end.
              */
             const_iterator walls_cend(void) const noexcept;
-        private:
+
+            Building & prune_roofs(void);
+            Building & prune_walls(void);
+
+            projection::BrickPrint & project_roofs(projection::BrickPrint & projection) const;
+            projection::BrickPrint & project_walls(projection::BrickPrint & projection) const;
             /** identifier */
             std::size_t id;
             /** Reference Point */

@@ -28,10 +28,7 @@ namespace urban
     projection::BrickPrint project(scene::Building const& building)
     {
         projection::BrickPrint projection(building.get_name(), building.bbox(), building.pivot(), building.get_epsg());
-        for(auto const& brick : building)
-        {
-            projection += project(brick);
-        }
+        projection = building.project_roofs(projection);
         return projection;
     }
 
@@ -168,7 +165,7 @@ namespace urban
                             }
                         );
                         /**
-                         * >> Compute oclusion for each facet
+                         * >> Compute occlusion for each facet
                          */
                         first_parts_occluded.complement();
                         first_parts_occluded.intersection(first);

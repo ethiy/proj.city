@@ -1,6 +1,7 @@
 #include "building.h"
 
 #include "../algorithms/brick/brick_algorithms.h"
+#include "../algorithms/projection/projection_algorithms.h"
 
 #include <iterator>
 #include <algorithm>
@@ -8,6 +9,9 @@
 
 namespace urban
 {
+    std::vector<scene::Brick> & prune(std::vector<scene::Brick> & bricks);
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks);
+
     namespace scene
     {
         Building::Building(void)
@@ -195,13 +199,35 @@ namespace urban
             return walls.cend();
         }
 
+        Building & Building::prune_roofs(void)
+        {
+            roofs = prune(roofs);
+            return *this;
+        }
+        Building & Building::prune_walls(void)
+        {
+            walls = prune(walls);
+            return *this;
+        }
+
+        projection::BrickPrint & Building::project_roofs(projection::BrickPrint & projection) const
+        {
+            projection = project(projection, roofs);
+            return projection;
+        }
+        projection::BrickPrint & Building::project_walls(projection::BrickPrint & projection) const
+        {
+            projection = project(projection, walls);
+            return projection;
+        }
+
         io::Adjacency_stream & operator<<(io::Adjacency_stream & as, Building const& building)
         {
-            std::vector<std::size_t> cummulative_sizes(building.roofs_size() + 1, 0);
+            std::vector<std::size_t> cumulative_sizes(building.roofs_size() + 1, 0);
             std::transform(
                 std::begin(building.roofs),
                 std::end(building.roofs),
-                std::next(std::begin(cummulative_sizes)),
+                std::next(std::begin(cumulative_sizes)),
                 [&as](Brick const& roof)
                 {
                     as << roof.facets_size() << " ";
@@ -211,12 +237,12 @@ namespace urban
             as << std::endl;
 
             std::partial_sum(
-                std::begin(cummulative_sizes),
-                std::end(cummulative_sizes),
-                std::begin(cummulative_sizes)
+                std::begin(cumulative_sizes),
+                std::end(cumulative_sizes),
+                std::begin(cumulative_sizes)
             );
 
-            std::vector<bool> dual_matrix(cummulative_sizes.back() * cummulative_sizes.back(), false);
+            std::vector<bool> dual_matrix(cumulative_sizes.back() * cumulative_sizes.back(), false);
 
             std::size_t roof_index(0);
             for(auto const& roof : building.roofs)
@@ -230,7 +256,7 @@ namespace urban
                     }
                 );
 
-                dual_matrix = roof.facet_adjacency_matrix(dual_matrix, cummulative_sizes.at(roof_index++));
+                dual_matrix = roof.facet_adjacency_matrix(dual_matrix, cumulative_sizes.at(roof_index++));
             }
 
             as << dual_matrix << std::endl;
@@ -242,5 +268,27 @@ namespace urban
         {
             lhs.swap(rhs);
         }
+    }
+    std::vector<scene::Brick> & prune(std::vector<scene::Brick> & bricks)
+    {
+        std::transform(
+            std::begin(bricks),
+            std::end(bricks),
+            std::begin(bricks),
+            [](scene::Brick & brick)
+            {
+                return prune(brick);
+            }
+        );
+        return bricks;
+    }
+
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
+    {
+        for(auto const& brick : bricks)
+        {
+            projection += project(brick);
+        }
+        return projection;
     }
 }

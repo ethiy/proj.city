@@ -6,10 +6,8 @@ namespace urban
 {
     scene::Building & prune(scene::Building & building)
     {
-        for(auto & brick : building)
-        {
-            brick = prune(brick);
-        }
+        building.prune_roofs();
+        building.prune_walls();
         return building;
     }
 }
