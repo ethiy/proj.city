@@ -63,6 +63,21 @@ namespace urban
             return epsg_code;
         }
 
+        std::vector<std::size_t> Scene::identifiers(void) const
+        {
+            std::vector<std::size_t> ids(structure.size(), 0);
+            std::transform(
+                std::begin(structure),
+                std::end(structure),
+                std::begin(ids),
+                [](std::pair<std::size_t, BComposition> const& _building)
+                {
+                    return _building.first;
+                }
+            );
+            return ids;
+        }
+
         std::vector<urban::shadow::Mesh> Scene::roofs(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const
         {
             return roofs(identifier, order(meshes));

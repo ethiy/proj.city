@@ -9,9 +9,6 @@
 
 namespace urban
 {
-    std::vector<scene::Brick> & prune(std::vector<scene::Brick> & bricks);
-    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks);
-
     namespace scene
     {
         Building::Building(void)
@@ -33,6 +30,19 @@ namespace urban
                 std::begin(_walls),
                 std::end(_walls),
                 std::begin(walls),
+                [&_pivot](shadow::Mesh const& mesh)
+                {
+                    return Brick(mesh, _pivot);
+                }
+            );
+        }
+        Building::Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, shadow::Point const& _pivot, unsigned short _epsg_code)
+            : id(_id), reference_point(_pivot), epsg_code(_epsg_code), roofs(_roofs.size())
+        {
+            std::transform(
+                std::begin(_roofs),
+                std::end(_roofs),
+                std::begin(roofs),
                 [&_pivot](shadow::Mesh const& mesh)
                 {
                     return Brick(mesh, _pivot);
@@ -268,27 +278,5 @@ namespace urban
         {
             lhs.swap(rhs);
         }
-    }
-    std::vector<scene::Brick> & prune(std::vector<scene::Brick> & bricks)
-    {
-        std::transform(
-            std::begin(bricks),
-            std::end(bricks),
-            std::begin(bricks),
-            [](scene::Brick & brick)
-            {
-                return prune(brick);
-            }
-        );
-        return bricks;
-    }
-
-    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
-    {
-        for(auto const& brick : bricks)
-        {
-            projection += project(brick);
-        }
-        return projection;
     }
 }

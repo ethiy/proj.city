@@ -31,7 +31,6 @@ R"(project_scene_xy.
 
 struct Arguments
 {
-public:
     Arguments(std::map<std::string, docopt::value> const& docopt_args)
         : input_path(docopt_args.at("<filename>").asString()),
           rasterize(docopt_args.at("--rasterize").asBool()),
@@ -80,51 +79,29 @@ int main(int argc, const char** argv)
             )
         );
         std::cout << "Done." << std::flush << std::endl;
-        std::cout << std::boolalpha << arguments << std::endl;
 
         boost::filesystem::path root(arguments.input_path.parent_path());
 
         std::cout << "Parsing scene tree... " << std::flush;
-        
-
-        urban::io::FileHandler<tinyxml2::XMLDocument> scene_tree_file(
-            boost::filesystem::path(root / (arguments.input_path.stem().string() + ".XML"))
-        );
-        urban::scene::Scene scene = scene_tree_file.read();
+        urban::scene::Scene scene = urban::io::FileHandler<tinyxml2::XMLDocument>(boost::filesystem::path(root / (arguments.input_path.stem().string() + ".XML"))).read();
         std::cout << "Done." << std::flush << std::endl;
 
         std::cout << "Reading Scene Meshes... " << std::flush;
         std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<Lib3dsFile>(arguments.input_path, std::map<std::string,bool>{{"read", true}}).read();
         std::cout << meshes.size() << " meshes ; Done." << std::flush << std::endl;
-        std::map<std::size_t, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > building_meshes = scene.cluster(meshes);
-        for(auto & building_mesh : building_meshes)
-        {
-            building_mesh.second.erase(
-                std::remove_if(
-                    std::begin(building_mesh.second),
-                    std::end(building_mesh.second),
-                    [](urban::shadow::Mesh const& mesh)
-                    {
-                        return mesh.get_name().at(0) == 'F';
-                    }
-                ),
-                std::end(building_mesh.second)
-            );
-            building_mesh.second = urban::stitch(building_mesh.second);
-        }
-        std::cout << "Done" << std::flush << std::endl;
+
+        std::vector<std::size_t> building_ids = scene.identifiers();
+        std::vector<urban::scene::Building> buildings(building_ids.size());
 
         std::cout << "Loading Buildings... " << std::flush;
-        auto pivot = scene.get_pivot();
-        auto epsg_code = scene.get_epsg();
-        std::vector<urban::scene::Building> buildings(building_meshes.size());
         std::transform(
-            std::begin(building_meshes),
-            std::end(building_meshes),
+            std::begin(building_ids),
+            std::end(building_ids),
             std::begin(buildings),
-            [&pivot, epsg_code](std::pair<std::size_t, std::vector<urban::shadow::Mesh> > const& building_mesh)
+            [&scene, meshes](std::size_t const& id)
             {
-                urban::scene::Building building(building_mesh.first, building_mesh.second, pivot, epsg_code);
+                std::vector<urban::shadow::Mesh> roof_meshes = scene.roofs(id, meshes);
+                urban::scene::Building building(id, urban::stitch(roof_meshes), scene.get_pivot(), scene.get_epsg());
                 return urban::prune(building);
             }
         );
@@ -136,13 +113,13 @@ int main(int argc, const char** argv)
             boost::filesystem::path dual_dir(root / "dual_graphs");
             boost::filesystem::create_directory(dual_dir);
             std::for_each(
-                std::begin(urban_objects),
-                std::end(urban_objects),
-                [&dual_dir, &arguments](urban::Brick const& brick)
+                std::begin(buildings),
+                std::end(buildings),
+                [&dual_dir, &arguments](urban::scene::Building const& building)
                 {
-                    std::fstream adjacency_file(boost::filesystem::path(dual_dir / (arguments.input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out);
+                    std::fstream adjacency_file(boost::filesystem::path(dual_dir / (arguments.input_path.stem().string() + "_" + building.get_name() + ".txt")).string(), std::ios::out);
                     urban::io::Adjacency_stream as(adjacency_file);
-                    as << brick;
+                    as << building;
                 }
             );
             std::cout << " Done." << std::flush << std::endl;
@@ -163,7 +140,7 @@ int main(int argc, const char** argv)
         std::cout << "Done." << std::flush << std::endl;
 
         std::cout << "Summing Projections... " << std::flush;
-        urban::projection::BrickPrint scene_projection(pivot);
+        urban::projection::BrickPrint scene_projection(scene.get_pivot());
         for(auto projection : projections_xy)
         {
             scene_projection += projection;
@@ -214,15 +191,15 @@ int main(int argc, const char** argv)
         if(arguments.rasterize)
         {
             std::cout << "rasterizing projections... " << std::flush;
-            urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, arguments.pixel_size, pivot);
+            urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, arguments.pixel_size, scene.get_pivot());
             std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
             std::transform(
                 std::begin(projections_xy),
                 std::end(projections_xy),
                 std::begin(raster_projections),
-                [&pivot, &arguments](urban::projection::BrickPrint const& projection)
+                [&scene, &arguments](urban::projection::BrickPrint const& projection)
                 {
-                    return urban::rasterize(projection, arguments.pixel_size, pivot);
+                    return urban::rasterize(projection, arguments.pixel_size, scene.get_pivot());
                 }
             );
             std::cout << "Done." << std::flush << std::endl;

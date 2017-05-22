@@ -2,7 +2,6 @@
 
 #include "brick/brick.h"
 
-#include "../algorithms/brick/brick_algorithms.h"
 #include "../projection/Brick/brick_projection.h"
 
 namespace urban
@@ -32,6 +31,18 @@ namespace urban
               * @see ~Building(void);
              */
             Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, std::vector<urban::shadow::Mesh> const& _walls, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
+            /**
+              * Default roof Constructor.
+              * @param _id building identifier
+              * @param meshes stitched meshes that constitute the building
+              * @param pivot reference point
+              * @param _epsg_code projection system epsg code
+              * @see Building(void);
+              * @see Building(Building const& other);
+              * @see Building(Building&& other);
+              * @see ~Building(void);
+             */
+            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
             /**
               * Copy Constructor.
               * @param other Building to copy

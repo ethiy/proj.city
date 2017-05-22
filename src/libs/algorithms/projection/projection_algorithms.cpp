@@ -113,6 +113,15 @@ namespace urban
         return facets;
     }
 
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
+    {
+        for(auto const& brick : bricks)
+        {
+            projection += project(brick);
+        }
+        return projection;
+    }
+
     std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhss)
     {
         std::list<projection::FacePrint> l_result;

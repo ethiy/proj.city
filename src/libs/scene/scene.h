@@ -23,12 +23,6 @@ namespace urban
             {}
             ~BComposition(void) {}
 
-            void swap(BComposition & other)
-            {
-                using std::swap;
-                swap(roofs, other.roofs);
-                swap(walls, other.walls);
-            }
             BComposition & operator =(BComposition const& other)
             {
                 roofs = other.roofs;
@@ -50,7 +44,8 @@ namespace urban
 
         void swap(BComposition & lhs, BComposition & rhs)
         {
-            lhs.swap(rhs);
+            std::swap(lhs.roofs, rhs.roofs);
+            std::swap(lhs.walls, rhs.walls);
         }
 
         class Scene
@@ -133,6 +128,8 @@ namespace urban
              * @return the EPSG projection system code
              */
             unsigned short get_epsg(void) const noexcept;
+
+            std::vector<std::size_t> identifiers(void) const;
 
             std::vector<urban::shadow::Mesh> roofs(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
             std::vector<urban::shadow::Mesh> roofs(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;

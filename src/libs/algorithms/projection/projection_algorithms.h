@@ -19,6 +19,8 @@ namespace urban
     /** Projects on xy axis*/
     projection::BrickPrint project(const scene::Building & building);
 
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks);
+
     /** Project Faces to XY*/
     std::vector<projection::FacePrint> project_xy(const scene::Brick & brick);
 
