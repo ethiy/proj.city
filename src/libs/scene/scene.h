@@ -23,30 +23,14 @@ namespace urban
             {}
             ~BComposition(void) {}
 
-            BComposition & operator =(BComposition const& other)
-            {
-                roofs = other.roofs;
-                walls = other.walls;
-
-                return *this;
-            }
-            BComposition & operator =(BComposition && other)
-            {
-                roofs = std::move(other.roofs);
-                walls = std::move(other.walls);
-
-                return *this;
-            }
+            BComposition & operator =(BComposition const& other);
+            BComposition & operator =(BComposition && other);
 
             std::set<std::string> roofs;
             std::set<std::string> walls;
         };
 
-        void swap(BComposition & lhs, BComposition & rhs)
-        {
-            std::swap(lhs.roofs, rhs.roofs);
-            std::swap(lhs.walls, rhs.walls);
-        }
+        void swap(BComposition & lhs, BComposition & rhs);
 
         class Scene
         {

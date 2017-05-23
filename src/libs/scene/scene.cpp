@@ -4,16 +4,32 @@
 
 namespace urban
 {
-    /** 
-     * Order a Vector of meshes by name
-     * @param meshes vector of meshes.
-     * @retrurn a map of name order meshes
-     */
     std::map<std::string, urban::shadow::Mesh> order(std::vector<urban::shadow::Mesh> const& meshes);
     std::vector<urban::shadow::Mesh> select(std::set<std::string> const& names, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes);
 
     namespace scene
     {
+        BComposition & BComposition::operator =(BComposition const& other)
+        {
+            roofs = other.roofs;
+            walls = other.walls;
+
+            return *this;
+        }
+        BComposition & BComposition::operator =(BComposition && other)
+        {
+            roofs = std::move(other.roofs);
+            walls = std::move(other.walls);
+
+            return *this;
+        }
+
+        void swap(BComposition & lhs, BComposition & rhs)
+        {
+            std::swap(lhs.roofs, rhs.roofs);
+            std::swap(lhs.walls, rhs.walls);
+        }
+
         Scene::Scene(void)
         {}
         Scene::Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BComposition> const& _structure)
