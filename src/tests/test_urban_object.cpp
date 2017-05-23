@@ -15,8 +15,7 @@ SCENARIO("Urban Brick manipulation:")
     {
         std::map<std::string,bool> modes{{"read", true}};
         boost::filesystem::path filepath("../../ressources/3dModels/OFF/hammerhead.off");
-        urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
-        urban::shadow::Mesh mesh = handler.read();
+        urban::shadow::Mesh mesh = urban::io::FileHandler<urban::io::Off_stream>(filepath, modes).read();
 
         WHEN("the urban Brick is constructed")
         {
