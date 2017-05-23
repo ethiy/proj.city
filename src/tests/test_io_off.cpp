@@ -23,9 +23,7 @@ SCENARIO("Input/Output from OFF file:")
 
         WHEN("reading in text mode")
         {
-            std::map<std::string, bool> modes{{"read", true}};
-            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
-            urban::shadow::Mesh mesh = handler.read();
+            urban::shadow::Mesh mesh = urban::io::FileHandler<std::fstream>(filepath, std::map<std::string, bool>{{"read", true}}).read();
 
             THEN("the output checks")
             {
@@ -39,14 +37,13 @@ SCENARIO("Input/Output from OFF file:")
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
-                REQUIRE( out.str() == tmp_str);
+                REQUIRE(out.str() == tmp_str);
             }
         }
 
         WHEN("the reading mode is not chosen")
         {
-            std::map<std::string, bool> modes;
-            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
+            urban::io::FileHandler<std::fstream> handler(filepath, std::map<std::string, bool>{{}});
 
             THEN("the reader throws")
             {
@@ -61,8 +58,7 @@ SCENARIO("Input/Output from OFF file:")
 
         WHEN("the reading mode is chosen")
         {
-            std::map<std::string, bool> modes{{"read", true}};
-            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
+            urban::io::FileHandler<std::fstream> handler(filepath, std::map<std::string, bool>{{"read", true}});
 
             THEN("the reader throws")
             {
@@ -72,8 +68,7 @@ SCENARIO("Input/Output from OFF file:")
 
         WHEN("the reading mode is not chosen")
         {
-            std::map<std::string, bool> modes;
-            urban::io::FileHandler<urban::io::Off_stream> handler(filepath, modes);
+            urban::io::FileHandler<std::fstream> handler(filepath, std::map<std::string, bool>{{}});
 
             THEN("the reader throws")
             {
@@ -84,25 +79,25 @@ SCENARIO("Input/Output from OFF file:")
 
     GIVEN("An existing a urban::shadow::Mesh")
     {
-        boost::filesystem::path _filepath("../../ressources/3dModels/OFF/hammerhead.off");
-        std::map<std::string, bool> _modes{{"read", true}};
-        urban::io::FileHandler<urban::io::Off_stream> _handler(_filepath, _modes);
-        urban::shadow::Mesh mesh = _handler.read();
+        urban::shadow::Mesh mesh = urban::io::FileHandler<std::fstream>(
+            boost::filesystem::path("../../ressources/3dModels/OFF/hammerhead.off"),
+            std::map<std::string, bool>{{"read", true}}
+        ).read();
 
         WHEN("the writing mode is chosen")
         {
-            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
             std::ostringstream file_name;
-            file_name << unique_name << ".off";
+            file_name << boost::uuids::random_generator()() << ".off";
 
-            std::map<std::string, bool> modes{{"write", true}};
-            urban::io::FileHandler<urban::io::Off_stream> handler(boost::filesystem::path(file_name.str()), modes);
+            urban::io::FileHandler<std::fstream> handler(boost::filesystem::path(file_name.str()), std::map<std::string, bool>{{"write", true}});
             handler.write(mesh);
 
             THEN("the input should check")
             {
-                urban::io::FileHandler<urban::io::Off_stream> checker_handler(boost::filesystem::path(file_name.str()), _modes);
-                urban::shadow::Mesh written_mesh = checker_handler.read();
+                urban::shadow::Mesh written_mesh = urban::io::FileHandler<std::fstream>(
+                    boost::filesystem::path(file_name.str()),
+                    std::map<std::string, bool>{{"read", true}}
+                ).read();
 
                 std::ostringstream auxilary, out;
                 auxilary << written_mesh;
@@ -110,18 +105,17 @@ SCENARIO("Input/Output from OFF file:")
                 std::istringstream _auxilary(auxilary.str());
                 std::vector<std::string> lines;
                 urban::io::readlines(_auxilary, std::back_inserter(lines));
-                std::copy(std::next(std::begin(lines), 1), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
+                std::copy(std::next(std::begin(lines)), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/hammerhead_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
-                REQUIRE( out.str() == tmp_str);
+                REQUIRE(out.str() == tmp_str);
             }
         }
         
         WHEN("the writing mode is not chosen")
         {
-            std::map<std::string, bool> modes{{"write", false}};
-            urban::io::FileHandler<urban::io::Off_stream> handler("./hammerhead.off", modes);
+            urban::io::FileHandler<std::fstream> handler("./hammerhead.off", std::map<std::string, bool>{{"write", false}});
 
             THEN("the writter throws")
             {
