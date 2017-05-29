@@ -115,10 +115,15 @@ namespace urban
 
     projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
     {
-        for(auto const& brick : bricks)
-        {
-            projection += project(brick);
-        }
+        projection = std::accumulate(
+            std::begin(bricks),
+            std::end(bricks),
+            projection,
+            [](projection::BrickPrint & sum, scene::Brick const& brick)
+            {
+                return sum + project(brick);
+            }
+        );
         return projection;
     }
 

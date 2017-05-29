@@ -123,6 +123,11 @@ int main(int argc, const char** argv)
 
         std::cout << "Summing Projections... " << std::flush;
         urban::projection::BrickPrint scene_projection(scene.get_pivot());
+        scene_projection = std::accumulate(
+            std::begin(projections_xy),
+            std::end(projections_xy),
+            scene_projection
+        );
         for(auto projection : projections_xy)
         {
             scene_projection += projection;
