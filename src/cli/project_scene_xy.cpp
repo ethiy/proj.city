@@ -44,6 +44,7 @@ int main(int argc, const char** argv)
                 "project_scene_xy " + std::string(VERSION)
             )
         );
+        std::cout << std::boolalpha << arguments << std::endl;
         std::cout << "Done." << std::flush << std::endl;
 
         boost::filesystem::path root(arguments.input_path.parent_path());
