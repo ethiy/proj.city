@@ -48,7 +48,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
         {
             file_name << boost::uuids::random_generator()() << ".gml";
             urban::io::FileHandler<GDALDriver> handler(
-                "GML",
+                 urban::io::GdalFormat::gml,
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
             );
@@ -63,7 +63,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
         {
             file_name << boost::uuids::random_generator()() << ".geotiff";
             urban::io::FileHandler<GDALDriver> handler(
-                "GTiff",
+                urban::io::GdalFormat::geotiff,
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
             );

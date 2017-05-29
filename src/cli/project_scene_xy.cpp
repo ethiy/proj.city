@@ -129,12 +129,11 @@ int main(int argc, const char** argv)
         std::cout << "Done." << std::flush << std::endl;
         
         std::cout << "Saving vector projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> victor(
-            "GML",
+        urban::io::FileHandler<GDALDriver>(
+            urban::io::GdalFormat::gml,
             boost::filesystem::path(root / (arguments.input_path.stem().string() + ".gml")),
             std::map<std::string,bool>{{"write", true}}
-        );
-        victor.write(scene_projection);
+        ).write(scene_projection);
         if(arguments.buildings)
         {
             boost::filesystem::path vector_dir(root / "vectors");
@@ -142,7 +141,7 @@ int main(int argc, const char** argv)
             for(auto const& projection : projections_xy)
             {
                 urban::io::FileHandler<GDALDriver>(
-                    "GML",
+                    urban::io::GdalFormat::gml,
                     boost::filesystem::path(vector_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".gml")),
                     std::map<std::string,bool>{{"write", true}}
                 ).write(projection);
@@ -154,7 +153,7 @@ int main(int argc, const char** argv)
                 for(auto const& projection : projections_xy)
                 {
                     urban::io::FileHandler<GDALDriver>(
-                        "ESRI shapefile",
+                        urban::io::GdalFormat::shapefile,
                         boost::filesystem::path(label_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".shp")),
                         std::map<std::string,bool>{{"write", true}}
                     ).write(projection);
@@ -185,7 +184,7 @@ int main(int argc, const char** argv)
             {
                 std::cout << "Saving raster projections... " << std::flush;
                 urban::io::FileHandler<GDALDriver>(
-                    "GTiff",
+                    urban::io::GdalFormat::geotiff,
                     boost::filesystem::path(root / (arguments.input_path.stem().string() + ".tiff")),
                     std::map<std::string,bool>{{"write", true}}
                 ).write(global_rasta);
@@ -194,7 +193,7 @@ int main(int argc, const char** argv)
                 for(auto const& rasta : raster_projections)
                 {
                     urban::io::FileHandler<GDALDriver>(
-                        "GTiff",
+                        urban::io::GdalFormat::geotiff,
                         boost::filesystem::path(raster_dir / (arguments.input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
                         std::map<std::string,bool>{{"write", true}}
                     ).write(rasta);
