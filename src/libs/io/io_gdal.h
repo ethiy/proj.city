@@ -10,7 +10,6 @@
 #include <ogrsf_frmts.h>
 
 #include <map>
-#include <list>
 #include <vector>
 #include <string>
 
@@ -18,15 +17,20 @@ namespace urban
 {
     namespace io
     {
-        extern const std::list<std::string> tested_vector_formats;
-        extern const std::list<std::string> tested_raster_formats;
+        enum GdalFormat : std::size_t
+        {
+            shapefile,
+            geojson,
+            gml,
+            kml,
+            geotiff
+        };
 
         template<>
         class FileHandler<GDALDriver>
         {
         public:
-            FileHandler(void);
-            FileHandler(std::string const& driver_name, boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            FileHandler(GdalFormat const& format, boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~FileHandler(void);
 
             template<class P>
@@ -39,6 +43,7 @@ namespace urban
             bool raster = false;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
+            static const std::vector<std::string> tested_formats;
         };
         
         template<>

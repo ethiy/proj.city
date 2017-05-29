@@ -10,34 +10,26 @@ namespace urban
 {
     namespace io
     {
-        const std::list<std::string> tested_vector_formats{{"ESRI Shapefile", "GeoJSON", "GML", "KML"}};
-        const std::list<std::string> tested_raster_formats{{"GTiff"}};
-
-        FileHandler<GDALDriver>::FileHandler(void) {}
-        FileHandler<GDALDriver>::FileHandler(std::string const& _driver_name, boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes): driver_name(_driver_name), filepath(_filepath), modes(_modes)
+        const std::vector<std::string> FileHandler<GDALDriver>::tested_formats{{"ESRI Shapefile", "GeoJSON", "GML", "KML", "GTiff"}};
+        FileHandler<GDALDriver>::FileHandler(GdalFormat const& format, boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes)
+            : driver_name(tested_formats.at(format)), filepath(_filepath), modes(_modes)
         {
-            if(driver_name == "ESRI Shapefile")
-                std::cout << "You may face a problem with polygon orientations while reading." << std::endl;
-            
-            std::list<std::string>::const_iterator vector_driver_it = std::find(std::begin(tested_vector_formats), std::end(tested_vector_formats), driver_name);
-            std::list<std::string>::const_iterator raster_driver_it = std::find(std::begin(tested_raster_formats), std::end(tested_raster_formats), driver_name);
-
-            if(vector_driver_it == std::end(tested_vector_formats)
-                &&
-               raster_driver_it == std::end(tested_raster_formats)
-              )
-                throw std::runtime_error("This format is not tested or supported");
-            else
+            switch(format)
             {
-                if(vector_driver_it != std::end(tested_vector_formats) && raster_driver_it == std::end(tested_raster_formats))
-                    raster = false;
-                else
-                {
-                    if(raster_driver_it != std::end(tested_raster_formats))
-                        raster = true;
-                    else
-                        throw std::logic_error("The driver cannot be for raster and vector in the same time");
-                }
+                case GdalFormat::shapefile :
+                    std::cout << "You may face a problem with polygon orientations while reading." << std::endl;
+                    break;
+                case GdalFormat::geojson :
+                    break;
+                case GdalFormat::gml :
+                    break;
+                case GdalFormat::kml :
+                    break;
+                case GdalFormat::geotiff : 
+                    raster = true;
+                    break;
+                default:
+                    throw std::runtime_error("This format is not tested or supported!");
             }
         }
 
