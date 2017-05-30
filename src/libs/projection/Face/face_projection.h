@@ -60,7 +60,7 @@ namespace urban
             * In our case, two edges are coinciding means that all edges are so,
             * Due to the fact that all edges are supported by the same plane:
             *  - This means that we should just check if the area is null to assert
-            *      that the projection is degenarate.
+            *      that the projection is degenerate.
             * @return boolean: true if degenerate and false if not
             */
             bool is_degenerate(void) const;
