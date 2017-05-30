@@ -11,23 +11,22 @@
 
 Playing with 3D formats.
 
-
 ## Build
 
 In order to build this project you need first to check for these dependencies:
 
-* Boost Libraries: (> `v1.58.0`)
-* CGAL Library: (> `v4.7-4`)
-* GDAL Library: (> `v2.0`)
-* lib3ds Library: (`v1.3.0`)
-* Catch Library: (> `v1.6.0`)
-* Docopt.cpp Library: (> `v0.6.2`)
+* Boost Libraries: (`> v1.58.0`)
+* CGAL Library: (`> v4.7-4`)
+* GDAL Library: (`> v2.0`)
+* lib3ds Library: (`= v1.3.0`)
+* Catch Library: (`> v1.6.0`)
+* Docopt.cpp Library: (`> v0.6.2`)
 
  This project is tested on these three main platforms:
 
-* Ubuntu: (`v16.04`)
-* Darwin: (> `xcode v8`)
-* Windows: (MinGW w64)
+* Ubuntu: (`= v16.04`)
+* Darwin: (`> Xcode v8`)
+* Windows: (`MinGW w64`)
 
  We explain here how to get these listed dependencies and how to build for each platform:
 
@@ -39,8 +38,7 @@ In order to build this project you need first to check for these dependencies:
 * Docopt.cpp:
     `docopt.cpp` is a fun argument parser library available on [`Github`](https://github.com/docopt/docopt.cpp). You do not need to install it also as a CMake module installs it as an external project.
 
-
-### Ubuntu `v16.04`
+### Ubuntu `v 16.04`
 
 You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an inspiration. We will use `aptitude` the available package manager for most dependencies:
 
@@ -64,10 +62,10 @@ You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/
     The easiest way to get a newer version would be through the unstable `ubuntugis` ppa:
 
     ```bash
-    apt update && apt upgade
+    apt update && apt upgrade
     apt install software-properties-common # If not installed, it contains `add-apt-repository` command
     add-apt-repository ppa:ubuntugis/ubuntugis-unstable # adds ubuntugis/ubuntugis-unstable ppa
-    apt update && apt upgade
+    apt update && apt upgrade
     apt install libgdal-dev
     ```
 
@@ -82,15 +80,15 @@ You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/
 
 ### Darwin
 
-You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/blob/master/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personnally, I prefer the later.
+You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/blob/master/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personally, I prefer the later.
 
 | Dependency   | `brew`        | `port`        |
-|:------------:|:-------------:|:-------------:|
-| Installation | `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` | You should follow the instructions on [`port` official website](https://www.macports.org/install.php) |
+|:------------:|:-------------|:-------------|
+| Installation | `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` | You should follow the instructions on [`port`'s official website](https://www.macports.org/install.php) |
 | Update       | `brew update` | `port selfupdate && port upgrade outdated` |
 | Boost        | `brew install boost` | `port install boost` |
 | CGAL         | `brew install cgal` | `port install cgal` |
-| GDAL         | You can find the lastest release in this [website](http://www.kyngchaos.com/software/frameworks) | `port install gdal` |
+| GDAL         | You can find the latest release in this [website](http://www.kyngchaos.com/software/frameworks) | `port install gdal` |
 | lib3ds       | `brew install lib3ds` | `port install lib3ds` |
 
 ### MinGW w64

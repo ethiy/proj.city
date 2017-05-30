@@ -298,7 +298,7 @@ namespace urban
             return contains(to_exact(inexact_point));
         }
 
-        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, const shadow::Point & reference_point) const
+        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, const shadow::Point & reference_point, bool labels) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
             feature->SetGeometry(urban::to_ogr(border, reference_point));
@@ -307,6 +307,12 @@ namespace urban
             feature->SetField("coeff_b", to_inexact(supporting_plane.b()));
             feature->SetField("coeff_c", to_inexact(supporting_plane.c()));
             feature->SetField("coeff_d", to_inexact(supporting_plane.d() + reference_point.z()));
+            if(labels)
+            {
+                feature->SetField("Unq_Errors", "None");
+                feature->SetField("Bul_Errors", "None");
+                feature->SetField("Fac_Errors", "None");
+            }
             return feature;
         }
 

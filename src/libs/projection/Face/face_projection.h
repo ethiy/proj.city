@@ -70,7 +70,7 @@ namespace urban
             bool contains(Point_2 const& point) const;
             bool contains(InexactPoint_2 const& inexact_point) const;
 
-            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point) const;
+            OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const;
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;

@@ -36,7 +36,7 @@ namespace urban
             template<class P>
             P read(void) const;
 
-            void write(projection::BrickPrint const& brick_projection) const;
+            void write(projection::BrickPrint const& brick_projection, bool labels = false) const;
             void write(projection::RasterPrint const& raster_image) const;
         private:
             std::string driver_name;

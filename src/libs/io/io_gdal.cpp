@@ -80,7 +80,7 @@ namespace urban
             return brick_projection;
         }
 
-        void FileHandler<GDALDriver>::write(const projection::BrickPrint & brick_projection) const
+        void FileHandler<GDALDriver>::write(const projection::BrickPrint & brick_projection, bool labels) const
         {
             std::ostringstream error_message;
 
@@ -104,7 +104,7 @@ namespace urban
                         throw boost::filesystem::filesystem_error(error_message.str(), ec);
                     }
 
-                    brick_projection.to_ogr(file);
+                    brick_projection.to_ogr(file, labels);
                     GDALClose(file);
                 }
                 else
