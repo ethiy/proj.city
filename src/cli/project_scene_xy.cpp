@@ -158,7 +158,7 @@ int main(int argc, const char** argv)
                         urban::io::GdalFormat::shapefile,
                         boost::filesystem::path(label_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".shp")),
                         std::map<std::string,bool>{{"write", true}}
-                    ).write(projection);
+                    ).write(projection, true);
                 }
             }
         }

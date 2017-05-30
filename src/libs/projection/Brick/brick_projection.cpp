@@ -310,7 +310,7 @@ namespace urban
             return height;
         }
 
-        void BrickPrint::to_ogr(GDALDataset* file) const
+        void BrickPrint::to_ogr(GDALDataset* file, bool labels) const
         {
             OGRSpatialReference spatial_reference_system;
             spatial_reference_system.importFromEPSG(
@@ -328,21 +328,26 @@ namespace urban
             projection_layer->CreateField(plane_coefficient_c);
             OGRFieldDefn* plane_coefficient_d = new OGRFieldDefn("coeff_d", OFTReal);
             projection_layer->CreateField(plane_coefficient_d);
-            
-            std::for_each(
-                std::begin(projected_facets),
-                std::end(projected_facets),
-                [projection_layer, this](const projection::FacePrint & facet)
-                {
-                    OGRFeature* ogr_facet = facet.to_ogr(projection_layer->GetLayerDefn(), reference_point);
-                    if(projection_layer->CreateFeature(ogr_facet) != OGRERR_NONE)
-                        throw std::runtime_error("GDAL could not insert the facet in shapefile");
-                    OGRFeature::DestroyFeature(ogr_facet);
-                }
-            );
+            if(labels)
+            {
+                OGRFieldDefn* unqualified_errors = new OGRFieldDefn("Unq_Errors", OFTString);
+                projection_layer->CreateField(unqualified_errors);
+                OGRFieldDefn* building_errors = new OGRFieldDefn("Bul_Errors", OFTString);
+                projection_layer->CreateField(building_errors);
+                OGRFieldDefn* facets_errors = new OGRFieldDefn("Fac_Errors", OFTString);
+                projection_layer->CreateField(facets_errors);
+            }
+
+            for(auto const& facet : projected_facets)
+            {
+                OGRFeature* ogr_facet = facet.to_ogr(projection_layer->GetLayerDefn(), reference_point, labels);
+                if(projection_layer->CreateFeature(ogr_facet) != OGRERR_NONE)
+                    throw std::runtime_error("GDAL could not insert the facet in vector image!");
+                OGRFeature::DestroyFeature(ogr_facet);
+            }
         }
 
-        std::ostream & operator<<(std::ostream & os, BrickPrint const& brick_projection)
+        std::ostream & operator <<(std::ostream & os, BrickPrint const& brick_projection)
         {
             os << "Name: " << brick_projection.name << std::endl
                << "Bounding box: " << brick_projection.bounding_box << std::endl
@@ -357,12 +362,12 @@ namespace urban
             return os;
         }
 
-        BrickPrint & operator+(BrickPrint & lhs, BrickPrint const& rhs)
+        BrickPrint & operator +(BrickPrint & lhs, BrickPrint const& rhs)
         {
             return lhs += rhs;
         }
 
-        bool operator==(BrickPrint const& lhs, BrickPrint const& rhs)
+        bool operator ==(BrickPrint const& lhs, BrickPrint const& rhs)
         {
             return  lhs.epsg_index == rhs.epsg_index
                     &&
@@ -373,7 +378,7 @@ namespace urban
                     lhs.has_same_facets(rhs);
         }
 
-        bool operator!=(BrickPrint const& lhs, BrickPrint const& rhs)
+        bool operator !=(BrickPrint const& lhs, BrickPrint const& rhs)
         {
             return !(lhs == rhs);
         }
