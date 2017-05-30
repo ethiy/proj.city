@@ -38,8 +38,8 @@ namespace urban
             const double* data(void) const noexcept;
 
             void swap(RasterPrint & other);
-            RasterPrint & operator=(RasterPrint const& other) noexcept;
-            RasterPrint & operator=(RasterPrint && other) noexcept;
+            RasterPrint & operator =(RasterPrint const& other) noexcept;
+            RasterPrint & operator =(RasterPrint && other) noexcept;
 
             double & at(std::size_t const& i, std::size_t const& j);
             const double & at(std::size_t const& i, std::size_t const& j) const;
@@ -58,8 +58,8 @@ namespace urban
 
             void horizontal_offset(void);
 
-            RasterPrint & operator+=(RasterPrint const& other);
-            RasterPrint & operator-=(RasterPrint const& other);
+            RasterPrint & operator +=(RasterPrint const& other);
+            RasterPrint & operator -=(RasterPrint const& other);
         private:
             std::string name;
             shadow::Point reference_point;
@@ -71,13 +71,13 @@ namespace urban
             std::vector<short> pixel_access;
             bool offset = false;
 
-            friend std::ostream & operator<<(std::ostream & os, RasterPrint const& raster_projection);
-            friend bool operator==(RasterPrint const& lhs, RasterPrint const& rhs);
+            friend std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection);
+            friend bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs);
         };
 
-        RasterPrint & operator+(RasterPrint & lhs, RasterPrint const& rhs);
-        RasterPrint & operator-(RasterPrint & lhs, RasterPrint const& rhs);
-        bool operator!=(RasterPrint & lhs, RasterPrint const& rhs);
+        RasterPrint & operator +(RasterPrint & lhs, RasterPrint const& rhs);
+        RasterPrint & operator -(RasterPrint & lhs, RasterPrint const& rhs);
+        bool operator !=(RasterPrint & lhs, RasterPrint const& rhs);
     }
     void swap(projection::RasterPrint & lhs, projection::RasterPrint & rhs);
 }

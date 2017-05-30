@@ -93,14 +93,14 @@ namespace urban
              * @return copy of other
              * @see Scene & operator=(Scene && other);
              */
-            Scene & operator=(Scene const& other);
+            Scene & operator =(Scene const& other);
             /**
              * Move assignement operator.
              * @param other Scene to move
              * @return moved Scene
              * @see Scene & operator=(Scene const& other);
              */
-            Scene & operator=(Scene && other);
+            Scene & operator =(Scene && other);
 
             /**
              * Access pivot point

@@ -52,7 +52,7 @@ namespace urban
             swap(structure, other.structure);
         }
 
-        Scene & Scene::operator=(Scene const& other)
+        Scene & Scene::operator =(Scene const& other)
         {
             pivot = other.pivot;
             epsg_code = other.epsg_code;
@@ -60,7 +60,7 @@ namespace urban
 
             return *this;
         }
-        Scene & Scene::operator=(Scene && other)
+        Scene & Scene::operator =(Scene && other)
         {
             pivot= std::move(other.pivot);
             epsg_code= std::move(other.epsg_code);

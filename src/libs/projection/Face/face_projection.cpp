@@ -54,13 +54,13 @@ namespace urban
             swap(supporting_plane, other.supporting_plane);
         }
 
-        FacePrint & FacePrint::operator=(FacePrint const& other) noexcept
+        FacePrint & FacePrint::operator =(FacePrint const& other) noexcept
         {
             border = other.border;
             supporting_plane = other.supporting_plane;
             return *this;
         }
-        FacePrint & FacePrint::operator=(FacePrint && other) noexcept
+        FacePrint & FacePrint::operator =(FacePrint && other) noexcept
         {
             border = std::move(other.border);
             supporting_plane = std::move(other.supporting_plane);
@@ -310,18 +310,18 @@ namespace urban
             return feature;
         }
 
-        std::ostream & operator<<(std::ostream & os, FacePrint const& facet)
+        std::ostream & operator <<(std::ostream & os, FacePrint const& facet)
         {
             return os << "The Polygon describing borders :" << facet.border << std::endl
                       << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
         }
 
-        bool operator==(FacePrint const& lhs, FacePrint const& rhs)
+        bool operator ==(FacePrint const& lhs, FacePrint const& rhs)
         {
             return lhs.has_same_border(rhs) && lhs.has_same_plane(rhs);
         }
 
-        bool operator!=(FacePrint const& lhs, FacePrint const& rhs)
+        bool operator !=(FacePrint const& lhs, FacePrint const& rhs)
         {
             return !(lhs == rhs);
         }

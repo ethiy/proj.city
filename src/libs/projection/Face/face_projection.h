@@ -28,8 +28,8 @@ namespace urban
 
             void swap(FacePrint & other);
 
-            FacePrint & operator=(FacePrint const& other) noexcept;
-            FacePrint & operator=(FacePrint && other) noexcept;
+            FacePrint & operator =(FacePrint const& other) noexcept;
+            FacePrint & operator =(FacePrint && other) noexcept;
 
             Polygon_with_holes get_polygon(void) const noexcept;
             Polygon outer_boundary(void) const;
@@ -75,11 +75,11 @@ namespace urban
             Polygon_with_holes border;
             Plane_3 supporting_plane;
 
-            friend std::ostream & operator<<(std::ostream & os, FacePrint const& facet);
+            friend std::ostream & operator <<(std::ostream & os, FacePrint const& facet);
         };
         
-        bool operator==(FacePrint const& lhs, FacePrint const& rhs);
-        bool operator!=(FacePrint const& lhs, FacePrint const& rhs);
+        bool operator ==(FacePrint const& lhs, FacePrint const& rhs);
+        bool operator !=(FacePrint const& lhs, FacePrint const& rhs);
     }
     void swap(projection::FacePrint & lhs, projection::FacePrint & rhs);
     
