@@ -78,6 +78,7 @@ namespace urban
         return std::make_pair(A, B);
     }
 
+
     InexactPoint_2 centroid(InexactPolygon const& polygon)
     {
         return CGAL::centroid(polygon.vertices_begin(), polygon.vertices_end(), CGAL::Dimension_tag<0>());

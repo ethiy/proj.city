@@ -16,14 +16,14 @@ int main(int, char **)
         urban::io::FileHandler<Lib3dsFile> handler(filepath, modes);
         std::vector<urban::shadow::Mesh> meshes = handler.read();
 
-        std::vector<urban::Brick> urban_objects(meshes.size());
+        std::vector<urban::scene::Brick> urban_objects(meshes.size());
         std::transform(
             std::begin(meshes),
             std::end(meshes),
             std::begin(urban_objects),
             [](const urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh, urban::shadow::Point());
+                return urban::scene::Brick(mesh, urban::shadow::Point());
             }
         );
 
@@ -32,7 +32,7 @@ int main(int, char **)
             std::begin(urban_objects),
             std::end(urban_objects),
             std::begin(projections_xy),
-            [](const urban::Brick & brick)
+            [](const urban::scene::Brick & brick)
             {
                 return urban::project(brick);
             }

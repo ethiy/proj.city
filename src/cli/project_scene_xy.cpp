@@ -43,93 +43,74 @@ int main(int argc, const char** argv)
 
         boost::filesystem::path input_path(arguments.at("<filename>").asString());
         boost::filesystem::path root(input_path.parent_path());
-        boost::filesystem::path scene_tree_file(root / (input_path.stem().string() + ".XML"));
+        boost::filesystem::path scene_tree_filepath(root / (input_path.stem().string() + ".XML"));
 
-        tinyxml2::XMLDocument scene_tree;
-        auto error = scene_tree.LoadFile(scene_tree_file.string().c_str());
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-
-        double  x_offset(0),
-                y_offset(0),
-                z_offset(0);
-        
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        
-        urban::shadow::Point pivot(x_offset, y_offset, z_offset);
-
-        std::cout << "The shadow point : " << pivot << std::flush << std::endl;
+        urban::io::FileHandler<tinyxml2::XMLDocument> scene_tree_file(scene_tree_filepath);
+        urban::scene::Scene scene = scene_tree_file.read();
 
         urban::io::FileHandler<Lib3dsFile> handler(input_path, std::map<std::string,bool>{{"read", true}});
-        std::cout << "Reading Scene Meshes... " << std::flush;
-        std::vector<urban::shadow::Mesh> meshes = handler.read();
-        std::cout << meshes.size() << " Done" << std::flush << std::endl;
 
-        std::cout << "Filtering Meshes... " << std::flush;
-        meshes.erase(
-            std::remove_if(
-                std::begin(meshes),
-                std::end(meshes),
-                [](urban::shadow::Mesh const& mesh)
-                {
-                    return mesh.get_name().at(0) == 'F' || mesh.get_name().at(0) == 'M';
-                }
-            ),
-            std::end(meshes)
-        );
+        std::cout << "Reading and Stitching Scene Meshes... " << std::flush;
+        std::vector<urban::shadow::Mesh> meshes = handler.read();
+        std::map<std::size_t, std::vector<urban::shadow::Mesh> > building_meshes = scene.cluster(meshes);
+        for(auto & building_mesh : building_meshes)
+        {
+            building_mesh.second.erase(
+                std::remove_if(
+                    std::begin(building_mesh.second),
+                    std::end(building_mesh.second),
+                    [](urban::shadow::Mesh const& mesh)
+                    {
+                        return mesh.get_name().at(0) == 'F';
+                    }
+                ),
+                std::end(building_mesh.second)
+            );
+            building_mesh.second = urban::stitch(building_mesh.second);
+        }
         std::cout << "Done" << std::flush << std::endl;
 
-        std::cout << "Stitching roofs... " << std::flush;
-        std::vector<urban::shadow::Mesh> stitched_roofs = urban::stitch(meshes);
-        std::cout << stitched_roofs.size() << " Done" << std::flush << std::endl;
-
-        std::cout << "Loading to Scene Bricks... " << std::flush;
-        std::vector<urban::Brick> urban_objects(stitched_roofs.size());
+        std::cout << "Loading Buildings... " << std::flush;
+        auto pivot = scene.get_pivot();
+        auto epsg_code = scene.get_epsg();
+        std::vector<urban::scene::Building> buildings(building_meshes.size());
         std::transform(
-            std::begin(stitched_roofs),
-            std::end(stitched_roofs),
-            std::begin(urban_objects),
-            [&pivot](urban::shadow::Mesh const& mesh)
+            std::begin(building_meshes),
+            std::end(building_meshes),
+            std::begin(buildings),
+            [&pivot, epsg_code](std::pair<std::size_t, std::vector<urban::shadow::Mesh> > const& building_mesh)
             {
-                urban::Brick brick(mesh, pivot);
-                return urban::prune(brick);
+                urban::scene::Building building(building_mesh.first, building_mesh.second, pivot, epsg_code);
+                return urban::prune(building);
             }
         );
-        std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
+        std::cout << buildings.size() << " Done" << std::flush << std::endl;
 
         std::cout << "Saving brick duals... " << std::flush;
         boost::filesystem::path dual_dir(root / "dual_graphs");
         boost::filesystem::create_directory(dual_dir);
         std::for_each(
-            std::begin(urban_objects),
-            std::end(urban_objects),
-            [&dual_dir, &input_path](urban::Brick const& brick)
+            std::begin(buildings),
+            std::end(buildings),
+            [&dual_dir, &input_path](urban::scene::Building const& building)
             {
-                std::fstream adjacency_file(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out);
+                std::fstream adjacency_file(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + building.get_name() + ".txt")).string(), std::ios::out);
                 urban::io::Adjacency_stream as(adjacency_file);
-                as << brick;
+                as << building;
             }
         );
         std::cout << " Done" << std::flush << std::endl;
 
 
         std::cout << "Projecting on XY... " << std::flush;
-        std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
+        std::vector<urban::projection::BrickPrint> projections_xy(buildings.size());
         std::transform(
-            std::begin(urban_objects),
-            std::end(urban_objects),
+            std::begin(buildings),
+            std::end(buildings),
             std::begin(projections_xy),
-            [](urban::Brick const& brick)
+            [](urban::scene::Building const& building)
             {
-                return urban::project(brick);
+                return urban::project(building);
             }
         );
         std::cout << "Done" << std::flush << std::endl;
