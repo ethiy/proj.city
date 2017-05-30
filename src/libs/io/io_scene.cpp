@@ -62,33 +62,38 @@ namespace urban
                 unsigned int id = 0;
                 p_building->QueryUnsignedAttribute("Id", &id);
 
-
                 std::set<std::string> roofs;
-                tinyxml2::XMLElement const* p_roof = p_building->FirstChildElement("BuildingPart")->FirstChildElement("RoofSurface");
-                while(p_roof != NULL)
-                {
-                    tinyxml2::XMLElement const* p_mesh = p_roof->FirstChildElement("TexturedSurface");
-                    while(p_mesh != NULL)
-                    {
-                        roofs.insert(std::string(p_mesh->Attribute("Id")));
-                        p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
-                    }
-                    p_roof = p_roof->NextSiblingElement("RoofSurface");
-                }
-
-
                 std::set<std::string> walls;
-                tinyxml2::XMLElement const* p_wall = p_building->FirstChildElement("BuildingPart")->FirstChildElement("WallSurface");
-                while(p_wall != NULL)
+
+                tinyxml2::XMLElement const* p_building_part = p_building->FirstChildElement("BuildingPart");
+                while(p_building_part != NULL)
                 {
-                    tinyxml2::XMLElement const* p_mesh = p_wall->FirstChildElement("TexturedSurface");
-                    while(p_mesh != NULL)
+                    tinyxml2::XMLElement const* p_roof = p_building_part->FirstChildElement("RoofSurface");
+                    while(p_roof != NULL)
                     {
-                        walls.insert(std::string(p_mesh->Attribute("Id")));
-                        p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
+                        tinyxml2::XMLElement const* p_mesh = p_roof->FirstChildElement("TexturedSurface");
+                        while(p_mesh != NULL)
+                        {
+                            roofs.insert(std::string(p_mesh->Attribute("Id")));
+                            p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
+                        }
+                        p_roof = p_roof->NextSiblingElement("RoofSurface");
                     }
-                    p_wall = p_wall->NextSiblingElement("WallSurface");
+
+                    tinyxml2::XMLElement const* p_wall = p_building_part->FirstChildElement("WallSurface");
+                    while(p_wall != NULL)
+                    {
+                        tinyxml2::XMLElement const* p_mesh = p_wall->FirstChildElement("TexturedSurface");
+                        while(p_mesh != NULL)
+                        {
+                            walls.insert(std::string(p_mesh->Attribute("Id")));
+                            p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
+                        }
+                        p_wall = p_wall->NextSiblingElement("WallSurface");
+                    }
+                    p_building_part = p_building_part->NextSiblingElement("BuildingPart");
                 }
+
                 buildings.emplace(
                     std::make_pair(
                         id,
