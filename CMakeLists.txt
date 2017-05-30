@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(3DSceneModel C CXX)
+project(3DSceneModel
+        VERSION 0.3.0
+        LANGUAGES CXX)
 
 ##
 # ________________________________________________ Modules __________________________________________________
@@ -31,4 +33,4 @@ add_subdirectory(src/cli cli)
 ##
 
 add_subdirectory(src/tests tests)
-add_test(NAME test COMMAND tests -r junit)
+add_test(NAME test COMMAND tests --reporter compact)

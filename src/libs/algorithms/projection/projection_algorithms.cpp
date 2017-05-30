@@ -10,7 +10,7 @@
 
 namespace urban
 {
-    projection::BrickPrint project(Brick const& brick)
+    projection::BrickPrint project(scene::Brick const& brick)
     {
         projection::BrickPrint projection(brick.get_name(), brick.bbox(), brick.get_reference_point(), brick.get_epsg());
         std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
@@ -25,7 +25,15 @@ namespace urban
         return projection;
     }
 
-    std::vector<projection::FacePrint> project_xy(Brick const& brick)
+    projection::BrickPrint project(scene::Building const& building)
+    {
+        projection::BrickPrint projection(building.get_name(), building.bbox(), building.pivot(), building.get_epsg());
+        projection = building.project_roofs(projection);
+        return projection;
+    }
+
+
+    std::vector<projection::FacePrint> project_xy(scene::Brick const& brick)
     {
         std::vector<projection::FacePrint> facets(brick.facets_size());
 
@@ -34,24 +42,23 @@ namespace urban
             brick.facets_cbegin(),
             brick.facets_cend(),
             std::begin(facets),
-            [&facet_points](Brick::Facet const& facet)
+            [&facet_points](scene::Brick::Facet const& facet)
             {
                 projection::FacePrint projected_facet;
                 /**
                  * >> Copying 3D points to 2D Point vector
                  */
-                facet_points.clear();
-                facet_points.resize(facet.facet_degree());
+                facet_points = std::vector<Point_2>(facet.facet_degree());
 
                 /** Start with the first point*/
                 auto halfedge = facet.halfedge();
                 Point_3 vertex(halfedge->vertex()->point());
-                facet_points[0] = Point_2(vertex.x(), vertex.y());
+                facet_points.at(0) = Point_2(vertex.x(), vertex.y());
                 std::transform(
-                    std::next(facet.facet_begin(), 1),
+                    std::next(facet.facet_begin()),
                     std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
-                    std::next(std::begin(facet_points), 1),
-                    [&vertex](const Polyhedron::Halfedge & h)
+                    std::next(std::begin(facet_points)),
+                    [&vertex](Polyhedron::Halfedge const& h)
                     {
                         return Point_2(h.vertex()->point().x(), h.vertex()->point().y());
                     }
@@ -106,6 +113,20 @@ namespace urban
         return facets;
     }
 
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
+    {
+        projection = std::accumulate(
+            std::begin(bricks),
+            std::end(bricks),
+            projection,
+            [](projection::BrickPrint & sum, scene::Brick const& brick)
+            {
+                return sum + project(brick);
+            }
+        );
+        return projection;
+    }
+
     std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhss)
     {
         std::list<projection::FacePrint> l_result;
@@ -158,7 +179,7 @@ namespace urban
                             }
                         );
                         /**
-                         * >> Compute oclusion for each facet
+                         * >> Compute occlusion for each facet
                          */
                         first_parts_occluded.complement();
                         first_parts_occluded.intersection(first);

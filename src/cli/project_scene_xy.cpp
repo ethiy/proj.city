@@ -1,4 +1,5 @@
 #include "../libs/urban.h"
+#include "arguments.h"
 
 #include <docopt.h>
 
@@ -16,188 +17,192 @@ static const char USAGE[]=
 R"(project_scene_xy.
 
     Usage:
-      project_scene_xy <filename> [--pixel_size=<size>]
+      project_scene_xy <filename> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
       project_scene_xy (-h | --help)
       project_scene_xy --version
     Options:
       -h --help             Show this screen.
       --version             Show version.
       --pixel_size=<size>   Pixel size [default: 1].
+      --rasterize           Rasterize projections.
+      --buildings           Save projections per building.
+      --graphs              Save the Facets dual graph for buildings.
+      --labels              Save vector projections with error fields.
 )";
+
 
 int main(int argc, const char** argv)
 {
     try
     {
         std::cout << "Parsing arguments... " << std::flush;
-        std::map<std::string, docopt::value> arguments = docopt::docopt(
-            USAGE,
-            { argv + 1, argv + argc },
-            true,
-            "project_scene_xy 0.0.0-dev"
+        Arguments arguments(
+            docopt::docopt(
+                USAGE,
+                { argv + 1, argv + argc },
+                true,
+                "project_scene_xy " + std::string(VERSION)
+            )
         );
-        std::stringstream sconverter(arguments.at("--pixel_size").asString());
-        double pixel_size(1);
-        sconverter >> pixel_size;
-        std::cout << "Done" << std::flush << std::endl;
+        std::cout << std::boolalpha << arguments << std::endl;
+        std::cout << "Done." << std::flush << std::endl;
 
-        boost::filesystem::path input_path(arguments.at("<filename>").asString());
-        boost::filesystem::path root(input_path.parent_path());
-        boost::filesystem::path scene_tree_file(root / (input_path.stem().string() + ".XML"));
+        boost::filesystem::path root(arguments.input_path.parent_path());
 
-        tinyxml2::XMLDocument scene_tree;
-        auto error = scene_tree.LoadFile(scene_tree_file.string().c_str());
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
+        std::cout << "Parsing scene tree... " << std::flush;
+        urban::scene::Scene scene(
+            urban::io::FileHandler<tinyxml2::XMLDocument>(
+                boost::filesystem::path(root / (arguments.input_path.stem().string() + ".XML"))
+            ).read()
+        );
+        std::cout << "Done." << std::flush << std::endl;
 
-        double  x_offset(0),
-                y_offset(0),
-                z_offset(0);
-        
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
-        if(error != tinyxml2::XML_SUCCESS)
-            throw std::runtime_error("Could not read Pivot Point");
-        
-        urban::shadow::Point pivot(x_offset, y_offset, z_offset);
-
-        std::cout << "The shadow point : " << pivot << std::flush << std::endl;
-
-        urban::io::FileHandler<Lib3dsFile> handler(input_path, std::map<std::string,bool>{{"read", true}});
         std::cout << "Reading Scene Meshes... " << std::flush;
-        std::vector<urban::shadow::Mesh> meshes = handler.read();
-        std::cout << meshes.size() << " Done" << std::flush << std::endl;
-
-        std::cout << "Filtering Meshes... " << std::flush;
-        meshes.erase(
-            std::remove_if(
-                std::begin(meshes),
-                std::end(meshes),
-                [](urban::shadow::Mesh const& mesh)
-                {
-                    return mesh.get_name().at(0) == 'F' || mesh.get_name().at(0) == 'M';
-                }
-            ),
-            std::end(meshes)
+        std::vector<urban::shadow::Mesh> meshes(
+            urban::io::FileHandler<Lib3dsFile>(
+                arguments.input_path,
+                std::map<std::string,bool>{{"read", true}}
+            ).read()
         );
-        std::cout << "Done" << std::flush << std::endl;
+        std::cout << meshes.size() << " meshes ; Done." << std::flush << std::endl;
 
-        std::cout << "Stitching roofs... " << std::flush;
-        std::vector<urban::shadow::Mesh> stitched_roofs = urban::stitch(meshes);
-        std::cout << stitched_roofs.size() << " Done" << std::flush << std::endl;
+        std::vector<std::size_t> building_ids = scene.identifiers();
 
-        std::cout << "Loading to Scene Bricks... " << std::flush;
-        std::vector<urban::Brick> urban_objects(stitched_roofs.size());
+        std::cout << "Loading Buildings... " << std::flush;
+        std::vector<urban::scene::Building> buildings(building_ids.size());
         std::transform(
-            std::begin(stitched_roofs),
-            std::end(stitched_roofs),
-            std::begin(urban_objects),
-            [&pivot](urban::shadow::Mesh const& mesh)
+            std::begin(building_ids),
+            std::end(building_ids),
+            std::begin(buildings),
+            [&scene, meshes](std::size_t const& id)
             {
-                return urban::Brick(mesh, pivot);
+                std::vector<urban::shadow::Mesh> roof_meshes(
+                    scene.roofs(id, meshes)
+                );
+                urban::scene::Building building(
+                    id,
+                    urban::stitch(roof_meshes),
+                    scene.get_pivot(),
+                    scene.get_epsg()
+                );
+                return urban::prune(building);
             }
         );
-        std::cout << urban_objects.size() << " Done" << std::flush << std::endl;
+        std::cout << buildings.size() << " Done" << std::flush << std::endl;
 
-        std::cout << "Saving brick duals... " << std::flush;
-        boost::filesystem::path dual_dir(root / "dual_graphs");
-        boost::filesystem::create_directory(dual_dir);
-        std::for_each(
-            std::begin(urban_objects),
-            std::end(urban_objects),
-            [&dual_dir, &input_path](urban::Brick const& brick)
+        if(arguments.graphs)
+        {
+            std::cout << "Saving brick duals... " << std::flush;
+            boost::filesystem::path dual_dir(root / "dual_graphs");
+            boost::filesystem::create_directory(dual_dir);
+            for(auto const& building : buildings)
             {
-                std::fstream adjacency_file(boost::filesystem::path(dual_dir / (input_path.stem().string() + "_" + brick.get_name() + ".txt")).string(), std::ios::out);
+                std::fstream adjacency_file(
+                    boost::filesystem::path(dual_dir / (arguments.input_path.stem().string() + "_" + building.get_name() + ".txt")).string(),
+                    std::ios::out
+                );
                 urban::io::Adjacency_stream as(adjacency_file);
-                as << brick;
+                as << building;
             }
-        );
-        std::cout << " Done" << std::flush << std::endl;
+            std::cout << " Done." << std::flush << std::endl;
+        }
 
 
-        std::cout << "Projecting on XY... " << std::flush;
-        std::vector<urban::projection::BrickPrint> projections_xy(urban_objects.size());
+        std::cout << "Projecting... " << std::flush;
+        std::vector<urban::projection::BrickPrint> projections_xy(buildings.size());
         std::transform(
-            std::begin(urban_objects),
-            std::end(urban_objects),
+            std::begin(buildings),
+            std::end(buildings),
             std::begin(projections_xy),
-            [](urban::Brick const& brick)
+            [](urban::scene::Building const& building)
             {
-                return urban::project(brick);
+                return urban::project(building);
             }
         );
-        std::cout << "Done" << std::flush << std::endl;
+        std::cout << "Done." << std::flush << std::endl;
 
         std::cout << "Summing Projections... " << std::flush;
-        urban::projection::BrickPrint scene_projection(pivot);
-        for(auto projection : projections_xy)
-        {
-            scene_projection += projection;
-        }
-        std::cout << "Done" << std::flush << std::endl;
-
-        std::map<std::string,bool>&& modes{{"write", true}};
+        urban::projection::BrickPrint scene_projection(scene.get_pivot());
+        scene_projection = std::accumulate(
+            std::begin(projections_xy),
+            std::end(projections_xy),
+            scene_projection
+        );
+        std::cout << "Done." << std::flush << std::endl;
         
         std::cout << "Saving vector projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> victor("GML", boost::filesystem::path(root / (input_path.stem().string() + ".gml")), modes);
-        victor.write(scene_projection);
-        boost::filesystem::path vector_dir(root / "vectors");
-        boost::filesystem::create_directory(vector_dir);
-        std::for_each(
-            std::begin(projections_xy),
-            std::end(projections_xy),
-            [&vector_dir, &input_path, &modes](urban::projection::BrickPrint const& projection)
+        urban::io::FileHandler<GDALDriver>(
+            urban::io::GdalFormat::gml,
+            boost::filesystem::path(root / (arguments.input_path.stem().string() + ".gml")),
+            std::map<std::string,bool>{{"write", true}}
+        ).write(scene_projection);
+        if(arguments.buildings)
+        {
+            boost::filesystem::path vector_dir(root / "vectors");
+            boost::filesystem::create_directory(vector_dir);
+            for(auto const& projection : projections_xy)
             {
-                urban::io::FileHandler<GDALDriver> victors(
-                    "GML",
-                    boost::filesystem::path(vector_dir / (input_path.stem().string() + "_" + projection.get_name() + ".gml")),
-                    modes
-                );
-                victors.write(projection);
+                urban::io::FileHandler<GDALDriver>(
+                    urban::io::GdalFormat::gml,
+                    boost::filesystem::path(vector_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".gml")),
+                    std::map<std::string,bool>{{"write", true}}
+                ).write(projection);
             }
-        );
-
-        std::cout << "Done" << std::flush << std::endl;
-
-
-        std::cout << "rasterizing projections... " << std::flush;
-        urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, pixel_size, pivot);
-        std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
-        std::transform(
-            std::begin(projections_xy),
-            std::end(projections_xy),
-            std::begin(raster_projections),
-            [&pivot, pixel_size](urban::projection::BrickPrint const& projection)
+            if(arguments.labels)
             {
-                return urban::rasterize(projection, pixel_size, pivot);
+                boost::filesystem::path label_dir(root / "labels");
+                boost::filesystem::create_directory(label_dir);
+                for(auto const& projection : projections_xy)
+                {
+                    urban::io::FileHandler<GDALDriver>(
+                        urban::io::GdalFormat::shapefile,
+                        boost::filesystem::path(label_dir / (arguments.input_path.stem().string() + "_" + projection.get_name() + ".shp")),
+                        std::map<std::string,bool>{{"write", true}}
+                    ).write(projection);
+                }
             }
-        );
-        std::cout << "Done" << std::flush << std::endl;
+        }
 
-        std::cout << "Saving raster projections... " << std::flush;
-        urban::io::FileHandler<GDALDriver> rastaf("GTiff", boost::filesystem::path(root / (input_path.stem().string() + ".tiff")), modes);
-        rastaf.write(global_rasta);
-        boost::filesystem::path raster_dir(root / "rasters");
-        boost::filesystem::create_directory(raster_dir);
-        std::for_each(
-            std::begin(raster_projections),
-            std::end(raster_projections),
-            [&raster_dir, &input_path, &modes](urban::projection::RasterPrint const& rasta)
+        std::cout << "Done." << std::flush << std::endl;
+
+
+        if(arguments.rasterize)
+        {
+            std::cout << "rasterizing projections... " << std::flush;
+            urban::projection::RasterPrint global_rasta = urban::rasterize(scene_projection, arguments.pixel_size, scene.get_pivot());
+            std::vector<urban::projection::RasterPrint> raster_projections(projections_xy.size());
+            std::transform(
+                std::begin(projections_xy),
+                std::end(projections_xy),
+                std::begin(raster_projections),
+                [&scene, &arguments](urban::projection::BrickPrint const& projection)
+                {
+                    return urban::rasterize(projection, arguments.pixel_size, scene.get_pivot());
+                }
+            );
+            std::cout << "Done." << std::flush << std::endl;
+
+            if(arguments.buildings)
             {
-                urban::io::FileHandler<GDALDriver> rastafari(
-                    "GTiff",
-                    boost::filesystem::path(raster_dir / (input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
-                    modes
-                );
-                rastafari.write(rasta);
+                std::cout << "Saving raster projections... " << std::flush;
+                urban::io::FileHandler<GDALDriver>(
+                    urban::io::GdalFormat::geotiff,
+                    boost::filesystem::path(root / (arguments.input_path.stem().string() + ".tiff")),
+                    std::map<std::string,bool>{{"write", true}}
+                ).write(global_rasta);
+                boost::filesystem::path raster_dir(root / "rasters");
+                boost::filesystem::create_directory(raster_dir);
+                for(auto const& rasta : raster_projections)
+                {
+                    urban::io::FileHandler<GDALDriver>(
+                        urban::io::GdalFormat::geotiff,
+                        boost::filesystem::path(raster_dir / (arguments.input_path.stem().string() + "_" + rasta.get_name() + ".tiff")),
+                        std::map<std::string,bool>{{"write", true}}
+                    ).write(rasta);
+                }
+                std::cout << "Done." << std::flush << std::endl;
             }
-        );
-        std::cout << "Done" << std::flush << std::endl;
+        }
     }
     catch(std::exception const& except)
     {

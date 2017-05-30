@@ -1,6 +1,6 @@
 #include "io_off.h"
 
-#include "Line/line.h"
+#include <boost/filesystem/operations.hpp>
 
 #include <stdexcept>
 
@@ -9,9 +9,6 @@
 
 #include <map>
 #include <vector>
-
-#include <algorithm>
-#include <iterator>
 
 namespace urban
 {

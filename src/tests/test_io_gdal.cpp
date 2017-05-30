@@ -1,6 +1,6 @@
 #include "../libs/io/io_gdal.h"
 #include "../libs/algorithms/algorithms.h"
-#include "../libs/brick/brick.h"
+#include "../libs/scene/brick/brick.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
@@ -40,16 +40,18 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 {7, urban::shadow::Face{{1, 3, 2}}}
             }
         );
-        urban::projection::BrickPrint test_proj = urban::project(urban::Brick(test_mesh, urban::shadow::Point()));
+        urban::projection::BrickPrint test_proj = urban::project(urban::scene::Brick(test_mesh, urban::shadow::Point()));
 
         std::ostringstream file_name;
-        std::map<std::string,bool> modes{{"write", true}, {"read", true}};
 
         WHEN("the projection is written to a shapefile")
         {
-        boost::uuids::uuid unique_name = boost::uuids::random_generator()();
-            file_name << unique_name << ".gml";
-            urban::io::FileHandler<GDALDriver> handler("GML", boost::filesystem::path(file_name.str()), modes);
+            file_name << boost::uuids::random_generator()() << ".gml";
+            urban::io::FileHandler<GDALDriver> handler(
+                 urban::io::GdalFormat::gml,
+                boost::filesystem::path(file_name.str()),
+                std::map<std::string,bool>{{"write", true}, {"read", true}}
+            );
             handler.write(test_proj);
             THEN("The output checks:")
             {
@@ -59,9 +61,12 @@ SCENARIO("Input/Output from Shadow Mesh:")
         }
         WHEN("the projection is rasterized and written to a GeoTIFF")
         {
-            boost::uuids::uuid unique_name = boost::uuids::random_generator()();
-            file_name << unique_name << ".geotiff";
-            urban::io::FileHandler<GDALDriver> handler("GTiff", boost::filesystem::path(file_name.str()), modes);
+            file_name << boost::uuids::random_generator()() << ".geotiff";
+            urban::io::FileHandler<GDALDriver> handler(
+                urban::io::GdalFormat::geotiff,
+                boost::filesystem::path(file_name.str()),
+                std::map<std::string,bool>{{"write", true}, {"read", true}}
+            );
             urban::projection::RasterPrint rasta = urban::rasterize(test_proj, 1, urban::shadow::Point());
             handler.write(rasta);
             THEN("The output checks:")

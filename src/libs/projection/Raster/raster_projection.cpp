@@ -33,7 +33,7 @@ namespace urban
               offset(true)
         {
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
-                throw std::logic_error("this case is not treated here");
+                throw std::logic_error("this case is not treated yet!");
             
             epsg_index = _epsg_index > 0 ? static_cast<unsigned short>(_epsg_index) : 2154;
             
@@ -94,7 +94,10 @@ namespace urban
         {
             return reference_point;
         }
-
+        unsigned short const& RasterPrint::get_epsg() const noexcept
+        {
+            return epsg_index;
+        }
         double const& RasterPrint::get_pixel_size() const noexcept
         {
             return pixel_size;
@@ -183,7 +186,7 @@ namespace urban
             return image_matrix.cend();
         }
 
-        RasterPrint & RasterPrint::operator=(RasterPrint const& other) noexcept
+        RasterPrint & RasterPrint::operator =(RasterPrint const& other) noexcept
         {
             name = other.name;
             reference_point = other.reference_point;
@@ -198,7 +201,7 @@ namespace urban
             return *this;
         }
 
-        RasterPrint & RasterPrint::operator=(RasterPrint && other) noexcept
+        RasterPrint & RasterPrint::operator =(RasterPrint && other) noexcept
         {
             name = std::move(other.name);
             reference_point = std::move(other.reference_point);
@@ -224,7 +227,7 @@ namespace urban
             }
         }
 
-        RasterPrint & RasterPrint::operator+=(RasterPrint const& other)
+        RasterPrint & RasterPrint::operator +=(RasterPrint const& other)
         {
             if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
                 throw std::logic_error("Case not treated");
@@ -241,7 +244,7 @@ namespace urban
             return *this;
         }
         
-        RasterPrint & RasterPrint::operator-=(RasterPrint const& other)
+        RasterPrint & RasterPrint::operator -=(RasterPrint const& other)
         {
             if( std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon()
                 &&
@@ -263,7 +266,7 @@ namespace urban
             return *this;
         }
 
-        std::ostream & operator<<(std::ostream & os, RasterPrint const& raster_projection)
+        std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection)
         {
             std::ios::fmtflags flag_buffer = os.flags();
 
@@ -295,17 +298,17 @@ namespace urban
             return os;
         }
 
-        RasterPrint & operator+(RasterPrint & lhs, RasterPrint const& rhs)
+        RasterPrint & operator +(RasterPrint & lhs, RasterPrint const& rhs)
         {
             return lhs += rhs;
         }
 
-        RasterPrint & operator-(RasterPrint & lhs, RasterPrint const& rhs)
+        RasterPrint & operator -(RasterPrint & lhs, RasterPrint const& rhs)
         {
             return lhs -= rhs;
         }
 
-        bool operator==(RasterPrint const& lhs, RasterPrint const& rhs)
+        bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs)
         {
             bool result(
                 std::abs(lhs.pixel_size - rhs.pixel_size) < std::numeric_limits<double>::epsilon()
@@ -341,7 +344,7 @@ namespace urban
             return result;
         }
         
-        bool operator!=(RasterPrint & lhs, RasterPrint const& rhs)
+        bool operator !=(RasterPrint & lhs, RasterPrint const& rhs)
         {
             return !(lhs == rhs);
         }

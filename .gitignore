@@ -1,7 +1,7 @@
 # Ignore File
 
-# VS code
-.vscode
+# Qt creator
+CMakeLists.txt.user
 
 # Qt creator
 CMakeLists.txt.user

@@ -18,7 +18,7 @@ namespace urban
         BrickPrint::BrickPrint(void)
             : name("no_name") {}
         BrickPrint::BrickPrint(shadow::Point const& _reference_point)
-            : name("no_name"), reference_point(_reference_point) {}
+            : reference_point(_reference_point) {}
         BrickPrint::BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short _epsg_index)
             : name(_name + "_xy"),
               bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())),
@@ -74,48 +74,42 @@ namespace urban
             swap(projected_surface, other.projected_surface);
         }
             
-        BrickPrint & BrickPrint::operator=(BrickPrint const& other)
+        BrickPrint & BrickPrint::operator =(BrickPrint const& other)
         {
             name = other.name;
             bounding_box = other.bounding_box;
             reference_point = other.reference_point;
             epsg_index = other.epsg_index;
-            std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::back_inserter(projected_facets));
+            projected_facets = other.projected_facets;
             projected_surface = other.projected_surface;
             return *this;
         }
 
-        BrickPrint & BrickPrint::operator=(BrickPrint && other)
+        BrickPrint & BrickPrint::operator =(BrickPrint && other)
         {
             name = std::move(other.name);
             bounding_box = std::move(other.bounding_box);
             reference_point = std::move(other.reference_point);
             epsg_index = std::move(other.epsg_index);
-            std::move(std::begin(other.projected_facets), std::end(other.projected_facets), std::back_inserter(projected_facets));
+            projected_facets = std::move(other.projected_facets);
             projected_surface = std::move(other.projected_surface);
             return *this;
         }
 
-        BrickPrint & BrickPrint::operator+=(BrickPrint const& other)
+        BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
         {
             if(epsg_index != other.epsg_index || reference_point != other.reference_point)
                 throw std::logic_error("Cannot sum two brick projections with a different projection system nor a different reference point");
             name += "_" + other.name;
             if(projected_surface.do_intersect(other.projected_surface))
             {
-                std::for_each(
-                    std::begin(other.projected_facets),
-                    std::end(other.projected_facets),
-                    [this](FacePrint const& facet)
-                    {
-                        insert(facet);
-                    }
-                );
+                for(auto const facet : other.projected_facets)
+                {
+                    insert(facet);
+                }
             }
             else
-            {
-                std::copy(std::begin(other.projected_facets), std::end(other.projected_facets), std::back_inserter(projected_facets));
-            }
+                projected_facets.insert(std::end(projected_facets), std::begin(other.projected_facets), std::end(other.projected_facets));
             projected_surface.join(other.projected_surface);
             bounding_box += other.bounding_box;
             return *this;
@@ -223,14 +217,10 @@ namespace urban
         bool BrickPrint::check_integrity(void) const
         {
             Polygon_set diff(projected_surface);
-            std::for_each(
-                std::begin(projected_facets),
-                std::end(projected_facets),
-                [&diff](FacePrint const& facet)
-                {
-                    return diff.difference(facet.get_polygon());
-                }
-            );
+            for(auto const& facet : projected_facets)
+            {
+                diff.difference(facet.get_polygon());
+            }
             return diff.is_empty();
         }
 
@@ -322,7 +312,11 @@ namespace urban
 
         void BrickPrint::to_ogr(GDALDataset* file) const
         {
-            OGRLayer* projection_layer = file->CreateLayer("projection_xy", NULL, wkbPolygon, NULL);
+            OGRSpatialReference spatial_reference_system;
+            spatial_reference_system.importFromEPSG(
+                epsg_index
+            );
+            OGRLayer* projection_layer = file->CreateLayer("projection_xy", &spatial_reference_system, wkbPolygon, NULL);
             if(projection_layer == NULL)
                 throw std::runtime_error("GDAL could not create a projection layer");
             

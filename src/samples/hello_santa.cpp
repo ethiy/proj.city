@@ -23,18 +23,18 @@ int main(int, char **)
 
         std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::shadow::Mesh>(std::cout, "\n"));
 
-        std::vector<urban::Brick> urban_objects(meshes.size());
+        std::vector<urban::scene::Brick> urban_objects(meshes.size());
         std::transform(
             std::begin(meshes),
             std::end(meshes),
             std::begin(urban_objects),
             [](urban::shadow::Mesh & mesh)
             {
-                return urban::Brick(mesh, urban::shadow::Point());
+                return urban::scene::Brick(mesh, urban::shadow::Point());
             }
         );
 
-        std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::Brick>(std::cout, "\n"));
+        std::copy(std::begin(urban_objects), std::end(urban_objects), std::ostream_iterator<urban::scene::Brick>(std::cout, "\n"));
         #ifdef CGAL_USE_GEOMVIEW
         CGAL::Geomview_stream geomview_stream;
         geomview_stream.set_bg_color(CGAL::Color(0, 127, 200));
@@ -43,7 +43,7 @@ int main(int, char **)
         std::for_each(
             std::begin(urban_objects),
             std::end(urban_objects),
-            [&geomview_stream, pigment, all](urban::Brick & obj) mutable
+            [&geomview_stream, pigment, all](urban::scene::Brick & obj) mutable
             {
                 geomview_stream << CGAL::Color(250 * (pigment - 1) / all, 0, 250 * pigment / all) << obj;
                 pigment++;

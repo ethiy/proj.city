@@ -3,9 +3,9 @@
 #include "io.h"
 
 #include "../shadow/mesh.h"
+#include "Off_stream/off_stream.h"
 
 #include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
 
 #include <fstream>
 #include <map>

@@ -104,6 +104,12 @@ namespace urban
         {
             compute_bbox();
         }
+
+        Mesh::Mesh(std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces)
+            : points(_points), faces(_faces)
+        {
+            compute_bbox();
+        }
         
         Mesh::~Mesh(void) {}
 
@@ -167,6 +173,11 @@ namespace urban
             return faces.cend();
         }
 
+
+        void Mesh::set_name(std::string const& _name) noexcept
+        {
+            name = _name;
+        }
 
         std::string Mesh::get_name(void) const noexcept
         {
