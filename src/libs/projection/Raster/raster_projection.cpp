@@ -33,7 +33,7 @@ namespace urban
               offset(true)
         {
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
-                throw std::logic_error("this case is not treated yet");
+                throw std::logic_error("this case is not treated yet!");
             
             epsg_index = _epsg_index > 0 ? static_cast<unsigned short>(_epsg_index) : 2154;
             

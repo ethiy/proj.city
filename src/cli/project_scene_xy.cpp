@@ -128,10 +128,6 @@ int main(int argc, const char** argv)
             std::end(projections_xy),
             scene_projection
         );
-        for(auto projection : projections_xy)
-        {
-            scene_projection += projection;
-        }
         std::cout << "Done." << std::flush << std::endl;
         
         std::cout << "Saving vector projections... " << std::flush;

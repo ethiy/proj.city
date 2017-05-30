@@ -50,7 +50,9 @@
         "bitset": "cpp",
         "set": "cpp",
         "algorithm": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "memory": "cpp"
     },
     "vsicons.presets.angular": true,
     "cmake.buildDirectory": "${workspaceRoot}/build/vscode"

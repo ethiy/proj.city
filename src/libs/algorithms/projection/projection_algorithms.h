@@ -24,6 +24,6 @@ namespace urban
     /** Project Faces to XY*/
     std::vector<projection::FacePrint> project_xy(const scene::Brick & brick);
 
-    /** Computes FacePrint occlutions and gets rid of all perpendicular facets*/
+    /** Computes FacePrint occlusions and gets rid of all perpendicular facets*/
     std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhs);
 }
