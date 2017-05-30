@@ -3,6 +3,8 @@
 #include "../../geometry_definitions.h"
 #include "../../scene/brick/brick.h"
 
+#include <vector>
+
 
 namespace urban
 {
@@ -28,7 +30,12 @@ namespace urban
      * @return scene::Brick with pruned surfaces
      */
     scene::Brick & prune(scene::Brick & brick);
+    /** Prunes surfaces of bricks.
+     * @param brick a vector of bricks to prune
+     * @return a vector of bricks with pruned surfaces
+     */
+    std::vector<scene::Brick> & prune(std::vector<scene::Brick> & brick);
 
-    /*! Computes brick surface area*/
-    double area(scene::Brick &);
+    /** Computes brick surface area*/
+    double area(scene::Brick & brick);
 }

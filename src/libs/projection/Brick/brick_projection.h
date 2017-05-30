@@ -60,7 +60,7 @@ namespace urban
             double get_height(Point_2 const&) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
 
-            void to_ogr(GDALDataset* file) const;
+            void to_ogr(GDALDataset* file, bool labels) const;
         private:
             std::string name;
             Bbox_2 bounding_box;

@@ -28,10 +28,7 @@ namespace urban
     projection::BrickPrint project(scene::Building const& building)
     {
         projection::BrickPrint projection(building.get_name(), building.bbox(), building.pivot(), building.get_epsg());
-        for(auto const& brick : building)
-        {
-            projection += project(brick);
-        }
+        projection = building.project_roofs(projection);
         return projection;
     }
 
@@ -116,6 +113,20 @@ namespace urban
         return facets;
     }
 
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
+    {
+        projection = std::accumulate(
+            std::begin(bricks),
+            std::end(bricks),
+            projection,
+            [](projection::BrickPrint & sum, scene::Brick const& brick)
+            {
+                return sum + project(brick);
+            }
+        );
+        return projection;
+    }
+
     std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhss)
     {
         std::list<projection::FacePrint> l_result;
@@ -168,7 +179,7 @@ namespace urban
                             }
                         );
                         /**
-                         * >> Compute oclusion for each facet
+                         * >> Compute occlusion for each facet
                          */
                         first_parts_occluded.complement();
                         first_parts_occluded.intersection(first);

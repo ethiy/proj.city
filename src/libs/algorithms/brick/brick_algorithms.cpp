@@ -94,6 +94,20 @@ namespace urban
         return brick;
     }
 
+    std::vector<scene::Brick> & prune(std::vector<scene::Brick> & bricks)
+    {
+        std::transform(
+            std::begin(bricks),
+            std::end(bricks),
+            std::begin(bricks),
+            [](scene::Brick & brick)
+            {
+                return prune(brick);
+            }
+        );
+        return bricks;
+    }
+
     double area(scene::Brick& brick)
     {
         return std::accumulate(

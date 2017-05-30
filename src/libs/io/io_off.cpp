@@ -1,6 +1,6 @@
 #include "io_off.h"
 
-#include "Line/line.h"
+#include <boost/filesystem/operations.hpp>
 
 #include <stdexcept>
 
@@ -9,9 +9,6 @@
 
 #include <map>
 #include <vector>
-
-#include <algorithm>
-#include <iterator>
 
 namespace urban
 {
@@ -56,7 +53,7 @@ namespace urban
                         std::remove_if(
                             std::begin(lines),
                             std::end(lines),
-                            [](std::string const& line)
+                            [](const std::string & line)
                             {
                                 return line.at(0) == '#' || line.empty();
                             }
@@ -101,7 +98,7 @@ namespace urban
                         std::for_each(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
-                            [&points, &idx, &sline, &coordinates](std::string const& line)
+                            [&points, &idx, &sline, &coordinates](const std::string & line)
                             {
                                 sline.str(line);
                                 std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
@@ -117,7 +114,7 @@ namespace urban
                         sline.clear();
 
                         std::map<std::size_t, shadow::Face> faces;
-                        buffer_lines = std::vector<std::string>(static_cast<std::size_t>(sizes[1]));
+                        buffer_lines.resize(static_cast<std::size_t>(sizes[1]));
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
 
                         std::vector<std::size_t> indexes;
@@ -125,14 +122,15 @@ namespace urban
                         std::for_each(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
-                            [&indexes, &sline, &n, &idx, &faces](std::string const& line) {
+                            [&indexes, &sline, &n, &idx, &faces](std::string line) {
                                 sline.str(line);
                                 sline >> n;
-                                indexes = std::vector<std::size_t>(n);
+                                indexes.resize(n);
                                 std::copy(std::istream_iterator<std::size_t>(sline), std::istream_iterator<std::size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
                                 faces.emplace(std::make_pair(idx++, shadow::Face(indexes)));
+                                indexes.clear();
                                 sline.clear();
                             });
                         /*Mesh to return*/
@@ -189,7 +187,7 @@ namespace urban
                 std::for_each(
                     mesh.points_cbegin(),
                     mesh.points_cend(),
-                    [this](std::pair<std::size_t, shadow::Point> const& p)
+                    [this](std::pair<std::size_t, shadow::Point> p)
                     {
                         file << p.second << std::endl;
                     }
@@ -199,7 +197,7 @@ namespace urban
                 std::for_each(
                     mesh.faces_cbegin(),
                     mesh.faces_cend(),
-                    [this](std::pair<std::size_t, shadow::Face> const& p)
+                    [this](std::pair<std::size_t, shadow::Face> p)
                     {
                         file << p.second << std::endl;
                     }
