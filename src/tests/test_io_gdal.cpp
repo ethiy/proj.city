@@ -1,6 +1,6 @@
-#include "../libs/io/io_gdal.h"
-#include "../libs/algorithms/algorithms.h"
-#include "../libs/scene/brick/brick.h"
+#include <io/io_gdal.h>
+#include <algorithms/algorithms.h>
+#include <scene/brick/brick.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>

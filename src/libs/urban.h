@@ -1,5 +1,7 @@
 #pragma once
 
+#include "config.h"
+
 #include "shadow/mesh.h"
 
 #include "io/io_off.h"

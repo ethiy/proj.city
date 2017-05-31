@@ -1,4 +1,4 @@
-#include "../libs/projection/Face/face_projection.h"
+#include <projection/Face/face_projection.h>
 
 #include <catch.hpp>
 

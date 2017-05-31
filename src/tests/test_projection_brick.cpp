@@ -1,4 +1,4 @@
-#include "../libs/projection/Brick/brick_projection.h"
+#include <projection/Brick/brick_projection.h>
 
 #include <catch.hpp>
 

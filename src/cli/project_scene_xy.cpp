@@ -1,7 +1,9 @@
-#include "../libs/urban.h"
-#include "arguments.h"
+#include "config.h"
+
+#include <urban.h>
 
 #include <docopt.h>
+#include "arguments.h"
 
 #include <boost/filesystem.hpp>
 

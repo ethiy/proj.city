@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.2)
 
 project(3DSceneModel
-        VERSION 0.4.0
-        LANGUAGES CXX)
+        VERSION 0.4.1
+        LANGUAGES CXX
+)
+
+configure_file (
+        "${PROJECT_SOURCE_DIR}/src/config.h.in"
+        "${PROJECT_BINARY_DIR}/config.h"
+)
 
 ##
 # ________________________________________________ Modules __________________________________________________
@@ -14,6 +20,7 @@ include(cmake/dependencies.cmake)
 # _______________________________________________ Libraries __________________________________________________
 ##
 
+include_directories("${PROJECT_SOURCE_DIR}/src/libs")
 add_subdirectory(src/libs libs)
 
 ##

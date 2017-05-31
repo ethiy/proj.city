@@ -1,5 +1,5 @@
-#include "../libs/algorithms/algorithms.h"
-#include "../libs/scene/brick/brick.h"
+#include <algorithms/algorithms.h>
+#include <scene/brick/brick.h>
 
 #include <CGAL/Boolean_set_operations_2.h>
 

@@ -1,4 +1,4 @@
-#include "../libs/io/io_3ds.h"
+#include <io/io_3ds.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>

@@ -65,29 +65,29 @@ set(IO_SRC
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_off.cpp"
     "${3DSceneModel_SOURCE_DIR}/src/libs/io/io_gdal.cpp"
 )
+set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
 
 # Shadow
-add_library(urban_shadow ${Shadow_HEADERS} ${Shadow_SRC})
+add_library(urban_shadow ${Shadow_SRC})
 target_link_libraries(urban_shadow ${LIBS})
 
-# Projections
-add_library(urban_projection ${Projection_HEADER} ${Projection_SRC} ${Scene_HEADERS} ${Algorithms_HEADER})
-target_link_libraries(urban_projection urban_algorithms ${LIBS})
+# Scene
+add_library(urban_scene ${Scene_SRC})
+target_link_libraries(urban_scene urban_shadow urban_projection ${LIBS})
 
 # Algorithms
-add_library(urban_algorithms ${Algorithms_HEADER} ${Algorithms_SRC} ${Scene_HEADERS} ${Shadow_HEADERS} ${Projection_HEADER})
-target_link_libraries(urban_algorithms urban_scene urban_shadow urban_projection ${LIBS})
+add_library(urban_algorithms ${Algorithms_SRC})
+target_link_libraries(urban_algorithms urban_scene urban_shadow ${LIBS})
 
-# Scene
-add_library(urban_scene ${Scene_HEADERS} ${Scene_SRC} ${Shadow_HEADERS} ${Projection_HEADER} ${Algorithms_HEADER})
-target_link_libraries(urban_scene urban_shadow urban_algorithms urban_projection ${LIBS})
-
+# Projections
+add_library(urban_projection ${Projection_SRC})
+target_link_libraries(urban_projection urban_algorithms ${LIBS})
+ 
 # Input/Output
-add_library(urban_io ${IO_HEADERS} ${IO_SRC} ${Shadow_HEADERS} ${Projection_HEADER} ${Line_HEADER} ${Adjacency_HEADER} ${Off_HEADER} ${Scene_HEADERS})
+add_library(urban_io ${IO_SRC})
 target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 
 # urban
-set(urban_HEADER "${3DSceneModel_SOURCE_DIR}/src/libs/urban.h")
-add_library(urban SHARED ${urban_HEADER})
+add_library(urban SHARED)
 link_directories(urban ${LIBS_DIRS})
 target_link_libraries(urban urban_shadow urban_io urban_scene urban_projection urban_algorithms ${LIBS})
