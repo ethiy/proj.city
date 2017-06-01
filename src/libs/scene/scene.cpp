@@ -32,14 +32,14 @@ namespace urban
 
         Scene::Scene(void)
         {}
-        Scene::Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BComposition> const& _structure)
-            :pivot(_pivot), epsg_code(_epsg_code), structure(_structure)
+        Scene::Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_code, std::map<std::size_t, BComposition> const& _structure)
+            :pivot(_pivot), centered(_centered), epsg_code(_epsg_code), structure(_structure)
         {}
         Scene::Scene(Scene const& other)
-            :pivot(other.pivot), epsg_code(other.epsg_code), structure(other.structure)
+            :pivot(other.pivot), centered(other.centered), epsg_code(other.epsg_code), structure(other.structure)
         {}
         Scene::Scene(Scene && other)
-            :pivot(std::move(other.pivot)), epsg_code(std::move(other.epsg_code)), structure(std::move(other.structure))
+            :pivot(std::move(other.pivot)), centered(std::move(other.centered)), epsg_code(std::move(other.epsg_code)), structure(std::move(other.structure))
         {}
         Scene::~Scene(void)
         {}
@@ -48,6 +48,7 @@ namespace urban
         {
             using std::swap;
             swap(pivot, other.pivot);
+            swap(centered, other.centered);
             swap(epsg_code, other.epsg_code);
             swap(structure, other.structure);
         }
@@ -55,6 +56,7 @@ namespace urban
         Scene & Scene::operator =(Scene const& other)
         {
             pivot = other.pivot;
+            centered = other.centered;
             epsg_code = other.epsg_code;
             structure = other.structure;
 
@@ -63,6 +65,7 @@ namespace urban
         Scene & Scene::operator =(Scene && other)
         {
             pivot= std::move(other.pivot);
+            centered= std::move(other.centered);
             epsg_code= std::move(other.epsg_code);
             structure= std::move(other.structure);
 

@@ -18,16 +18,10 @@ namespace urban
             :name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), surface(other.surface), bounding_box(other.bounding_box){}
         Brick::Brick(Brick && other)
             : name(std::move(other.name)), reference_point(std::move(other.reference_point)), epsg_index(std::move(other.epsg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
-        Brick::Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point)
-            : name(mesh.get_name()), reference_point(_reference_point), bounding_box(mesh.bbox().to_cgal())
-        {
-            SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
-            surface.delegate(builder);
-        }
-        Brick::Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index)
+        Brick::Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index, bool centered)
             : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index), bounding_box(mesh.bbox().to_cgal())
         {
-            SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh);
+            SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh, centered, reference_point);
             surface.delegate(builder);
         }
         Brick::~Brick(void){}

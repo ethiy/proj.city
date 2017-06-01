@@ -53,7 +53,7 @@ namespace urban
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
-            Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BComposition > const& _structure);
+            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_code, std::map<std::size_t, BComposition > const& _structure);
             /**
              * Copy Constructor.
              * @param other Scene to copy
@@ -88,14 +88,14 @@ namespace urban
              */
             void swap(Scene & other);
             /**
-             * Copy assignement operator.
+             * Copy assignment operator.
              * @param other Scene to copy
              * @return copy of other
              * @see Scene & operator=(Scene && other);
              */
             Scene & operator =(Scene const& other);
             /**
-             * Move assignement operator.
+             * Move assignment operator.
              * @param other Scene to move
              * @return moved Scene
              * @see Scene & operator=(Scene const& other);
@@ -129,10 +129,12 @@ namespace urban
         private:
             /** Pivot */
             urban::shadow::Point pivot;
+            /** Centered */
+            bool centered = true;
             /** EPSG projection system code */
             unsigned short epsg_code = 2154;
             /** Scene Structure */
-            std::map<std::size_t, BComposition > structure;
+            std::map<std::size_t, BComposition> structure;
         };
 
         /**

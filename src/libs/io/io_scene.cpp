@@ -1,5 +1,7 @@
 #include "io_scene.h"
 
+#include "../shadow/Bbox/bbox.h"
+
 #include <boost/filesystem/operations.hpp>
 
 namespace urban
@@ -16,26 +18,68 @@ namespace urban
         FileHandler<tinyxml2::XMLDocument>::~FileHandler(void)
         {}
 
-        scene::Scene FileHandler<tinyxml2::XMLDocument>::read(void) const
+        scene::Scene FileHandler<tinyxml2::XMLDocument>::read(void)
         {
-            return scene::Scene(pivot(), epsg_code(), structure());
+            return scene::Scene(pivot(), centered, epsg_code(), structure());
         }
 
-        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(void) const
+        shadow::Bbox FileHandler<tinyxml2::XMLDocument>::bbox(void) const
+        {
+            double  x_min(0),
+                    x_max(0),
+                    y_min(0),
+                    y_max(0),
+                    z_min(0),
+                    z_max(0);
+            
+            auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Xmin")->QueryDoubleText(&x_min);
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read the bounding box");
+            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Xmax")->QueryDoubleText(&x_max);
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read the bounding box");
+            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Ymin")->QueryDoubleText(&y_min);
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read the bounding box");
+            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Ymax")->QueryDoubleText(&y_max);
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read the bounding box");
+            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Zmin")->QueryDoubleText(&z_min);
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read the bounding box");
+            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Zmax")->QueryDoubleText(&z_max);
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read the bounding box");
+            
+            return shadow::Bbox(x_min, x_max, y_min, y_max, z_min, z_max);
+        }
+
+        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(void)
         {
             double  x_offset(0),
                     y_offset(0),
                     z_offset(0);
             
-            auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read Pivot Point");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read Pivot Point");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read Pivot Point");
+            if(scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot") != NULL)
+            {
+                auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
+                if(error != tinyxml2::XML_SUCCESS)
+                    throw std::runtime_error("Could not read Pivot Point");
+                error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
+                if(error != tinyxml2::XML_SUCCESS)
+                    throw std::runtime_error("Could not read Pivot Point");
+                error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
+                if(error != tinyxml2::XML_SUCCESS)
+                    throw std::runtime_error("Could not read Pivot Point");
+            }
+            else
+            {
+                centered = false;
+                shadow::Bbox _bbox = bbox();
+                x_offset = (_bbox.xmax() + _bbox.xmin()) / 2.;
+                y_offset = (_bbox.ymax() + _bbox.ymin()) / 2.;
+            }
+            
             return urban::shadow::Point(x_offset, y_offset, z_offset);
         }
 
@@ -74,7 +118,10 @@ namespace urban
                         tinyxml2::XMLElement const* p_mesh = p_roof->FirstChildElement("TexturedSurface");
                         while(p_mesh != NULL)
                         {
-                            roofs.insert(std::string(p_mesh->Attribute("Id")));
+                            auto roof_name = std::string(p_mesh->Attribute("Id"));
+                            if(roof_name.at(0) != 'T')
+                                roof_name = "T" + roof_name;
+                            roofs.insert(roof_name);
                             p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
                         }
                         p_roof = p_roof->NextSiblingElement("RoofSurface");
@@ -86,7 +133,10 @@ namespace urban
                         tinyxml2::XMLElement const* p_mesh = p_wall->FirstChildElement("TexturedSurface");
                         while(p_mesh != NULL)
                         {
-                            walls.insert(std::string(p_mesh->Attribute("Id")));
+                            auto wall_name = std::string(p_mesh->Attribute("Id"));
+                            if(wall_name.at(0) != 'F')
+                                wall_name = "T" + wall_name;
+                            walls.insert(wall_name);
                             p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
                         }
                         p_wall = p_wall->NextSiblingElement("WallSurface");
