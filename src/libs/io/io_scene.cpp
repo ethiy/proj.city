@@ -92,9 +92,9 @@ namespace urban
             return static_cast<unsigned short>(epsg_code);
         }
 
-        std::map<std::size_t, scene::BComposition > FileHandler<tinyxml2::XMLDocument>::structure(void) const
+        std::map<std::string, scene::BComposition > FileHandler<tinyxml2::XMLDocument>::structure(void) const
         {
-            std::map<std::size_t, scene::BComposition> buildings;
+            std::map<std::string, scene::BComposition> buildings;
 
             tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")
                                                                         ->FirstChildElement("CityModel")
@@ -103,8 +103,7 @@ namespace urban
             while(p_building != NULL)
             {
                 /* Building Identifier */
-                unsigned int id = 0;
-                p_building->QueryUnsignedAttribute("Id", &id);
+                std::string id(p_building->Attribute("Id"));
 
                 std::set<std::string> roofs;
                 std::set<std::string> walls;

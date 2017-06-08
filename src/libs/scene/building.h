@@ -13,7 +13,7 @@ namespace urban
         public:
             /**
               * Empty Constructor.
-              * @see Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
+              * @see Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
               * @see Building(Building const& other);
               * @see Building(Building&& other);
               * @see ~Building(void);
@@ -30,7 +30,7 @@ namespace urban
               * @see Building(Building&& other);
               * @see ~Building(void);
              */
-            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, std::vector<urban::shadow::Mesh> const& _walls, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
+            Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& _roofs, std::vector<urban::shadow::Mesh> const& _walls, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
             /**
               * Default roof Constructor.
               * @param _id building identifier
@@ -42,12 +42,12 @@ namespace urban
               * @see Building(Building&& other);
               * @see ~Building(void);
              */
-            Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
+            Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& _roofs, shadow::Point const& _pivot, unsigned short _epsg_code = 2154);
             /**
               * Copy Constructor.
               * @param other Building to copy
               * @see Building(void);
-              * @see Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
+              * @see Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
               * @see Building(Building&& other);
               * @see ~Building(void);
              */
@@ -56,7 +56,7 @@ namespace urban
               * Move Constructor.
               * @param other Building to move
               * @see Building(void);
-              * @see Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
+              * @see Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
               * @see Building(Building const& other);
               * @see ~Building(void);
              */
@@ -64,7 +64,7 @@ namespace urban
             /**
               * Destructor.
               * @see Building(void);
-              * @see Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
+              * @see Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& meshes, shadow::Point const& pivot);
               * @see Building(Building const& other);
               * @see Building(Building&& other);
              */
@@ -106,7 +106,7 @@ namespace urban
              * Access the id.
              * @return the id
              */
-            std::size_t identifier(void) const noexcept;
+            std::string identifier(void) const noexcept;
             /** 
              * Concatenate brick names
              * @return the concatenated names of bricks
@@ -207,7 +207,7 @@ namespace urban
             projection::BrickPrint & project_roofs(projection::BrickPrint & projection) const;
             projection::BrickPrint & project_walls(projection::BrickPrint & projection) const;
             /** identifier */
-            std::size_t id;
+            std::string id;
             /** Reference Point */
             shadow::Point reference_point;
             /** Projection system EPSG code*/

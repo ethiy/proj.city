@@ -66,7 +66,7 @@ int main(int argc, const char** argv)
         );
         std::cout << meshes.size() << " meshes ; Done." << std::flush << std::endl;
 
-        std::vector<std::size_t> building_ids = scene.identifiers();
+        std::vector<std::string> building_ids = scene.identifiers();
 
         std::cout << "Loading Buildings... " << std::flush;
         std::vector<urban::scene::Building> buildings(building_ids.size());
@@ -74,7 +74,7 @@ int main(int argc, const char** argv)
             std::begin(building_ids),
             std::end(building_ids),
             std::begin(buildings),
-            [&scene, meshes](std::size_t const& id)
+            [&scene, meshes](std::string const& id)
             {
                 std::vector<urban::shadow::Mesh> roof_meshes(
                     scene.roofs(id, meshes)

@@ -29,7 +29,7 @@ namespace urban
             shadow::Point pivot(void);
             shadow::Bbox bbox(void) const;
             unsigned short epsg_code(void) const;
-            std::map<std::size_t, scene::BComposition > structure(void) const;
+            std::map<std::string, scene::BComposition > structure(void) const;
         };
     }
 }
