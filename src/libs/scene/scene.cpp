@@ -84,7 +84,7 @@ namespace urban
 
         std::vector<std::string> Scene::identifiers(void) const
         {
-            std::vector<std::string> ids(structure.size(), 0);
+            std::vector<std::string> ids(structure.size());
             std::transform(
                 std::begin(structure),
                 std::end(structure),
