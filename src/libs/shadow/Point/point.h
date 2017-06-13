@@ -38,10 +38,10 @@ namespace urban
             double z(void) const noexcept;
 
             void swap(Point & other);
-            Point & operator=(Point const& other) noexcept;
-            Point & operator=(Point && other) noexcept;
+            Point & operator =(Point const& other) noexcept;
+            Point & operator =(Point && other) noexcept;
 
-            Point & operator+=(Vector const& translation);
+            Point & operator +=(Vector const& translation);
 
             Bbox bbox(void) const;
         private:

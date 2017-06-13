@@ -78,7 +78,7 @@ namespace urban
              */
             Mesh(Mesh && other);
             /**
-             * Constructor cconverting from Lib3dsMesh.
+             * Constructor converting from Lib3dsMesh.
              * @param lib3ds_mesh lib3ds mesh structure
              * @see Mesh(void);
              * @see Mesh(Mesh && other);
@@ -148,13 +148,13 @@ namespace urban
              * @param other an other mesh to copy
              * @see operator=(Mesh &&)
              */
-            Mesh & operator=(Mesh const& other) noexcept;
+            Mesh & operator =(Mesh const& other) noexcept;
             /**
              * Move assignement operator.
              * @param other an other face to copy
              * @see operator=(Mesh const&)
              */
-            Mesh & operator=(Mesh && other) noexcept;
+            Mesh & operator =(Mesh && other) noexcept;
 
 
             /** Points iterator */
