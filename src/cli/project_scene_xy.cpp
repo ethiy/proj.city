@@ -55,18 +55,15 @@ int main(int argc, const char** argv)
                 boost::filesystem::path(root / (arguments.input_path.stem().string() + ".XML"))
             ).read()
         );
+        auto building_ids = scene.identifiers();
         std::cout << "Done." << std::flush << std::endl;
 
         std::cout << "Reading Scene Meshes... " << std::flush;
-        std::vector<urban::shadow::Mesh> meshes(
-            urban::io::FileHandler<Lib3dsFile>(
-                arguments.input_path,
-                std::map<std::string,bool>{{"read", true}}
-            ).read()
+        urban::io::FileHandler<Lib3dsFile> mesh_file(
+            arguments.input_path,
+            std::map<std::string,bool>{{"read", true}}
         );
-        std::cout << meshes.size() << " meshes ; Done." << std::flush << std::endl;
-
-        std::vector<std::string> building_ids = scene.identifiers();
+        std::cout << " Done." << std::flush << std::endl;
 
         std::cout << "Loading Buildings... " << std::flush;
         std::vector<urban::scene::Building> buildings(building_ids.size());
@@ -74,14 +71,25 @@ int main(int argc, const char** argv)
             std::begin(building_ids),
             std::end(building_ids),
             std::begin(buildings),
-            [&scene, meshes](std::string const& id)
+            [&mesh_file, scene](std::string const& id)
             {
-                std::vector<urban::shadow::Mesh> roof_meshes(
-                    scene.roofs(id, meshes)
+                std::vector<urban::shadow::Mesh> meshes = mesh_file.read(id);
+
+                meshes.erase(
+                    std::remove_if(
+                        std::begin(meshes),
+                        std::end(meshes),
+                        [](urban::shadow::Mesh const& mesh)
+                        {
+                            return mesh.get_name().at(0) == 'F';
+                        }
+                    ),
+                    std::end(meshes)
                 );
+
                 urban::scene::Building building(
                     id,
-                    urban::stitch(roof_meshes),
+                    urban::stitch(meshes),
                     scene.get_pivot(),
                     scene.get_epsg()
                 );
@@ -123,11 +131,13 @@ int main(int argc, const char** argv)
 
         std::cout << "Summing Projections... " << std::flush;
         urban::projection::BrickPrint scene_projection(scene.get_pivot());
-        scene_projection = std::accumulate(
-            std::begin(projections_xy),
-            std::end(projections_xy),
-            scene_projection
-        );
+        std::size_t i=0;
+        for(auto projection : projections_xy)
+        {
+            scene_projection += projection;
+            i++;
+            std::cout << i << std::endl;
+        }
         std::cout << "Done." << std::flush << std::endl;
         
         std::cout << "Saving vector projections... " << std::flush;
