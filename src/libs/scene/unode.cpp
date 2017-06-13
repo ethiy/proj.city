@@ -1,5 +1,9 @@
 #include "unode.h"
 
+#include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
+#include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
+#include <CGAL/Polygon_mesh_processing/orientation.h>
+
 namespace urban
 {
     namespace scene
@@ -55,6 +59,12 @@ namespace urban
                     return buffer;
                 }
             );
+
+            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+            if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
+                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+            CGAL::Polygon_mesh_processing::stitch_borders(surface);
         }
         UNode::~UNode(void)
         {}
