@@ -49,7 +49,7 @@ namespace urban
         }
 
 
-        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(std::string node_name)
+        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(std::string node_name) const
         {
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
@@ -68,7 +68,7 @@ namespace urban
             return meshes;
         }
 
-        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void)
+        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void) const
         {
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
@@ -117,7 +117,7 @@ namespace urban
             }
         }
 
-        void FileHandler<Lib3dsFile>::node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes)
+        void FileHandler<Lib3dsFile>::node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const
         {
             Lib3dsNode * p_node;
 

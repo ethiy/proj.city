@@ -36,5 +36,7 @@ namespace urban
             /** Bounding box*/
             Bbox_3 bounding_box;
         };
+
+        void swap(UNode & lhs, UNode & rhs);
     }
 }

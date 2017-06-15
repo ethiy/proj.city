@@ -3,6 +3,7 @@
 #include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
 #include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
 #include <CGAL/Polygon_mesh_processing/orientation.h>
+#include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 
 namespace urban
 {
@@ -11,10 +12,18 @@ namespace urban
         UNode::UNode(void) 
         {}
         UNode::UNode(UNode const& other)
-            :name(std::move(other.name)), reference_point(other.reference_point), epsg_index(other.epsg_index), surface(other.surface), bounding_box(other.bounding_box)
+            :name(std::move(other.name)),
+             reference_point(other.reference_point),
+             epsg_index(other.epsg_index),
+             surface(other.surface),
+             bounding_box(other.bounding_box)
         {}
         UNode::UNode(UNode && other)
-            :name(std::move(other.name)), reference_point(std::move(other.reference_point)), epsg_index(std::move(other.epsg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box))
+            :name(std::move(other.name)),
+             reference_point(std::move(other.reference_point)),
+             epsg_index(std::move(other.epsg_index)),
+             surface(std::move(other.surface)),
+             bounding_box(std::move(other.bounding_box))
         {}
         UNode::UNode(std::string const& building_id, io::FileHandler<Lib3dsFile> const& mesh_file)
             :name(building_id)
@@ -52,9 +61,9 @@ namespace urban
                 std::begin(meshes),
                 std::end(meshes),
                 std::begin(polygons),
-                [](shadow::Face const& face)
+                [](shadow::Mesh const& mesh)
                 {
-                    std::vector<std::size_t> buffer(face.size());
+                    std::vector<std::size_t> buffer(face.get_degree());
                     std::copy(std::begin(face), std::end(face), std::begin(buffer));
                     return buffer;
                 }
@@ -68,5 +77,41 @@ namespace urban
         }
         UNode::~UNode(void)
         {}
+        
+        void UNode::swap(UNode & other)
+        {
+            using std::swap;
+
+            swap(name, other.name);
+            swap(reference_point, other.reference_point);
+            swap(epsg_index, other.epsg_index);
+            swap(surface, other.surface);
+            swap(bounding_box, other.bounding_box);
+        }
+        UNode & UNode::operator =(UNode const& other) noexcept
+        {
+            name = other.name;
+            reference_point = other.reference_point;
+            epsg_index = other.epsg_index;
+            surface = other.surface;
+            bounding_box = other.bounding_box;
+
+            return *this;
+        }
+        UNode & UNode::operator =(UNode && other) noexcept
+        {
+            name = std::move(other.name);
+            reference_point = std::move(other.reference_point);
+            epsg_index = std::move(other.epsg_index);
+            surface = std::move(other.surface);
+            bounding_box = std::move(other.bounding_box);
+
+            return *this;
+        }
+        
+        void swap(UNode & lhs, UNode & rhs)
+        {
+            lhs.swap(rhs);
+        }
     }
 }
