@@ -18,12 +18,14 @@ namespace urban
             Vector & operator *=(double const& scalar);
             Vector & operator /=(double const& scalar);
             Vector & operator ^=(Vector const& other);
+
+        protected:
+            friend double operator *(Vector const& lhs, Vector const& rhs);
+            friend Vector operator *(double const& scalar, Vector const& rhs);
+            friend Vector operator /(Vector const& lhs, double const& scalar);
+            friend Vector operator ^(Vector const& lhs, Vector const& rhs);
         };
 
-        double operator *(Vector const& lhs, Vector const& rhs);
-        Vector operator *(double const& scalar, Vector const& rhs);
-        Vector operator /(Vector const& lhs, double const& scalar);
-        Vector operator ^(Vector const& lhs, Vector const& rhs);
     }
 
     double norm_L2(shadow::Vector const& vector);
