@@ -18,15 +18,7 @@ namespace urban
 
         Vector & Vector::operator *=(double const& scalar)
         {
-            std::transform(
-                std::begin(_coordinates),
-                std::end(_coordinates),
-                std::begin(_coordinates),
-                [scalar](double const& rhs)
-                {
-                    return scalar * rhs;
-                }
-            );
+            _coordinates *= scalar;
             return *this;
         }
 

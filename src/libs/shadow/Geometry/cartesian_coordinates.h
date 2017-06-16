@@ -13,8 +13,7 @@ namespace urban
     namespace shadow
     {
         class Point;
-        class Vector;
-
+        
         class Coordinates
         {
         public:
@@ -24,9 +23,6 @@ namespace urban
             Coordinates(std::valarray<double> const& initializer);
             Coordinates(Coordinates const& other);
             Coordinates(Coordinates && other);
-            Coordinates(const Point & origin, const Point & target);
-            Coordinates(Lib3dsPoint const& point);
-            Coordinates(Point_3 const& point);
             ~Coordinates(void);
 
             std::array<double, 3> const& data(void) const noexcept;
@@ -56,7 +52,11 @@ namespace urban
             Coordinates & operator -=(Coordinates const& other);
         protected:
             std::valarray<double> _coordinates;
-            
+
+            Coordinates(const Point & origin, const Point & target);
+            Coordinates(Lib3dsPoint const& point);
+            Coordinates(Point_3 const& point);
+
             friend std::ostream & operator <<(std::ostream & os, Coordinates const& Coordinates);
             friend bool operator ==(Coordinates const& lhs, Coordinates const& rhs);
             friend Coordinates operator +(Coordinates const& lhs, Coordinates const& rhs);

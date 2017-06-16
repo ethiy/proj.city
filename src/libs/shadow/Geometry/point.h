@@ -26,6 +26,8 @@ namespace urban
             Point(Point_3 const& point);
 
             Bbox bbox(void) const;
+        protected:
+
         };
     }
 
