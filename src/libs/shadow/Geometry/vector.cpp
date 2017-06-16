@@ -16,7 +16,7 @@ namespace urban
             : Coordinates(origin, target)
         {}
 
-        Vector & Vector::operator*=(double const& scalar)
+        Vector & Vector::operator *=(double const& scalar)
         {
             std::transform(
                 std::begin(_coordinates),
@@ -30,7 +30,7 @@ namespace urban
             return *this;
         }
 
-        Vector & Vector::operator/=(double const& scalar)
+        Vector & Vector::operator /=(double const& scalar)
         {
             if(std::abs(scalar) < std::numeric_limits<double>::epsilon())
                 throw std::overflow_error("Division by zero");
@@ -46,62 +46,38 @@ namespace urban
             return *this;
         }
 
-        Vector & Vector::operator^=(Vector const& other)
+        Vector & Vector::operator ^=(Vector const& other)
         {
-            std::array<double, 3> coord(_coordinates);
-            _coordinates[0] = coord.at(1) * other.z() - coord.at(2) * other.y();
-            _coordinates[1] = coord.at(2) * other.x() - coord.at(0) * other.z();
-            _coordinates[2] = coord.at(0) * other.y() - coord.at(1) * other.x();
+            std::valarray<double> coord(_coordinates);
+            _coordinates[0] = coord[1] * other.z() - coord[2] * other.y();
+            _coordinates[1] = coord[2] * other.x() - coord[0] * other.z();
+            _coordinates[2] = coord[0] * other.y() - coord[1] * other.x();
             
             return *this;
         }
 
-        double operator*(Vector const& lhs, Vector const& rhs)
+        double operator *(Vector const& lhs, Vector const& rhs)
         {
-            return std::inner_product(
-                std::begin(lhs),
-                std::end(lhs),
-                std::begin(rhs),
-                0
-            );
+            return (lhs._coordinates * rhs._coordinates).sum();
         }
 
-        Vector operator*(double const& scalar, Vector const& rhs)
+        Vector operator *(double const& scalar, Vector const& rhs)
         {
-            Vector result;
-            std::transform(
-                std::begin(rhs),
-                std::end(rhs),
-                std::begin(result),
-                [scalar](double const& _rhs)
-                {
-                    return scalar * _rhs;
-                }
-            );
+            Vector result(rhs);
+            result *= scalar;
             return result;
         }
 
-        Vector operator/(Vector const& lhs, double const& scalar)
+        Vector operator /(Vector const& lhs, double const& scalar)
         {
-            if(std::abs(scalar) < std::numeric_limits<double>::epsilon())
-                throw std::overflow_error("Division by zero");
-
-            Vector result;
-            std::transform(
-                std::begin(lhs),
-                std::end(lhs),
-                std::begin(result),
-                [scalar](double const& _lhs)
-                {
-                    return _lhs / scalar;
-                }
-            );
+            Vector result(lhs);
+            result /= scalar;
             return result;
         }
 
-        Vector operator^(Vector const& lhs, Vector const& rhs)
+        Vector operator ^(Vector const& lhs, Vector const& rhs)
         {
-            Vector result;
+            Vector result = Coordinates();
             result.x() = lhs.y() * rhs.z() - lhs.z() * rhs.y();
             result.y() = lhs.z() * rhs.x() - lhs.x() * rhs.z();
             result.z() = lhs.x() * rhs.y() - lhs.y() * rhs.x();

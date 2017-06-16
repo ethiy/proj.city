@@ -20,12 +20,15 @@ namespace urban
         Coordinates::Coordinates(double x, double y, double z)
             : _coordinates{{x, y, z}}
         {}
-        Coordinates::Coordinates(double initializer[3])
+        Coordinates::Coordinates(const double initializer[3])
             : _coordinates{{initializer[0], initializer[1], initializer[2]}}
         {}
-        Coordinates::Coordinates(std::array<double, 3> const& initializer)
+        Coordinates::Coordinates(std::valarray<double> const& initializer)
             : _coordinates(initializer)
-        {}
+        {
+            if(initializer.size() != 3)
+                throw std::logic_error("The Coordinates size must be equal to 3!");
+        }
         Coordinates::Coordinates(Coordinates const& other)
             : _coordinates(other._coordinates)
         {}
@@ -47,52 +50,52 @@ namespace urban
 
         double const& Coordinates::x(void) const noexcept
         {
-            return _coordinates.at(0);
+            return _coordinates[0];
         }
         double const& Coordinates::y(void) const noexcept
         {
-            return _coordinates.at(1);
+            return _coordinates[1];
         }
         double const& Coordinates::z(void) const noexcept
         {
-            return _coordinates.at(2);
+            return _coordinates[2];
         }
         double & Coordinates::x(void) noexcept
         {
-            return _coordinates.at(0);
+            return _coordinates[0];
         }
         double & Coordinates::y(void) noexcept
         {
-            return _coordinates.at(1);
+            return _coordinates[1];
         }
         double & Coordinates::z(void) noexcept
         {
-            return _coordinates.at(2);
+            return _coordinates[2];
         }
 
         Coordinates::iterator Coordinates::begin(void) noexcept
         {
-            return _coordinates.begin();
+            return std::begin(_coordinates);
         }
         Coordinates::const_iterator Coordinates::begin(void) const noexcept
         {
-            return _coordinates.begin();
+            return std::begin(_coordinates);
         }
         Coordinates::const_iterator Coordinates::cbegin(void) const noexcept
         {
-            return _coordinates.cbegin();
+            return std::begin(_coordinates);
         }
         Coordinates::iterator Coordinates::end(void) noexcept
         {
-            return _coordinates.end();
+            return std::end(_coordinates);
         }
         Coordinates::const_iterator Coordinates::end(void) const noexcept
         {
-            return _coordinates.end();
+            return std::end(_coordinates);
         }
         Coordinates::const_iterator Coordinates::cend(void) const noexcept
         {
-            return _coordinates.cend();
+            return std::end(_coordinates);
         }
 
         void Coordinates::swap(Coordinates & other)
@@ -101,103 +104,53 @@ namespace urban
             swap(_coordinates, other._coordinates);
         }
 
-        Coordinates & Coordinates::operator=(Coordinates const& other) noexcept
+        Coordinates & Coordinates::operator =(Coordinates const& other) noexcept
         {
             _coordinates = other._coordinates;
             return *this;
         }
 
-        Coordinates & Coordinates::operator=(Coordinates && other) noexcept
+        Coordinates & Coordinates::operator =(Coordinates && other) noexcept
         {
             _coordinates = std::move(other._coordinates);
             return *this;
         }
 
-        Coordinates & Coordinates::operator+=(Coordinates const& other)
+        Coordinates & Coordinates::operator +=(Coordinates const& other)
         {
-            std::transform(
-                std::begin(_coordinates),
-                std::end(_coordinates),
-                std::begin(other._coordinates),
-                std::begin(_coordinates),
-                [](const double lhs, const double rhs)
-                {
-                    return lhs + rhs;
-                }
-            );
+            _coordinates += other._coordinates;
             return *this;
         }
 
-        Coordinates & Coordinates::operator-=(Coordinates const& other)
+        Coordinates & Coordinates::operator -=(Coordinates const& other)
         {
-            std::transform(
-                std::begin(_coordinates),
-                std::end(_coordinates),
-                std::begin(other._coordinates),
-                std::begin(_coordinates),
-                [](const double lhs, const double rhs)
-                {
-                    return lhs - rhs;
-                }
-            );
+            _coordinates -= other._coordinates;
             return *this;
         }
 
-        std::ostream & operator<<(std::ostream & os, Coordinates const& Coordinates)
+        std::ostream & operator <<(std::ostream & os, Coordinates const& Coordinates)
         {
-            os << Coordinates._coordinates.at(0) << " " << Coordinates._coordinates.at(1) << " " << Coordinates._coordinates.at(2);
+            os << Coordinates._coordinates[0] << " " << Coordinates._coordinates[1] << " " << Coordinates._coordinates[2];
             return os;
         }
 
-        bool operator==(Coordinates const& lhs, Coordinates const& rhs)
+        bool operator ==(Coordinates const& lhs, Coordinates const& rhs)
         {
-            return std::inner_product(
-                std::begin(lhs),
-                std::end(lhs),
-                std::begin(rhs),
-                true,
-                std::logical_and<bool>(),
-                [](double const& r, double const& l)
-                {
-                    return std::abs(r - l) < std::numeric_limits<double>::epsilon();
-                }
-            );
+            return (lhs._coordinates == rhs._coordinates).min();
         }
 
 
-        Coordinates operator+(Coordinates const& lhs, Coordinates const& rhs)
+        Coordinates operator +(Coordinates const& lhs, Coordinates const& rhs)
         {
-            Coordinates result;
-            std::transform(
-                std::begin(lhs._coordinates),
-                std::end(lhs._coordinates),
-                std::begin(rhs._coordinates),
-                std::begin(result),
-                [](double const& _lhs, double const& _rhs)
-                {
-                    return _lhs + _rhs;
-                }
-            );
-            return result;
+            return Coordinates(lhs._coordinates + rhs._coordinates);
         }
 
-        Coordinates operator-(Coordinates const& lhs, Coordinates const& rhs)
+        Coordinates operator -(Coordinates const& lhs, Coordinates const& rhs)
         {
-            Coordinates result;
-            std::transform(
-                std::begin(lhs._coordinates),
-                std::end(lhs._coordinates),
-                std::begin(rhs._coordinates),
-                std::begin(result),
-                [](double const& _lhs, double const& _rhs)
-                {
-                    return _lhs - _rhs;
-                }
-            );
-            return result;
+            return Coordinates(lhs._coordinates - rhs._coordinates);
         }
 
-        bool operator!=(Coordinates const& lhs, Coordinates const& rhs)
+        bool operator !=(Coordinates const& lhs, Coordinates const& rhs)
         {
             return !(lhs == rhs);
         }

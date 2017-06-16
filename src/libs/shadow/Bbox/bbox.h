@@ -2,7 +2,7 @@
 
 #include <CGAL/Bbox_3.h>
 
-#include <array>
+#include <valarray>
 #include <ostream>
 
 namespace urban
@@ -46,7 +46,7 @@ namespace urban
              * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
-            Bbox(std::array<double, 3> const& coordinates);
+            Bbox(std::valarray<double> const& coordinates);
             /**
              * Bbox copy constructor.
              * @see Bbox(void);

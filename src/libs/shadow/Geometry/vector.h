@@ -14,16 +14,16 @@ namespace urban
             using Coordinates::Coordinates;
             Vector(const Point & origin, const Point & target);
 
-            Vector & operator+=(Vector const& other);
-            Vector & operator*=(double const& scalar);
-            Vector & operator/=(double const& scalar);
-            Vector & operator^=(Vector const& other);
+            Vector & operator +=(Vector const& other);
+            Vector & operator *=(double const& scalar);
+            Vector & operator /=(double const& scalar);
+            Vector & operator ^=(Vector const& other);
         };
 
-        double operator*(Vector const& lhs, Vector const& rhs);
-        Vector operator*(double const& scalar, Vector const& rhs);
-        Vector operator/(Vector const& lhs, double const& scalar);
-        Vector operator^(Vector const& lhs, Vector const& rhs);
+        double operator *(Vector const& lhs, Vector const& rhs);
+        Vector operator *(double const& scalar, Vector const& rhs);
+        Vector operator /(Vector const& lhs, double const& scalar);
+        Vector operator ^(Vector const& lhs, Vector const& rhs);
     }
 
     double norm_L2(shadow::Vector const& vector);

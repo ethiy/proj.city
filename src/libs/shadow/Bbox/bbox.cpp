@@ -30,14 +30,14 @@ namespace urban
                 zmax
             }}
         {}
-        Bbox::Bbox(const std::array<double, 3> & coordinates)
+        Bbox::Bbox(const std::valarray<double> & coordinates)
             : extreemes{{
-                coordinates.at(0),
-                coordinates.at(0),
-                coordinates.at(1),
-                coordinates.at(1),
-                coordinates.at(2),
-                coordinates.at(2),
+                coordinates[0],
+                coordinates[0],
+                coordinates[1],
+                coordinates[1],
+                coordinates[2],
+                coordinates[2],
             }}
         {}
         Bbox::Bbox(const Bbox & other)
