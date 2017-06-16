@@ -40,34 +40,41 @@ namespace urban
             );
 
             std::vector<Point_3> points(point_size);
-            std::vector<Point_3> buffer;
+            std::vector<Point_3> point_buffer;
             for(auto const& mesh : meshes)
             {
-                buffer = std::vector<Point_3>(mesh.points_size());
+                point_buffer = std::vector<Point_3>(mesh.points_size());
                 std::transform(
                     mesh.points_cbegin(),
                     mesh.points_cend(),
-                    std::begin(buffer),
+                    std::begin(point_buffer),
                     [](std::pair<std::size_t, shadow::Point> const& point_p)
                     {
                         return Point_3(point_p.second.x(), point_p.second.y(), point_p.second.z());
                     }
                 );
-                points.insert(std::end(points), std::begin(buffer), std::end(buffer));
+                points.insert(std::end(points), std::begin(point_buffer), std::end(point_buffer));
             }
 
             std::vector< std::vector<std::size_t> > polygons(meshes.size());
-            std::transform(
-                std::begin(meshes),
-                std::end(meshes),
-                std::begin(polygons),
-                [](shadow::Mesh const& mesh)
-                {
-                    std::vector<std::size_t> buffer(face.get_degree());
-                    std::copy(std::begin(face), std::end(face), std::begin(buffer));
-                    return buffer;
-                }
-            );
+            std::vector< std::vector<std::size_t> > face_buffer;
+            std::vector<std::size_t> _face_buffer;
+            for(auto const& mesh : meshes)
+            {
+                face_buffer = std::vector< std::vector<std::size_t> >(mesh.faces_size());
+                std::transform(
+                    mesh.faces_cbegin(),
+                    mesh.faces_cend(),
+                    std::begin(face_buffer),
+                    [&_face_buffer](std::pair<std::size_t, shadow::Face> const& face_p)
+                    {
+                        _face_buffer = std::vector<std::size_t>(face_p.second.get_degree());
+                        std::copy(std::begin(face_p.second), std::end(face_p.second), std::begin(_face_buffer));
+                        return _face_buffer;
+                    }
+                );
+                polygons.insert(std::end(polygons), std::begin(face_buffer), std::end(face_buffer));
+            }
 
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);

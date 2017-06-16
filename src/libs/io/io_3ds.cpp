@@ -49,19 +49,19 @@ namespace urban
         }
 
 
-        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(std::string node_name) const
+        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(std::string const& node_name) const
         {
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
             
-            if (modes["read"])
+            if (modes.at("read"))
             {
                 Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
                 node_meshes(p_node, meshes);
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
@@ -73,7 +73,7 @@ namespace urban
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
             
-            if (modes["read"])
+            if (modes.at("read"))
             {
                 Lib3dsMesh *p_meshes = file->meshes;
                 while (p_meshes)
@@ -84,7 +84,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
