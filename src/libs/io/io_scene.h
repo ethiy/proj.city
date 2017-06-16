@@ -19,14 +19,17 @@ namespace urban
             FileHandler(boost::filesystem::path const& _filepath);
             ~FileHandler(void);
             
-            scene::Scene read(void) const;
+            scene::Scene read(void);
         private:
             tinyxml2::XMLDocument scene_tree;
             boost::filesystem::path filepath;
 
-            shadow::Point pivot(void) const;
+            bool centered = true;
+
+            shadow::Point pivot(void);
+            shadow::Bbox bbox(void) const;
             unsigned short epsg_code(void) const;
-            std::map<std::size_t, scene::BComposition > structure(void) const;
+            std::map<std::string, scene::BComposition > structure(void) const;
         };
     }
 }

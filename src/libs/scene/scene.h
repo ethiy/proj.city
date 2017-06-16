@@ -37,7 +37,7 @@ namespace urban
         public:
             /**
              * Empty Constructor.
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, std::set<std::string> > const& _structure);
+             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see Scene(Scene && other);
              * @see ~Scene(void);
@@ -53,12 +53,12 @@ namespace urban
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
-            Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, BComposition > const& _structure);
+            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_code, std::map<std::string, BComposition > const& _structure);
             /**
              * Copy Constructor.
              * @param other Scene to copy
              * @see Scene(void);
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, std::set<std::string> > const& _structure);
+             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
@@ -67,7 +67,7 @@ namespace urban
              * Move Constructor.
              * @param other Scene to move
              * @see Scene(void);
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, std::set<std::string> > const& _structure);
+             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see ~Scene(void);
              */
@@ -75,7 +75,7 @@ namespace urban
             /**
              * Destructor.
              * @see Scene(void);
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::size_t, std::set<std::string> > const& _structure);
+             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_code, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see Scene(Scene && other);
              */
@@ -88,14 +88,14 @@ namespace urban
              */
             void swap(Scene & other);
             /**
-             * Copy assignement operator.
+             * Copy assignment operator.
              * @param other Scene to copy
              * @return copy of other
              * @see Scene & operator=(Scene && other);
              */
             Scene & operator =(Scene const& other);
             /**
-             * Move assignement operator.
+             * Move assignment operator.
              * @param other Scene to move
              * @return moved Scene
              * @see Scene & operator=(Scene const& other);
@@ -113,26 +113,28 @@ namespace urban
              */
             unsigned short get_epsg(void) const noexcept;
 
-            std::vector<std::size_t> identifiers(void) const;
+            std::vector<std::string> identifiers(void) const;
 
-            std::vector<urban::shadow::Mesh> roofs(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
-            std::vector<urban::shadow::Mesh> roofs(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;
-            std::vector<urban::shadow::Mesh> walls(std::size_t identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
-            std::vector<urban::shadow::Mesh> walls(std::size_t identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;
+            std::vector<urban::shadow::Mesh> roofs(std::string identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
+            std::vector<urban::shadow::Mesh> roofs(std::string identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;
+            std::vector<urban::shadow::Mesh> walls(std::string identifier, std::vector<urban::shadow::Mesh> const& meshes) const;
+            std::vector<urban::shadow::Mesh> walls(std::string identifier, std::map<std::string, urban::shadow::Mesh> const& ordered_meshes) const;
 
             /**
              * * Structure a vector of meshes
              * @param meshes a vector of meshes to structure
              * @return a map of mesh vectors structured according to the structure
              */
-            std::map<std::size_t, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > cluster(std::vector<shadow::Mesh> const& meshes) const;
+            std::map<std::string, std::pair<std::vector<urban::shadow::Mesh>, std::vector<urban::shadow::Mesh> > > cluster(std::vector<shadow::Mesh> const& meshes) const;
         private:
             /** Pivot */
             urban::shadow::Point pivot;
+            /** Centered */
+            bool centered = true;
             /** EPSG projection system code */
             unsigned short epsg_code = 2154;
             /** Scene Structure */
-            std::map<std::size_t, BComposition > structure;
+            std::map<std::string, BComposition> structure;
         };
 
         /**

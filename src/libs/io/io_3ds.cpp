@@ -1,5 +1,8 @@
 #include "io_3ds.h"
 
+#include <lib3ds/node.h>
+#include <lib3ds/types.h>
+
 #include <sstream>
 
 namespace urban
@@ -14,7 +17,7 @@ namespace urban
             if(modes["read"] && modes["write"])
             {
                 boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                throw boost::filesystem::filesystem_error("Simultanious reading and writing access is forbidden", ec);
+                throw boost::filesystem::filesystem_error("Simultaneous reading and writing access is forbidden", ec);
             }
 
             if(!modes["read"] && !modes["write"])
@@ -46,12 +49,31 @@ namespace urban
         }
 
 
-        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void)
+        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(std::string const& node_name) const
         {
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
             
-            if (modes["read"])
+            if (modes.at("read"))
+            {
+                Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
+                node_meshes(p_node, meshes);
+            }
+            else
+            {
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
+            }
+            return meshes;
+        }
+
+        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void) const
+        {
+            std::ostringstream error_message;
+            std::vector<urban::shadow::Mesh> meshes;
+            
+            if (modes.at("read"))
             {
                 Lib3dsMesh *p_meshes = file->meshes;
                 while (p_meshes)
@@ -62,7 +84,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
@@ -93,6 +115,20 @@ namespace urban
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+        }
+
+        void FileHandler<Lib3dsFile>::node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const
+        {
+            Lib3dsNode * p_node;
+
+            for(p_node=node->childs; p_node != NULL; p_node = p_node->next)
+                node_meshes(p_node, meshes);
+            
+            Lib3dsMesh * mesh = lib3ds_file_mesh_by_name(file, node->name);
+            if(!mesh)
+                return ;            
+
+            meshes.push_back(urban::shadow::Mesh(mesh));
         }
     }
 }

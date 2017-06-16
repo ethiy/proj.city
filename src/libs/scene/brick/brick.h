@@ -66,23 +66,13 @@ namespace urban
             * Constructor from Shadow Mesh.
             * @param mesh Shadow Mesh
             * @param _reference_point reference point
-            * @see Brick(void)
-            * @see Brick(Brick const& other)
-            * @see Brick(Brick && other)
-            * @see ~Brick(void)
-            */
-            Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point);
-            /**
-            * Constructor from Shadow Mesh.
-            * @param mesh Shadow Mesh
-            * @param _reference_point reference point
             * @param _epsg_index epsg index
             * @see Brick(void)
             * @see Brick(Brick const& other)
             * @see Brick(Brick && other)
             * @see ~Brick(void)
             */
-            Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index);
+            Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index = 2154, bool centered = true);
             /**
             * Default destructor.
             * @see Brick(void)
@@ -100,13 +90,13 @@ namespace urban
             void swap(Brick & other);
                 
             /**
-            * Copy assignement operator.
+            * Copy assignment operator.
             * @param other an other brick to copy
             * @see operator=(Brick &&)
             */
             Brick & operator=(Brick const& other) noexcept;
             /**
-            * Move assignement operator.
+            * Move assignment operator.
             * @param other an other brick to move
             * @see operator=(Brick const&)
             */

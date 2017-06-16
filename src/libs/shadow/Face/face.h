@@ -89,7 +89,7 @@ namespace urban
              */
             Face(std::vector<std::size_t> const& indices);
             /**
-             * Triagular face constructor. 
+             * Triangular face constructor. 
              * @param first point index
              * @param second point index
              * @param third point index
@@ -122,26 +122,26 @@ namespace urban
              * @param other an other face to move
              * @see operator=(Face &&)
              */
-            Face & operator=(Face const& other) noexcept;
+            Face & operator =(Face const& other) noexcept;
             /**
              * Move assignement operator.
              * @param other an other face to copy
              * @see operator=(Face const&)
              */
-            Face & operator=(Face && other) noexcept;
+            Face & operator =(Face && other) noexcept;
             
             /**
              * Access operator[].
              * @param index point index to access
              * @return reference to the requested element
              */
-            std::size_t & operator[](std::size_t index);
+            std::size_t & operator [](std::size_t index);
             /**
              * Access operator[].
              * @param index point index to access
              * @return constant reference to the requested element
              */
-            std::size_t const& operator[](std::size_t index) const;
+            std::size_t const& operator [](std::size_t index) const;
             
             /**
              * Access Facet degree.
@@ -164,6 +164,16 @@ namespace urban
              * @return end iterator
              */
             iterator end(void) noexcept;
+            /**
+             * Access constant begin iterator.
+             * @return begin constant iterator
+             */
+            const_iterator begin(void) const noexcept;
+            /**
+             * Access constant end iterator.
+             * @return end constant iterator
+             */
+            const_iterator end(void) const noexcept;
             /**
              * Access begin constant iterator.
              * @return constant begin iterator
@@ -192,7 +202,7 @@ namespace urban
             /**
              * Find an index.
              * @param index the index to find inside the facet
-             * @return iterator to the index (it sould be unique)
+             * @return iterator to the index (it should be unique)
              */
             iterator find(std::size_t index);
             /**
