@@ -1,16 +1,15 @@
-# 3DSceneModel
+# proj.city
 
-[![GitHub license](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/Ethiy/3DSceneModel/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/Ethiy/proj.city/master/LICENSE)
 
 | Environment              | Status        |
 | ------------------------ |:-------------:|
-| Linux                    | [![Build Status](https://travis-ci.org/Ethiy/3DSceneModel.svg?branch=master)](https://travis-ci.org/Ethiy/3DSceneModel)|
-| Darwin                   |[![Build Status](https://travis-ci.org/Ethiy/3DSceneModel.svg?branch=master)](https://travis-ci.org/Ethiy/3DSceneModel)|
-| Windows                  | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/master?svg=true)](https://ci.appveyor.com/project/Ethiy/3DSceneModel/branch/master)|
-| Coverity Scan            |[![Coverity Scan Build Status](https://scan.coverity.com/projects/11095/badge.svg)](https://scan.coverity.com/projects/3dscenemodel)|
+| Linux                    | [![Build Status](https://travis-ci.org/Ethiy/proj.city.svg?branch=master)](https://travis-ci.org/Ethiy/proj.city)|
+| Darwin                   |[![Build Status](https://travis-ci.org/Ethiy/proj.city.svg?branch=master)](https://travis-ci.org/Ethiy/proj.city)|
+| Windows                  | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/master?svg=true)](https://ci.appveyor.com/project/Ethiy/proj.city/branch/master)|
+| Coverity Scan            |[![Coverity Scan Build Status](https://scan.coverity.com/projects/11095/badge.svg)](https://scan.coverity.com/projects/proj.city)|
 
 Playing with 3D formats.
-
 
 ## Build
 
@@ -39,10 +38,9 @@ In order to build this project you need first to check for these dependencies:
 * Docopt.cpp:
     `docopt.cpp` is a fun argument parser library available on [`Github`](https://github.com/docopt/docopt.cpp). You do not need to install it also as a CMake module installs it as an external project.
 
-
 ### Ubuntu `v16.04`
 
-You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an inspiration. We will use `aptitude` the available package manager for most dependencies:
+You can check the project's [docker file](https://github.com/Ethiy/proj.city/blob/master/Dockerfile) for an inspiration. We will use `aptitude` the available package manager for most dependencies:
 
 * Boost:
     This project uses only  `filesystem` and `system` boost libraries. However, since CGAL uses other libraries it may be wise to get all of them:
@@ -82,7 +80,7 @@ You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/
 
 ### Darwin
 
-You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/blob/master/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personnally, I prefer the later.
+You can check the project's [travis file](https://github.com/Ethiy/proj.city/blob/master/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personnally, I prefer the later.
 
 | Dependency   | `brew`        | `port`        |
 |:------------:|:-------------:|:-------------:|
