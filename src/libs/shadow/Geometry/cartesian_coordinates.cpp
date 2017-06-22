@@ -128,31 +128,32 @@ namespace urban
             return *this;
         }
 
-        std::ostream & operator <<(std::ostream & os, Coordinates const& Coordinates)
+        std::string Coordinates::toString(void) const noexcept
         {
-            os << Coordinates._coordinates[0] << " " << Coordinates._coordinates[1] << " " << Coordinates._coordinates[2];
-            return os;
+            std::stringstream string;
+            print(string);
+            return string.str();
         }
 
-        bool operator ==(Coordinates const& lhs, Coordinates const& rhs)
+        void Coordinates::print(std::ostream & os) const noexcept
         {
-            return (lhs._coordinates == rhs._coordinates).min();
+            os << _coordinates[0] << " " << _coordinates[1] << " " << _coordinates[2];
+        }
+
+        bool Coordinates::equals(Coordinates const& rhs) const noexcept
+        {
+            return (_coordinates == rhs._coordinates).min();
         }
 
 
-        Coordinates operator +(Coordinates const& lhs, Coordinates const& rhs)
+        Coordinates Coordinates::adds(Coordinates const& rhs) const noexcept
         {
-            return Coordinates(lhs._coordinates + rhs._coordinates);
+            return Coordinates(_coordinates + rhs._coordinates);
         }
 
-        Coordinates operator -(Coordinates const& lhs, Coordinates const& rhs)
+        Coordinates Coordinates::minus(Coordinates const& rhs) const noexcept
         {
-            return Coordinates(lhs._coordinates - rhs._coordinates);
-        }
-
-        bool operator !=(Coordinates const& lhs, Coordinates const& rhs)
-        {
-            return !(lhs == rhs);
+            return Coordinates(_coordinates - rhs._coordinates);
         }
     }
 

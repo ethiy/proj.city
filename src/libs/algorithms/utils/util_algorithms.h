@@ -18,7 +18,7 @@ namespace urban
     /** Check points collinearity*/
     bool check_collinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last);
 
-    /** Get extrems from coliear points*/
+    /** Get extrems from colinear points*/
     std::pair<Point_2, Point_2> extrem_points(std::vector<Point_2> & points);
 
 

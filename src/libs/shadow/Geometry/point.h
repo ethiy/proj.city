@@ -22,14 +22,31 @@ namespace urban
         {
         public:
             using Coordinates::Coordinates;
+            Point(void);
+            Point(double x, double y, double z);
+            Point(const double initializer[3]);
+            Point(std::valarray<double> const& initializer);
+            Point(Point const& other);
+            Point(Point && other);
             Point(Lib3dsPoint const& point);
             Point(Point_3 const& point);
+            ~Point(void);
 
             Bbox bbox(void) const;
+
+            void swap(Point & other);
+            Point & operator =(Point const& other) noexcept;
+            Point & operator =(Point && other) noexcept;
         protected:
+            friend bool operator ==(Point const& lhs, Point const& rhs);
+            friend Vector operator -(Point const& lhs, Point const& rhs);
 
+            friend std::ostream & operator <<(std::ostream & os, Point const& rhs);
         };
-    }
+        void swap(Point & lhs, Point & rhs);
 
-    shadow::Vector normal_to(shadow::Point const& first, shadow::Point const& second, shadow::Point const& third);
+        bool operator !=(Point const& lhs, Point const& rhs);
+
+        Vector normal_to(Point const& first, Point const& second, Point const& third);
+    }
 }

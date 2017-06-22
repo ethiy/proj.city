@@ -233,7 +233,7 @@ namespace urban
                     0,
                     [](int & size, std::pair<std::size_t, Face> const& f)
                         {
-                            return size + static_cast<int>(f.second.get_degree()) - 2;
+                            return size + static_cast<int>(f.second.degree()) - 2;
                         }
                     )
                 );

@@ -144,13 +144,13 @@ namespace urban
              */
             void swap(Mesh & other);
             /**
-             * Copy assignement operator.
+             * Copy assignment operator.
              * @param other an other mesh to copy
              * @see operator=(Mesh &&)
              */
             Mesh & operator =(Mesh const& other) noexcept;
             /**
-             * Move assignement operator.
+             * Move assignment operator.
              * @param other an other face to copy
              * @see operator=(Mesh const&)
              */

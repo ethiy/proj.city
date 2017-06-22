@@ -15,64 +15,71 @@ namespace urban
     namespace shadow
     {
         Face::Face(void)
-            : degree(0) {}
+        {}
         Face::Face(Face const& other)
-            : degree(other.degree), points(other.points) {}
+            : points(other.points)
+        {}
         Face::Face(Face && other)
-            : degree(std::move(other.degree)), points(std::move(other.points)) {}
+            : points(std::move(other.points))
+        {}
         Face::Face(std::initializer_list<std::size_t> initializer)
-            : degree(initializer.size()), points(initializer)
+            : points(initializer)
         {
-            if(degree<3)
+            if(initializer.size() < 3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
         Face::Face(std::vector<std::size_t> const& indices)
-            : degree(indices.size()), points(indices)
+            : points(indices)
         {
-            if(degree<3)
+            if(indices.size() < 3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
         Face::Face(std::size_t first, std::size_t second, std::size_t third, bool orientation)
-            : degree(3)
+            : points{{first, second, third}}
         {
-            if(orientation)
-                points = std::vector<std::size_t>{{first, second, third}};
-            else
-                points = std::vector<std::size_t>{{first, third, second}};
+            if(!orientation)
+                invert_orientation();
         }
         Face::~Face(void) {}
 
         void Face::swap(Face & other)
         {
             using std::swap;
-            swap(degree, other.degree);
             swap(points, other.points);
         }
-        Face & Face::operator=(Face const& other) noexcept
+        Face & Face::operator =(Face const& other) noexcept
         {
-            degree = other.degree;
             points = other.points;
             return *this;
         }
-        Face & Face::operator=(Face && other) noexcept
+        Face & Face::operator =(Face && other) noexcept
         {
-            degree = std::move(other.degree);
             points = std::move(other.points);
             return *this;
         }
 
-        std::size_t & Face::operator[](std::size_t index)
+        std::size_t & Face::operator [](std::size_t index)
         {
             return points[index];
         }
-        std::size_t const& Face::operator[](std::size_t index) const
+        std::size_t const& Face::operator [](std::size_t index) const
         {
             return points[index];
         }        
 
-        std::size_t Face::get_degree(void) const noexcept
+        std::size_t Face::degree(void) const noexcept
         {
-            return degree;
+            return points.size();
+        }
+
+        std::vector<std::size_t> & Face::data(void) noexcept
+        {
+            return points;
+        }
+
+        std::vector<std::size_t> const& Face::data(void) const noexcept
+        {
+            return points;
         }
 
         Face::iterator Face::begin(void) noexcept
@@ -128,10 +135,10 @@ namespace urban
 
         bool Face::is_convex(std::map<std::size_t, Point> const& coordinates) const
         {
-            if(coordinates.size() < degree)
+            if(coordinates.size() < degree())
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
 
-            if(degree < 3)
+            if(degree() < 3)
                 throw std::out_of_range("You must have at least three vertices to define a face");
 
             bool convexity(true);
@@ -140,7 +147,7 @@ namespace urban
              * If the face is a triangle (i.e. 'degree == 3') it is convex (strictly if non-degenerate)
              */
 
-            if(degree > 3)
+            if(degree() > 3)
             {
                 Vector normal_direction(Vector(coordinates.at(points.at(0)), coordinates.at(points.at(1))) ^ Vector(coordinates.at(points.at(1)), coordinates.at(points.at(2))));
                 auto circulator = std::begin(points);
@@ -175,9 +182,9 @@ namespace urban
 
         Lib3dsFace* Face::to_3ds(std::map<std::size_t, Point> const& coordinates) const
         {
-            if(coordinates.size() < degree)
+            if(coordinates.size() < degree() )
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
-            Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), degree-2));
+            Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), degree() - 2));
             if(is_convex(coordinates))
             {
                 Lib3dsFace* current = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), 1));
@@ -190,7 +197,7 @@ namespace urban
                     {
                         auto init = std::initializer_list<std::size_t>({points.at(0), b, c});
                         std::copy(std::begin(init), std::end(init), current->points);
-                        Vector n(normal_to(coordinates.at(points.at(0)), coordinates.at(b), coordinates.at(c)));
+                        Vector n = normal_to(coordinates.at(points.at(0)), coordinates.at(b), coordinates.at(c));
                         current->normal[0] = static_cast<float>(n.x());
                         current->normal[1] = static_cast<float>(n.y());
                         current->normal[2] = static_cast<float>(n.z());
@@ -201,13 +208,13 @@ namespace urban
                     std::free(current);
             }
             else
-                throw std::logic_error("Cannot convert non convex faces to 3ds for now");
+                throw std::logic_error("Cannot convert non convex faces to 3ds for now!");
             return face;
         }
 
-        std::ostream& operator<<(std::ostream & os, Face const& face)
+        std::ostream& operator <<(std::ostream & os, Face const& face)
         {
-            os << face.degree << " ";
+            os << face.degree() << " ";
             auto it = std::begin(face.points);
             for(; it != std::end(face.points); ++it)
             {
@@ -219,23 +226,23 @@ namespace urban
         }
 
 
-        bool operator==(Face const& lhs, Face const& rhs)
+        bool operator ==(Face const& lhs, Face const& rhs)
         {
-            bool result(lhs.get_degree() == rhs.get_degree());
-            if(result)
+            bool equal(lhs.degree() == rhs.degree());
+            if(equal)
             {
                 auto placeholder = std::find(std::begin(rhs.points),std::end(rhs.points), lhs.points.at(0));
-                result = (placeholder != std::end(rhs.points));
-                if(result)
+                equal = (placeholder != std::end(rhs.points));
+                if(equal)
                 {
-                    std::vector<std::size_t> rotated_points(lhs.get_degree());
+                    std::vector<std::size_t> rotated_points(lhs.degree());
                     std::rotate_copy(
                         std::begin(rhs.points),
                         placeholder,
                         std::end(rhs.points),
                         std::begin(rotated_points)
                     );
-                    result = std::inner_product(
+                    equal = std::inner_product(
                         std::begin(lhs.points),
                         std::end(lhs.points),
                         std::begin(rotated_points),
@@ -245,11 +252,11 @@ namespace urban
                     );
                 }
             }
-            return result;
+            return equal;
         }
-        bool operator!=(Face const& lhs, Face const& rhs)
+        bool operator !=(Face const& lhs, Face const& rhs)
         {
-            return !operator==(rhs, lhs);
+            return !(rhs == lhs);
         }
 
         void swap(Face & lhs, Face &rhs)

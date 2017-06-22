@@ -23,7 +23,10 @@ namespace urban
             Coordinates(std::valarray<double> const& initializer);
             Coordinates(Coordinates const& other);
             Coordinates(Coordinates && other);
-            ~Coordinates(void);
+            Coordinates(const Point & origin, const Point & target);
+            Coordinates(Lib3dsPoint const& point);
+            Coordinates(Point_3 const& point);
+            virtual ~Coordinates(void);
 
             std::array<double, 3> const& data(void) const noexcept;
             std::array<double, 3> & data(void) noexcept;
@@ -50,20 +53,16 @@ namespace urban
 
             Coordinates & operator +=(Coordinates const& other);
             Coordinates & operator -=(Coordinates const& other);
+
+            std::string toString(void) const noexcept;
         protected:
             std::valarray<double> _coordinates;
 
-            Coordinates(const Point & origin, const Point & target);
-            Coordinates(Lib3dsPoint const& point);
-            Coordinates(Point_3 const& point);
-
-            friend std::ostream & operator <<(std::ostream & os, Coordinates const& Coordinates);
-            friend bool operator ==(Coordinates const& lhs, Coordinates const& rhs);
-            friend Coordinates operator +(Coordinates const& lhs, Coordinates const& rhs);
-            friend Coordinates operator -(Coordinates const& lhs, Coordinates const& rhs);
+            virtual void print(std::ostream & os) const noexcept;
+            virtual bool equals(Coordinates const& other) const noexcept;
+            virtual Coordinates adds(Coordinates const& other) const noexcept;
+            virtual Coordinates minus(Coordinates const& other) const noexcept;
         };
-        bool operator !=(Coordinates const& lhs, Coordinates const& rhs);
+        void swap(Coordinates & lhs, Coordinates & rhs);
     }
-
-    void swap(shadow::Coordinates & lhs, shadow::Coordinates & rhs);
 }

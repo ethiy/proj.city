@@ -118,13 +118,13 @@ namespace urban
              */
             void swap(Face & other);
             /**
-             * Copy assignement operator.
+             * Copy assignment operator.
              * @param other an other face to move
              * @see operator=(Face &&)
              */
             Face & operator =(Face const& other) noexcept;
             /**
-             * Move assignement operator.
+             * Move assignment operator.
              * @param other an other face to copy
              * @see operator=(Face const&)
              */
@@ -147,7 +147,19 @@ namespace urban
              * Access Facet degree.
              * @return facet degree
              */
-            std::size_t get_degree(void) const noexcept;
+            std::size_t degree(void) const noexcept;
+            
+            /**
+             * Access Facet points indexes.
+             * @return reference to facet points indexes
+             */
+            std::vector<std::size_t> & data(void) noexcept;
+
+            /**
+             * Access Facet points indexes.
+             * @return  constant reference to facet points indexes
+             */
+            std::vector<std::size_t> const& data(void) const noexcept;
 
             /** Iterator over face vertices */
             typedef std::vector<std::size_t>::iterator iterator;
@@ -228,8 +240,6 @@ namespace urban
              */
             Lib3dsFace * to_3ds(std::map<std::size_t, Point> const& coordinates) const;
         private:
-            /** Face degree */
-            std::size_t degree;
             /** Points array */
             std::vector<std::size_t> points;
 
@@ -240,7 +250,7 @@ namespace urban
             * @param rhs right-hand Face.
             * @return boolean indicating if the two faces are equal
             */
-            friend bool operator==(Face const& lhs, Face const& rhs);
+            friend bool operator ==(Face const& lhs, Face const& rhs);
 
             /** 
              * Writes Face to output stream.
@@ -248,7 +258,7 @@ namespace urban
              * @param face the facet to write
              * @return reference to the output stream
              */
-            friend std::ostream & operator<<(std::ostream & os, Face const& face);
+            friend std::ostream & operator <<(std::ostream & os, Face const& face);
         };
 
         /**
@@ -258,7 +268,7 @@ namespace urban
         * @param rhs right-hand Face.
         * @return boolean indicating if the two faces are different
         */
-        bool operator!=(Face const& lhs, Face const& rhs);
+        bool operator !=(Face const& lhs, Face const& rhs);
 
         /**
         * Swaps two faces.
