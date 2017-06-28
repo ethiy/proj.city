@@ -52,7 +52,11 @@
         "algorithm": "cpp",
         "iosfwd": "cpp",
         "iostream": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "__config": "cpp",
+        "iomanip": "cpp",
+        "limits": "cpp",
+        "hashtable": "cpp"
     },
     "vsicons.presets.angular": true,
     "cmake.buildDirectory": "${workspaceRoot}/build/vscode"
