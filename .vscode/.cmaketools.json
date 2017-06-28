@@ -19,9 +19,9 @@
             "targets": [
               {
                 "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples/hello_santa"
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban_scene.a"
                 ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples",
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
                 "fileGroups": [
                   {
                     "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
@@ -52,68 +52,77 @@
                     "isGenerated": false,
                     "language": "CXX",
                     "sources": [
-                      "hello_santa.cpp"
+                      "scene/brick/brick.cpp",
+                      "scene/building.cpp",
+                      "scene/scene.cpp"
+                    ]
+                  },
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "scene/brick/brick.h",
+                      "scene/building.h",
+                      "scene/scene.h",
+                      "shadow/Bbox/bbox.h",
+                      "shadow/Face/face.h",
+                      "shadow/Point/point.h",
+                      "shadow/Vector/vector.h",
+                      "shadow/mesh.h",
+                      "projection/projection.h",
+                      "algorithms/algorithms.h"
                     ]
                   }
                 ],
-                "fullName": "hello_santa",
-                "linkFlags": "-L/opt/local/lib -Wl,-headerpad_max_install_names -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
-                "linkLanguageFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../libs/liburban.dylib ../libs/liburban_io.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
-                "linkPath": "-L/opt/local/lib",
+                "fullName": "liburban_scene.a",
                 "linkerLanguage": "CXX",
-                "name": "hello_santa",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/samples",
-                "type": "EXECUTABLE"
+                "name": "urban_scene",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
+                "type": "STATIC_LIBRARY"
+              },
+              {
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/vscode/CMakeFiles/libdocopt",
+                      "build/vscode/CMakeFiles/libdocopt.rule",
+                      "build/vscode/CMakeFiles/libdocopt-complete.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-install.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-mkdir.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-download.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-update.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-patch.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-configure.rule",
+                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-build.rule"
+                    ]
+                  }
+                ],
+                "fullName": "libdocopt",
+                "name": "libdocopt",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
+                "type": "UTILITY"
               },
               {
                 "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples/project_santa_xy"
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban.dylib"
                 ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples",
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
                 "fileGroups": [
                   {
-                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
                     "isGenerated": false,
-                    "language": "CXX",
                     "sources": [
-                      "project_santa_xy.cpp"
+                      "urban.h"
                     ]
                   }
                 ],
-                "fullName": "project_santa_xy",
-                "linkFlags": "-L/opt/local/lib -Wl,-headerpad_max_install_names -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
-                "linkLanguageFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../libs/liburban.dylib ../libs/liburban_io.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "fullName": "liburban.dylib",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib liburban_shadow.a liburban_io.a liburban_scene.a liburban_projection.a liburban_algorithms.a /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a liburban_scene.a liburban_projection.a liburban_algorithms.a liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
                 "linkPath": "-L/opt/local/lib",
                 "linkerLanguage": "CXX",
-                "name": "project_santa_xy",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/samples",
-                "type": "EXECUTABLE"
+                "name": "urban",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
+                "type": "SHARED_LIBRARY"
               },
               {
                 "artifacts": [
@@ -175,31 +184,281 @@
                 "type": "STATIC_LIBRARY"
               },
               {
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
-                "name": "Catch",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
-                "type": "INTERFACE_LIBRARY"
+                "artifacts": [
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples/project_santa_xy"
+                ],
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "project_santa_xy.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "project_santa_xy",
+                "linkFlags": "-L/opt/local/lib -Wl,-headerpad_max_install_names -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
+                "linkLanguageFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../libs/liburban.dylib ../libs/liburban_io.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "linkPath": "-L/opt/local/lib",
+                "linkerLanguage": "CXX",
+                "name": "project_santa_xy",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/samples",
+                "type": "EXECUTABLE"
               },
               {
                 "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban.dylib"
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples/hello_santa"
+                ],
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/samples",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "hello_santa.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "hello_santa",
+                "linkFlags": "-L/opt/local/lib -Wl,-headerpad_max_install_names -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
+                "linkLanguageFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../libs/liburban.dylib ../libs/liburban_io.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "linkPath": "-L/opt/local/lib",
+                "linkerLanguage": "CXX",
+                "name": "hello_santa",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/samples",
+                "type": "EXECUTABLE"
+              },
+              {
+                "artifacts": [
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban_projection.a"
                 ],
                 "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
                 "fileGroups": [
                   {
+                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "projection/Brick/brick_projection.cpp",
+                      "projection/Camera/camera.cpp",
+                      "projection/Face/face_projection.cpp",
+                      "projection/Raster/raster_projection.cpp"
+                    ]
+                  },
+                  {
                     "isGenerated": false,
                     "sources": [
-                      "urban.h"
+                      "projection/projection.h",
+                      "scene/brick/brick.h",
+                      "scene/building.h",
+                      "scene/scene.h",
+                      "algorithms/algorithms.h"
                     ]
                   }
                 ],
-                "fullName": "liburban.dylib",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib liburban_shadow.a liburban_io.a liburban_scene.a liburban_projection.a liburban_algorithms.a /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a liburban_scene.a liburban_projection.a liburban_algorithms.a liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "fullName": "liburban_projection.a",
+                "linkerLanguage": "CXX",
+                "name": "urban_projection",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
+                "type": "STATIC_LIBRARY"
+              },
+              {
+                "artifacts": [
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban_algorithms.a"
+                ],
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "algorithms/brick/brick_algorithms.cpp",
+                      "algorithms/building/building_algorithms.cpp",
+                      "algorithms/ogr/ogr_algorithms.cpp",
+                      "algorithms/raster/raster_algorithms.cpp",
+                      "algorithms/projection/projection_algorithms.cpp",
+                      "algorithms/shadow/shadow_algorithms.cpp",
+                      "algorithms/utils/util_algorithms.cpp"
+                    ]
+                  },
+                  {
+                    "isGenerated": false,
+                    "sources": [
+                      "algorithms/algorithms.h",
+                      "scene/brick/brick.h",
+                      "scene/building.h",
+                      "scene/scene.h",
+                      "shadow/Bbox/bbox.h",
+                      "shadow/Face/face.h",
+                      "shadow/Point/point.h",
+                      "shadow/Vector/vector.h",
+                      "shadow/mesh.h",
+                      "projection/projection.h"
+                    ]
+                  }
+                ],
+                "fullName": "liburban_algorithms.a",
+                "linkerLanguage": "CXX",
+                "name": "urban_algorithms",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
+                "type": "STATIC_LIBRARY"
+              },
+              {
+                "artifacts": [
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/cli/project_scene_xy"
+                ],
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/cli",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0   -DVERSION=\\\"0.3.0\\\"",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "project_scene_xy.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "project_scene_xy",
+                "linkFlags": "-L/opt/local/lib -Wl,-headerpad_max_install_names -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
+                "linkLanguageFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../libs/liburban.dylib ../libs/liburban_io.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
                 "linkPath": "-L/opt/local/lib",
                 "linkerLanguage": "CXX",
-                "name": "urban",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
-                "type": "SHARED_LIBRARY"
+                "name": "project_scene_xy",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/cli",
+                "type": "EXECUTABLE"
+              },
+              {
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
+                "name": "Catch",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
+                "type": "INTERFACE_LIBRARY"
               },
               {
                 "artifacts": [
@@ -273,289 +532,6 @@
               },
               {
                 "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban_scene.a"
-                ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
-                "fileGroups": [
-                  {
-                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "scene/brick/brick.cpp",
-                      "scene/building.cpp",
-                      "scene/scene.cpp"
-                    ]
-                  },
-                  {
-                    "isGenerated": false,
-                    "sources": [
-                      "scene/brick/brick.h",
-                      "scene/building.h",
-                      "scene/scene.h",
-                      "shadow/Bbox/bbox.h",
-                      "shadow/Face/face.h",
-                      "shadow/Point/point.h",
-                      "shadow/Vector/vector.h",
-                      "shadow/mesh.h",
-                      "projection/projection.h",
-                      "algorithms/algorithms.h"
-                    ]
-                  }
-                ],
-                "fullName": "liburban_scene.a",
-                "linkerLanguage": "CXX",
-                "name": "urban_scene",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
-                "type": "STATIC_LIBRARY"
-              },
-              {
-                "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban_algorithms.a"
-                ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
-                "fileGroups": [
-                  {
-                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "algorithms/brick/brick_algorithms.cpp",
-                      "algorithms/building/building_algorithms.cpp",
-                      "algorithms/ogr/ogr_algorithms.cpp",
-                      "algorithms/raster/raster_algorithms.cpp",
-                      "algorithms/projection/projection_algorithms.cpp",
-                      "algorithms/shadow/shadow_algorithms.cpp",
-                      "algorithms/utils/util_algorithms.cpp"
-                    ]
-                  },
-                  {
-                    "isGenerated": false,
-                    "sources": [
-                      "algorithms/algorithms.h",
-                      "scene/brick/brick.h",
-                      "scene/building.h",
-                      "scene/scene.h",
-                      "shadow/Bbox/bbox.h",
-                      "shadow/Face/face.h",
-                      "shadow/Point/point.h",
-                      "shadow/Vector/vector.h",
-                      "shadow/mesh.h",
-                      "projection/projection.h"
-                    ]
-                  }
-                ],
-                "fullName": "liburban_algorithms.a",
-                "linkerLanguage": "CXX",
-                "name": "urban_algorithms",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
-                "type": "STATIC_LIBRARY"
-              },
-              {
-                "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs/liburban_projection.a"
-                ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs",
-                "fileGroups": [
-                  {
-                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0  ",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "projection/Brick/brick_projection.cpp",
-                      "projection/Camera/camera.cpp",
-                      "projection/Face/face_projection.cpp",
-                      "projection/Raster/raster_projection.cpp"
-                    ]
-                  },
-                  {
-                    "isGenerated": false,
-                    "sources": [
-                      "projection/projection.h",
-                      "scene/brick/brick.h",
-                      "scene/building.h",
-                      "scene/scene.h",
-                      "algorithms/algorithms.h"
-                    ]
-                  }
-                ],
-                "fullName": "liburban_projection.a",
-                "linkerLanguage": "CXX",
-                "name": "urban_projection",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/libs",
-                "type": "STATIC_LIBRARY"
-              },
-              {
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
-                "fileGroups": [
-                  {
-                    "isGenerated": true,
-                    "sources": [
-                      "build/vscode/CMakeFiles/libcatch",
-                      "build/vscode/CMakeFiles/libcatch.rule",
-                      "build/vscode/CMakeFiles/libcatch-complete.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-install.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-mkdir.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-download.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-update.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-patch.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-configure.rule",
-                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-build.rule"
-                    ]
-                  }
-                ],
-                "fullName": "libcatch",
-                "name": "libcatch",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
-                "type": "UTILITY"
-              },
-              {
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
-                "fileGroups": [
-                  {
-                    "isGenerated": true,
-                    "sources": [
-                      "build/vscode/CMakeFiles/libdocopt",
-                      "build/vscode/CMakeFiles/libdocopt.rule",
-                      "build/vscode/CMakeFiles/libdocopt-complete.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-install.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-mkdir.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-download.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-update.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-patch.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-configure.rule",
-                      "build/vscode/external/docopt/src/libdocopt-stamp/libdocopt-build.rule"
-                    ]
-                  }
-                ],
-                "fullName": "libdocopt",
-                "name": "libdocopt",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
-                "type": "UTILITY"
-              },
-              {
-                "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/cli/project_scene_xy"
-                ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/cli",
-                "fileGroups": [
-                  {
-                    "compileFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0   -DVERSION=\\\"0.3.0\\\"",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "project_scene_xy.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "project_scene_xy",
-                "linkFlags": "-L/opt/local/lib -Wl,-headerpad_max_install_names -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
-                "linkLanguageFlags": "-pipe -Os -std=c++11 -Wall -Wextra -pedantic -g -O0",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/libs /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../libs/liburban.dylib ../libs/liburban_io.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_scene.a ../libs/liburban_projection.a ../libs/liburban_algorithms.a ../libs/liburban_shadow.a /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmp.dylib /opt/local/lib/libCGAL.12.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
-                "linkPath": "-L/opt/local/lib",
-                "linkerLanguage": "CXX",
-                "name": "project_scene_xy",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/cli",
-                "type": "EXECUTABLE"
-              },
-              {
-                "artifacts": [
                   "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/tests/tests"
                 ],
                 "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/tests",
@@ -615,13 +591,37 @@
                 "name": "tests",
                 "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/tests",
                 "type": "EXECUTABLE"
+              },
+              {
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
+                "fileGroups": [
+                  {
+                    "isGenerated": true,
+                    "sources": [
+                      "build/vscode/CMakeFiles/libcatch",
+                      "build/vscode/CMakeFiles/libcatch.rule",
+                      "build/vscode/CMakeFiles/libcatch-complete.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-install.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-mkdir.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-download.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-update.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-patch.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-configure.rule",
+                      "build/vscode/external/Catch/src/libcatch-stamp/libcatch-build.rule"
+                    ]
+                  }
+                ],
+                "fullName": "libcatch",
+                "name": "libcatch",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
+                "type": "UTILITY"
               }
             ]
           }
         ]
       }
     ],
-    "cookie": "0.9772685750324999",
+    "cookie": "0.33008905841705705",
     "inReplyTo": "codemodel",
     "type": "reply"
   }
