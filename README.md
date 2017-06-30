@@ -1,16 +1,19 @@
-# 3DSceneModel
+# Proj.city
+
+
+| Technology               | Status        |
+| ------------------------ |:-------------:|
+| Travis CI (Linux - MacOS)| [![Build Status](https://travis-ci.org/Ethiy/3DSceneModel.svg?branch=master)](https://travis-ci.org/Ethiy/3DSceneModel)|
+| Appveyor (MinGW-w64)     | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/master?svg=true)](https://ci.appveyor.com/project/Ethiy/3DSceneModel/branch/master)|
+| Coverity Scan            |[![Coverity Scan Build Status](https://scan.coverity.com/projects/11095/badge.svg)](https://scan.coverity.com/projects/3dscenemodel)|
+| Code Quality             |[![BCH compliance](https://bettercodehub.com/edge/badge/ethiy/proj.city?branch=dev)](https://bettercodehub.com/)
+|
+
+## License
 
 [![GitHub license](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/Ethiy/3DSceneModel/master/LICENSE)
 
-| Environment              | Status        |
-| ------------------------ |:-------------:|
-| Linux                    | [![Build Status](https://travis-ci.org/Ethiy/3DSceneModel.svg?branch=master)](https://travis-ci.org/Ethiy/3DSceneModel)|
-| Darwin                   |[![Build Status](https://travis-ci.org/Ethiy/3DSceneModel.svg?branch=master)](https://travis-ci.org/Ethiy/3DSceneModel)|
-| Windows                  | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/master?svg=true)](https://ci.appveyor.com/project/Ethiy/3DSceneModel/branch/master)|
-| Coverity Scan            |[![Coverity Scan Build Status](https://scan.coverity.com/projects/11095/badge.svg)](https://scan.coverity.com/projects/3dscenemodel)|
-
-Playing with 3D formats.
-
+This work is the result of a PhD thesis financed by `IGN France`. It is available as an open source project under the `GPL v3.0` License. If you want to have this program under a different License you should contact `IGN France`.
 
 ## Build
 
@@ -21,7 +24,7 @@ In order to build this project you need first to check for these dependencies:
 * GDAL Library: (> `v2.0`)
 * lib3ds Library: (`v1.3.0`)
 * Catch Library: (> `v1.6.0`)
-* Docopt.cpp Library: (> `v0.6.2`)
+* docopt.cpp Library: (> `v0.6.2`)
 
  This project is tested on these three main platforms:
 
@@ -94,7 +97,3 @@ You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/
 | lib3ds       | `brew install lib3ds` | `port install lib3ds` |
 
 ### MinGW w64
-
-## License
-
-This work is the result of a PhD thesis financed by `IGN France`. It is available as an open source project under the `GPL v3.0` License. If you want to have this program under a different License you should contact `IGN France`.
