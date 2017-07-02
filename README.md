@@ -30,7 +30,7 @@ In order to build this project you need first to check for these dependencies:
  This project is tested on these three main platforms:
 
 | Platform              | Image         |
-| --------------------- |:-------------:|
+| --------------------- |:------------- |
 | `Ubuntu LTS`          | > `v16.04`    |
 | `Xcode`               | > `v8.0.0`    |
 | `Windows`             | = `mingw-w64` |
@@ -42,7 +42,7 @@ In order to build this project you need first to check for these dependencies:
 * Catch:
     Catch is a header only library available on [`Github`](https://github.com/philsquared/Catch). You do not need to install it as a CMake module installs it as an external project.
 
-* Docopt.cpp:
+* docopt.cpp:
     `docopt.cpp` is a fun argument parser library available on [`Github`](https://github.com/docopt/docopt.cpp). You do not need to install it also as a CMake module installs it as an external project.
 
 ### Ubuntu `v16.04`
@@ -52,9 +52,9 @@ You can check the project's [docker file](Dockerfile) for an inspiration. We wil
 | Step         | `APT`           |
 |:------------:|:------------- |
 | Update       | `apt update && apt upgrade -y` |
-| boost        | This project uses only  `filesystem` and `system` boost libraries. However, since `Cgal` uses other libraries it <br>may be wise to get all of them:<br>`apt install libboost-all-dev` |
+| boost        | This project uses only  `filesystem` and `system` boost libraries. However, since `Cgal` uses other libraries it may be wise to get all of them:<br>`apt install libboost-all-dev` |
 | Cgal         | `apt install libcgal-dev` |
-| Gdal         | `Gdal` > `v2.0.0` is not available in the official repositories. The easiest way to get a newer version would be <br>through the unstable `ubuntugis` ppa:<br>`add-apt-repository ppa:ubuntugis/ubuntugis-unstable`<br>`apt update && apt upgrade`*<br>`apt install libgdal-dev`|
+| Gdal         | `Gdal` > `v2.0.0` is not available in the official repositories. The easiest way to get a newer version would be through the unstable `ubuntugis` ppa:<br>`add-apt-repository ppa:ubuntugis/ubuntugis-unstable`<br>`apt update && apt upgrade`*<br>`apt install libgdal-dev`|
 | lib3ds       | `apt install lib3ds-dev` |
 | tinyXML2       | `apt install libtinyxml-dev` |
 
