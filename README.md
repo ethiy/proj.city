@@ -23,6 +23,7 @@ In order to build this project you need first to check for these dependencies:
 | `Cgal`                | > `v4.7-4`    |
 | `Gdal`                | > `v2.0.0`    |
 | `lib3ds`              | > `v1.3.0`    |
+| `tinyXML2`            | > `v2.6.0`    |
 | `Catch`               | > `v1.6.0`    |
 | `docopt.cpp`          | > `v0.6.2`    |
 
@@ -32,7 +33,7 @@ In order to build this project you need first to check for these dependencies:
 | --------------------- |:-------------:|
 | `Ubuntu LTS`          | > `v16.04`    |
 | `Xcode`               | > `v8.0.0`    |
-| `Windows`             | `mingw-w64`   |
+| `Windows`             | = `mingw-w64` |
 
  We explain here how to get these listed dependencies and how to build for each platform:
 
@@ -66,7 +67,7 @@ You can check the project's [travis file](/.travis.yml) for an inspiration. Ther
 
 | Step         | `brew`        | `port`        |
 |:------------:|:------------- |:------------- |
-| Installation | `/usr/bin/ruby -e $(curl -fsSL https://raw.githubusercontent.com/Homebrew/`<br>`install/master/install)` | You should follow the instructions on [`port` official website](https://www.macports.org/install.php) |
+| Installation | `/usr/bin/ruby -e $(curl -fsSL https://raw.githubusercontent.com/`<br>`Homebrew/install/master/install)` | You should follow the instructions on [`port` official website](https://www.macports.org/install.php) |
 | Update       | `brew update` | `port selfupdate && port upgrade outdated` |
 | boost        | `brew install boost` | `port install boost` |
 | Cgal         | `brew install cgal` | `port install cgal` |
