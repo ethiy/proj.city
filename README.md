@@ -2,7 +2,7 @@
 
 | Technology               | Status        |
 | ------------------------ |:-------------:|
-| Travis CI (Linux - MacOS)| [![Build Status](https://travis-ci.org/Ethiy/proj.city.svg?branch=master)](https://travis-ci.org/ethiy/proj.city)|
+| Travis CI (Linux - MacOS)| [![Build Status](https://travis-ci.org/ethiy/proj.city.svg?branch=master)](https://travis-ci.org/ethiy/proj.city)|
 | Appveyor (MinGW-w64)     | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/master?svg=true)](https://ci.appveyor.com/project/ethiy/proj.city/branch/master)|
 | Coverity Scan            |[![Coverity Scan Build Status](https://scan.coverity.com/projects/11095/badge.svg)](https://scan.coverity.com/projects/ethiy-proj-city)|
 | Code Quality             |[![BCH compliance](https://bettercodehub.com/edge/badge/ethiy/proj.city?branch=dev)](https://bettercodehub.com/)
