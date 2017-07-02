@@ -1,12 +1,5 @@
 # Proj.city
 
-1. [License](#License)
-2. [Build](#Build)
-    2.1. [Cross Platform dependencies](#Cross Platform dependencies)
-    2.2. [Ubuntu `v16.04`](#Build)
-    2.3. [MacOs](#Build)
-    2.4. [MinGW-w64](#Build)
-
 | Technology               | Status        |
 | ------------------------ |:-------------:|
 | Travis CI (Linux - MacOS)| [![Build Status](https://travis-ci.org/Ethiy/3DSceneModel.svg?branch=master)](https://travis-ci.org/Ethiy/3DSceneModel)|
