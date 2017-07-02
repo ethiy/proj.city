@@ -9,7 +9,7 @@
 
 ## License
 
-[![GitHub license](https://img.shields.io/badge/license-GPL3.0-blue.svg)](https://raw.githubusercontent.com/Ethiy/3DSceneModel/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-GPL3.0-blue.svg)](/LICENSE)
 
 This work is the result of a PhD thesis financed by `IGN France`. It is available as an open source project under the `GPL v3.0` License. If you want to have this program under a different License you should contact `IGN France`.
 
@@ -46,7 +46,7 @@ In order to build this project you need first to check for these dependencies:
 
 ### Ubuntu `v16.04`
 
-You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/blob/master/Dockerfile) for an inspiration. We will use `APT` the O.S. package manager for most dependencies:
+You can check the project's [docker file](Dockerfile) for an inspiration. We will use `APT` the O.S. package manager for most dependencies:
 
 | Step         | `APT`           |
 |:------------:|:------------- |
@@ -60,9 +60,10 @@ You can check the project's [docker file](https://github.com/Ethiy/3DSceneModel/
 >\*\
 You should know that this will also upgrade `QGis`. You can force `APT` to freeze `QGis` for instance, or you can download the source form the official release [website](https://trac.osgeo.org/gdal/wiki/DownloadSource) and build `Gdal`.
 
-### Darwin
+### MacOS
 
-You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/blob/master/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personally, I prefer the later.
+You can check the project's [travis file](/.travis.yml) for an inspiration. There are two available package managers. `brew` generally has the latest updates while `port` focuses more on stability. Personally, I prefer the later.
+
 | Step         | `brew`        | `port`        |
 |:------------:|:------------- |:------------- |
 | Installation | `/usr/bin/ruby -e $(curl -fsSL https://raw.githubusercontent.com/Homebrew/`<br>`install/master/install)` | You should follow the instructions on [`port` official website](https://www.macports.org/install.php) |
@@ -82,5 +83,5 @@ You can check the project's [travis file](https://github.com/Ethiy/3DSceneModel/
 | boost        | `pacman --noconfirm -S mingw-w64-x86_64-boost` |
 | Cgal         | `pacman --noconfirm -S mingw-w64-x86_64-cgal` |
 | Gdal         | `pacman --noconfirm -S mingw-w64-x86_64-gdal`|
-| lib3ds       | You should download and build the library locally. Check out the [Appveyor configuration](/blob/master/appveyor.yml/#L35) for more details |
+| lib3ds       | You should download and build the library locally. Check out the [Appveyor configuration](appveyor.yml/#L35) for more details |
 | TinyXML2     | `pacman --noconfirm -S mingw-w64-x86_64-tinyxml2`|
