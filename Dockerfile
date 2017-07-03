@@ -30,3 +30,4 @@ WORKDIR build/xenial
 RUN cmake ../..
 RUN cmake ../..
 RUN make -j `nproc` all
+RUN tests/tests
