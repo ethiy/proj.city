@@ -119,8 +119,8 @@ namespace urban
 
         Bbox & Bbox::operator +=(Bbox const& other)
         {
-            mins[mins <= other.mins] = other.mins[mins <= other.mins];
-            maxes[maxes <= other.maxes] = other.maxes[maxes <= other.maxes];
+            mins[mins < other.mins] = other.mins[mins < other.mins];
+            maxes[maxes > other.maxes] = other.maxes[maxes > other.maxes];
             return *this;
         }
 
