@@ -138,7 +138,7 @@ namespace urban
 
         std::ostream & operator <<(std::ostream & os, Bbox const& bbox)
         {
-            os << bbox.mins[0] << " " << bbox.maxes[1] << " " << bbox.mins[1] << " " << bbox.maxes[1] << " " << bbox.mins[2] << " " << bbox.maxes[2];
+            os << bbox.maxes[0] << " " << bbox.mins[0] << " " << bbox.maxes[1] << " " << bbox.mins[1] << " " << bbox.maxes[2] << " " << bbox.mins[2];
             return os;
         }
 
