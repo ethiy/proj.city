@@ -3,6 +3,7 @@
 #include <CGAL/Bbox_3.h>
 
 #include <array>
+#include <valarray>
 #include <ostream>
 
 namespace urban
@@ -46,7 +47,7 @@ namespace urban
              * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
-            Bbox(std::array<double, 3> const& coordinates);
+            Bbox(std::valarray<double> const& coordinates);
             /**
              * Bbox copy constructor.
              * @see Bbox(void);
@@ -84,7 +85,7 @@ namespace urban
              * @see double zmin(void) const noexcept;
              * @see double zmax(void) const noexcept;
              */
-            double xmin(void) const noexcept;
+            double const& xmin(void) const noexcept;
             /**
              * Access xmax.
              * @return xmax
@@ -94,7 +95,7 @@ namespace urban
              * @see double zmin(void) const noexcept;
              * @see double zmax(void) const noexcept;
              */
-            double xmax(void) const noexcept;
+            double const& xmax(void) const noexcept;
             /**
              * Access ymin.
              * @return ymin
@@ -104,7 +105,7 @@ namespace urban
              * @see double zmin(void) const noexcept;
              * @see double zmax(void) const noexcept;
              */
-            double ymin(void) const noexcept;
+            double const& ymin(void) const noexcept;
             /**
              * Access ymax.
              * @return ymax
@@ -114,7 +115,7 @@ namespace urban
              * @see double zmin(void) const noexcept;
              * @see double zmax(void) const noexcept;
              */
-            double ymax(void) const noexcept;
+            double const& ymax(void) const noexcept;
             /**
              * Access zmin.
              * @return zmin
@@ -124,7 +125,7 @@ namespace urban
              * @see double ymax(void) const noexcept;
              * @see double zmax(void) const noexcept;
              */
-            double zmin(void) const noexcept;
+            double const& zmin(void) const noexcept;
             /**
              * Access zmax.
              * @return zmax
@@ -134,7 +135,67 @@ namespace urban
              * @see double ymax(void) const noexcept;
              * @see double zmin(void) const noexcept;
              */
-            double zmax(void) const noexcept;
+            double const& zmax(void) const noexcept;
+            /**
+             * Access xmin.
+             * @return xmin
+             * @see double xmax(void) const noexcept;
+             * @see double ymin(void) const noexcept;
+             * @see double ymax(void) const noexcept;
+             * @see double zmin(void) const noexcept;
+             * @see double zmax(void) const noexcept;
+             */
+            double & xmin(void) noexcept;
+            /**
+             * Access xmax.
+             * @return xmax
+             * @see double xmin(void) noexcept;
+             * @see double ymin(void) noexcept;
+             * @see double ymax(void) noexcept;
+             * @see double zmin(void) noexcept;
+             * @see double zmax(void) noexcept;
+             */
+            double & xmax(void) noexcept;
+            /**
+             * Access ymin.
+             * @return ymin
+             * @see double xmin(void) noexcept;
+             * @see double xmax(void) noexcept;
+             * @see double ymax(void) noexcept;
+             * @see double zmin(void) noexcept;
+             * @see double zmax(void) noexcept;
+             */
+            double & ymin(void) noexcept;
+            /**
+             * Access ymax.
+             * @return ymax
+             * @see double xmin(void) noexcept;
+             * @see double xmax(void) noexcept;
+             * @see double ymin(void) noexcept;
+             * @see double zmin(void) noexcept;
+             * @see double zmax(void) noexcept;
+             */
+            double & ymax(void) noexcept;
+            /**
+             * Access zmin.
+             * @return zmin
+             * @see double xmin(void) noexcept;
+             * @see double xmax(void) noexcept;
+             * @see double ymin(void) noexcept;
+             * @see double ymax(void) noexcept;
+             * @see double zmax(void) noexcept;
+             */
+            double & zmin(void) noexcept;
+            /**
+             * Access zmax.
+             * @return zmax
+             * @see double xmin(void) noexcept;
+             * @see double xmax(void) noexcept;
+             * @see double ymin(void) noexcept;
+             * @see double ymax(void) noexcept;
+             * @see double zmin(void) noexcept;
+             */
+            double & zmax(void) noexcept;
 
             /**
              * Swap `this` with `other`.
@@ -144,19 +205,19 @@ namespace urban
             void swap(Bbox & other);
 
             /**
-             * Copy assignement operator.
+             * Copy assignment operator.
              * @param other an other Bbox
              * @return this copy of other
              * @see operator=(Bbox && other) noexcept;
              */
-            Bbox & operator=(Bbox const& other) noexcept;
+            Bbox & operator =(Bbox const& other) noexcept;
             /**
-             * Move assignement operator.
+             * Move assignment operator.
              * @param other an other Bbox
              * @return this
              * @see operator=(Bbox const& other) noexcept;
              */
-            Bbox & operator=(Bbox && other) noexcept;
+            Bbox & operator =(Bbox && other) noexcept;
 
             /**
              * plus operator.
@@ -164,7 +225,7 @@ namespace urban
              * @return bounding box union
              * @see operator+(Bbox const& lhs, Bbox const& rhs);
              */
-            Bbox & operator+=(Bbox const& other);
+            Bbox & operator +=(Bbox const& other);
 
             /**
              * Convert shadow Bbox to CGAL::Bbox_3.
@@ -173,14 +234,15 @@ namespace urban
             CGAL::Bbox_3 to_cgal(void) const noexcept;
 
         private:
-            std::array<double, 6> extreemes;
+            std::valarray<double> mins;
+            std::valarray<double> maxes;
             /**
             * Outstreaming Bbox
             * @param os the output stream
             * @param bbox the bbox to stream
             * @return the output stream
             */
-            friend std::ostream & operator<<(std::ostream & os, Bbox const& bbox);
+            friend std::ostream & operator <<(std::ostream & os, Bbox const& bbox);
         };
         
         /**
@@ -190,13 +252,14 @@ namespace urban
          * @return bounding box union
          * @see operator+(Bbox const& lhs, Bbox const& rhs);
          */
-        Bbox operator+(Bbox const& lhs, Bbox const& rhs);
+        Bbox operator +(Bbox const& lhs, Bbox const& rhs);
+
+        /**
+        * Swap `lhs` with `rhs`.
+        * @param lhs a Bbox
+        * @param rhs a Bbox
+        * @see swap(Bbox & other)
+        */
+        void swap(Bbox & lhs, Bbox & rhs);
     }
-    /**
-     * Swap `lhs` with `rhs`.
-     * @param lhs a Bbox
-     * @param rhs a Bbox
-     * @see swap(shadow::Bbox & other)
-     */
-    void swap(shadow::Bbox & lhs, shadow::Bbox & rhs);
 }

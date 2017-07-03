@@ -83,6 +83,14 @@ namespace urban
         {
             return points.end();
         }
+        Face::const_iterator Face::begin(void) const noexcept
+        {
+            return points.begin();
+        }
+        Face::const_iterator Face::end(void) const noexcept
+        {
+            return points.end();
+        }
         Face::const_iterator Face::cbegin(void) const noexcept
         {
             return points.cbegin();

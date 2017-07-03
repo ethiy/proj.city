@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <valarray>
 #include <ostream>
 
 namespace urban
@@ -16,40 +16,50 @@ namespace urban
             Vector(const Point & origin, const Point & target);
             Vector(double x, double y, double z);
             Vector(double coordinates[3]);
+            Vector(std::valarray<double> const& initializer);
             Vector(Vector const& other);
             Vector(Vector && other);
             ~Vector(void);
 
-            double x(void) const noexcept;
-            double y(void) const noexcept;
-            double z(void) const noexcept;
+            std::valarray<double> const& data(void) const noexcept;
+            std::valarray<double> & data(void) noexcept;
+
+            double const& x(void) const noexcept;
+            double const& y(void) const noexcept;
+            double const& z(void) const noexcept;
+            double & x(void) noexcept;
+            double & y(void) noexcept;
+            double & z(void) noexcept;
 
             void swap(Vector & other);
 
-            Vector & operator=(Vector const& other) noexcept;
-            Vector & operator=(Vector && other) noexcept;
+            Vector & operator =(Vector const& other) noexcept;
+            Vector & operator =(Vector && other) noexcept;
 
-            Vector & operator+=(Vector const& other);
-            Vector & operator*=(double scalar);
-            Vector & operator/=(double scalar);
-            Vector & operator-=(Vector const& other);
-            Vector & operator^=(Vector const& other);
+            Vector & operator +=(Vector const& other);
+            Vector & operator *=(double const scalar);
+            Vector & operator /=(double const scalar);
+            Vector & operator -=(Vector const& other);
+            Vector & operator ^=(Vector const& other);
 
         private:
-            std::array<double, 3> coordinates;
-            friend std::ostream & operator<<(std::ostream & os, Vector const& vector);
-            friend bool operator==(Vector const& lhs, Vector const& rhs);
-        };
-        Vector & operator+(Vector & lhs, Vector const& rhs);
-        Vector & operator-(Vector & lhs, Vector const& rhs);
-        double operator*(Vector const& lhs, Vector const& rhs);
-        Vector operator*(double scalar, Vector const& rhs);
-        Vector operator/(Vector const& lhs, double scalar);
-        Vector operator^(Vector const& lhs, Vector const& rhs);
-        bool operator!=(Vector const& lhs, Vector const& rhs);
-    }
+            std::valarray<double> coordinates;
 
-    void swap(shadow::Vector & lhs, shadow::Vector & rhs);
-    double norm_L2(shadow::Vector & vector);
-    double determinant(const shadow::Vector & first, const shadow::Vector & second, const shadow::Vector & third);
+            friend bool operator ==(Vector const& lhs, Vector const& rhs);
+            friend Vector operator +(Vector const& lhs, Vector const& rhs);
+            friend Vector operator -(Vector const& lhs, Vector const& rhs);
+            friend double operator *(Vector const& lhs, Vector const& rhs);
+            friend Vector operator *(double const scalar, Vector const& rhs);
+            friend Vector operator /(Vector const& lhs, double const scalar);
+
+            friend std::ostream & operator <<(std::ostream & os, Vector const& vector);
+        };
+        Vector operator ^(Vector const& lhs, Vector const& rhs);
+        bool operator !=(Vector const& lhs, Vector const& rhs);
+
+        void swap(Vector & lhs, Vector & rhs);
+
+        double norm_L2(Vector & vector);
+        double determinant(const Vector & first, const Vector & second, const Vector & third);
+    }
 }

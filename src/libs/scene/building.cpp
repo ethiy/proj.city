@@ -13,7 +13,7 @@ namespace urban
     {
         Building::Building(void)
         {}
-        Building::Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, std::vector<urban::shadow::Mesh> const& _walls, shadow::Point const& _pivot, unsigned short _epsg_code)
+        Building::Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& _roofs, std::vector<urban::shadow::Mesh> const& _walls, shadow::Point const& _pivot, unsigned short _epsg_code)
             : id(_id), reference_point(_pivot), epsg_code(_epsg_code), roofs(_roofs.size()), walls(_walls.size())
         {
             std::transform(
@@ -36,7 +36,7 @@ namespace urban
                 }
             );
         }
-        Building::Building(std::size_t const& _id, std::vector<urban::shadow::Mesh> const& _roofs, shadow::Point const& _pivot, unsigned short _epsg_code)
+        Building::Building(std::string const& _id, std::vector<urban::shadow::Mesh> const& _roofs, shadow::Point const& _pivot, unsigned short _epsg_code)
             : id(_id), reference_point(_pivot), epsg_code(_epsg_code), roofs(_roofs.size())
         {
             std::transform(
@@ -99,7 +99,7 @@ namespace urban
             return epsg_code;
         }
 
-        std::size_t Building::identifier(void) const noexcept
+        std::string Building::identifier(void) const noexcept
         {
             return id;
         }

@@ -165,6 +165,16 @@ namespace urban
              */
             iterator end(void) noexcept;
             /**
+             * Access constant begin iterator.
+             * @return begin constant iterator
+             */
+            const_iterator begin(void) const noexcept;
+            /**
+             * Access constant end iterator.
+             * @return end constant iterator
+             */
+            const_iterator end(void) const noexcept;
+            /**
              * Access begin constant iterator.
              * @return constant begin iterator
              */

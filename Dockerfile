@@ -22,8 +22,8 @@ RUN apt-get install -y \
             libqt5opengl5-dev\
             libgdal-dev
 WORKDIR /home
-RUN git clone https://github.com/Ethiy/3DSceneModel.git
-WORKDIR 3DSceneModel/
+RUN git clone https://github.com/Ethiy/proj.city.git
+WORKDIR proj.city/
 RUN git checkout build-system-trial
 RUN mkdir build && mkdir build/linux
 WORKDIR build/xenial

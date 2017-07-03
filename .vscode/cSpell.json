@@ -15,7 +15,17 @@
         "rastafari",
         "ogrsf",
         "frmts",
-        "OGRERR"
+
+        "OGRERR",
+        "libboost",
+        "libcgal",
+        "ubuntugis",
+        "libgdal",
+        "selfupdate",
+        "MSYS",
+        "noconfirm",
+        "tinyxml",
+        "libtinyxml"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(3DSceneModel
-        VERSION 0.3.0
+project("proj.city"
+        VERSION 0.4.1
         LANGUAGES CXX)
 
 ##

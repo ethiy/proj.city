@@ -54,7 +54,7 @@ SCENARIO("Point manipulation:")
                 REQUIRE(auxilary.str() == "0.1861 0.2624 0");
             }
         }
-        WHEN("two points are substructed")
+        WHEN("two points are subtracted")
         {
             urban::shadow::Vector u(third - second);
             THEN("The output checks:")
@@ -112,21 +112,21 @@ SCENARIO("Point manipulation:")
         }
         WHEN("the normal of the plane defined accordingly is computed")
         {
-            urban::shadow::Vector n(urban::normal_to(first, second, third));
+            urban::shadow::Vector n(urban::shadow::normal_to(first, second, third));
             urban::shadow::Vector m(urban::shadow::Vector(first, second) ^ urban::shadow::Vector(second, third));
             THEN("the output checks:")
             {
-                REQUIRE(n == m / urban::norm_L2(m));
+                REQUIRE(n == m / urban::shadow::norm_L2(m));
             }
         }
         WHEN("the normal is used in determinant")
         {
             urban::shadow::Vector u = second - first,
                                   v = third - second;
-            urban::shadow::Vector n(urban::normal_to(first, second, third));
+            urban::shadow::Vector n(urban::shadow::normal_to(first, second, third));
             THEN("the output checks:")
             {
-                REQUIRE(std::abs(urban::determinant(n, u, v) - n * (u ^ v)) < std::numeric_limits<double>::epsilon());
+                REQUIRE(std::abs(urban::shadow::determinant(n, u, v) - n * (u ^ v)) < std::numeric_limits<double>::epsilon());
             }
         }
         WHEN("determinant of colinear vectors")
@@ -135,7 +135,7 @@ SCENARIO("Point manipulation:")
                                   v = third - second;
             THEN("the output checks:")
             {
-                REQUIRE(urban::determinant(10. * u, 20000. * u, v) == 0.);
+                REQUIRE(urban::shadow::determinant(10. * u, 20000. * u, v) == 0.);
             }
         }
     }

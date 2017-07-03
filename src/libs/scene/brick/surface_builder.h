@@ -13,26 +13,37 @@ namespace urban
     class SurfaceBuilder: public CGAL::Modifier_base<HDS>
     {
     public:
-        SurfaceBuilder(shadow::Mesh const& _shadow_mesh): shadow_mesh(_shadow_mesh){}
+        SurfaceBuilder(shadow::Mesh const& _shadow_mesh, bool _centered, shadow::Point _pivot)
+            : centered(_centered), pivot(_pivot), shadow_mesh(_shadow_mesh){}
+
         void operator()(HDS & target)
         {
-            CGAL::Polyhedron_incremental_builder_3<HDS> incremental_builder( target, true);
+            CGAL::Polyhedron_incremental_builder_3<HDS> incremental_builder(target, true);
             incremental_builder.begin_surface(shadow_mesh.points_size(), shadow_mesh.faces_size());
             InexactToExact to_exact;
 
             std::for_each(
                 shadow_mesh.points_cbegin(),
                 shadow_mesh.points_cend(),
-                [&incremental_builder, &to_exact](std::pair<std::size_t, shadow::Point> p)
+                [&incremental_builder, &to_exact, this](std::pair<std::size_t, shadow::Point> const& p)
                 {
-                    Point_3 cgal_point(to_exact(CGAL::Point_3<InexactKernel>(p.second.x(),p.second.y(), p.second.z())));
-                    incremental_builder.add_vertex(cgal_point);
+                    incremental_builder.add_vertex(
+                        Point_3(
+                            to_exact(
+                                CGAL::Point_3<InexactKernel>(
+                                    p.second.x() - !centered * pivot.x(),
+                                    p.second.y() - !centered * pivot.y(),
+                                    p.second.z()
+                                )
+                            )
+                        )
+                    );
                 }
             );
             std::for_each(
                 shadow_mesh.faces_cbegin(),
                 shadow_mesh.faces_cend(),
-                [&incremental_builder](std::pair<std::size_t, shadow::Face> face)
+                [&incremental_builder, this](std::pair<std::size_t, shadow::Face> const& face)
                 {
                     incremental_builder.begin_facet();
                     std::for_each(
@@ -49,6 +60,8 @@ namespace urban
             incremental_builder.end_surface();
         }
     private:
+        bool centered;
+        shadow::Point pivot;
         shadow::Mesh shadow_mesh;
     };
 }
