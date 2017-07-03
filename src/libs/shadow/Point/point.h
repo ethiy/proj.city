@@ -61,7 +61,9 @@ namespace urban
         };
         Vector operator -(Point const& lhs, Point const& rhs);
         bool operator !=(Point const& lhs, Point const& rhs);
+
+        void swap(Point & lhs, Point & rhs);
+
+        Vector normal_to(Point const& first, Point const& second, Point const& third);
     }
-    void swap(shadow::Point & lhs, shadow::Point & rhs);
-    shadow::Vector normal_to(shadow::Point const& first, shadow::Point const& second, shadow::Point const& third);
 }

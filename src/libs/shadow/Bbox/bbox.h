@@ -234,7 +234,8 @@ namespace urban
             CGAL::Bbox_3 to_cgal(void) const noexcept;
 
         private:
-            std::valarray<double> extremes;
+            std::valarray<double> mins;
+            std::valarray<double> maxes;
             /**
             * Outstreaming Bbox
             * @param os the output stream

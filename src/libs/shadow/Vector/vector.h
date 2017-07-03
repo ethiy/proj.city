@@ -58,7 +58,8 @@ namespace urban
         bool operator !=(Vector const& lhs, Vector const& rhs);
 
         void swap(Vector & lhs, Vector & rhs);
+
+        double norm_L2(Vector & vector);
+        double determinant(const Vector & first, const Vector & second, const Vector & third);
     }
-    double norm_L2(shadow::Vector & vector);
-    double determinant(const shadow::Vector & first, const shadow::Vector & second, const shadow::Vector & third);
 }
