@@ -3,5 +3,8 @@
 # Qt creator
 CMakeLists.txt.user
 
+# Visual studio
+.vs
+
 # Build files
 build
