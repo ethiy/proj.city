@@ -3,7 +3,7 @@ version: '0.0.0_{build}'
 branches:
   only:
     - master
-    - build-system-trial
+    - dev
 
 install:
   - ps: |

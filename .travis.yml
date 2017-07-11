@@ -9,7 +9,7 @@ git:
 branches:
     only:
     - master
-    - build-system-trial
+    - dev
 
 matrix:
   include:
