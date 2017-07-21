@@ -19,11 +19,11 @@ namespace urban
             FileHandler(boost::filesystem::path const& _filepath);
             ~FileHandler(void);
             
+            std::vector<std::string> building_ids(void);
             scene::Scene read(void);
         private:
             tinyxml2::XMLDocument scene_tree;
             boost::filesystem::path filepath;
-
             bool centered = true;
 
             shadow::Point pivot(void);

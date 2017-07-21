@@ -119,7 +119,17 @@ namespace urban
 
             return *this;
         }
-        
+
+        Bbox_3 UNode::bbox(void) const
+        {
+            return bounding_box;
+        }
+
+        std::string UNode::get_name(void) const
+        {
+            return name;
+        }
+
         void swap(UNode & lhs, UNode & rhs)
         {
             lhs.swap(rhs);

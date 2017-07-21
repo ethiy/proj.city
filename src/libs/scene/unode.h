@@ -31,6 +31,7 @@ namespace urban
              */
             Bbox_3 bbox(void) const;
 
+            std::string get_name(void) const;
         private:
             /** Node name */
             std::string name;

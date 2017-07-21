@@ -18,9 +18,24 @@ namespace urban
         FileHandler<tinyxml2::XMLDocument>::~FileHandler(void)
         {}
 
+        std::vector<std::string> FileHandler<tinyxml2::XMLDocument>::building_ids(void)
+        {
+            std::vector<std::string> ids;
+
+            tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("Building");
+            while(p_building != NULL)
+            {
+                ids.push_back(std::string(p_building->Attribute("Id")));
+                p_building = p_building->NextSiblingElement("Building");
+            }
+
+            return ids;
+        }
+
         scene::Scene FileHandler<tinyxml2::XMLDocument>::read(void)
         {
-            return scene::Scene(pivot(), centered, epsg_code(), structure());
+            throw std::logic_error("Not implemented anymore!");
+            return scene::Scene();
         }
 
         shadow::Bbox FileHandler<tinyxml2::XMLDocument>::bbox(void) const
