@@ -16,10 +16,10 @@ set(Projection_HEADER
     "${proj.city_SOURCE_DIR}/src/libs/projection/projection.h"
 )
 set(Projection_SRC
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Brick/brick_projection.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Camera/camera.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Face/face_projection.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Raster/raster_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/scene/brick_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/camera/camera.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/face/face_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/raster/raster_projection.cpp"
 )
 set(Algorithms_HEADER
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/algorithms.h"

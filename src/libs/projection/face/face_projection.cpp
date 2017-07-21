@@ -1,7 +1,7 @@
 #include "face_projection.h"
 
 #include "../../algorithms/projection/projection_algorithms.h"
-#include "../Raster/raster_projection.h"
+#include "../raster/raster_projection.h"
 #include "../../algorithms/ogr/ogr_algorithms.h"
 #include "../../algorithms/utils/util_algorithms.h"
 
@@ -21,8 +21,10 @@ namespace urban
 {
     namespace projection
     {
-        FacePrint::FacePrint(void){}
-        FacePrint::FacePrint(Polygon_with_holes const& _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane){}
+        FacePrint::FacePrint(void)
+        {}
+        FacePrint::FacePrint(Polygon_with_holes const& _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane)
+        {}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
             if(facet_definition->GetFieldCount() < 4)

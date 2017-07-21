@@ -2,7 +2,7 @@
 
 #include "../../geometry_definitions.h"
 #include "../../shadow/mesh.h"
-#include "../../projection/Face/face_projection.h"
+#include "../../projection/face/face_projection.h"
 
 #include <ogr_geometry.h>
 
