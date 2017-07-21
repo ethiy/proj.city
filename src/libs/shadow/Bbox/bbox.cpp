@@ -32,9 +32,6 @@ namespace urban
                 zmax
             }}
         {}
-        Bbox::Bbox(Point const& point)
-            : Bbox::Bbox(point.data())
-        {}
         Bbox::Bbox(std::valarray<double> const& coordinates)
             : extremes{{
                 coordinates[0],
@@ -44,6 +41,9 @@ namespace urban
                 coordinates[2],
                 coordinates[2],
             }}
+        {}
+        Bbox::Bbox(Point const& point)
+            : Bbox::Bbox(point.data())
         {}
         Bbox::Bbox(const Bbox & other)
             : extremes(other.extremes) {}
@@ -59,7 +59,6 @@ namespace urban
         {
             return extremes.at(1);
         }
-        
         double & Bbox::ymin(void) noexcept
         {
             return extremes.at(2);
@@ -84,7 +83,6 @@ namespace urban
         {
             return extremes.at(1);
         }
-        
         double const& Bbox::ymin(void) const noexcept
         {
             return extremes.at(2);

@@ -97,7 +97,7 @@ namespace urban
 
         Bbox Point::bbox(void) const
         {
-            return Bbox(coordinates);
+            return Bbox(*this);
         }
 
         Point operator +(Point const& lhs, Vector const& rhs)
