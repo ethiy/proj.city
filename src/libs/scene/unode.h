@@ -18,12 +18,19 @@ namespace urban
             UNode(void);
             UNode(UNode const& other);
             UNode(UNode && other);
-            UNode(std::string const& building_id, io::FileHandler<Lib3dsFile> const& mesh_file);
+            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, io::FileHandler<Lib3dsFile> const& mesh_file);
             ~UNode(void);
 
             void swap(UNode & other);
             UNode & operator =(UNode const& other) noexcept;
             UNode & operator =(UNode && other) noexcept;
+
+            /** 
+             * Computes the Building bounding box.
+             * @return this bounding box
+             */
+            Bbox_3 bbox(void) const;
+
         private:
             /** Node name */
             std::string name;

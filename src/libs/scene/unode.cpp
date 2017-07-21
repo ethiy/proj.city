@@ -4,6 +4,8 @@
 #include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
 #include <CGAL/Polygon_mesh_processing/orientation.h>
 #include <CGAL/Polygon_mesh_processing/stitch_borders.h>
+#include <CGAL/Polygon_mesh_processing/bbox.h>
+
 
 namespace urban
 {
@@ -25,8 +27,8 @@ namespace urban
              surface(std::move(other.surface)),
              bounding_box(std::move(other.bounding_box))
         {}
-        UNode::UNode(std::string const& building_id, io::FileHandler<Lib3dsFile> const& mesh_file)
-            :name(building_id)
+        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, io::FileHandler<Lib3dsFile> const& mesh_file)
+            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<shadow::Mesh> meshes = mesh_file.read(building_id);
             std::size_t point_size = std::accumulate(
@@ -39,7 +41,8 @@ namespace urban
                 }
             );
 
-            std::vector<Point_3> points(point_size);
+            std::vector<Point_3> points;
+            points.reserve(point_size);
             std::vector<Point_3> point_buffer;
             for(auto const& mesh : meshes)
             {
@@ -56,7 +59,7 @@ namespace urban
                 points.insert(std::end(points), std::begin(point_buffer), std::end(point_buffer));
             }
 
-            std::vector< std::vector<std::size_t> > polygons(meshes.size());
+            std::vector< std::vector<std::size_t> > polygons;
             std::vector< std::vector<std::size_t> > face_buffer;
             std::vector<std::size_t> _face_buffer;
             for(auto const& mesh : meshes)
@@ -81,6 +84,7 @@ namespace urban
             if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
         UNode::~UNode(void)
         {}
