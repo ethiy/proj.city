@@ -36,11 +36,13 @@ set(Algorithms_SRC
 set(Scene_HEADERS
     "${proj.city_SOURCE_DIR}/src/libs/scene/brick/brick.h"
     "${proj.city_SOURCE_DIR}/src/libs/scene/building.h"
+    "${proj.city_SOURCE_DIR}/src/libs/scene/unode.h"
     "${proj.city_SOURCE_DIR}/src/libs/scene/scene.h"
 )
 set(Scene_SRC
     "${proj.city_SOURCE_DIR}/src/libs/scene/brick/brick.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/scene/building.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/scene/unode.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/scene/scene.cpp"
 )
 set(Line_HEADER

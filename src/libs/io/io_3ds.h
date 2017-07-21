@@ -23,8 +23,8 @@ namespace urban
             FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~FileHandler(void);
 
-            std::vector<shadow::Mesh> read(std::string node_name);
-            std::vector<shadow::Mesh> read(void);
+            std::vector<shadow::Mesh> read(std::string const& node_name) const;
+            std::vector<shadow::Mesh> read(void) const;
 
             void write(std::vector<shadow::Mesh> meshes);
         private:
