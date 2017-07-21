@@ -32,7 +32,7 @@ namespace urban
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
 
-            void node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes);
+            void node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const;
         };
     }
 }
