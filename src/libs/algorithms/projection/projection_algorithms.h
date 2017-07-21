@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
-#include "../../scene/building.h"
-#include "../../scene/brick/brick.h"
+#include "../../scene/unode.h"
+#include "../../scene/scene.h"
 #include "../../projection/projection.h"
 
 #include <vector>
@@ -11,18 +11,18 @@
 namespace urban
 {
     /** Projects on camera view*/
-    projection::BrickPrint project(const scene::Brick & brick, const projection::Camera & camera);
+    projection::BrickPrint project(const scene::UNode & unode, const projection::Camera & camera);
 
     /** Projects on xy axis*/
-    projection::BrickPrint project(const scene::Brick & brick);
+    projection::BrickPrint project(const scene::UNode & unode);
 
     /** Projects on xy axis*/
-    projection::BrickPrint project(const scene::Building & building);
+    projection::BrickPrint project(const scene::Scene & urban_scene);
 
-    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks);
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::UNode> const& unodes);
 
     /** Project Faces to XY*/
-    std::vector<projection::FacePrint> project_xy(const scene::Brick & brick);
+    std::vector<projection::FacePrint> project_xy(const scene::UNode & unode);
 
     /** Computes FacePrint occlusions and gets rid of all perpendicular facets*/
     std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhs);
