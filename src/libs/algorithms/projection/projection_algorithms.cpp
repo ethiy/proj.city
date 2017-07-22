@@ -10,10 +10,10 @@
 
 namespace urban
 {
-    projection::BrickPrint project(scene::Brick const& brick)
+    projection::BrickPrint project(scene::UNode const& unode)
     {
-        projection::BrickPrint projection(brick.get_name(), brick.bbox(), brick.get_reference_point(), brick.get_epsg());
-        std::vector<projection::FacePrint> projected_facets = project_xy(brick); /** Don't keep perpendicular faces*/
+        projection::BrickPrint projection(unode.get_name(), unode.bbox(), unode.get_reference_point(), unode.get_epsg());
+        std::vector<projection::FacePrint> projected_facets = project_xy(unode); /** Don't keep perpendicular faces*/
         std::for_each(
             std::begin(projected_facets),
             std::end(projected_facets),
@@ -25,24 +25,24 @@ namespace urban
         return projection;
     }
 
-    projection::BrickPrint project(scene::Building const& building)
+    projection::BrickPrint project(scene::Scene const& scene)
     {
-        projection::BrickPrint projection(building.get_name(), building.bbox(), building.pivot(), building.get_epsg());
-        projection = building.project_roofs(projection);
-        return projection;
+        // projection::BrickPrint projection(scene.get_name(), scene.bbox(), scene.pivot(), scene.get_epsg());
+        // projection = scene.project_roofs(projection);
+        return projection::BrickPrint();
     }
 
 
-    std::vector<projection::FacePrint> project_xy(scene::Brick const& brick)
+    std::vector<projection::FacePrint> project_xy(scene::UNode const& unode)
     {
-        std::vector<projection::FacePrint> facets(brick.facets_size());
+        std::vector<projection::FacePrint> facets(unode.facets_size());
 
         std::vector<Point_2> facet_points;
         std::transform(
-            brick.facets_cbegin(),
-            brick.facets_cend(),
+            unode.facets_cbegin(),
+            unode.facets_cend(),
             std::begin(facets),
-            [&facet_points](scene::Brick::Facet const& facet)
+            [&facet_points](scene::UNode::Facet const& facet)
             {
                 projection::FacePrint projected_facet;
                 /**
@@ -113,15 +113,15 @@ namespace urban
         return facets;
     }
 
-    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::Brick> const& bricks)
+    projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::UNode> const& unodes)
     {
         projection = std::accumulate(
-            std::begin(bricks),
-            std::end(bricks),
+            std::begin(unodes),
+            std::end(unodes),
             projection,
-            [](projection::BrickPrint & sum, scene::Brick const& brick)
+            [](projection::BrickPrint & sum, scene::UNode const& unode)
             {
-                return sum + project(brick);
+                return sum + project(unode);
             }
         );
         return projection;

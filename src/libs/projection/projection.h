@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Face/face_projection.h"
-#include "Raster/raster_projection.h"
-#include "Brick/brick_projection.h"
-#include "Camera/camera.h"
+#include "face/face_projection.h"
+#include "raster/raster_projection.h"
+#include "scene/brick_projection.h"
+#include "camera/camera.h"

@@ -1,4 +1,4 @@
-#include "../libs/scene/brick/brick.h"
+#include "../libs/scene/unode.h"
 #include "../libs/io/io_off.h"
 
 #include <boost/filesystem.hpp>

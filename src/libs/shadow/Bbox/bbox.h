@@ -10,6 +10,8 @@ namespace urban
 {
     namespace shadow
     {
+        class Point;
+
         /** 
          * @ingroup shadow_group
          * @brief Bbox class representing a 3D Bounding box.
@@ -48,6 +50,15 @@ namespace urban
              * @see ~Bbox(void)
              */
             Bbox(std::valarray<double> const& coordinates);
+            /**
+             * Bbox constructor from Point.
+             * @see Bbox(void);
+             * @see Bbox(Bbox const& other);
+             * @see Bbox(Bbox && other);
+             * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
+             * @see ~Bbox(void)
+             */
+            Bbox(Point const& point);
             /**
              * Bbox copy constructor.
              * @see Bbox(void);
@@ -234,8 +245,7 @@ namespace urban
             CGAL::Bbox_3 to_cgal(void) const noexcept;
 
         private:
-            std::valarray<double> mins;
-            std::valarray<double> maxes;
+            std::array<double, 6> extremes;
             /**
             * Outstreaming Bbox
             * @param os the output stream

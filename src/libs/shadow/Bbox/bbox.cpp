@@ -1,5 +1,7 @@
 #include "bbox.h"
 
+#include "../Point/point.h"
+
 #include <algorithm>
 
 #include <limits>
@@ -11,135 +13,136 @@ namespace urban
     namespace shadow
     {
         Bbox::Bbox(void)
-            : mins{{
-                    std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity()
-              }},
-              maxes{{
-                    - std::numeric_limits<double>::infinity(),
-                    - std::numeric_limits<double>::infinity(),
-                    - std::numeric_limits<double>::infinity()
-              }}
+            : extremes{{
+                std::numeric_limits<double>::infinity(),
+                - std::numeric_limits<double>::infinity(),
+                std::numeric_limits<double>::infinity(),
+                - std::numeric_limits<double>::infinity(),
+                std::numeric_limits<double>::infinity(),
+                - std::numeric_limits<double>::infinity()
+            }}
         {}
         Bbox::Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
-            : mins{{
-                    xmin,
-                    ymin,
-                    zmin
-              }},
-              maxes{{
-                    xmax,
-                    ymax,
-                    zmax
-              }}
+            : extremes{{
+                xmin,
+                xmax,
+                ymin,
+                ymax,
+                zmin,
+                zmax
+            }}
         {}
         Bbox::Bbox(std::valarray<double> const& coordinates)
-            : mins(coordinates), maxes(coordinates)
+            : extremes{{
+                coordinates[0],
+                coordinates[0],
+                coordinates[1],
+                coordinates[1],
+                coordinates[2],
+                coordinates[2],
+            }}
         {}
-        Bbox::Bbox(Bbox const& other)
-            : mins(other.mins), maxes(other.maxes)
+        Bbox::Bbox(Point const& point)
+            : Bbox::Bbox(point.data())
         {}
+        Bbox::Bbox(const Bbox & other)
+            : extremes(other.extremes) {}
         Bbox::Bbox(Bbox && other)
-            : mins(std::move(other.mins)), maxes(std::move(other.maxes))
-        {}
-        Bbox::~Bbox(void)
-        {}
-
-        double const& Bbox::xmin(void) const noexcept
-        {
-            return mins[0];
-        }
-        double const& Bbox::ymin(void) const noexcept
-        {
-            return mins[1];
-        }
-        double const& Bbox::zmin(void) const noexcept
-        {
-            return mins[2];
-        }
-        double const& Bbox::xmax(void) const noexcept
-        {
-            return maxes[0];
-        }
-        double const& Bbox::ymax(void) const noexcept
-        {
-            return maxes[1];
-        }
-        double const& Bbox::zmax(void) const noexcept
-        {
-            return maxes[2];
-        }
+            : extremes(std::move(other.extremes)) {}
+        Bbox::~Bbox(void) {}
 
         double & Bbox::xmin(void) noexcept
         {
-            return mins[0];
-        }
-        double & Bbox::ymin(void) noexcept
-        {
-            return mins[1];
-        }
-        double & Bbox::zmin(void) noexcept
-        {
-            return mins[2];
+            return extremes.at(0);
         }
         double & Bbox::xmax(void) noexcept
         {
-            return maxes[0];
+            return extremes.at(1);
+        }
+        double & Bbox::ymin(void) noexcept
+        {
+            return extremes.at(2);
         }
         double & Bbox::ymax(void) noexcept
         {
-            return maxes[1];
+            return extremes.at(3);
+        }
+        double & Bbox::zmin(void) noexcept
+        {
+            return extremes.at(4);
         }
         double & Bbox::zmax(void) noexcept
         {
-            return maxes[2];
+            return extremes.at(5);
+        }
+        double const& Bbox::xmin(void) const noexcept
+        {
+            return extremes.at(0);
+        }
+        double const& Bbox::xmax(void) const noexcept
+        {
+            return extremes.at(1);
+        }
+        double const& Bbox::ymin(void) const noexcept
+        {
+            return extremes.at(2);
+        }
+        double const& Bbox::ymax(void) const noexcept
+        {
+            return extremes.at(3);
+        }
+        double const& Bbox::zmin(void) const noexcept
+        {
+            return extremes.at(4);
+        }
+        double const& Bbox::zmax(void) const noexcept
+        {
+            return extremes.at(5);
         }
 
         void Bbox::swap(Bbox & other)
         {
             using std::swap;
-            swap(mins, other.mins);
-            swap(maxes, other.maxes);
+            swap(extremes, other.extremes);
         }
-
-        Bbox & Bbox::operator =(Bbox const& other) noexcept
+        Bbox & Bbox::operator =(const Bbox & other) noexcept
         {
-            mins = other.mins;
-            maxes = other.maxes;
+            extremes = other.extremes;
             return *this;
         }
-
         Bbox & Bbox::operator =(Bbox && other) noexcept
         {
-            mins = std::move(other.mins);
-            maxes = std::move(other.maxes);
+            extremes = std::move(other.extremes);
             return *this;
         }
 
-        Bbox & Bbox::operator +=(Bbox const& other)
+        Bbox & Bbox::operator +=(const Bbox & other)
         {
-            mins[mins < other.mins] = other.mins[mins < other.mins];
-            maxes[maxes > other.maxes] = other.maxes[maxes > other.maxes];
+            extremes.at(0) = std::min<double>(extremes.at(0), other.extremes.at(0));
+            extremes.at(1) = std::max<double>(extremes.at(1), other.extremes.at(1));
+            extremes.at(2) = std::min<double>(extremes.at(2), other.extremes.at(2));
+            extremes.at(3) = std::max<double>(extremes.at(3), other.extremes.at(3));
+            extremes.at(4) = std::min<double>(extremes.at(4), other.extremes.at(4));
+            extremes.at(5) = std::max<double>(extremes.at(5), other.extremes.at(5));
             return *this;
-        }
-
-        Bbox operator +(Bbox const& lhs, Bbox const& rhs)
-        {
-            Bbox result(lhs);
-            result += rhs;
-            return result;
         }
 
         CGAL::Bbox_3 Bbox::to_cgal(void) const noexcept
         {
-            return CGAL::Bbox_3(mins[0], mins[1], mins[2], maxes[0], maxes[1], maxes[2]);
+            return CGAL::Bbox_3(extremes.at(0), extremes.at(2), extremes.at(4), extremes.at(1), extremes.at(3), extremes.at(5));
         }
 
-        std::ostream & operator <<(std::ostream & os, Bbox const& bbox)
+        std::ostream & operator <<(std::ostream & os, const Bbox & bbox)
         {
-            os << bbox.maxes[0] << " " << bbox.mins[0] << " " << bbox.maxes[1] << " " << bbox.mins[1] << " " << bbox.maxes[2] << " " << bbox.mins[2];
+            os << bbox.extremes.at(0) << " " << bbox.extremes.at(1) << " " << bbox.extremes.at(2) << " " << bbox.extremes.at(3) << " " << bbox.extremes.at(4) << " " << bbox.extremes.at(5);
             return os;
+        }
+
+        Bbox operator +(const Bbox & lhs, const Bbox & rhs)
+        {
+            Bbox copy(lhs);
+            copy += rhs;
+            return copy;
         }
 
         void swap(Bbox & lhs, Bbox & rhs)

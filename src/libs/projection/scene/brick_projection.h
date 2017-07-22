@@ -2,7 +2,7 @@
 
 #include "../../geometry_definitions.h"
 #include "../../shadow/Point/point.h"
-#include "../Face/face_projection.h"
+#include "../face/face_projection.h"
 
 #include <ogrsf_frmts.h>
 

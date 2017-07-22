@@ -89,7 +89,7 @@ namespace urban
              */
             Face(std::vector<std::size_t> const& indices);
             /**
-             * Triagular face constructor. 
+             * Triangular face constructor. 
              * @param first point index
              * @param second point index
              * @param third point index

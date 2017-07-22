@@ -1,4 +1,4 @@
-#include "../libs/projection/Brick/brick_projection.h"
+#include "../libs/projection/scene/brick_projection.h"
 
 #include <catch.hpp>
 
@@ -12,9 +12,9 @@ SCENARIO("Brick projection manipulation")
     GIVEN("A Face projection")
     {
         urban::InexactToExact to_exact;
-        urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.))),
-                    B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
-                    C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
+        urban::Point_3  A(to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.))),
+                        B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
+                        C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
         std::vector<urban::Point_2> vertices{{
             urban::Point_2(A.x(), A.y()),
             urban::Point_2(B.x(), B.y()),

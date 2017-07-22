@@ -16,17 +16,16 @@ set(Projection_HEADER
     "${proj.city_SOURCE_DIR}/src/libs/projection/projection.h"
 )
 set(Projection_SRC
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Brick/brick_projection.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Camera/camera.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Face/face_projection.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/projection/Raster/raster_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/scene/brick_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/camera/camera.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/face/face_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/raster/raster_projection.cpp"
 )
 set(Algorithms_HEADER
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/algorithms.h"
 )
 set(Algorithms_SRC
-    "${proj.city_SOURCE_DIR}/src/libs/algorithms/brick/brick_algorithms.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/algorithms/building/building_algorithms.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/algorithms/scene/unode_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/ogr/ogr_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/raster/raster_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/projection/projection_algorithms.cpp"
@@ -34,13 +33,11 @@ set(Algorithms_SRC
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/utils/util_algorithms.cpp"
 )
 set(Scene_HEADERS
-    "${proj.city_SOURCE_DIR}/src/libs/scene/brick/brick.h"
-    "${proj.city_SOURCE_DIR}/src/libs/scene/building.h"
+    "${proj.city_SOURCE_DIR}/src/libs/scene/unode.h"
     "${proj.city_SOURCE_DIR}/src/libs/scene/scene.h"
 )
 set(Scene_SRC
-    "${proj.city_SOURCE_DIR}/src/libs/scene/brick/brick.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/scene/building.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/scene/unode.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/scene/scene.cpp"
 )
 set(Line_HEADER

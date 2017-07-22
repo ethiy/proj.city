@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../projection/Raster/raster_projection.h"
-#include "../../projection/Brick/brick_projection.h"
+#include "../../projection/raster/raster_projection.h"
+#include "../../projection/scene/brick_projection.h"
 #include "../../shadow/Point/point.h"
 
 #include <vector>

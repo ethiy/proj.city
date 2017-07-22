@@ -78,7 +78,7 @@ namespace urban
              */
             Mesh(Mesh && other);
             /**
-             * Constructor cconverting from Lib3dsMesh.
+             * Constructor converting from Lib3dsMesh.
              * @param lib3ds_mesh lib3ds mesh structure
              * @see Mesh(void);
              * @see Mesh(Mesh && other);

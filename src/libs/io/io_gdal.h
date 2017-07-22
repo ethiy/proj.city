@@ -1,8 +1,8 @@
 #pragma once
 
 #include "io.h"
-#include "../projection/Brick/brick_projection.h"
-#include "../projection/Raster/raster_projection.h"
+#include "../projection/scene/brick_projection.h"
+#include "../projection/raster/raster_projection.h"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>

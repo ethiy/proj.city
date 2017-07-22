@@ -1,6 +1,10 @@
-#include "brick.h"
-#include "surface_builder.h"
+#include "unode.h"
 
+#include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
+#include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
+#include <CGAL/Polygon_mesh_processing/orientation.h>
+#include <CGAL/Polygon_mesh_processing/stitch_borders.h>
+#include <CGAL/Polygon_mesh_processing/bbox.h>
 #include <CGAL/IO/Polyhedron_iostream.h>
 
 #ifdef CGAL_USE_GEOMVIEW
@@ -9,184 +13,253 @@
 
 #include <vector>
 
+
 namespace urban
 {
     namespace scene
     {
-        Brick::Brick(void): name("no name"){}
-        Brick::Brick(Brick const& other)
-            :name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), surface(other.surface), bounding_box(other.bounding_box){}
-        Brick::Brick(Brick && other)
-            : name(std::move(other.name)), reference_point(std::move(other.reference_point)), epsg_index(std::move(other.epsg_index)), surface(std::move(other.surface)), bounding_box(std::move(other.bounding_box)){}
-        Brick::Brick(shadow::Mesh const& mesh, shadow::Point const& _reference_point, unsigned short _epsg_index, bool centered)
-            : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index), bounding_box(mesh.bbox().to_cgal())
+        UNode::UNode(void) 
+        {}
+        UNode::UNode(UNode const& other)
+            :name(std::move(other.name)),
+             reference_point(other.reference_point),
+             epsg_index(other.epsg_index),
+             surface(other.surface),
+             bounding_box(other.bounding_box)
+        {}
+        UNode::UNode(UNode && other)
+            :name(std::move(other.name)),
+             reference_point(std::move(other.reference_point)),
+             epsg_index(std::move(other.epsg_index)),
+             surface(std::move(other.surface)),
+             bounding_box(std::move(other.bounding_box))
+        {}
+        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, io::FileHandler<Lib3dsFile> const& mesh_file)
+            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
-            SurfaceBuilder<Polyhedron::HalfedgeDS> builder(mesh, centered, reference_point);
-            surface.delegate(builder);
-        }
-        Brick::~Brick(void){}
+            std::vector<shadow::Mesh> meshes = mesh_file.read(building_id);
+            std::size_t point_size = std::accumulate(
+                std::begin(meshes),
+                std::end(meshes),
+                0,
+                [](std::size_t _size, shadow::Mesh const& mesh)
+                {
+                    return _size + mesh.points_size();
+                }
+            );
 
-        void Brick::swap(Brick & other)
+            std::vector<Point_3> points;
+            points.reserve(point_size);
+            std::vector<Point_3> point_buffer;
+            for(auto const& mesh : meshes)
+            {
+                point_buffer = std::vector<Point_3>(mesh.points_size());
+                std::transform(
+                    mesh.points_cbegin(),
+                    mesh.points_cend(),
+                    std::begin(point_buffer),
+                    [](std::pair<std::size_t, shadow::Point> const& point_p)
+                    {
+                        return Point_3(point_p.second.x(), point_p.second.y(), point_p.second.z());
+                    }
+                );
+                points.insert(std::end(points), std::begin(point_buffer), std::end(point_buffer));
+            }
+
+            std::vector< std::vector<std::size_t> > polygons;
+            std::vector< std::vector<std::size_t> > face_buffer;
+            std::vector<std::size_t> _face_buffer;
+            for(auto const& mesh : meshes)
+            {
+                face_buffer = std::vector< std::vector<std::size_t> >(mesh.faces_size());
+                std::transform(
+                    mesh.faces_cbegin(),
+                    mesh.faces_cend(),
+                    std::begin(face_buffer),
+                    [&_face_buffer](std::pair<std::size_t, shadow::Face> const& face_p)
+                    {
+                        _face_buffer = std::vector<std::size_t>(face_p.second.get_degree());
+                        std::copy(std::begin(face_p.second), std::end(face_p.second), std::begin(_face_buffer));
+                        return _face_buffer;
+                    }
+                );
+                polygons.insert(std::end(polygons), std::begin(face_buffer), std::end(face_buffer));
+            }
+
+            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+            if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
+                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+        }
+        UNode::~UNode(void)
+        {}
+        
+        void UNode::swap(UNode & other)
         {
             using std::swap;
+
             swap(name, other.name);
+            swap(reference_point, other.reference_point);
+            swap(epsg_index, other.epsg_index);
             swap(surface, other.surface);
             swap(bounding_box, other.bounding_box);
         }
-
-        Brick & Brick::operator=(Brick const& other) noexcept
+        UNode & UNode::operator =(UNode const& other) noexcept
         {
             name = other.name;
             reference_point = other.reference_point;
             epsg_index = other.epsg_index;
             surface = other.surface;
             bounding_box = other.bounding_box;
+
             return *this;
         }
-
-        Brick & Brick::operator=(Brick && other) noexcept
+        UNode & UNode::operator =(UNode && other) noexcept
         {
             name = std::move(other.name);
             reference_point = std::move(other.reference_point);
             epsg_index = std::move(other.epsg_index);
             surface = std::move(other.surface);
             bounding_box = std::move(other.bounding_box);
+
             return *this;
         }
 
-        std::string Brick::get_name(void) const noexcept
-        {
-            return name;
-        }
-
-        Bbox_3 Brick::bbox(void) const noexcept
+        Bbox_3 UNode::bbox(void) const
         {
             return bounding_box;
         }
 
-        unsigned short Brick::get_epsg(void) const noexcept
+        std::string UNode::get_name(void) const
+        {
+            return name;
+        }
+
+        unsigned short UNode::get_epsg(void) const noexcept
         {
             return epsg_index;
         }
 
-        shadow::Point Brick::get_reference_point(void) const noexcept
+        shadow::Point UNode::get_reference_point(void) const noexcept
         {
             return reference_point;
         }
 
-        std::size_t Brick::vertices_size(void) const
+        std::size_t UNode::vertices_size(void) const
         {
             return surface.size_of_vertices();
         }
 
-        std::size_t Brick::facets_size(void) const
+        std::size_t UNode::facets_size(void) const
         {
             return surface.size_of_facets();
         }
 
-        Brick::Facet_iterator Brick::facets_begin(void) noexcept
+        UNode::Facet_iterator UNode::facets_begin(void) noexcept
         {
             return surface.facets_begin();
         }
-        Brick::Facet_iterator Brick::facets_end(void) noexcept
+        UNode::Facet_iterator UNode::facets_end(void) noexcept
         {
             return surface.facets_end();
         }
-        Brick::Facet_const_iterator Brick::facets_cbegin(void) const noexcept
+        UNode::Facet_const_iterator UNode::facets_cbegin(void) const noexcept
         {
             return surface.facets_begin();
         }
-        Brick::Facet_const_iterator Brick::facets_cend(void) const noexcept
+        UNode::Facet_const_iterator UNode::facets_cend(void) const noexcept
         {
             return surface.facets_end();
         }
 
-        Brick::Halfedge_iterator Brick::halfedges_begin(void) noexcept
+        UNode::Halfedge_iterator UNode::halfedges_begin(void) noexcept
         {
             return surface.halfedges_begin();
         }
-        Brick::Halfedge_iterator Brick::halfedges_end(void) noexcept
+        UNode::Halfedge_iterator UNode::halfedges_end(void) noexcept
         {
             return surface.halfedges_end();
         }
-        Brick::Halfedge_const_iterator Brick::halfedges_cbegin(void) const noexcept
+        UNode::Halfedge_const_iterator UNode::halfedges_cbegin(void) const noexcept
         {
             return surface.halfedges_begin();
         }
-        Brick::Halfedge_const_iterator Brick::halfedges_cend(void) const noexcept
+        UNode::Halfedge_const_iterator UNode::halfedges_cend(void) const noexcept
         {
             return surface.halfedges_end();
         }
 
-        Brick::Halfedge_iterator Brick::border_halfedges_begin(void) noexcept
+        UNode::Halfedge_iterator UNode::border_halfedges_begin(void) noexcept
         {
             return surface.border_halfedges_begin();
         }
 
-        Brick::Halfedge_const_iterator Brick::border_halfedges_begin(void) const noexcept
+        UNode::Halfedge_const_iterator UNode::border_halfedges_begin(void) const noexcept
         {
             return surface.border_halfedges_begin();
         }
 
 
-        Brick::Point_iterator Brick::points_begin(void) noexcept
+        UNode::Point_iterator UNode::points_begin(void) noexcept
         {
             return surface.points_begin();
         }
-        Brick::Point_iterator Brick::points_end(void) noexcept
+        UNode::Point_iterator UNode::points_end(void) noexcept
         {
             return surface.points_end();
         }
-        Brick::Point_const_iterator Brick::points_cbegin(void) const noexcept
+        UNode::Point_const_iterator UNode::points_cbegin(void) const noexcept
         {
             return surface.points_begin();
         }
-        Brick::Point_const_iterator Brick::points_cend(void) const noexcept
+        UNode::Point_const_iterator UNode::points_cend(void) const noexcept
         {
             return surface.points_end();
         }
 
-        Brick::Plane_iterator Brick::planes_begin(void) noexcept
+        UNode::Plane_iterator UNode::planes_begin(void) noexcept
         {
             return surface.planes_begin();
         }
-        Brick::Plane_iterator Brick::planes_end(void) noexcept
+        UNode::Plane_iterator UNode::planes_end(void) noexcept
         {
             return surface.planes_end();
         }
-        Brick::Plane_const_iterator Brick::planes_cbegin(void) const noexcept
+        UNode::Plane_const_iterator UNode::planes_cbegin(void) const noexcept
         {
             return surface.planes_begin();
         }
-        Brick::Plane_const_iterator Brick::planes_cend(void) const noexcept
+        UNode::Plane_const_iterator UNode::planes_cend(void) const noexcept
         {
             return surface.planes_end();
         }
 
-        Brick::Halfedge_iterator Brick::prunable(void)
+        UNode::Halfedge_iterator UNode::prunable(void)
         {
             return std::find_if(
                 halfedges_begin(),
                 halfedges_end(),
                 [](Polyhedron::Halfedge const& halfedge)
                 {
-                    bool joignable = !halfedge.is_border_edge();
-                    if(joignable)
+                    bool joinable = !halfedge.is_border_edge();
+                    if(joinable)
                     {
                         Point_3 A(halfedge.vertex()->point()),
                                 B(halfedge.next()->vertex()->point()),
                                 C(halfedge.next()->next()->vertex()->point()),
                                 D(halfedge.opposite()->next()->vertex()->point());
-                        joignable = (std::abs(to_double(CGAL::determinant(B - A, C - A, D - A))) < std::numeric_limits<double>::epsilon());
+                        joinable = (std::abs(to_double(CGAL::determinant(B - A, C - A, D - A))) < std::numeric_limits<double>::epsilon());
                     }
-                    return  joignable;
+                    return  joinable;
                 }
             );
         }
 
-        std::vector<Brick::Halfedge_handle> Brick::combinable(Facet & facet) const
+        std::vector<UNode::Halfedge_handle> UNode::combinable(Facet & facet) const
         {
-            std::vector<Brick::Halfedge_handle> combining_edges;
+            std::vector<UNode::Halfedge_handle> combining_edges;
             combining_edges.reserve(facet.facet_degree());
 
             Polyhedron::Halfedge_around_facet_circulator facet_circulator = facet.facet_begin();
@@ -206,10 +279,10 @@ namespace urban
             return combining_edges;
         }
 
-        std::vector<Brick::Halfedge_handle> Brick::pruning_halfedges(void)
+        std::vector<UNode::Halfedge_handle> UNode::pruning_halfedges(void)
         {
-            std::vector<Brick::Halfedge_handle> combining_edges;
-            std::vector<Brick::Halfedge_handle> buffer;
+            std::vector<UNode::Halfedge_handle> combining_edges;
+            std::vector<UNode::Halfedge_handle> buffer;
 
             std::for_each(
                 facets_begin(),
@@ -221,12 +294,12 @@ namespace urban
                         std::begin(buffer),
                         std::end(buffer),
                         std::back_inserter(combining_edges),
-                        [&combining_edges](Brick::Halfedge_handle const& h)
+                        [&combining_edges](UNode::Halfedge_handle const& h)
                         {
                             return std::none_of(
                                 std::begin(combining_edges),
                                 std::end(combining_edges),
-                                [&h](Brick::Halfedge_handle const& present)
+                                [&h](UNode::Halfedge_handle const& present)
                                 {
                                     return  (present->vertex()->point() == h->vertex()->point() && present->opposite()->vertex()->point() == h->opposite()->vertex()->point())
                                             ||
@@ -241,13 +314,13 @@ namespace urban
             return combining_edges;
         }
 
-        Brick & Brick::join_facet(Brick::Halfedge_handle & h)
+        UNode & UNode::join_facet(UNode::Halfedge_handle & h)
         {
             surface.join_facet(h);
             return *this;
         }
 
-        Point_3 Brick::centroid(Brick::Facet const& facet) const
+        Point_3 UNode::centroid(UNode::Facet const& facet) const
         {
             Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
             Vector_3 n = normal(facet);
@@ -267,13 +340,13 @@ namespace urban
             return CGAL::ORIGIN + centroid / area(facet);
         }
 
-        Vector_3 Brick::normal(Brick::Facet const& facet) const
+        Vector_3 UNode::normal(UNode::Facet const& facet) const
         {
             Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
             return CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
         }
 
-        double Brick::area(Brick::Facet const& facet) const
+        double UNode::area(UNode::Facet const& facet) const
         {
             Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
             Vector_3 n = normal(facet);
@@ -287,9 +360,9 @@ namespace urban
             return area;
         }
         
-        std::vector<Brick::Facet_const_handle> Brick::facet_adjacents(Brick::Facet const& facet) const
+        std::vector<UNode::Facet_const_handle> UNode::facet_adjacents(UNode::Facet const& facet) const
         {
-            std::vector<Brick::Facet_const_handle> adjacents;
+            std::vector<UNode::Facet_const_handle> adjacents;
             adjacents.reserve(facet.facet_degree());
 
             auto circulator = facet.facet_begin();
@@ -302,13 +375,13 @@ namespace urban
             return adjacents;
         }
 
-        std::vector<bool> Brick::facet_adjacency_matrix(void) const
+        std::vector<bool> UNode::facet_adjacency_matrix(void) const
         {
             std::vector<bool> adjacency(facets_size() * facets_size(), false);
             return facet_adjacency_matrix(adjacency, 0);
         }
 
-        std::vector<bool> & Brick::facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const
+        std::vector<bool> & UNode::facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const
         {
             std::size_t n = static_cast<std::size_t>(std::floor(std::sqrt(matrix.size())));
             std::size_t size = facets_size();
@@ -318,12 +391,12 @@ namespace urban
             if(n < offset + facets_size())
                 throw std::underflow_error("The matrix cannot hold the whole brick!");
 
-            std::vector<Brick::Facet_const_handle> facets(size);
+            std::vector<UNode::Facet_const_handle> facets(size);
             std::transform(
                 facets_cbegin(),
                 facets_cend(),
                 std::begin(facets),
-                [](Brick::Facet const& facet)
+                [](UNode::Facet const& facet)
                 {
                     return &facet;
                 }
@@ -332,7 +405,7 @@ namespace urban
             for(std::size_t diag(offset); diag != size + offset; ++diag)
                 matrix.at(diag * size + diag) = true;
 
-            std::vector<Brick::Facet_const_handle> line_adjacents;
+            std::vector<UNode::Facet_const_handle> line_adjacents;
             for(std::size_t line(0); line != size; ++line)
             {
                 line_adjacents = facet_adjacents(*facets.at(line));
@@ -352,25 +425,25 @@ namespace urban
             return matrix;
         }
 
-        std::ostream & operator<<(std::ostream &os, Brick const& brick)
+        std::ostream & operator<<(std::ostream &os, UNode const& unode)
         {
-            os  << "# Name: " << brick.name << std::endl
-                << brick.surface;
+            os  << "# Name: " << unode.name << std::endl
+                << unode.surface;
             return os;
         }
 
-        io::Adjacency_stream & operator<<(io::Adjacency_stream & as, Brick const& brick)
+        io::Adjacency_stream & operator<<(io::Adjacency_stream & as, UNode const& unode)
         {
             std::for_each(
-                brick.facets_cbegin(),
-                brick.facets_cend(),
-                [&as, &brick](Brick::Facet const& facet)
+                unode.facets_cbegin(),
+                unode.facets_cend(),
+                [&as, &unode](UNode::Facet const& facet)
                 {
-                    as << facet.facet_degree() << " " << brick.area(facet) << " " << brick.centroid(facet) << brick.normal(facet) << std::endl;
+                    as << facet.facet_degree() << " " << unode.area(facet) << " " << unode.centroid(facet) << unode.normal(facet) << std::endl;
                 }
             );
 
-            std::vector<bool> matrix = brick.facet_adjacency_matrix();
+            std::vector<bool> matrix = unode.facet_adjacency_matrix();
 
             as << matrix << std::endl;
 
@@ -378,14 +451,14 @@ namespace urban
         }
 
         #ifdef CGAL_USE_GEOMVIEW
-        CGAL::Geomview_stream & operator<<(CGAL::Geomview_stream &gs, Brick const& brick)
+        CGAL::Geomview_stream & operator<<(CGAL::Geomview_stream &gs, UNode const& unode)
         {
-            gs << brick.surface;
+            gs << unode.surface;
             return gs;
         }
         #endif // CGAL_USE_GEOMVIEW
 
-        void swap(Brick & lhs, Brick &rhs)
+        void swap(UNode & lhs, UNode & rhs)
         {
             lhs.swap(rhs);
         }
