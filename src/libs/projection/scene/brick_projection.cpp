@@ -3,6 +3,8 @@
 #include "../../algorithms/projection/projection_algorithms.h"
 #include "../../algorithms/ogr/ogr_algorithms.h"
 
+#include "utils.h"
+
 #include <CGAL/Boolean_set_operations_2.h>
 
 #include <list>
@@ -16,70 +18,37 @@ namespace urban
     namespace projection
     {
         BrickPrint::BrickPrint(void)
-            : name("no_name") {}
-        BrickPrint::BrickPrint(shadow::Point const& _reference_point)
-            : reference_point(_reference_point) {}
-        BrickPrint::BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short _epsg_index)
-            : name(_name + "_xy"),
-              bounding_box(Bbox_2(_bounding_box.xmin(), _bounding_box.ymin(), _bounding_box.xmax(), _bounding_box.ymax())),
-              reference_point(_reference_point),
-              epsg_index(_epsg_index)
-              {}
+        {}
         BrickPrint::BrickPrint(FacePrint const& face_projection)
-            : name("contains_only_one_facet"),
-              bounding_box(face_projection.bbox()),
+            : bounding_box(face_projection.bbox()),
               projected_facets(std::vector<FacePrint>{{face_projection}}),
               projected_surface(Polygon_set(face_projection.get_polygon()))
-              {}
-        BrickPrint::BrickPrint(std::string const& _name, OGRLayer* projection_layer): name(_name)
-        {
-            projection_layer->ResetReading();
-
-            OGRFeature* ogr_facet;
-            while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
-            {
-                FacePrint facet(ogr_facet, projection_layer->GetLayerDefn());
-                projected_facets.push_back(facet);
-                OGRFeature::DestroyFeature(ogr_facet);
-                projected_surface.join(facet.get_polygon());
-                bounding_box += facet.bbox();
-            }
-        }
+        {}
         BrickPrint::BrickPrint(BrickPrint const& other)
-            : name(other.name),
-              bounding_box(other.bounding_box),
-              reference_point(other.reference_point),
-              epsg_index(other.epsg_index),
+            : bounding_box(other.bounding_box),
               projected_facets(other.projected_facets),
               projected_surface(other.projected_surface)
-              {}
+        {}
         BrickPrint::BrickPrint(BrickPrint && other)
-            : name(std::move(other.name)),
-              bounding_box(std::move(other.bounding_box)),
-              reference_point(std::move(other.reference_point)),
-              epsg_index(std::move(other.epsg_index)),
+            : bounding_box(std::move(other.bounding_box)),
               projected_facets(std::move(other.projected_facets)),
               projected_surface(std::move(other.projected_surface))
-              {}
-        BrickPrint::~BrickPrint(void){}
+        {}
+        BrickPrint::~BrickPrint(void)
+        {}
 
         void BrickPrint::swap(BrickPrint & other)
         {
             using std::swap;
-            swap(name, other.name);
+
             swap(bounding_box, other.bounding_box);
-            swap(reference_point, other.reference_point);
-            swap(epsg_index, other.epsg_index);
             swap(projected_facets, other.projected_facets);
             swap(projected_surface, other.projected_surface);
         }
             
         BrickPrint & BrickPrint::operator =(BrickPrint const& other)
         {
-            name = other.name;
             bounding_box = other.bounding_box;
-            reference_point = other.reference_point;
-            epsg_index = other.epsg_index;
             projected_facets = other.projected_facets;
             projected_surface = other.projected_surface;
             return *this;
@@ -87,38 +56,10 @@ namespace urban
 
         BrickPrint & BrickPrint::operator =(BrickPrint && other)
         {
-            name = std::move(other.name);
             bounding_box = std::move(other.bounding_box);
-            reference_point = std::move(other.reference_point);
-            epsg_index = std::move(other.epsg_index);
             projected_facets = std::move(other.projected_facets);
             projected_surface = std::move(other.projected_surface);
             return *this;
-        }
-
-        BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
-        {
-            if(epsg_index != other.epsg_index || reference_point != other.reference_point)
-                throw std::logic_error("Cannot sum two brick projections with a different projection system nor a different reference point");
-            name += "_" + other.name;
-            if(projected_surface.do_intersect(other.projected_surface))
-            {
-                for(auto const facet : other.projected_facets)
-                {
-                    insert(facet);
-                }
-            }
-            else
-                projected_facets.insert(std::end(projected_facets), std::begin(other.projected_facets), std::end(other.projected_facets));
-            projected_surface.join(other.projected_surface);
-            bounding_box += other.bounding_box;
-            return *this;
-        }
-
-        
-        std::string BrickPrint::get_name(void) const noexcept
-        {
-            return name;
         }
 
         Bbox_2 BrickPrint::bbox(void) const noexcept
@@ -162,7 +103,6 @@ namespace urban
         {
             return projected_surface.oriented_side(point) != CGAL::ON_NEGATIVE_SIDE;
         }
-
         bool BrickPrint::contains(InexactPoint_2 const& inexact_point) const
         {
             InexactToExact to_exact;
@@ -180,7 +120,7 @@ namespace urban
             shallow_copy.intersection(facet.get_polygon());
             std::vector<Polygon_with_holes> _inter;
             shallow_copy.polygons_with_holes(std::back_inserter(_inter));
-            return _inter.size() == 1 && _inter.front() == facet.get_polygon();
+            return _inter.size() == 1 && _inter.at(0) == facet.get_polygon();
         }
 
         bool BrickPrint::overlaps(Polygon const& polygon) const
@@ -252,40 +192,6 @@ namespace urban
             return equality;
         }
 
-        void BrickPrint::insert(FacePrint const& new_facet)
-        {
-            if(projected_facets.empty())
-                projected_facets.push_back(new_facet);
-            else
-            {
-                /* If new_facet does not intersect the surface we push it directly*/
-                if(!overlaps(new_facet))
-                    projected_facets.push_back(new_facet);
-                else
-                {
-                    /* If new_facet is under the surface we loose it*/
-                    if(!is_under(new_facet))
-                    {
-                        std::vector<FacePrint> result;
-                        std::vector<FacePrint> new_facets{new_facet};
-                        std::for_each(
-                            std::begin(projected_facets),
-                            std::end(projected_facets),
-                            [&result, &new_facets](FacePrint & facet)
-                            {
-                                std::vector<FacePrint> occlusion_results(occlusion(facet, new_facets));
-                                result.insert(std::end(result), std::begin(occlusion_results), std::end(occlusion_results));
-                            }
-                        );
-                        result.insert(std::end(result), std::begin(new_facets), std::end(new_facets));
-                        projected_facets = std::move(result);
-                    }
-                }
-            }
-            projected_surface.join(new_facet.get_polygon());
-        }
-
-
         double BrickPrint::get_height(Point_2 const& point) const
         {
             double height(0.);
@@ -318,49 +224,76 @@ namespace urban
             return height;
         }
 
-        void BrickPrint::to_ogr(GDALDataset* file, bool labels) const
+        std::vector<FacePrint> BrickPrint::occlusion(FacePrint const& lfacet)
         {
-            OGRSpatialReference spatial_reference_system;
-            spatial_reference_system.importFromEPSG(
-                epsg_index
-            );
-            OGRLayer* projection_layer = file->CreateLayer("projection_xy", &spatial_reference_system, wkbPolygon, NULL);
-            if(projection_layer == NULL)
-                throw std::runtime_error("GDAL could not create a projection layer");
-            
-            OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff_a", OFTReal);
-            projection_layer->CreateField(plane_coefficient_a);
-            OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff_b", OFTReal);
-            projection_layer->CreateField(plane_coefficient_b);
-            OGRFieldDefn* plane_coefficient_c = new OGRFieldDefn("coeff_c", OFTReal);
-            projection_layer->CreateField(plane_coefficient_c);
-            OGRFieldDefn* plane_coefficient_d = new OGRFieldDefn("coeff_d", OFTReal);
-            projection_layer->CreateField(plane_coefficient_d);
-            if(labels)
+            std::vector<FacePrint> occluded_lfacet;
+            std::vector<FacePrint> occluded_projected_facets;
+
+            for(auto const& rfacet : projected_facets)
             {
-                OGRFieldDefn* unqualified_errors = new OGRFieldDefn("Unq_Errors", OFTString);
-                projection_layer->CreateField(unqualified_errors);
-                OGRFieldDefn* building_errors = new OGRFieldDefn("Bul_Errors", OFTString);
-                projection_layer->CreateField(building_errors);
-                OGRFieldDefn* facets_errors = new OGRFieldDefn("Fac_Errors", OFTString);
-                projection_layer->CreateField(facets_errors);
+                if(!rfacet.is_degenerate())
+                {
+                    Polygon_with_holes  lhs(lfacet.get_polygon()),
+                                        rhs(rfacet.get_polygon());
+                    std::vector<Polygon_with_holes> intersections;
+                    CGAL::intersection(lhs, rhs, std::back_inserter(intersections));
+                    if(intersections.empty())
+                    {
+                        occluded_lfacet.push_back(lfacet);
+                        occluded_projected_facets.push_back(rfacet);
+                    }
+                    else
+                    {
+                        Polygon_set _lhs,
+                                    _rhs;
+                        
+                        for(auto const& intersection : intersections)
+                        {
+                            Point_2 sample_point = CGAL::centroid(intersection.outer_boundary()[0], intersection.outer_boundary()[1], intersection.outer_boundary()[2]);
+
+                            if(lfacet.get_plane_height(sample_point) > rfacet.get_plane_height(sample_point))
+                                _rhs.join(intersection);
+                            else
+                                _lhs.join(intersection);
+                        }
+                        _lhs.complement().intersection(lhs);
+                        _rhs.complement().intersection(rhs);
+
+                        occluded_lfacet = add(occluded_lfacet, _lhs, lfacet.get_plane());
+                        occluded_projected_facets = add(occluded_projected_facets, _rhs, rfacet.get_plane());
+                    }
+                }
             }
 
-            for(auto const& facet : projected_facets)
+            projected_facets = occluded_projected_facets;
+            return occluded_lfacet;
+        }
+
+        Brickprint & BrickPrint::occlusion(Brickprint & other)
+        {
+            std::vector<FacePrint> result;
+            for(auto const& facet : other.projected_facets)
             {
-                OGRFeature* ogr_facet = facet.to_ogr(projection_layer->GetLayerDefn(), reference_point, labels);
-                if(projection_layer->CreateFeature(ogr_facet) != OGRERR_NONE)
-                    throw std::runtime_error("GDAL could not insert the facet in vector image!");
-                OGRFeature::DestroyFeature(ogr_facet);
+                auto ofacet = occlusion(facet);
+                result.insert(std::end(result), std::begin(ofacet), std::end(ofacet));
             }
+            other.projected_surface = result;
+            return other;
+        }
+
+        BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
+        {
+            bounding_box += other.bounding_box;
+
+            other = occlusion(other);
+            projected_facets.insert(std::end(projected_facets), std::begin(other.projected_facets), std::end(other.projected_facets));
+
+            return *this;
         }
 
         std::ostream & operator <<(std::ostream & os, BrickPrint const& brick_projection)
         {
-            os << "Name: " << brick_projection.name << std::endl
-               << "Bounding box: " << brick_projection.bounding_box << std::endl
-               << "Reference Point: " << brick_projection.reference_point << std::endl
-               << "EPSG index: " << brick_projection.epsg_index << std::endl
+            os << "Bounding box: " << brick_projection.bounding_box << std::endl
                << "Face Projections: " << brick_projection.projected_facets.size() << std::endl;
             std::copy(std::begin(brick_projection.projected_facets), std::end(brick_projection.projected_facets), std::ostream_iterator<FacePrint>(os, "\n"));
             std::vector<Polygon_with_holes> copy;
@@ -370,7 +303,7 @@ namespace urban
             return os;
         }
 
-        BrickPrint & operator +(BrickPrint & lhs, BrickPrint const& rhs)
+        BrickPrint & operator +(BrickPrint & lhs, BrickPrint & rhs)
         {
             return lhs += rhs;
         }

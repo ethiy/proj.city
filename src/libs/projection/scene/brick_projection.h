@@ -19,23 +19,19 @@ namespace urban
         {
         public:
             BrickPrint(void);
-            BrickPrint(shadow::Point const& _reference_point);
-            BrickPrint(std::string const& _name, Bbox_3 const& _bounding_box, shadow::Point const& _reference_point, unsigned short epsg_index);
             BrickPrint(FacePrint const& face_projection);
-            BrickPrint(std::string const& _name, OGRLayer* projection_layer);
             BrickPrint(BrickPrint const& other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
 
             void swap(BrickPrint & other);
             
-            BrickPrint & operator=(BrickPrint const& other);
-            BrickPrint & operator=(BrickPrint && other);
+            BrickPrint & operator =(BrickPrint const& other);
+            BrickPrint & operator =(BrickPrint && other);
 
-            BrickPrint & operator+=(BrickPrint const& other);
+            BrickPrint & operator +=(BrickPrint const& other);
 
             Bbox_2 bbox(void) const noexcept;
-            std::string get_name(void) const noexcept;
             std::size_t size(void) const noexcept;
 
             typedef std::vector<FacePrint>::iterator iterator;
@@ -57,29 +53,25 @@ namespace urban
             bool is_under(FacePrint const&) const;
             bool check_integrity(void) const;
 
-            void insert(FacePrint const& facet);
-
             double get_height(Point_2 const&) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
 
-            void to_ogr(GDALDataset* file, bool labels) const;
+            std::vector<FacePrint> occlusion(FacePrint const& new_facet);
+            BrickPrint & occlusion(BrickPrint & other);
         private:
-            std::string name;
             Bbox_2 bounding_box;
-            shadow::Point reference_point;
-            unsigned short epsg_index = 2154;
             std::vector<FacePrint> projected_facets;
             Polygon_set projected_surface;
 
             bool has_same_footprint(BrickPrint const& other) const;
             bool has_same_facets(BrickPrint const& other) const;
 
-            friend std::ostream & operator<<(std::ostream & os, BrickPrint const& brick_projection);
-            friend bool operator==(BrickPrint const& lhs, BrickPrint const& rhs);
-            friend bool operator!=(BrickPrint const& lhs, BrickPrint const& rhs);
+            friend std::ostream & operator <<(std::ostream & os, BrickPrint const& brick_projection);
+            friend bool operator ==(BrickPrint const& lhs, BrickPrint const& rhs);
+            friend bool operator !=(BrickPrint const& lhs, BrickPrint const& rhs);
         };
 
-        BrickPrint & operator+(BrickPrint & lhs, BrickPrint const& rhs);
+        BrickPrint & operator +(BrickPrint & lhs, BrickPrint & rhs);
     }
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 }

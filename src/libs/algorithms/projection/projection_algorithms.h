@@ -10,10 +10,10 @@
 namespace urban
 {
     /** Projects on camera view*/
-    projection::BrickPrint project(const scene::UNode & unode, const projection::Camera & camera);
+    projection::BrickPrint project(scene::UNode const& unode, projection::Camera const& camera);
 
     /** Projects on xy axis*/
-    projection::BrickPrint project(const scene::UNode & unode);
+    projection::BrickPrint project(scene::UNode const& unode);
 
     /** Projects on xy axis*/
     projection::BrickPrint project(const scene::Scene & urban_scene);
@@ -21,8 +21,5 @@ namespace urban
     projection::BrickPrint & project(projection::BrickPrint & projection, std::vector<scene::UNode> const& unodes);
 
     /** Project Faces to XY*/
-    std::vector<projection::FacePrint> project_xy(const scene::UNode & unode);
-
-    /** Computes FacePrint occlusions and gets rid of all perpendicular facets*/
-    std::vector<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::vector<projection::FacePrint> & rhs);
+    std::vector<projection::FacePrint> project_xy(scene::UNode const& unode);
 }
