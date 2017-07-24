@@ -104,12 +104,6 @@ namespace urban
             ),
             std::end(facets)
         );
-
-        /** 
-         * >> Heuristic sorting in order to have the minimum number of occlusions to deal with;
-         */
-        //SimpleHeuristic heuristic;
-        //std::sort(std::begin(facets), std::end(facets), heuristic);
         return facets;
     }
 
@@ -127,10 +121,10 @@ namespace urban
         return projection;
     }
 
-    std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhss)
+    std::vector<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::vector<projection::FacePrint> & rhss)
     {
-        std::list<projection::FacePrint> l_result;
-        std::list<projection::FacePrint> r_result;
+        std::vector<projection::FacePrint> l_result;
+        std::vector<projection::FacePrint> r_result;
         std::for_each(
             std::begin(rhss),
             std::end(rhss),
@@ -143,7 +137,7 @@ namespace urban
                 if(!rhs.is_degenerate())
                 {
                     Polygon_with_holes first(lhs.get_polygon()), second(rhs.get_polygon());
-                    std::list<Polygon_with_holes> superposition(0);
+                    std::vector<Polygon_with_holes> superposition(0);
                     /**
                      * >> Checking bounding box overlap before intersection computation;
                      *      - Bounding box checking is faster than Intersection predicate
@@ -186,7 +180,7 @@ namespace urban
                         second_parts_occluded.complement();
                         second_parts_occluded.intersection(second);
                         
-                        std::list<Polygon_with_holes> _firsts;
+                        std::vector<Polygon_with_holes> _firsts;
                         first_parts_occluded.polygons_with_holes(std::back_inserter(_firsts));
                         std::transform(
                             std::begin(_firsts),

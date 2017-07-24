@@ -7,7 +7,7 @@
 #include <ogrsf_frmts.h>
 
 #include <string>
-#include <list>
+#include <vector>
 
 #include <ostream>
 
@@ -38,10 +38,12 @@ namespace urban
             std::string get_name(void) const noexcept;
             std::size_t size(void) const noexcept;
 
-            typedef std::list<FacePrint>::iterator iterator;
-            typedef std::list<FacePrint>::const_iterator const_iterator;
+            typedef std::vector<FacePrint>::iterator iterator;
+            typedef std::vector<FacePrint>::const_iterator const_iterator;
             iterator begin(void) noexcept;
             iterator end(void) noexcept;
+            const_iterator begin(void) const noexcept;
+            const_iterator end(void) const noexcept;
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
@@ -66,7 +68,7 @@ namespace urban
             Bbox_2 bounding_box;
             shadow::Point reference_point;
             unsigned short epsg_index = 2154;
-            std::list<FacePrint> projected_facets;
+            std::vector<FacePrint> projected_facets;
             Polygon_set projected_surface;
 
             bool has_same_footprint(BrickPrint const& other) const;

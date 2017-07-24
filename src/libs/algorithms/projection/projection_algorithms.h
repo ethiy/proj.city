@@ -6,7 +6,6 @@
 #include "../../projection/projection.h"
 
 #include <vector>
-#include <list>
 
 namespace urban
 {
@@ -25,5 +24,5 @@ namespace urban
     std::vector<projection::FacePrint> project_xy(const scene::UNode & unode);
 
     /** Computes FacePrint occlusions and gets rid of all perpendicular facets*/
-    std::list<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::list<projection::FacePrint> & rhs);
+    std::vector<projection::FacePrint> occlusion(const projection::FacePrint & lhs, std::vector<projection::FacePrint> & rhs);
 }
