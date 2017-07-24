@@ -6,27 +6,6 @@ namespace urban
 {
     namespace scene
     {
-        BComposition & BComposition::operator =(BComposition const& other)
-        {
-            roofs = other.roofs;
-            walls = other.walls;
-
-            return *this;
-        }
-        BComposition & BComposition::operator =(BComposition && other)
-        {
-            roofs = std::move(other.roofs);
-            walls = std::move(other.walls);
-
-            return *this;
-        }
-
-        void swap(BComposition & lhs, BComposition & rhs)
-        {
-            std::swap(lhs.roofs, rhs.roofs);
-            std::swap(lhs.walls, rhs.walls);
-        }
-
         Scene::Scene(void)
         {}
         Scene::Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, io::FileHandler<Lib3dsFile> const& mesh_file)

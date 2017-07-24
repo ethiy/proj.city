@@ -1,6 +1,7 @@
 #pragma once
 
 #include "io.h"
+#include "io_3ds.h"
 
 #include "../scene/scene.h"
 
@@ -19,17 +20,16 @@ namespace urban
             FileHandler(boost::filesystem::path const& _filepath);
             ~FileHandler(void);
             
-            std::vector<std::string> building_ids(void);
-            scene::Scene read(void);
+
+            shadow::Point pivot(bool & centered) const;
+            shadow::Bbox bbox(void) const;
+            unsigned short epsg_index(void) const;
+            std::vector<std::string> building_ids(void) const;
+
+            scene::Scene read(FileHandler<Lib3dsFile> const& mesh_file) const;
         private:
             tinyxml2::XMLDocument scene_tree;
             boost::filesystem::path filepath;
-            bool centered = true;
-
-            shadow::Point pivot(void);
-            shadow::Bbox bbox(void) const;
-            unsigned short epsg_code(void) const;
-            std::map<std::string, scene::BComposition > structure(void) const;
         };
     }
 }

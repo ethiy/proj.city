@@ -12,28 +12,6 @@ namespace urban
 {
     namespace scene
     {
-        struct BComposition
-        {
-            BComposition(std::set<std::string> _roofs, std::set<std::string> _walls)
-                : roofs(_roofs), walls(_walls)
-            {}
-            BComposition(BComposition const& other)
-                : roofs(other.roofs), walls(other.walls)
-            {}
-            BComposition(BComposition && other)
-                : roofs(std::move(other.roofs)), walls(std::move(other.walls))
-            {}
-            ~BComposition(void) {}
-
-            BComposition & operator =(BComposition const& other);
-            BComposition & operator =(BComposition && other);
-
-            std::set<std::string> roofs;
-            std::set<std::string> walls;
-        };
-
-        void swap(BComposition & lhs, BComposition & rhs);
-
         class Scene
         {
         public:

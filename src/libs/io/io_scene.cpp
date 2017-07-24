@@ -18,7 +18,7 @@ namespace urban
         FileHandler<tinyxml2::XMLDocument>::~FileHandler(void)
         {}
 
-        std::vector<std::string> FileHandler<tinyxml2::XMLDocument>::building_ids(void)
+        std::vector<std::string> FileHandler<tinyxml2::XMLDocument>::building_ids(void) const
         {
             std::vector<std::string> ids;
 
@@ -32,10 +32,11 @@ namespace urban
             return ids;
         }
 
-        scene::Scene FileHandler<tinyxml2::XMLDocument>::read(void)
+        scene::Scene FileHandler<tinyxml2::XMLDocument>::read(FileHandler<Lib3dsFile> const& mesh_file) const
         {
-            throw std::logic_error("Not implemented anymore!");
-            return scene::Scene();
+            bool centered = true;
+            shadow::Point reference = pivot(centered);
+            return scene::Scene(reference, centered, epsg_index(), building_ids(), mesh_file);
         }
 
         shadow::Bbox FileHandler<tinyxml2::XMLDocument>::bbox(void) const
@@ -69,8 +70,9 @@ namespace urban
             return shadow::Bbox(x_min, x_max, y_min, y_max, z_min, z_max);
         }
 
-        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(void)
+        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(bool & centered) const
         {
+            centered = true;
             double  x_offset(0),
                     y_offset(0),
                     z_offset(0);
@@ -98,79 +100,13 @@ namespace urban
             return urban::shadow::Point(x_offset, y_offset, z_offset);
         }
 
-        unsigned short FileHandler<tinyxml2::XMLDocument>::epsg_code(void) const
+        unsigned short FileHandler<tinyxml2::XMLDocument>::epsg_index(void) const
         {
             unsigned int epsg_code = 2154;
             auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Code_ESPG_horizontal")->QueryUnsignedText(&epsg_code);
             if(error != tinyxml2::XML_SUCCESS)
                 std::cout << "Warning: projection system EPSG code not found! It was set to 2154 - i.e. LAMBERT 93 - by default." << std::endl;
             return static_cast<unsigned short>(epsg_code);
-        }
-
-        std::map<std::string, scene::BComposition > FileHandler<tinyxml2::XMLDocument>::structure(void) const
-        {
-            std::map<std::string, scene::BComposition> buildings;
-
-            tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")
-                                                                        ->FirstChildElement("CityModel")
-                                                                            ->FirstChildElement("Building");
-
-            while(p_building != NULL)
-            {
-                /* Building Identifier */
-                std::string id(p_building->Attribute("Id"));
-
-                std::set<std::string> roofs;
-                std::set<std::string> walls;
-
-                tinyxml2::XMLElement const* p_building_part = p_building->FirstChildElement("BuildingPart");
-                while(p_building_part != NULL)
-                {
-                    tinyxml2::XMLElement const* p_roof = p_building_part->FirstChildElement("RoofSurface");
-                    while(p_roof != NULL)
-                    {
-                        tinyxml2::XMLElement const* p_mesh = p_roof->FirstChildElement("TexturedSurface");
-                        while(p_mesh != NULL)
-                        {
-                            auto roof_name = std::string(p_mesh->Attribute("Id"));
-                            if(roof_name.at(0) != 'T')
-                                roof_name = "T" + roof_name;
-                            roofs.insert(roof_name);
-                            p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
-                        }
-                        p_roof = p_roof->NextSiblingElement("RoofSurface");
-                    }
-
-                    tinyxml2::XMLElement const* p_wall = p_building_part->FirstChildElement("WallSurface");
-                    while(p_wall != NULL)
-                    {
-                        tinyxml2::XMLElement const* p_mesh = p_wall->FirstChildElement("TexturedSurface");
-                        while(p_mesh != NULL)
-                        {
-                            auto wall_name = std::string(p_mesh->Attribute("Id"));
-                            if(wall_name.at(0) != 'F')
-                                wall_name = "T" + wall_name;
-                            walls.insert(wall_name);
-                            p_mesh = p_mesh->NextSiblingElement("TexturedSurface");
-                        }
-                        p_wall = p_wall->NextSiblingElement("WallSurface");
-                    }
-                    p_building_part = p_building_part->NextSiblingElement("BuildingPart");
-                }
-
-                buildings.emplace(
-                    std::make_pair(
-                        id,
-                        scene::BComposition(
-                            roofs,
-                            walls
-                        )
-                    )
-                );
-
-                p_building = p_building->NextSiblingElement("Building");
-            }
-            return buildings;
         }
     }
 }
