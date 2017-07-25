@@ -56,16 +56,15 @@ namespace urban
             void filter(void);
 
             BrickPrint & operator +=(BrickPrint & other);
-
-            std::vector<FacePrint> occlusion(FacePrint const& new_facet);
-            BrickPrint & occlusion(BrickPrint & other);
         private:
             Bbox_2 bounding_box;
             std::vector<FacePrint> projected_facets;
             Polygon_set projected_surface;
 
-            bool has_same_footprint(BrickPrint const& other) const;
-            bool has_same_facets(BrickPrint const& other) const;
+            std::vector<FacePrint> occlusion(FacePrint const& new_facet);
+            BrickPrint & occlusion(BrickPrint & other);
+            bool equal_print(BrickPrint const& other) const;
+            bool equal_facets(BrickPrint const& other) const;
 
             friend std::ostream & operator <<(std::ostream & os, BrickPrint const& brick_projection);
             friend bool operator ==(BrickPrint const& lhs, BrickPrint const& rhs);

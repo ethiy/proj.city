@@ -64,7 +64,7 @@ namespace urban
             return prints;
         }
 
-        std::vector<FacePrint> & add(std::vector<FacePrint> & facets, Polygon_set polygon_set, Plane_3 const& plane)
+        std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, Plane_3 const& plane)
         {
             std::list<Polygon_with_holes> polygons;
             polygon_set.polygons_with_holes(std::back_inserter(polygons));

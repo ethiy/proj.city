@@ -157,36 +157,6 @@ namespace urban
             }
             return under;
         }
-        
-        bool BrickPrint::check_integrity(void) const
-        {
-            Polygon_set diff(projected_surface);
-            for(auto const& facet : projected_facets)
-            {
-                diff.difference(facet.get_polygon());
-            }
-            return diff.is_empty();
-        }
-
-        bool BrickPrint::has_same_footprint(BrickPrint const& other) const
-        {
-            Polygon_set l_copy(projected_surface);
-            l_copy.symmetric_difference(other.projected_surface);
-            return l_copy.is_empty();
-        }
-        bool BrickPrint::has_same_facets(BrickPrint const& other) const
-        {
-            bool equality(projected_facets.size() == other.projected_facets.size());
-            if(equality)
-            {
-                equality = std::is_permutation(
-                    std::begin(projected_facets),
-                    std::end(projected_facets),
-                    std::begin(other.projected_facets)
-                );
-            }
-            return equality;
-        }
 
         double BrickPrint::get_height(Point_2 const& point) const
         {
@@ -235,6 +205,18 @@ namespace urban
             );
         }
 
+        BrickPrint & BrickPrint::operator +=(BrickPrint & other)
+        {
+            bounding_box += other.bounding_box;
+
+            other = occlusion(other);
+            projected_facets.insert(std::end(projected_facets), std::begin(other.projected_facets), std::end(other.projected_facets));
+
+            projected_surface.join(other.projected_surface);
+
+            return *this;
+        }
+
         std::vector<FacePrint> BrickPrint::occlusion(FacePrint const& lfacet)
         {
             filter();
@@ -266,15 +248,14 @@ namespace urban
                             _lhs.difference(intersection);
                     }
 
-                    lhs = add(lhs, _lhs, lfacet.get_plane());
-                    rhs = add(rhs, _rhs, rfacet.get_plane());
+                    lhs = unpack(lhs, _lhs, lfacet.get_plane());
+                    rhs = unpack(rhs, _rhs, rfacet.get_plane());
                 }
             }
 
             projected_facets = rhs;
             return lhs;
         }
-
         BrickPrint & BrickPrint::occlusion(BrickPrint & other)
         {
             std::vector<FacePrint> result;
@@ -286,15 +267,24 @@ namespace urban
             other.projected_facets = result;
             return other;
         }
-
-        BrickPrint & BrickPrint::operator +=(BrickPrint & other)
+        bool BrickPrint::equal_print(BrickPrint const& other) const
         {
-            bounding_box += other.bounding_box;
-
-            other = occlusion(other);
-            projected_facets.insert(std::end(projected_facets), std::begin(other.projected_facets), std::end(other.projected_facets));
-
-            return *this;
+            Polygon_set l_copy(projected_surface);
+            l_copy.symmetric_difference(other.projected_surface);
+            return l_copy.is_empty();
+        }
+        bool BrickPrint::equal_facets(BrickPrint const& other) const
+        {
+            bool equality(projected_facets.size() == other.projected_facets.size());
+            if(equality)
+            {
+                equality = std::is_permutation(
+                    std::begin(projected_facets),
+                    std::end(projected_facets),
+                    std::begin(other.projected_facets)
+                );
+            }
+            return equality;
         }
 
         std::ostream & operator <<(std::ostream & os, BrickPrint const& brick_projection)
@@ -313,14 +303,12 @@ namespace urban
         {
             return lhs += rhs;
         }
-
         bool operator ==(BrickPrint const& lhs, BrickPrint const& rhs)
         {
-            return  lhs.has_same_footprint(rhs)
+            return  lhs.equal_print(rhs)
                     &&
-                    lhs.has_same_facets(rhs);
+                    lhs.equal_facets(rhs);
         }
-
         bool operator !=(BrickPrint const& lhs, BrickPrint const& rhs)
         {
             return !(lhs == rhs);
