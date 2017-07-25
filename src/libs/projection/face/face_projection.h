@@ -35,21 +35,21 @@ namespace urban
             Polygon const& outer_boundary(void) const;
             Plane_3 const& get_plane(void) const noexcept;
             Vector_3 get_normal(void) const noexcept;
+            Bbox_2 bbox(void) const;
 
             double get_plane_height(Point_2 const&) const;
             double get_plane_height(InexactPoint_2 const& inexact_point) const;
             double get_height(Point_2 const& point) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
+            
+            std::vector<Polygon_with_holes> pixel_intersection(double const top_left_x, double const top_left_y, double const pixel_size, bool & hit) const;
             double get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const;
 
             InexactPoint_2 centroid(void) const;
             double area(void) const;
-            Bbox_2 bbox(void) const;
 
-            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const;
-
-            bool has_same_border(FacePrint const& other) const;
-            bool has_same_plane(FacePrint const& other) const;
+            bool equal_border(FacePrint const& other) const;
+            bool equal_plane(FacePrint const& other) const;
 
             typedef Polygon_with_holes::Hole_const_iterator Hole_const_iterator;
             Hole_const_iterator holes_begin(void) const;
@@ -71,6 +71,8 @@ namespace urban
             bool contains(InexactPoint_2 const& inexact_point) const;
 
             OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const;
+            
+            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const;
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;

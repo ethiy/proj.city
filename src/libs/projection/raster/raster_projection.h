@@ -30,10 +30,10 @@ namespace urban
             RasterPrint & operator =(RasterPrint && other) noexcept;
 
             std::string const& get_name(void) const noexcept;
-            std::size_t get_height(void) const noexcept;
-            std::size_t get_width(void) const noexcept;
             shadow::Point const& get_reference_point() const noexcept;
             unsigned short const& get_epsg() const noexcept;
+            std::size_t get_height(void) const noexcept;
+            std::size_t get_width(void) const noexcept;
             double const& get_pixel_size() const noexcept;
 
             std::array<double, 6> get_geographic_transform(void) const;

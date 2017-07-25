@@ -72,20 +72,21 @@ namespace urban
         {
             return border;
         }
-        
         Polygon const& FacePrint::outer_boundary(void) const
         {
             return border.outer_boundary();
         }
-
         Plane_3 const& FacePrint::get_plane(void) const noexcept
         {
             return supporting_plane;
         }
-
         Vector_3 FacePrint::get_normal(void) const noexcept
         {
             return Vector_3(supporting_plane.a(), supporting_plane.b(), supporting_plane.c());
+        }
+        Bbox_2 FacePrint::bbox(void) const
+        {
+            return border.bbox();
         }
 
         double FacePrint::get_plane_height(Point_2 const& point) const
@@ -94,7 +95,6 @@ namespace urban
                 throw std::overflow_error("The supporting plane is vertical!");
             return to_double(( -1 * supporting_plane.d() - supporting_plane.a() * point.x() - supporting_plane.b() * point.y()) / supporting_plane.c()) ;
         }
-
         double FacePrint::get_plane_height(InexactPoint_2 const& inexact_point) const
         {
             ExactToInexact to_inexact;
@@ -102,22 +102,17 @@ namespace urban
                 throw std::overflow_error("The supporting plane is vertical!");
             return ( -1 * to_inexact(supporting_plane.d()) - to_inexact(supporting_plane.a()) * inexact_point.x() - to_inexact(supporting_plane.b()) * inexact_point.y()) / to_inexact(supporting_plane.c()) ;
         }
-
-
         double FacePrint::get_height(Point_2 const& point) const
         {
             return !is_degenerate() * contains(point) * get_plane_height(point) ;
         }
-
         double FacePrint::get_height(InexactPoint_2 const& inexact_point) const
         {
             return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
 
-        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const
+        std::vector<Polygon_with_holes> FacePrint::pixel_intersection(double const top_left_x, double const top_left_y, double const pixel_size, bool & hit) const
         {
-            double mean_height(0.);
-
             InexactToExact to_exact;
             std::vector<Point_2> pixel_corners{{
                 to_exact(InexactPoint_2(top_left_x, top_left_y)),
@@ -133,17 +128,24 @@ namespace urban
                 std::back_inserter(pixel_inter)
             );
             hit = !pixel_inter.empty();
+            return pixel_inter;
+        }
+
+        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const
+        {
+            double mean_height(0.);
+            auto pixel_inter = pixel_intersection(top_left_x, top_left_y, pixel_size, hit);
 
             if(hit)
             {
-                std::vector<double> weights(pixel_inter.size(), static_cast<double>(pixel_inter.size()));
+                std::vector<double> mass(pixel_inter.size(), static_cast<double>(pixel_inter.size()));
                 mean_height = std::inner_product(
-                    std::begin(weights),
-                    std::end(weights),
                     std::begin(pixel_inter),
+                    std::end(pixel_inter),
+                    std::begin(mass),
                     double(0.),
                     std::plus<double>(),
-                    [this](double const& parts, Polygon_with_holes const& part)
+                    [this](Polygon_with_holes const& part, double const parts)
                     {
                         return get_plane_height(urban::centroid(part)) / parts;
                     }
@@ -156,7 +158,6 @@ namespace urban
         {
             return urban::centroid(border.outer_boundary());
         }
-
         double FacePrint::area(void) const
         {
             return std::accumulate(
@@ -169,84 +170,24 @@ namespace urban
                         }
                     );
         }
-        Bbox_2 FacePrint::bbox(void) const
-        {
-            return border.bbox();
-        }
 
-
-        RasterPrint & FacePrint::rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const
-        {
-            if(!is_degenerate())
-            {
-                /**
-                 * 'bb(ox)' pronounced in french could mean babe alias bae.
-                 */
-                Bbox_2 bae = border.bbox();
-                double pixel_size = raster_projection.get_pixel_size();
-                std::size_t  i_min = static_cast<std::size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
-                             j_min = static_cast<std::size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
-                std::size_t  w = static_cast<std::size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
-                             h = static_cast<std::size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
-                if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
-                {
-                    std::stringstream error_message("Oh noooz!! I iz outsidez ze box");
-                    error_message << i_min + h << " > " << raster_projection.get_height() << " or " << j_min + w << " > " << raster_projection.get_width();
-                    throw std::runtime_error(error_message.str());
-                }
-                std::vector<std::size_t> indexes(w * h);
-                std::iota(std::begin(indexes), std::end(indexes), 0);
-                std::for_each(
-                    std::begin(indexes),
-                    std::end(indexes),
-                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](std::size_t const& index)
-                    {
-                        bool hit(false);
-                        double height = get_height(
-                            bae.xmin() + static_cast<double>(index%w) * pixel_size,
-                            bae.ymax() - static_cast<double>(index/w) * pixel_size,
-                            pixel_size,
-                            hit
-                        );
-                        if(hit)
-                            raster_projection.at(i_min + index/w, j_min + index%w) = (raster_projection.at(i_min + index/w, j_min + index%w) * raster_projection.hit(i_min + index/w, j_min + index%w) + height) / (++raster_projection.hit(i_min + index/w, j_min + index%w));
-                    }
-                );
-            }
-            
-            return raster_projection;
-        }
-
-        bool FacePrint::has_same_border(FacePrint const& other) const
+        bool FacePrint::equal_border(FacePrint const& other) const
         {
             bool result = std::distance(border.holes_begin(), border.holes_end()) == std::distance(other.border.holes_begin(), other.border.holes_end());
             if(result)
             {
-                std::vector<bool> results(static_cast<std::size_t>(std::distance(border.holes_begin(), border.holes_end())));
-                std::transform(
+                result = std::inner_product(
                     border.holes_begin(),
                     border.holes_end(),
                     other.border.holes_begin(),
-                    std::begin(results),
-                    [](const Polygon & l_poly, const Polygon & r_poly)
-                    {
-                        return l_poly == r_poly;
-                    }
-                );
-                result = std::accumulate(
-                    std::begin(results),
-                    std::end(results),
                     border.outer_boundary() == other.border.outer_boundary(),
-                    [](bool & all, const bool r)
-                    {
-                        return all && r;
-                    }
+                    std::logical_and<bool>(),
+                    std::equal_to<Polygon>()
                 );
             }
             return result;
         }
-
-        bool FacePrint::has_same_plane(FacePrint const& other) const
+        bool FacePrint::equal_plane(FacePrint const& other) const
         {
             return supporting_plane == other.supporting_plane;
         }
@@ -256,7 +197,6 @@ namespace urban
         {
             return border.holes_begin();
         }
-
         FacePrint::Hole_const_iterator FacePrint::holes_end(void) const
         {
             return  border.holes_end();
@@ -292,7 +232,6 @@ namespace urban
                         }
                     );
         }
-
         bool FacePrint::contains(InexactPoint_2 const& inexact_point) const
         {
             InexactToExact to_exact;
@@ -317,6 +256,44 @@ namespace urban
             return feature;
         }
 
+        RasterPrint & FacePrint::rasterize_to(const shadow::Point & pivot, double pixel_size) const
+        {
+            if(!is_degenerate())
+            {
+                Bbox_2 bae = bbox();
+                std::size_t  i_min = static_cast<std::size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
+                             j_min = static_cast<std::size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
+                std::size_t  w = static_cast<std::size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
+                             h = static_cast<std::size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
+                if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
+                {
+                    std::stringstream error_message("Oh noooz!! I iz outsidez ze box");
+                    error_message << i_min + h << " > " << raster_projection.get_height() << " or " << j_min + w << " > " << raster_projection.get_width();
+                    throw std::runtime_error(error_message.str());
+                }
+                std::vector<std::size_t> indexes(w * h);
+                std::iota(std::begin(indexes), std::end(indexes), 0);
+                std::for_each(
+                    std::begin(indexes),
+                    std::end(indexes),
+                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](std::size_t const& index)
+                    {
+                        bool hit(false);
+                        double height = get_height(
+                            bae.xmin() + static_cast<double>(index%w) * pixel_size,
+                            bae.ymax() - static_cast<double>(index/w) * pixel_size,
+                            pixel_size,
+                            hit
+                        );
+                        if(hit)
+                            raster_projection.at(i_min + index/w, j_min + index%w) = (raster_projection.at(i_min + index/w, j_min + index%w) * raster_projection.hit(i_min + index/w, j_min + index%w) + height) / (++raster_projection.hit(i_min + index/w, j_min + index%w));
+                    }
+                );
+            }
+            
+            return raster_projection;
+        }
+
         std::ostream & operator <<(std::ostream & os, FacePrint const& facet)
         {
             return os << "The Polygon describing borders :" << facet.border << std::endl
@@ -325,7 +302,7 @@ namespace urban
 
         bool operator ==(FacePrint const& lhs, FacePrint const& rhs)
         {
-            return lhs.has_same_border(rhs) && lhs.has_same_plane(rhs);
+            return lhs.equal_border(rhs) && lhs.equal_plane(rhs);
         }
 
         bool operator !=(FacePrint const& lhs, FacePrint const& rhs)

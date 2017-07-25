@@ -22,7 +22,15 @@ namespace urban
               image_matrix(height * width, 0.),
               pixel_access(height * width, 0)
         {
-
+            image_matrix = std::accumulate(
+                std::begin(),
+                std::end(),
+                image_matrix,
+                [this](projection::FacePrint const& face_projection)
+                {
+                    return face_projection.rasterize_to(result, pivot);
+                }
+            );
         }
         RasterPrint::RasterPrint(std::string const& _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
             : name(_name),
