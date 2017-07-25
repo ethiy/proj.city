@@ -102,6 +102,44 @@ namespace urban
             return projection.cend();
         }
 
+        FootPrint & operator +=(FootPrint & other)
+        {
+            if(reference_point != other.reference || epsg_index != other.epsg_index)
+                throw std::logic_error("Feature not supported");
+            
+            projection += other.projection;
+            return *this;
+        }
+
+        std::ostream & operator <<(std::ostream & os, FootPrint const& footprint)
+        {
+            os << "Name: " << brick_projection.name << std::endl
+               << "Reference Point: " << brick_projection.reference_point << std::endl
+               << "EPSG index: " << brick_projection.epsg_index << std::endl
+               << projection;
+            
+            return os;
+        }
+        bool operator ==(FootPrint const& lhs, FootPrint const& rhs)
+        {
+            return  lhs.name == rhs.name
+                    &&
+                    lhs.reference_point == rhs.reference_point
+                    &&
+                    lhs.epsg_index == rhs.epsg_index
+                    &&
+                    lhs.projection == rhs.projection;
+        }
+        bool operator !=(FootPrint const& lhs, FootPrint const& rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        FootPrint & operator +(FootPrint & lhs, FootPrint & rhs)
+        {
+            return lhs += rhs;
+        }
+
         void FootPrint::swap(FootPrint & lhs, FootPrint & rhs)
         {
             lhs.swap(rhs);

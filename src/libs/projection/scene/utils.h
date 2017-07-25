@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../../geometry_definitions.h"
+
+#include "../../scene/unode.h"
 #include "../face/face_projection.h"
 
 namespace urban

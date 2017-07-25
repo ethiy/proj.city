@@ -1,6 +1,5 @@
 #include "brick_projection.h"
 
-#include "../../algorithms/projection/projection_algorithms.h"
 #include "../../algorithms/ogr/ogr_algorithms.h"
 
 #include "utils.h"

@@ -1,6 +1,5 @@
 #include "face_projection.h"
 
-#include "../../algorithms/projection/projection_algorithms.h"
 #include "../raster/raster_projection.h"
 #include "../../algorithms/ogr/ogr_algorithms.h"
 #include "../../algorithms/utils/util_algorithms.h"

@@ -11,7 +11,6 @@ namespace urban
         class FootPrint
         {
         public:
-            FootPrint(void);
             FootPrint(scene::UNode const& unode);
             FootPrint(FootPrint const& other);
             FootPrint(FootPrint && other);
@@ -35,12 +34,19 @@ namespace urban
             const_iterator end(void) const noexcept;
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
+
+            FootPrint & operator +=(FootPrint & other);
         private:
             std::string name;
             shadow::Point reference_point;
             unsigned short epsg_index = 2154;
             BrickPrint projection;
+            
+            friend std::ostream & operator <<(std::ostream & os, FootPrint const& footprint);
+            friend bool operator ==(FootPrint const& lhs, FootPrint const& rhs);
+            friend bool operator !=(FootPrint const& lhs, FootPrint const& rhs);
         };
+        FootPrint & operator +(FootPrint & lhs, FootPrint & rhs);
 
         void swap(FootPrint & lhs, FootPrint & rhs);
     }
