@@ -62,16 +62,14 @@ namespace urban
             return *this;
         }
 
-        Bbox_2 BrickPrint::bbox(void) const noexcept
+        Bbox_2 const& BrickPrint::bbox(void) const noexcept
         {
             return bounding_box;
         }
-
         std::size_t BrickPrint::size(void) const noexcept
         {
             return projected_facets.size();
         }
-
 
         BrickPrint::iterator BrickPrint::begin(void) noexcept
         {
@@ -108,12 +106,10 @@ namespace urban
             InexactToExact to_exact;
             return contains(to_exact(inexact_point));
         }
-
         bool BrickPrint::in_domain(Point_2 const& point) const
         {
             return CGAL::do_overlap(bounding_box, point.bbox());
         }
-
         bool BrickPrint::contains(FacePrint const& facet) const
         {
             Polygon_set shallow_copy(projected_surface);
@@ -224,52 +220,62 @@ namespace urban
             return height;
         }
 
+        void BrickPrint::filter(void)
+        {
+            projected_facets.erase(
+                std::remove_if(
+                    std::begin(projected_facets),
+                    std::end(projected_facets),
+                    [](FacePrint const& facet)
+                    {
+                        return facet.is_empty() || facet.is_degenerate();
+                    }
+                ),
+                std::end(projected_facets)
+            );
+        }
+
         std::vector<FacePrint> BrickPrint::occlusion(FacePrint const& lfacet)
         {
-            std::vector<FacePrint> occluded_lfacet;
-            std::vector<FacePrint> occluded_projected_facets;
+            filter();
+
+            std::vector<FacePrint> lhs;
+            std::vector<FacePrint> rhs;
 
             for(auto const& rfacet : projected_facets)
             {
-                if(!rfacet.is_degenerate())
+                std::vector<Polygon_with_holes> intersections;
+                CGAL::intersection(lfacet.get_polygon(), rfacet.get_polygon(), std::back_inserter(intersections));
+                if(intersections.empty())
                 {
-                    Polygon_with_holes  lhs(lfacet.get_polygon()),
-                                        rhs(rfacet.get_polygon());
-                    std::vector<Polygon_with_holes> intersections;
-                    CGAL::intersection(lhs, rhs, std::back_inserter(intersections));
-                    if(intersections.empty())
+                    lhs.push_back(lfacet);
+                    rhs.push_back(rfacet);
+                }
+                else
+                {
+                    Polygon_set _lhs(lfacet.get_polygon()),
+                                _rhs(rfacet.get_polygon());
+                
+                    for(auto const& intersection : intersections)
                     {
-                        occluded_lfacet.push_back(lfacet);
-                        occluded_projected_facets.push_back(rfacet);
-                    }
-                    else
-                    {
-                        Polygon_set _lhs,
-                                    _rhs;
-                        
-                        for(auto const& intersection : intersections)
-                        {
-                            Point_2 sample_point = CGAL::centroid(intersection.outer_boundary()[0], intersection.outer_boundary()[1], intersection.outer_boundary()[2]);
+                        Point_2 sample_point = CGAL::centroid(intersection.outer_boundary()[0], intersection.outer_boundary()[1], intersection.outer_boundary()[2]);
 
-                            if(lfacet.get_plane_height(sample_point) > rfacet.get_plane_height(sample_point))
-                                _rhs.join(intersection);
-                            else
-                                _lhs.join(intersection);
-                        }
-                        _lhs.complement().intersection(lhs);
-                        _rhs.complement().intersection(rhs);
-
-                        occluded_lfacet = add(occluded_lfacet, _lhs, lfacet.get_plane());
-                        occluded_projected_facets = add(occluded_projected_facets, _rhs, rfacet.get_plane());
+                        if(lfacet.get_plane_height(sample_point) > rfacet.get_plane_height(sample_point))
+                            _rhs.difference(intersection);
+                        else
+                            _lhs.difference(intersection);
                     }
+
+                    lhs = add(lhs, _lhs, lfacet.get_plane());
+                    rhs = add(rhs, _rhs, rfacet.get_plane());
                 }
             }
 
-            projected_facets = occluded_projected_facets;
-            return occluded_lfacet;
+            projected_facets = rhs;
+            return lhs;
         }
 
-        Brickprint & BrickPrint::occlusion(Brickprint & other)
+        BrickPrint & BrickPrint::occlusion(BrickPrint & other)
         {
             std::vector<FacePrint> result;
             for(auto const& facet : other.projected_facets)
@@ -277,11 +283,11 @@ namespace urban
                 auto ofacet = occlusion(facet);
                 result.insert(std::end(result), std::begin(ofacet), std::end(ofacet));
             }
-            other.projected_surface = result;
+            other.projected_facets = result;
             return other;
         }
 
-        BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
+        BrickPrint & BrickPrint::operator +=(BrickPrint & other)
         {
             bounding_box += other.bounding_box;
 
@@ -310,11 +316,7 @@ namespace urban
 
         bool operator ==(BrickPrint const& lhs, BrickPrint const& rhs)
         {
-            return  lhs.epsg_index == rhs.epsg_index
-                    &&
-                    lhs.reference_point == rhs.reference_point
-                    &&
-                    lhs.has_same_footprint(rhs)
+            return  lhs.has_same_footprint(rhs)
                     &&
                     lhs.has_same_facets(rhs);
         }

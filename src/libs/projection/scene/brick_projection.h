@@ -25,17 +25,14 @@ namespace urban
             ~BrickPrint(void);
 
             void swap(BrickPrint & other);
-            
             BrickPrint & operator =(BrickPrint const& other);
             BrickPrint & operator =(BrickPrint && other);
 
-            BrickPrint & operator +=(BrickPrint const& other);
-
-            Bbox_2 bbox(void) const noexcept;
+            Bbox_2 const& bbox(void) const noexcept;
             std::size_t size(void) const noexcept;
 
-            typedef std::vector<FacePrint>::iterator iterator;
-            typedef std::vector<FacePrint>::const_iterator const_iterator;
+            using iterator = std::vector<FacePrint>::iterator;
+            using const_iterator = std::vector<FacePrint>::const_iterator;
             iterator begin(void) noexcept;
             iterator end(void) noexcept;
             const_iterator begin(void) const noexcept;
@@ -55,6 +52,10 @@ namespace urban
 
             double get_height(Point_2 const&) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
+
+            void filter(void);
+
+            BrickPrint & operator +=(BrickPrint & other);
 
             std::vector<FacePrint> occlusion(FacePrint const& new_facet);
             BrickPrint & occlusion(BrickPrint & other);

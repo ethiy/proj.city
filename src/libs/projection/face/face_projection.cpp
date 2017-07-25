@@ -69,17 +69,17 @@ namespace urban
             return *this;
         }
 
-        Polygon_with_holes FacePrint::get_polygon(void) const noexcept
+        Polygon_with_holes const& FacePrint::get_polygon(void) const noexcept
         {
             return border;
         }
         
-        Polygon FacePrint::outer_boundary(void) const
+        Polygon const& FacePrint::outer_boundary(void) const
         {
             return border.outer_boundary();
         }
 
-        Plane_3 FacePrint::get_plane(void) const noexcept
+        Plane_3 const& FacePrint::get_plane(void) const noexcept
         {
             return supporting_plane;
         }

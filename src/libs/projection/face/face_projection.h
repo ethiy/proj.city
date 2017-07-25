@@ -31,9 +31,9 @@ namespace urban
             FacePrint & operator =(FacePrint const& other) noexcept;
             FacePrint & operator =(FacePrint && other) noexcept;
 
-            Polygon_with_holes get_polygon(void) const noexcept;
-            Polygon outer_boundary(void) const;
-            Plane_3 get_plane(void) const noexcept;
+            Polygon_with_holes const& get_polygon(void) const noexcept;
+            Polygon const& outer_boundary(void) const;
+            Plane_3 const& get_plane(void) const noexcept;
             Vector_3 get_normal(void) const noexcept;
 
             double get_plane_height(Point_2 const&) const;

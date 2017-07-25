@@ -12,16 +12,18 @@ namespace urban
     {
         RasterPrint::RasterPrint(void)
         {}
-        RasterPrint::RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, std::size_t const& _height, std::size_t const& _width, double const& _pixel_size)
-            : name(_name),
-              reference_point(_reference_point),
-              epsg_index(_epsg_index),
-              height(_height),
-              width(_width),
+        RasterPrint::RasterPrint(FootPrint const& footprint, double _pixel_size)
+            : name(footprint.get_name()),
+              reference_point(footprint.get_reference_point()),
+              epsg_index(footprint.get_epsg()),
+              height(static_cast<std::size_t>(std::ceil((footprint.bbox().ymax() - footprint.bbox().ymin()) / pixel_size))),
+              width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / pixel_size))),
               pixel_size(_pixel_size),
-              image_matrix(_height * _width, 0.),
-              pixel_access(_height * _width, 0)
-        {}
+              image_matrix(height * width, 0.),
+              pixel_access(height * width, 0)
+        {
+
+        }
         RasterPrint::RasterPrint(std::string const& _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
             : name(_name),
               reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)),
@@ -75,12 +77,12 @@ namespace urban
             return name;
         }
 
-        std::size_t const& RasterPrint::get_height(void) const noexcept
+        std::size_t RasterPrint::get_height(void) const noexcept
         {
             return height;
         }
 
-        std::size_t const& RasterPrint::get_width(void) const noexcept
+        std::size_t RasterPrint::get_width(void) const noexcept
         {
             return width;
         }

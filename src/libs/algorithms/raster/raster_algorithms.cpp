@@ -7,7 +7,7 @@
 
 namespace urban
 {
-    projection::RasterPrint rasterize(projection::BrickPrint const& brick_projection, double const& pixel_size, shadow::Point const& pivot, unsigned short const& epsg_code)
+    projection::RasterPrint rasterize(projection::FootPrint const& brick_projection, double const& pixel_size, shadow::Point const& pivot, unsigned short const& epsg_code)
     {
         std::size_t h = static_cast<std::size_t>(std::ceil((brick_projection.bbox().ymax() - brick_projection.bbox().ymin()) / pixel_size));
         std::size_t w = static_cast<std::size_t>(std::ceil((brick_projection.bbox().xmax() - brick_projection.bbox().xmin()) / pixel_size));

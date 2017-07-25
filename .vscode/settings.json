@@ -65,7 +65,8 @@
         "ios": "cpp",
         "atomic": "cpp",
         "codecvt": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "numeric": "cpp"
     },
     "vsicons.presets.angular": true,
     "cmake.buildDirectory": "${workspaceRoot}/build/vscode"

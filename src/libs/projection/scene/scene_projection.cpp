@@ -1,39 +1,25 @@
 #include "scene_projection.h"
+#include "utils.h"
+
+#include <algorithm>
+#include <numeric>
 
 namespace urban
 {
     namespace projection
     {
-        FootPrint::FootPrint(UNode const& unode)
+        FootPrint::FootPrint(scene::UNode const& unode)
             : name(unode.get_name()), reference_point(unode.get_reference_point()), epsg_index(unode.get_epsg_index())
         {
-            std::vector<BrickPrint> prints(unode.facets_size());
-            std::vector<Point_2> buffer_points;
+            std::vector<FacePrint> prints = orthoprint(unode);
 
-            std::transform(
-                unode.facets_cbegin(),
-                unode.facets_cend(),
+            projection = std::accumulate(
                 std::begin(prints),
-                [&buffer_points](scene::UNode::Facet const& facet)
+                std::end(prints),
+                projection,
+                [](BrickPrint & proj, FacePrint const& face_print)
                 {
-                    buffer_points = std::vector<Point_2>(facet.facet_degree());
-
-                    auto halfedge = facet.halfedge();
-                    Point_3 vertex(halfedge->vertex()->point());
-                    buffer_points.at(0) = Point_2(vertex.x(), vertex.y());
-                    std::transform(
-                        std::next(facet.facet_begin()),
-                        std::next(facet.facet_begin(), static_cast<long>(facet.facet_degree())),
-                        std::next(std::begin(buffer_points)),
-                        [](Polyhedron::Halfedge const& h)
-                        {
-                            return Point_2(h.vertex()->point().x(), h.vertex()->point().y());
-                        }
-                    );
-
-                    
-                projection::FacePrint projected_facet;
-                    return BrickPrint(projected_facet);
+                    return proj + BrickPrint(face_print);
                 }
             );
         }
@@ -72,6 +58,48 @@ namespace urban
             projection = std::move(other.projection);
 
             return *this;
+        }
+
+        std::string const& FootPrint::get_name(void) const noexcept
+        {
+            return name;
+        }
+        shadow::Point const& FootPrint::get_reference_point(void) const noexcept
+        {
+            return reference_point;
+        }
+        unsigned short const FootPrint::get_epsg(void) const noexcept
+        {
+            return epsg_index;
+        }
+        Bbox_2 const& FootPrint::bbox(void) const noexcept
+        {
+            return projection.bbox();
+        }
+
+        FootPrint::iterator FootPrint::begin(void) noexcept
+        {
+            return projection.begin();
+        }
+        FootPrint::iterator FootPrint::end(void) noexcept
+        {
+            return projection.end();
+        }
+        FootPrint::const_iterator FootPrint::begin(void) const noexcept
+        {
+            return projection.begin();
+        }
+        FootPrint::const_iterator FootPrint::end(void) const noexcept
+        {
+            return projection.end();
+        }
+        FootPrint::const_iterator FootPrint::cbegin(void) const noexcept
+        {
+            return projection.cbegin();
+        }
+        FootPrint::const_iterator FootPrint::cend(void) const noexcept
+        {
+            return projection.cend();
         }
 
         void FootPrint::swap(FootPrint & lhs, FootPrint & rhs)

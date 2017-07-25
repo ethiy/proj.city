@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../algorithms/projection/projection_algorithms.h"
+#include "../scene/scene_projection.h"
 #include "../../shadow/Point/point.h"
 
 #include <gdal_priv.h>
@@ -19,27 +19,29 @@ namespace urban
         {
         public:
             RasterPrint(void);
-            RasterPrint(std::string const& _name, shadow::Point const& _reference_point, unsigned short const& _epsg_index, std::size_t const& _height, std::size_t const& _width, double const& _pixel_size);
+            RasterPrint(FootPrint const& footprint, double _pixel_size);
             RasterPrint(std::string const& _name, double const geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band);
             RasterPrint(RasterPrint const& other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
 
-            std::string const& get_name(void) const noexcept;
-            std::size_t const& get_height(void) const noexcept;
-            std::size_t const& get_width(void) const noexcept;
-            std::size_t get_index(std::size_t const& i, std::size_t const& j) const noexcept;
-            shadow::Point const& get_reference_point() const noexcept;
-            unsigned short const& get_epsg() const noexcept;
-            double const& get_pixel_size() const noexcept;
-            std::array<double, 6> get_geographic_transform(void) const;
-            std::vector<short> const& pixel_hits(void) const noexcept;
-            double* data(void) noexcept;
-            const double* data(void) const noexcept;
-
             void swap(RasterPrint & other);
             RasterPrint & operator =(RasterPrint const& other) noexcept;
             RasterPrint & operator =(RasterPrint && other) noexcept;
+
+            std::string const& get_name(void) const noexcept;
+            std::size_t get_height(void) const noexcept;
+            std::size_t get_width(void) const noexcept;
+            shadow::Point const& get_reference_point() const noexcept;
+            unsigned short const& get_epsg() const noexcept;
+            double const& get_pixel_size() const noexcept;
+
+            std::array<double, 6> get_geographic_transform(void) const;
+
+            std::size_t get_index(std::size_t const& i, std::size_t const& j) const noexcept;
+            std::vector<short> const& pixel_hits(void) const noexcept;
+            double* data(void) noexcept;
+            const double* data(void) const noexcept;
 
             double & at(std::size_t const& i, std::size_t const& j);
             const double & at(std::size_t const& i, std::size_t const& j) const;
@@ -66,7 +68,7 @@ namespace urban
             unsigned short epsg_index = 2154;
             std::size_t height = 0;
             std::size_t width = 0;
-            double pixel_size = 0.6;
+            double pixel_size = .06;
             std::vector<double> image_matrix;
             std::vector<short> pixel_access;
             bool offset = false;
