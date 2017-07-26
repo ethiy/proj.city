@@ -72,6 +72,7 @@ namespace urban
             std::vector<short> pixel_hits;
             bool offset = false;
 
+            bool equal_metadata(RasterPrint const& other) const;
             friend std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection);
             friend bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs);
         };

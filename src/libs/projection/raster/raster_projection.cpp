@@ -280,19 +280,22 @@ namespace urban
             return os;
         }
 
+        bool RasterPrint::equal_metadata(RasterPrint const& other) const
+        {
+            return  std::abs(pixel_size - other.pixel_size) < std::numeric_limits<double>::epsilon()
+                    &&
+                    reference_point == other.reference_point
+                    &&
+                    epsg_index == other.epsg_index
+                    &&
+                    height == other.height
+                    &&
+                    width == other.width;
+        }
+
         bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs)
         {
-            bool result(
-                std::abs(lhs.pixel_size - rhs.pixel_size) < std::numeric_limits<double>::epsilon()
-                &&
-                lhs.reference_point == rhs.reference_point
-                &&
-                lhs.epsg_index == rhs.epsg_index
-                &&
-                lhs.height == rhs.height
-                &&
-                lhs.width == rhs.width
-            );
+            bool result = lhs.equal_metadata(rhs);
             if(result)
             {
                 std::inner_product(
