@@ -31,6 +31,7 @@ namespace urban
                     return face_projection.rasterize(image, pixel_hits, reference_point, height, width, pixel_size);
                 }
             );
+            vertical_offset();
         }
         RasterPrint::RasterPrint(std::string const& _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
             : name(_name),
@@ -222,7 +223,7 @@ namespace urban
             return *this;
         }
 
-        void RasterPrint::horizontal_offset(void)
+        void RasterPrint::vertical_offset(void)
         {
             if(!offset)
             {

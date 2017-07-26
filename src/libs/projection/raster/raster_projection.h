@@ -57,7 +57,7 @@ namespace urban
             const_iterator end(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            void horizontal_offset(void);
+            void vertical_offset(void);
 
             RasterPrint & operator +=(RasterPrint const& other);
             RasterPrint & operator -=(RasterPrint const& other);
