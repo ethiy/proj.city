@@ -1,5 +1,7 @@
 #include "raster_projection.h"
 
+#include <cpl_string.h>
+
 #include <iterator>
 #include <algorithm>
 #include <iomanip>
@@ -33,27 +35,39 @@ namespace urban
             );
             vertical_offset();
         }
-        RasterPrint::RasterPrint(std::string const& _name, const double geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band)
-            : name(_name),
-              reference_point(shadow::Point(geographic_transform[0], geographic_transform[3], 0)),
-              height(_height),
-              width(_width),
-              pixel_size(geographic_transform[1]),
-              image_matrix(_height * _width, 0.),
-              pixel_hits(_height * _width, 1),
+        RasterPrint::RasterPrint(std::string const& filename, GDALDataset* raster_file)
+
+            : name(filename),
+              height(static_cast<std::size_t>(raster_file->GetRasterYSize())),
+              width(static_cast<std::size_t>(raster_file->GetRasterXSize())),
+              pixel_hits(height * width, 1),
               offset(true)
         {
+            int epsg_buffer(2154);
+
+            const char * spatial_reference_system_name = raster_file->GetProjectionRef();
+            if(spatial_reference_system_name)
+            {
+                epsg_buffer = OGRSpatialReference(spatial_reference_system_name).GetEPSGGeogCS();
+            }
+            epsg_index = epsg_buffer > 0 ? static_cast<unsigned short>(epsg_buffer) : 2154;
+
+            double geographic_transform[6] = {0,.06,0,0,0,.06};
+            if( raster_file->GetGeoTransform( geographic_transform ) != CE_None )
+                throw std::runtime_error("GDAL could not retrieve any registered Geometric Transform");
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
                 throw std::logic_error("this case is not treated yet!");
             
-            epsg_index = _epsg_index > 0 ? static_cast<unsigned short>(_epsg_index) : 2154;
+            reference_point = shadow::Point(geographic_transform[0], geographic_transform[3], 0);
+            pixel_size = geographic_transform[1];
             
-            double* buffer = reinterpret_cast<double*>(calloc(sizeof(double), _width * _height));
-            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, _width, _height, buffer, _width, _height, GDT_Float64, 0, 0);
+            double* buffer = reinterpret_cast<double*>(calloc(sizeof(double), width * height));
+            GDALRasterBand* raster_band = raster_file->GetRasterBand(1);
+            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, width, height, buffer, width, height, GDT_Float64, 0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
 
-            std::copy(buffer, buffer + _width * _height, std::begin(image_matrix));
+            image_matrix = std::vector<double>(buffer, buffer + width * height);
         }
         RasterPrint::RasterPrint(RasterPrint const& other)
             : name(other.name),
@@ -234,45 +248,6 @@ namespace urban
             }
         }
 
-        RasterPrint & RasterPrint::operator +=(RasterPrint const& other)
-        {
-            if(std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon() && reference_point != other.reference_point)
-                throw std::logic_error("Case not treated");
-            std::transform(
-                std::begin(image_matrix),
-                std::end(image_matrix),
-                std::begin(other.image_matrix),
-                std::begin(image_matrix),
-                [](const double rhs, const double lhs)
-                {
-                    return rhs + lhs;
-                }
-            );
-            return *this;
-        }
-        
-        RasterPrint & RasterPrint::operator -=(RasterPrint const& other)
-        {
-            if( std::abs(pixel_size - other.pixel_size) > std::numeric_limits<double>::epsilon()
-                &&
-                reference_point != other.reference_point
-                &&
-                epsg_index != other.epsg_index
-              )
-                throw std::logic_error("Case not treated");
-            std::transform(
-                std::begin(image_matrix),
-                std::end(image_matrix),
-                std::begin(other.image_matrix),
-                std::begin(image_matrix),
-                [](const double rhs, const double lhs)
-                {
-                    return rhs - lhs;
-                }
-            );
-            return *this;
-        }
-
         std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection)
         {
             std::ios::fmtflags flag_buffer = os.flags();
@@ -305,16 +280,6 @@ namespace urban
             return os;
         }
 
-        RasterPrint & operator +(RasterPrint & lhs, RasterPrint const& rhs)
-        {
-            return lhs += rhs;
-        }
-
-        RasterPrint & operator -(RasterPrint & lhs, RasterPrint const& rhs)
-        {
-            return lhs -= rhs;
-        }
-
         bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs)
         {
             bool result(
@@ -330,22 +295,16 @@ namespace urban
             );
             if(result)
             {
-                std::vector<bool> comparisons(lhs.height * lhs.width);
-                std::transform(
+                std::inner_product(
                     std::begin(lhs.image_matrix),
                     std::end(lhs.image_matrix),
                     std::begin(rhs.image_matrix),
-                    std::begin(comparisons),
-                    [](const double rrhs, const double llhs)
-                    {
-                        return std::abs(rrhs - llhs) < std::numeric_limits<double>::epsilon();
-                    }
-                );
-                result = std::accumulate(
-                    std::begin(comparisons),
-                    std::end(comparisons),
                     result,
-                    std::logical_and<bool>()
+                    std::logical_and<bool>(),
+                    [](const double _rhs, const double _lhs)
+                    {
+                        return std::abs(_rhs - _lhs) < std::numeric_limits<double>::epsilon();
+                    }
                 );
             }
             return result;

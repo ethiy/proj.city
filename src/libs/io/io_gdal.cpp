@@ -1,7 +1,6 @@
 #include "io_gdal.h"
 
 #include <ogr_geometry.h>
-#include "cpl_string.h"
 
 #include <algorithm>
 #include <iterator>
@@ -140,19 +139,7 @@ namespace urban
                             throw std::runtime_error(error_message.str());
                         }
                         
-                        int epsg_buffer(2154);
-                        const char * spatial_reference_system_name = file->GetProjectionRef();
-                        if(spatial_reference_system_name)
-                        {
-                            epsg_buffer = OGRSpatialReference(spatial_reference_system_name).GetEPSGGeogCS();
-                        }
-
-                        double geographic_transform[6] = {0,1,0,0,0,1};
-                        if( file->GetGeoTransform( geographic_transform ) != CE_None )
-                            throw std::runtime_error("GDAL could not retrieve any registered Geometric Transform");
-                        
-                        GDALRasterBand* raster_band = file->GetRasterBand(1);
-                        raster_projection = projection::RasterPrint(filepath.stem().string(), geographic_transform, epsg_buffer, static_cast<std::size_t>(file->GetRasterYSize()), static_cast<std::size_t>(file->GetRasterXSize()), raster_band);
+                        raster_projection = projection::RasterPrint(filepath.stem().string(), file);
                         GDALClose(dynamic_cast<GDALDatasetH>(file));
                     }
                     else

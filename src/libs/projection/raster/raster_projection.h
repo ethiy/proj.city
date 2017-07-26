@@ -20,7 +20,7 @@ namespace urban
         public:
             RasterPrint(void);
             RasterPrint(FootPrint const& footprint, double _pixel_size);
-            RasterPrint(std::string const& _name, double const geographic_transform[6], int const& _epsg_index, std::size_t const& _height, std::size_t const& _width, GDALRasterBand* raster_band);
+            RasterPrint(std::string const& filename, GDALDataset* raster_file);
             RasterPrint(RasterPrint const& other);
             RasterPrint(RasterPrint && other);
             ~RasterPrint(void);
