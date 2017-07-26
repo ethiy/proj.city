@@ -1,31 +1,30 @@
 #include "../libs/scene/unode.h"
-#include "../libs/io/io_off.h"
+#include "../libs/io/io_3ds.h"
 
 #include <boost/filesystem.hpp>
 
 #include <string>
 #include <fstream>
-#include <streambuf>
 
 #include <catch.hpp>
 
 SCENARIO("Urban Brick manipulation:")
 {
-    GIVEN("A urban::shadow::Mesh object")
+    GIVEN("A 3ds file")
     {
-        urban::shadow::Mesh mesh = urban::io::FileHandler<std::fstream>(
-            boost::filesystem::path("../../ressources/3dModels/OFF/hammerhead.off"),
+        auto test_file = urban::io::FileHandler<Lib3dsFile>(
+            boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
             std::map<std::string,bool>{{"read", true}}
-        ).read();
+        );
 
-        WHEN("the urban Brick is constructed")
+        WHEN("the \"buildings\" are read into unodes")
         {
-            urban::scene::Brick hammerhead(mesh, urban::shadow::Point());
+            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0,  test_file);
 
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
-                auxilary << hammerhead;
+                auxilary << staff;
 
                 std::ifstream tmp("../../ressources/tests/hammerhead.off");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());

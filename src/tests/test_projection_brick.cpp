@@ -119,7 +119,7 @@ SCENARIO("Brick projection manipulation")
         WHEN("face_2 is added to the other")
         {
             urban::projection::BrickPrint proj(face_1);
-            proj.insert(face_2);
+            proj += urban::projection::BrickPrint(face_2);
             THEN("The output checks:")
             {
                 std::stringstream auxilary;

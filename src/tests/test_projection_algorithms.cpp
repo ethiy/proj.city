@@ -1,5 +1,8 @@
-#include "../libs/algorithms/algorithms.h"
 #include "../libs/scene/unode.h"
+#include "../libs/projection/scene/brick_projection.h"
+
+
+#include "utils.h"
 
 #include <CGAL/Boolean_set_operations_2.h>
 
@@ -14,51 +17,29 @@ SCENARIO("Occlusion management")
     GIVEN("two triangular faces")
     {
         urban::InexactToExact to_exact;
-        urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(-1., 0, 5.))),
-                       B(to_exact(urban::InexactKernel::Point_3(1., 0., 2.))),
-                       C(to_exact(urban::InexactKernel::Point_3(0, 1., 3.615)));
-        urban::Point_3 _A(to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.))),
-                       _B(to_exact(urban::InexactKernel::Point_3(.5, .33, 5.))),
-                       _C(to_exact(urban::InexactKernel::Point_3(0, .67, 8.2)));
-        std::vector<urban::Point_2> buffer{{
-            urban::Point_2(A.x(), A.y()),
-            urban::Point_2(B.x(), B.y()),
-            urban::Point_2(C.x(), C.y())
-        }};
-        
-        std::vector<urban::Point_2> _buffer{{
-            urban::Point_2(_A.x(), _A.y()),
-            urban::Point_2(_B.x(), _B.y()),
-            urban::Point_2(_C.x(), _C.y())
-        }};
-
-        urban::projection::FacePrint face_1(
-            urban::Polygon_with_holes(
-                urban::Polygon(
-                    std::begin(buffer),
-                    std::end(buffer)
-                )
-            ),
-            urban::Plane_3(A, B, C)
+        urban::projection::BrickPrint lhs(
+            test_facet_projection(
+                to_exact(urban::InexactKernel::Point_3(-1., 0, 5.)),
+                to_exact(urban::InexactKernel::Point_3(1., 0., 2.)),
+                to_exact(urban::InexactKernel::Point_3(0, 1., 3.615))
+            )
         );
-        urban::projection::FacePrint face_2(
-            urban::Polygon_with_holes(
-                urban::Polygon(
-                    std::begin(_buffer),
-                    std::end(_buffer)
-                )
-            ),
-            urban::Plane_3(_A, _B, _C)
+        urban::projection::BrickPrint rhs(
+            test_facet_projection(
+                to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.)),
+                to_exact(urban::InexactKernel::Point_3(.5, .33, 5.)),
+                to_exact(urban::InexactKernel::Point_3(0, .67, 8.2))
+            )
         );
 
         WHEN("Occlusion is computed")
         {
-            std::list<urban::projection::FacePrint> rhs{{face_2}};
-            std::list<urban::projection::FacePrint> result(urban::occlusion(face_1, rhs));
+            lhs.occlusion(rhs);
+
             THEN("the output checks:")
             {
                 std::ostringstream auxilary, _auxilary;
-                auxilary << rhs.front() << result.front();
+                auxilary << *std::begin(lhs) << *std::begin(rhs);
                 _auxilary << "The Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 " << std::endl 
                           << "The supporting plane coefficients : 0 -3.2 0.34 -0.644" << std::endl 
                           << "The Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  " << std::endl 
@@ -70,208 +51,152 @@ SCENARIO("Occlusion management")
 
     GIVEN("two non convex faces with holes")
     {
-        std::vector<urban::Point_2> buffer{{
-            urban::Point_2(-10, 6),
-            urban::Point_2(-12, 0),
-            urban::Point_2(0, 0),
-            urban::Point_2(-6, -12),
-            urban::Point_2(2, -12),
-            urban::Point_2(2, 8),
-            urban::Point_2(-2, 4)
-        }};
         
-        urban::projection::FacePrint face_1(
-            urban::Polygon_with_holes(
-                urban::Polygon(
-                    std::begin(buffer),
-                    std::end(buffer)
+        urban::projection::BrickPrint lhs( 
+            test_facet_projection(
+                std::vector<urban::Point_2>{{
+                    urban::Point_2(-10, 6),
+                    urban::Point_2(-12, 0),
+                    urban::Point_2(0, 0),
+                    urban::Point_2(-6, -12),
+                    urban::Point_2(2, -12),
+                    urban::Point_2(2, 8),
+                    urban::Point_2(-2, 4)
+                }},
+                urban::Plane_3(
+                    urban::Point_3(-10, 6, 0),
+                    urban::Point_3(-12, 0, 0),
+                    urban::Point_3(0, 0, 0)                
                 )
-            ),
-            urban::Plane_3(
-                urban::Point_3(-10, 6, 0),
-                urban::Point_3(-12, 0, 0),
-                urban::Point_3(0, 0, 0)                
             )
         );
 
-        buffer.clear();
-        buffer = std::vector<urban::Point_2>{{
-            urban::Point_2(-6, 4),
-            urban::Point_2(-4, 2),
-            urban::Point_2(-6, 2)
-        }};
-
-        std::list<urban::Polygon> hole_list{{urban::Polygon(std::begin(buffer), std::end(buffer))}};
-
-        buffer.clear();
-        buffer = std::vector<urban::Point_2>{{
-            urban::Point_2(-6, 8),
-            urban::Point_2(-10, -10),
-            urban::Point_2(2, -10),
-            urban::Point_2(-2, -2),
-            urban::Point_2(-4, 6),
-            urban::Point_2(4, 4)
-        }};
-
-        urban::projection::FacePrint face_2(
-            urban::Polygon_with_holes(
-                urban::Polygon(
-                    std::begin(buffer),
-                    std::end(buffer)
-                ),
-                std::begin(hole_list),
-                std::end(hole_list)
-            ),
-            urban::Plane_3(
-                urban::Point_3(-6, 8, 10),
-                urban::Point_3(-10, 10, 10),
-                urban::Point_3(2, -10, 10)                
+        urban::projection::BrickPrint rhs(
+            test_facet_projection(
+                std::vector<urban::Point_2>{{
+                            urban::Point_2(-6, 8),
+                            urban::Point_2(-10, -10),
+                            urban::Point_2(2, -10),
+                            urban::Point_2(-2, -2),
+                            urban::Point_2(-4, 6),
+                            urban::Point_2(4, 4)
+                }},
+                std::vector<urban::Point_2>{{
+                    urban::Point_2(-6, 4),
+                    urban::Point_2(-4, 2),
+                    urban::Point_2(-6, 2)
+                }},
+                urban::Plane_3(
+                    urban::Point_3(-6, 8, 10),
+                    urban::Point_3(-10, 10, 10),
+                    urban::Point_3(2, -10, 10)
+                )
             )
         );
         WHEN("Occlusion is computed")
         {
-            std::list<urban::projection::FacePrint> rhs{{face_2}};
-            std::list<urban::projection::FacePrint> result(urban::occlusion(face_1, rhs));
+            lhs.occlusion(rhs);
+
             THEN("the output checks:")
             {
-                buffer.clear();
-                buffer = std::vector<urban::Point_2>{{
-                    urban::Point_2(-10, -10),
-                    urban::Point_2(2, -10),
-                    urban::Point_2(-2, -2),
-                    urban::Point_2(-4, 6),
-                    urban::Point_2(4, 4),
-                    urban::Point_2(-6, 8)
-                }};
-
-                std::vector<urban::Point_2> _buffer{{
-                    urban::Point_2(-4, 2),
-                    urban::Point_2(-6, 2),
-                    urban::Point_2(-6, 4)
-                }};
-
-                hole_list.clear();
-                hole_list = std::list<urban::Polygon>{{urban::Polygon(std::begin(_buffer), std::end(_buffer))}};
-
-                std::list<urban::projection::FacePrint> _rhs{{
-                    urban::projection::FacePrint(
-                        urban::Polygon_with_holes(
-                            urban::Polygon(
-                                std::begin(buffer),
-                                std::end(buffer)
-                            ),
-                            std::begin(hole_list),
-                            std::end(hole_list)
-                        ),
+                urban::projection::BrickPrint _rhs(
+                    test_facet_projection(
+                        std::vector<urban::Point_2>{{
+                            urban::Point_2(-10, -10),
+                            urban::Point_2(2, -10),
+                            urban::Point_2(-2, -2),
+                            urban::Point_2(-4, 6),
+                            urban::Point_2(4, 4),
+                            urban::Point_2(-6, 8)
+                        }},
+                        std::vector<urban::Point_2>{{
+                            urban::Point_2(-4, 2),
+                            urban::Point_2(-6, 2),
+                            urban::Point_2(-6, 4)
+                        }},
                         urban::Plane_3(
                             urban::Point_3(-6, 8, 10),
                             urban::Point_3(-10, 10, 10),
                             urban::Point_3(2, -10, 10)                
                         )
                     )
-                }};
-
-                buffer.clear();
-                buffer = std::vector<urban::Point_2>{{
-                    urban::Point_2(-6, 2),
-                    urban::Point_2(-4, 2),
-                    urban::Point_2(-6, 4)
-                }};
-
-                std::list<urban::projection::FacePrint> _result{{
-                    urban::projection::FacePrint(
-                        urban::Polygon_with_holes(
-                            urban::Polygon(
-                                std::begin(buffer),
-                                std::end(buffer)
-                            )
-                        ),
-                        urban::Plane_3(
-                            urban::Point_3(-10, 6, 0),
-                            urban::Point_3(-12, 0, 0),
-                            urban::Point_3(0, 0, 0)                
-                        )
-                    )
-                }};
-
-                buffer.clear();
-                buffer = std::vector<urban::Point_2>{{
-                    urban::Point_2(-0.8, 5.2),
-                    urban::Point_2(-2, 4),
-                    urban::Point_2(-3.6, 4.4),
-                    urban::Point_2(-2.5, 0),
-                    urban::Point_2(0, -1.5),
-                    urban::Point_2(-3, 2),
-                    urban::Point_2(-10, -5),
-                    urban::Point_2(-10, -6),
-                    urban::Point_2(-6, -12),
-                    urban::Point_2(-12, 2),
-                    urban::Point_2(2, 4.5)
-                }};
-                _result.push_back(
-                    urban::projection::FacePrint(
-                        urban::Polygon_with_holes(
-                            urban::Polygon(
-                                std::begin(buffer),
-                                std::end(buffer)
-                            )
-                        ),
-                        urban::Plane_3(
-                            urban::Point_3(-10, 6, 0),
-                            urban::Point_3(-12, 0, 0),
-                            urban::Point_3(0, 0, 0)                
-                        )
-                    )
                 );
 
-
-                buffer.clear();
-                buffer = std::vector<urban::Point_2>{{
-                    urban::Point_2(2, 8),
-                    urban::Point_2(-2/7, 40/7),
-                    urban::Point_2(2, 4.8)
-                }};
-                _result.push_back(
-                    urban::projection::FacePrint(
-                        urban::Polygon_with_holes(
-                            urban::Polygon(
-                                std::begin(buffer),
-                                std::end(buffer)
-                            ),
-                            std::begin(hole_list),
-                            std::end(hole_list)
-                        ),
-                        urban::Plane_3(
-                            urban::Point_3(-10, 6, 0),
-                            urban::Point_3(-12, 0, 0),
-                            urban::Point_3(0, 0, 0)                
-                        )
-                    )
-                );
-                buffer.clear();
-                buffer = std::vector<urban::Point_2>{{   
-                    urban::Point_2(-6.63158, 5.15789),
-                    urban::Point_2(-10, 6),
-                    urban::Point_2(-12, 0),
-                    urban::Point_2(-70/9, 0)
-                }};
-                _result.push_back(
-                    urban::projection::FacePrint(
-                        urban::Polygon_with_holes(
-                            urban::Polygon(
-                                std::begin(buffer),
-                                std::end(buffer)
+                auto _lhs = urban::projection::BrickPrint(
+                        test_facet_projection(
+                            std::vector<urban::Point_2>{{
+                                urban::Point_2(-6, 2),
+                                urban::Point_2(-4, 2),
+                                urban::Point_2(-6, 4)
+                            }},
+                            urban::Plane_3(
+                                urban::Point_3(-10, 6, 0),
+                                urban::Point_3(-12, 0, 0),
+                                urban::Point_3(0, 0, 0)                
                             )
-                        ),
-                        urban::Plane_3(
-                            urban::Point_3(-10, 6, 0),
-                            urban::Point_3(-12, 0, 0),
-                            urban::Point_3(0, 0, 0)                
                         )
                     )
-                );
+                    +
+                    urban::projection::BrickPrint(
+                        test_facet_projection(
+                            std::vector<urban::Point_2>{{
+                                urban::Point_2(-0.8, 5.2),
+                                urban::Point_2(-2, 4),
+                                urban::Point_2(-3.6, 4.4),
+                                urban::Point_2(-2.5, 0),
+                                urban::Point_2(0, -1.5),
+                                urban::Point_2(-3, 2),
+                                urban::Point_2(-10, -5),
+                                urban::Point_2(-10, -6),
+                                urban::Point_2(-6, -12),
+                                urban::Point_2(-12, 2),
+                                urban::Point_2(2, 4.5)
+                            }},
+                            urban::Plane_3(
+                                urban::Point_3(-10, 6, 0),
+                                urban::Point_3(-12, 0, 0),
+                                urban::Point_3(0, 0, 0)                
+                            )
+                        )
+                    )
+                    +
+                    urban::projection::BrickPrint(
+                        test_facet_projection(
+                            std::vector<urban::Point_2>{{
+                                urban::Point_2(2, 8),
+                                urban::Point_2(-2/7, 40/7),
+                                urban::Point_2(2, 4.8)
+                            }},
+                            std::vector<urban::Point_2>{{
+                                urban::Point_2(-4, 2),
+                                urban::Point_2(-6, 2),
+                                urban::Point_2(-6, 4)
+                            }},
+                            urban::Plane_3(
+                                urban::Point_3(-10, 6, 0),
+                                urban::Point_3(-12, 0, 0),
+                                urban::Point_3(0, 0, 0)                
+                            )
+                        )
+                    )
+                    +
+                    urban::projection::BrickPrint(
+                        test_facet_projection(
+                            std::vector<urban::Point_2>{{
+                                urban::Point_2(-6.63158, 5.15789),
+                                urban::Point_2(-10, 6),
+                                urban::Point_2(-12, 0),
+                                urban::Point_2(-70/9, 0)
+                            }},
+                            urban::Plane_3(
+                                urban::Point_3(-10, 6, 0),
+                                urban::Point_3(-12, 0, 0),
+                                urban::Point_3(0, 0, 0)                
+                            )
+                        )
+                    );
 
-                REQUIRE((rhs == _rhs && result == _result));
+                REQUIRE((lhs == _lhs && rhs == _rhs));
             }
         }
     }

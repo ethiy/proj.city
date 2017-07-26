@@ -1,4 +1,4 @@
-#include "../libs/projection/Face/face_projection.h"
+#include "../libs/projection/face/face_projection.h"
 
 #include <catch.hpp>
 
@@ -17,9 +17,10 @@ SCENARIO("Face Projection manipulation:")
         urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
                        B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 0.))),
                        C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
-        std::vector<urban::Point_2> vertices;
-        vertices.push_back(urban::Point_2(A.x(), A.y()));
-        vertices.push_back(urban::Point_2(C.x(), C.y()));
+        std::vector<urban::Point_2> vertices{{
+            urban::Point_2(A.x(), A.y()),
+            urban::Point_2(C.x(), C.y())
+        }};
 
         urban::projection::FacePrint perpendicular(
             urban::Polygon_with_holes(
@@ -83,11 +84,12 @@ SCENARIO("Face Projection manipulation:")
         urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.))),
                        B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
                        C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
-        std::vector<urban::Point_2> vertices;
-        vertices.push_back(urban::Point_2(A.x(), A.y()));
-        vertices.push_back(urban::Point_2(B.x(), B.y()));
-        vertices.push_back(urban::Point_2(C.x(), C.y()));
-        std::list<urban::Polygon> l{urban::Polygon(std::begin(vertices), std::end(vertices))};
+        std::vector<urban::Point_2> vertices{{
+            urban::Point_2(A.x(), A.y()),
+            urban::Point_2(B.x(), B.y()),
+            urban::Point_2(C.x(), C.y())
+        }};
+        std::list<urban::Polygon> buffer_list{urban::Polygon(std::begin(vertices), std::end(vertices))};
 
         urban::projection::FacePrint degenerate(
             urban::Polygon_with_holes(
@@ -95,8 +97,8 @@ SCENARIO("Face Projection manipulation:")
                     std::begin(vertices),
                     std::end(vertices)
                 ),
-                std::begin(l),
-                std::end(l)
+                std::begin(buffer_list),
+                std::end(buffer_list)
             ),
             urban::Plane_3(A, B, C)
         );
@@ -160,19 +162,21 @@ SCENARIO("Face Projection manipulation:")
                        C(to_exact(urban::InexactKernel::Point_3(3, 5, 0.))),
                        D(to_exact(urban::InexactKernel::Point_3(-3, 5, .0)));
 
-        std::vector<urban::Point_2> vertices;
-        vertices.push_back(urban::Point_2(A.x(), A.y()));
-        vertices.push_back(urban::Point_2(B.x(), B.y()));
-        vertices.push_back(urban::Point_2(C.x(), C.y()));
-        vertices.push_back(urban::Point_2(D.x(), D.y()));
+        std::vector<urban::Point_2> vertices{{
+            urban::Point_2(A.x(), A.y()),
+            urban::Point_2(B.x(), B.y()),
+            urban::Point_2(C.x(), C.y()),
+            urban::Point_2(D.x(), D.y())
+        }};
 
-        std::vector<urban::Point_2> hole_vertices;
-        hole_vertices.push_back(urban::Point_2(-1, -3));
-        hole_vertices.push_back(urban::Point_2(-1, 3));
-        hole_vertices.push_back(urban::Point_2(1, 3));
-        hole_vertices.push_back(urban::Point_2(1, -3));
+        std::vector<urban::Point_2> hole_vertices{{
+            urban::Point_2(-1, -3),
+            urban::Point_2(-1, 3),
+            urban::Point_2(1, 3),
+            urban::Point_2(1, -3)
+        }};
 
-        std::list<urban::Polygon> l{urban::Polygon(std::begin(hole_vertices), std::end(hole_vertices))};
+        std::list<urban::Polygon> hole_list_buffer{urban::Polygon(std::begin(hole_vertices), std::end(hole_vertices))};
 
         urban::projection::FacePrint example(
             urban::Polygon_with_holes(
@@ -180,8 +184,8 @@ SCENARIO("Face Projection manipulation:")
                     std::begin(vertices),
                     std::end(vertices)
                 ),
-                std::begin(l),
-                std::end(l)
+                std::begin(hole_list_buffer),
+                std::end(hole_list_buffer)
             ),
             urban::Plane_3(A, B, C)
         );
