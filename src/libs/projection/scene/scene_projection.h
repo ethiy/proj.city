@@ -11,7 +11,9 @@ namespace urban
         class FootPrint
         {
         public:
+            FootPrint(void);
             FootPrint(scene::UNode const& unode);
+            FootPrint(std::string const& _name, OGRLayer* projection_layer);
             FootPrint(FootPrint const& other);
             FootPrint(FootPrint && other);
             ~FootPrint(void);
@@ -36,6 +38,8 @@ namespace urban
             const_iterator cend(void) const noexcept;
 
             FootPrint & operator +=(FootPrint & other);
+
+            void to_ogr(GDALDataset* file, bool labels) const;
         private:
             std::string name;
             shadow::Point reference_point;

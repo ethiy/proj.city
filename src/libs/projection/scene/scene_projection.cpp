@@ -8,6 +8,8 @@ namespace urban
 {
     namespace projection
     {
+        FootPrint::FootPrint(void)
+        {}
         FootPrint::FootPrint(scene::UNode const& unode)
             : name(unode.get_name()), reference_point(unode.get_reference_point()), epsg_index(unode.get_epsg_index())
         {
@@ -22,6 +24,21 @@ namespace urban
                     return proj + BrickPrint(face_print);
                 }
             );
+        }
+        FootPrint::FootPrint(std::string const& _name, OGRLayer* projection_layer)
+            : name(_name)
+        {
+            projection_layer->ResetReading();
+
+            OGRFeature* ogr_facet;
+            while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
+            {
+                FacePrint facet(ogr_facet, projection_layer->GetLayerDefn());
+                projected_facets.push_back(facet);
+                OGRFeature::DestroyFeature(ogr_facet);
+                projected_surface.join(facet.get_polygon());
+                bounding_box += facet.bbox();
+            }
         }
         FootPrint::FootPrint(FootPrint const& other)
             : name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), projection(other.projection)
@@ -102,13 +119,50 @@ namespace urban
             return projection.cend();
         }
 
-        FootPrint & operator +=(FootPrint & other)
+        FootPrint & FootPrint::operator +=(FootPrint & other)
         {
             if(reference_point != other.reference || epsg_index != other.epsg_index)
                 throw std::logic_error("Feature not supported");
             
             projection += other.projection;
             return *this;
+        }
+
+        void FootPrint::to_ogr(GDALDataset* file, bool labels) const
+        {
+            OGRSpatialReference spatial_reference_system;
+            spatial_reference_system.importFromEPSG(
+                epsg_index
+            );
+            OGRLayer* projection_layer = file->CreateLayer(name.c_str(), &spatial_reference_system, wkbPolygon, NULL);
+            if(projection_layer == NULL)
+                throw std::runtime_error("GDAL could not create a projection layer!");
+            
+            OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff_a", OFTReal);
+            projection_layer->CreateField(plane_coefficient_a);
+            OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff_b", OFTReal);
+            projection_layer->CreateField(plane_coefficient_b);
+            OGRFieldDefn* plane_coefficient_c = new OGRFieldDefn("coeff_c", OFTReal);
+            projection_layer->CreateField(plane_coefficient_c);
+            OGRFieldDefn* plane_coefficient_d = new OGRFieldDefn("coeff_d", OFTReal);
+            projection_layer->CreateField(plane_coefficient_d);
+            if(labels)
+            {
+                OGRFieldDefn* unqualified_errors = new OGRFieldDefn("Unq_Errors", OFTString);
+                projection_layer->CreateField(unqualified_errors);
+                OGRFieldDefn* building_errors = new OGRFieldDefn("Bul_Errors", OFTString);
+                projection_layer->CreateField(building_errors);
+                OGRFieldDefn* facets_errors = new OGRFieldDefn("Fac_Errors", OFTString);
+                projection_layer->CreateField(facets_errors);
+            }
+
+            for(auto const& facet : projected_facets)
+            {
+                OGRFeature* ogr_facet = facet.to_ogr(projection_layer->GetLayerDefn(), reference_point, labels);
+                if(projection_layer->CreateFeature(ogr_facet) != OGRERR_NONE)
+                    throw std::runtime_error("GDAL could not insert the facet in vector image!");
+                OGRFeature::DestroyFeature(ogr_facet);
+            }
         }
 
         std::ostream & operator <<(std::ostream & os, FootPrint const& footprint)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "io.h"
-#include "../projection/scene/brick_projection.h"
+#include "../projection/scene/scene_projection.h"
 #include "../projection/raster/raster_projection.h"
 
 #include <boost/filesystem/path.hpp>
@@ -36,7 +36,7 @@ namespace urban
             template<class P>
             P read(void) const;
 
-            void write(projection::BrickPrint const& brick_projection, bool labels = false) const;
+            void write(projection::FootPrint const& brick_projection, bool labels = false) const;
             void write(projection::RasterPrint const& raster_image) const;
         private:
             std::string driver_name;
@@ -47,7 +47,7 @@ namespace urban
         };
         
         template<>
-        projection::BrickPrint FileHandler<GDALDriver>::read(void) const;
+        projection::FootPrint FileHandler<GDALDriver>::read(void) const;
         template<>
         projection::RasterPrint FileHandler<GDALDriver>::read(void) const;
     }

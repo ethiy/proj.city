@@ -34,9 +34,9 @@ namespace urban
 
         FileHandler<GDALDriver>::~FileHandler(void) {}
 
-        template<> projection::BrickPrint FileHandler<GDALDriver>::read<projection::BrickPrint>(void) const
+        template<> projection::FootPrint FileHandler<GDALDriver>::read<projection::FootPrint>(void) const
         {
-            projection::BrickPrint brick_projection;
+            projection::FootPrint footprint;
             std::ostringstream error_message;
             
             if (modes.at("read"))
@@ -52,7 +52,7 @@ namespace urban
                             throw std::runtime_error(error_message.str());
                         }
                         
-                        brick_projection = projection::BrickPrint(filepath.stem().string(), file->GetLayer(0));
+                        footprint = projection::FootPrint(filepath.stem().string(), file->GetLayer(0));
                         GDALClose(file);
                     }
                     else
@@ -76,10 +76,10 @@ namespace urban
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
 
-            return brick_projection;
+            return footprint;
         }
 
-        void FileHandler<GDALDriver>::write(const projection::BrickPrint & brick_projection, bool labels) const
+        void FileHandler<GDALDriver>::write(const projection::FootPrint & footprint, bool labels) const
         {
             std::ostringstream error_message;
 
@@ -103,7 +103,7 @@ namespace urban
                         throw boost::filesystem::filesystem_error(error_message.str(), ec);
                     }
 
-                    brick_projection.to_ogr(file, labels);
+                    footprint.to_ogr(file, labels);
                     GDALClose(file);
                 }
                 else
