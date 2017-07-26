@@ -39,7 +39,6 @@ namespace urban
             std::array<double, 6> get_geographic_transform(void) const;
 
             std::size_t get_index(std::size_t const& i, std::size_t const& j) const noexcept;
-            std::vector<short> const& pixel_hits(void) const noexcept;
             double* data(void) noexcept;
             const double* data(void) const noexcept;
 
@@ -70,7 +69,7 @@ namespace urban
             std::size_t width = 0;
             double pixel_size = .06;
             std::vector<double> image_matrix;
-            std::vector<short> pixel_access;
+            std::vector<short> pixel_hits;
             bool offset = false;
 
             friend std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection);

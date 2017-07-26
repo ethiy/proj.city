@@ -72,7 +72,7 @@ namespace urban
 
             OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const;
             
-            RasterPrint & rasterize_to(RasterPrint & raster_projection, const shadow::Point & pivot) const;
+            std::vector<double> & rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& reference_point, double const height, double const width, double const pixel_size) const;
         private:
             Polygon_with_holes border;
             Plane_3 supporting_plane;

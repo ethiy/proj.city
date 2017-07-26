@@ -37,9 +37,7 @@ namespace urban
             );
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
             if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
-            {
                 border = get_ogr_polygon(dynamic_cast<OGRPolygon*>(feature_polygon));
-            }
             else
                 throw std::runtime_error("GDAL could not read a polygon from the feature");
         }
@@ -158,6 +156,7 @@ namespace urban
         {
             return urban::centroid(border.outer_boundary());
         }
+        
         double FacePrint::area(void) const
         {
             return std::accumulate(
@@ -256,42 +255,39 @@ namespace urban
             return feature;
         }
 
-        RasterPrint & FacePrint::rasterize_to(const shadow::Point & pivot, double pixel_size) const
+        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& reference_point, double const height, double const width, double const pixel_size) const
         {
             if(!is_degenerate())
             {
-                Bbox_2 bae = bbox();
-                std::size_t  i_min = static_cast<std::size_t>(std::floor((raster_projection.get_reference_point().y() - bae.ymax() - pivot.y()) / pixel_size)),
-                             j_min = static_cast<std::size_t>(std::floor((bae.xmin() - raster_projection.get_reference_point().x() + pivot.x()) / pixel_size));
-                std::size_t  w = static_cast<std::size_t>(std::ceil((bae.xmax() - bae.xmin()) / pixel_size)),
-                             h = static_cast<std::size_t>(std::ceil((bae.ymax() - bae.ymin()) / pixel_size));
-                if(i_min + h > raster_projection.get_height() && j_min + w > raster_projection.get_width())
+                Bbox_2 bb = bbox();
+                std::size_t  i_min = static_cast<std::size_t>(std::floor((reference_point.y() - bb.ymax()) / pixel_size)),
+                             j_min = static_cast<std::size_t>(std::floor((bb.xmin() - reference_point.x()) / pixel_size));
+                std::size_t  w = static_cast<std::size_t>(std::ceil((bb.xmax() - bb.xmin()) / pixel_size)),
+                             h = static_cast<std::size_t>(std::ceil((bb.ymax() - bb.ymin()) / pixel_size));
+                if(i_min + h > height && j_min + w > width)
                 {
-                    std::stringstream error_message("Oh noooz!! I iz outsidez ze box");
-                    error_message << i_min + h << " > " << raster_projection.get_height() << " or " << j_min + w << " > " << raster_projection.get_width();
+                    std::stringstream error_message("Face out of bounds: ");
+                    error_message << i_min + h << " > " << height << " or " << j_min + w << " > " << width;
                     throw std::runtime_error(error_message.str());
                 }
+
                 std::vector<std::size_t> indexes(w * h);
                 std::iota(std::begin(indexes), std::end(indexes), 0);
-                std::for_each(
-                    std::begin(indexes),
-                    std::end(indexes),
-                    [pixel_size, w, &bae, this, &raster_projection, i_min, j_min](std::size_t const& index)
-                    {
-                        bool hit(false);
-                        double height = get_height(
-                            bae.xmin() + static_cast<double>(index%w) * pixel_size,
-                            bae.ymax() - static_cast<double>(index/w) * pixel_size,
-                            pixel_size,
-                            hit
-                        );
-                        if(hit)
-                            raster_projection.at(i_min + index/w, j_min + index%w) = (raster_projection.at(i_min + index/w, j_min + index%w) * raster_projection.hit(i_min + index/w, j_min + index%w) + height) / (++raster_projection.hit(i_min + index/w, j_min + index%w));
-                    }
-                );
+                for(auto const& index : indexes)
+                {
+                    bool hit = false;
+                    double height = get_height(
+                        bb.xmin() + static_cast<double>(index%w) * pixel_size,
+                        bb.ymax() - static_cast<double>(index/w) * pixel_size,
+                        pixel_size,
+                        hit
+                    );
+                    if(hit)
+                        image.at((i_min + index/w) * width + j_min + index%w) = (image.at((i_min + index/w) * width + j_min + index%w) * hits.at((i_min + index/w) * width + j_min + index%w) + height) / (++hits.at((i_min + index/w) * width + j_min + index%w));
+                }
             }
             
-            return raster_projection;
+            return image;
         }
 
         std::ostream & operator <<(std::ostream & os, FacePrint const& facet)

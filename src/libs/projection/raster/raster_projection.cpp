@@ -12,7 +12,7 @@ namespace urban
     {
         RasterPrint::RasterPrint(void)
         {}
-        RasterPrint::RasterPrint(FootPrint const& footprint, double _pixel_size)
+        RasterPrint::RasterPrint(FootPrint const& footprint, double const _pixel_size)
             : name(footprint.get_name()),
               reference_point(footprint.get_reference_point()),
               epsg_index(footprint.get_epsg()),
@@ -20,15 +20,15 @@ namespace urban
               width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / pixel_size))),
               pixel_size(_pixel_size),
               image_matrix(height * width, 0.),
-              pixel_access(height * width, 0)
+              pixel_hits(height * width, 0)
         {
             image_matrix = std::accumulate(
-                std::begin(),
-                std::end(),
+                std::begin(footprint),
+                std::end(footprint),
                 image_matrix,
-                [this](projection::FacePrint const& face_projection)
+                [this](std::vector<double> & image, projection::FacePrint const& face_projection)
                 {
-                    return face_projection.rasterize_to(result, pivot);
+                    return face_projection.rasterize(image, pixel_hits, reference_point, height, width, pixel_size);
                 }
             );
         }
@@ -39,7 +39,7 @@ namespace urban
               width(_width),
               pixel_size(geographic_transform[1]),
               image_matrix(_height * _width, 0.),
-              pixel_access(_height * _width, 1),
+              pixel_hits(_height * _width, 1),
               offset(true)
         {
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())
@@ -62,7 +62,7 @@ namespace urban
               width(other.width),
               pixel_size(other.pixel_size),
               image_matrix(other.image_matrix),
-              pixel_access(other.pixel_access),
+              pixel_hits(other.pixel_hits),
               offset(other.offset)
         {}
         RasterPrint::RasterPrint(RasterPrint && other)
@@ -73,7 +73,7 @@ namespace urban
               width(std::move(other.width)),
               pixel_size(std::move(other.pixel_size)),
               image_matrix(std::move(other.image_matrix)),
-              pixel_access(std::move(other.pixel_access)),
+              pixel_hits(std::move(other.pixel_hits)),
               offset(std::move(other.offset))
         {}
         RasterPrint::~RasterPrint(void)
@@ -126,10 +126,6 @@ namespace urban
         {
             return image_matrix.data();
         }
-        std::vector<short> const& RasterPrint::pixel_hits(void) const noexcept
-        {
-            return pixel_access;
-        }
 
         void RasterPrint::swap(RasterPrint & other)
         {
@@ -142,7 +138,7 @@ namespace urban
             swap(width, other.width);
             swap(pixel_size, other.pixel_size);
             swap(image_matrix, other.image_matrix);
-            swap(pixel_access, other.pixel_access);
+            swap(pixel_hits, other.pixel_hits);
             swap(offset, other.offset);
         }
 
@@ -162,13 +158,13 @@ namespace urban
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
-            return pixel_access.at(i * width + j);
+            return pixel_hits.at(i * width + j);
         }
         const short & RasterPrint::hit(std::size_t const& i, std::size_t const& j) const
         {
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
-            return pixel_access.at(i * width + j);
+            return pixel_hits.at(i * width + j);
         }
 
         RasterPrint::iterator RasterPrint::begin(void) noexcept
@@ -205,7 +201,7 @@ namespace urban
             width = other.width;
             pixel_size = other.pixel_size;
             image_matrix = other.image_matrix;
-            pixel_access = other.pixel_access;
+            pixel_hits = other.pixel_hits;
             offset = other.offset;
 
             return *this;
@@ -220,7 +216,7 @@ namespace urban
             width = std::move(other.width);
             pixel_size = std::move(other.pixel_size);
             image_matrix = std::move(other.image_matrix);
-            pixel_access = std::move(other.pixel_access);
+            pixel_hits = std::move(other.pixel_hits);
             offset = std::move(other.offset);
             
             return *this;
@@ -231,7 +227,7 @@ namespace urban
             if(!offset)
             {
                 for(std::size_t index(0); index != height * width; ++index)
-                    image_matrix.at(index) += (pixel_access.at(index) != 0) * reference_point.z();
+                    image_matrix.at(index) += (pixel_hits.at(index) != 0) * reference_point.z();
 
                 offset = true;
             }
