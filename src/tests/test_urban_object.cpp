@@ -26,7 +26,7 @@ SCENARIO("Urban Brick manipulation:")
                 std::ostringstream auxilary;
                 auxilary << staff;
 
-                std::ifstream tmp("../../ressources/tests/hammerhead.off");
+                std::ifstream tmp("../../ressources/tests/staff.off");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
                 REQUIRE( auxilary.str() == tmp_str );
             }
