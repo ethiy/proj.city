@@ -34,7 +34,7 @@ namespace urban
             Off_stream(std::iostream & _ios): ios(_ios) {}
             /**
             * Copy constructor
-            * @param _ios reference to Adjacency stream
+            * @param other reference to Adjacency stream
             * @see Off_stream(std::iostream & _ios)
             * @see Off_stream(std::iostream && _ios)
             * @see Off_stream(Off_stream && other)

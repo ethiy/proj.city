@@ -41,7 +41,7 @@ namespace urban
             std::size_t point_size = std::accumulate(
                 std::begin(meshes),
                 std::end(meshes),
-                0,
+                std::size_t(0),
                 [](std::size_t _size, shadow::Mesh const& mesh)
                 {
                     return _size + mesh.points_size();
@@ -454,7 +454,7 @@ namespace urban
                     auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
                     if(placeholder != std::end(facets))
                     {
-                        long index = std::distance(std::begin(facets), placeholder) + offset;
+                        long index = std::distance(std::begin(facets), placeholder) + static_cast<long>(offset);
                         matrix.at((line + offset) * size + index) = true;
                     }
                 }

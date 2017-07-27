@@ -266,7 +266,7 @@ namespace urban
             /**
             * Outstreaming urban node in OFF format
             * @param os the output stream
-            * @param brick the brick to stream
+            * @param unode the brick to stream
             * @return the output stream
             */
             friend std::ostream& operator<<(std::ostream & os, UNode const& unode);
