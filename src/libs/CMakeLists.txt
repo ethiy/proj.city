@@ -28,7 +28,6 @@ set(Algorithms_HEADER
 set(Algorithms_SRC
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/scene/unode_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/ogr/ogr_algorithms.cpp"
-    "${proj.city_SOURCE_DIR}/src/libs/algorithms/shadow/shadow_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/algorithms/utils/util_algorithms.cpp"
 )
 set(Scene_HEADERS

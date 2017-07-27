@@ -38,49 +38,15 @@ namespace urban
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<shadow::Mesh> meshes = mesh_file.read(building_id);
-            std::size_t point_size = std::accumulate(
-                std::begin(meshes),
-                std::end(meshes),
-                std::size_t(0),
-                [](std::size_t _size, shadow::Mesh const& mesh)
-                {
-                    return _size + mesh.points_size();
-                }
-            );
-
             std::vector<Point_3> points;
-            points.reserve(point_size);
-            std::vector<Point_3> point_buffer;
-            for(auto const& mesh : meshes)
-            {
-                point_buffer = std::vector<Point_3>(mesh.points_size());
-                std::transform(
-                    mesh.points_cbegin(),
-                    mesh.points_cend(),
-                    std::begin(point_buffer),
-                    [](std::pair<std::size_t, shadow::Point> const& point_p)
-                    {
-                        return Point_3(point_p.second.x(), point_p.second.y(), point_p.second.z());
-                    }
-                );
-                points.insert(std::end(points), std::begin(point_buffer), std::end(point_buffer));
-            }
-
             std::vector< std::vector<std::size_t> > polygons;
-            std::vector< std::vector<std::size_t> > face_buffer;
+
             for(auto const& mesh : meshes)
             {
-                face_buffer = std::vector< std::vector<std::size_t> >(mesh.faces_size());
-                std::transform(
-                    mesh.faces_cbegin(),
-                    mesh.faces_cend(),
-                    std::begin(face_buffer),
-                    [](std::pair<std::size_t, shadow::Face> const& face_p)
-                    {
-                        return std::vector<std::size_t>(std::begin(face_p.second), std::end(face_p.second));
-                    }
-                );
-                polygons.insert(std::end(polygons), std::begin(face_buffer), std::end(face_buffer));
+                auto buffer_points = mesh.get_cgal_points();
+                auto buffer_faces = mesh.get_cgal_faces();
+                points.insert(std::end(points), std::begin(buffer_points), std::end(buffer_points));
+                polygons.insert(std::end(polygons), std::begin(buffer_faces), std::end(buffer_faces));
             }
 
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
@@ -93,27 +59,8 @@ namespace urban
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
-            std::vector<Point_3> points(mesh.points_size());
-            std::transform(
-                mesh.points_cbegin(),
-                mesh.points_cend(),
-                std::begin(points),
-                [](std::pair<std::size_t, shadow::Point> const& point_p)
-                {
-                    return Point_3(point_p.second.x(), point_p.second.y(), point_p.second.z());
-                }
-            );
-
-            std::vector< std::vector<std::size_t> > polygons(mesh.faces_size());
-            std::transform(
-                mesh.faces_cbegin(),
-                mesh.faces_cend(),
-                std::begin(polygons),
-                [](std::pair<std::size_t, shadow::Face> const& face_p)
-                {
-                    return std::vector<std::size_t>(std::begin(face_p.second), std::end(face_p.second));
-                }
-            );
+            std::vector<Point_3> points = mesh.get_cgal_points();
+            std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
 
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);

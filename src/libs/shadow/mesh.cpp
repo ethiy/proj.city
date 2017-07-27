@@ -14,29 +14,29 @@ namespace urban
     namespace shadow
     {
         Mesh::Mesh(void)
-            : name("no name") {}
+        {}
         Mesh::Mesh(Mesh const& other)
             : name(other.name), points(other.points), faces(other.faces), bounding_box(other.bounding_box) {}
         Mesh::Mesh(Mesh && other)
             : name(std::move(other.name)), points(std::move(other.points)), faces(std::move(other.faces)), bounding_box(std::move(other.bounding_box)) {}
         Mesh::Mesh(Lib3dsMesh* lib3ds_mesh)
-            : name(lib3ds_mesh->name)
+            : name(lib3ds_mesh->name), points(lib3ds_mesh->points), faces(lib3ds_mesh->faces)
         {
-            std::size_t it(0);
-            std::for_each(
+            std::transform(
                 lib3ds_mesh->pointL,
                 lib3ds_mesh->pointL + lib3ds_mesh->points,
-                [&it, this](Lib3dsPoint const& lib3ds_point)
+                std::begin(points),
+                [this](Lib3dsPoint const& lib3ds_point)
                 {
-                    points.emplace(std::make_pair(it++, Point(lib3ds_point)));
+                    return Point(lib3ds_point);
                 }
             );
 
-            it = 0;
-            std::for_each(
+            std::transform(
                 lib3ds_mesh->faceL,
                 lib3ds_mesh->faceL + lib3ds_mesh->faces,
-                [&it, this](Lib3dsFace const& lib3ds_facet)
+                std::begin(faces),
+                [this](Lib3dsFace const& lib3ds_facet)
                 {
                     Point point_0 = points[lib3ds_facet.points[0]];
                     Point point_1 = points[lib3ds_facet.points[1]];
@@ -47,71 +47,57 @@ namespace urban
                         static_cast<double>(lib3ds_facet.normal[2])
                     );
 
-                    faces.emplace(
-                        std::make_pair(
-                            it++,
-                            Face(
-                                lib3ds_facet.points[0],
-                                lib3ds_facet.points[1],
-                                lib3ds_facet.points[2],
-                                determinant(point_1 - point_0, point_2 - point_1, n) > std::numeric_limits<double>::epsilon()
-                            )
-                        )
+                    return Face(
+                        lib3ds_facet.points[0],
+                        lib3ds_facet.points[1],
+                        lib3ds_facet.points[2],
+                        determinant(point_1 - point_0, point_2 - point_1, n) > std::numeric_limits<double>::epsilon()
                     );
                 }
             );
+
             compute_bbox();
         }
 
         Mesh::Mesh(Polyhedron const& polyhedron)
+            : points(polyhedron.size_of_vertices()), faces(polyhedron.size_of_facets())
         {
-            std::size_t it(0);
-            std::for_each(
+            std::transform(
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
-                [&it, this](Point_3 const& point)
+                std::begin(points),
+                [this](Point_3 const& point)
                 {
-                    points.emplace(std::make_pair(it++, Point(point)));
+                    return Point(point);
                 }
             );
 
-            it = 0;
-            std::for_each(
+            std::transform(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
-                [&it, this](Polyhedron::Facet const& facet)
+                std::begin(faces),
+                [this](Polyhedron::Facet const& facet)
                 {
-                    std::size_t face_degree(facet.facet_degree());
-                    std::vector<std::size_t> face_points(face_degree);
-                    face_points[0] = get_index(*(facet.facet_begin()));
-                    std::transform(
-                        std::next(facet.facet_begin(), 1),
-                        std::next(facet.facet_begin(), static_cast<long>(face_degree)),
-                        std::next(std::begin(face_points), 1),
-                        [this](Polyhedron::Halfedge const& halfedge)
-                        {
-                            return get_index(halfedge);
-                        }
-                    );
-                    faces.emplace(std::make_pair(it++, Face(face_points)));
+                    return Face(facet, points);
                 }
             );
             compute_bbox();
         }
 
-        Mesh::Mesh(std::string _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces)
+        Mesh::Mesh(std::string _name, std::vector<Point> const& _points, std::vector<Face> const& _faces)
             : name(_name), points(_points), faces(_faces)
         {
             compute_bbox();
         }
 
-        Mesh::Mesh(std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const& _faces)
+        Mesh::Mesh(std::vector<Point> const& _points, std::vector<Face> const& _faces)
             : points(_points), faces(_faces)
         {
             compute_bbox();
         }
         
-        Mesh::~Mesh(void) {}
+        Mesh::~Mesh(void)
+        {}
 
         void Mesh::swap(Mesh & other)
         {
@@ -122,7 +108,7 @@ namespace urban
             swap(bounding_box, other.bounding_box);
         }
 
-        Mesh & Mesh::operator=(Mesh const& other) noexcept
+        Mesh & Mesh::operator =(Mesh const& other) noexcept
         {
             name = other.name;
             points = other.points;
@@ -130,7 +116,7 @@ namespace urban
             bounding_box = bounding_box;
             return *this;
         }
-        Mesh & Mesh::operator=(Mesh && other) noexcept
+        Mesh & Mesh::operator =(Mesh && other) noexcept
         {
             name = std::move(other.name);
             points = std::move(other.points);
@@ -143,11 +129,19 @@ namespace urban
         {
             return std::begin(points);
         }
+        Mesh::points_const_iterator Mesh::points_begin(void) const noexcept
+        {
+            return std::begin(points);
+        }
         Mesh::points_const_iterator Mesh::points_cbegin(void) const noexcept
         {
             return points.cbegin();
         }
         Mesh::points_iterator Mesh::points_end(void) noexcept
+        {
+            return std::end(points);
+        }
+        Mesh::points_const_iterator Mesh::points_end(void) const noexcept
         {
             return std::end(points);
         }
@@ -187,19 +181,56 @@ namespace urban
         {
             return points.size();
         }
-        std::map<std::size_t, Point> Mesh::get_points(void) const noexcept
+        std::vector<Point> const& Mesh::get_points(void) const noexcept
         {
             return points;
+        }
+        std::vector<Point> & Mesh::get_points(void) noexcept
+        {
+            return points;
+        }
+        std::vector<Point_3> Mesh::get_cgal_points(void) const noexcept
+        {
+            std::vector<Point_3> cgal_points(points.size());
+            std::transform(
+                std::begin(points),
+                std::end(points),
+                std::begin(cgal_points),
+                [](Point const& point)
+                {
+                    return Point_3(point.x(), point.y(), point.z());
+                }
+            );
+            return cgal_points;
         }
         std::size_t Mesh::faces_size(void) const noexcept
         {
             return faces.size();
         }
-        std::map<std::size_t, Face> Mesh::get_faces(void) const noexcept
+        std::vector<Face> const& Mesh::get_faces(void) const noexcept
         {
             return faces;
         }
-        Bbox Mesh::bbox(void) const noexcept
+        std::vector<Face> & Mesh::get_faces(void) noexcept
+        {
+            return faces;
+        }
+        std::vector< std::vector<std::size_t> > Mesh::get_cgal_faces(void) const noexcept
+        {
+            std::vector< std::vector<std::size_t> > cgal_faces(faces.size());
+            std::transform(
+                std::begin(faces),
+                std::end(faces),
+                std::begin(cgal_faces),
+                [](Face const& face)
+                {
+                    return face.indexes();
+                }
+            );
+
+            return cgal_faces;
+        }
+        Bbox const& Mesh::bbox(void) const noexcept
         {
             return bounding_box;
         }
@@ -217,12 +248,12 @@ namespace urban
                 std::begin(points),
                 std::end(points),
                 mesh->pointL,
-                [](std::pair<std::size_t, Point> const& p)
+                [](Point const& point)
                 {
-                    Lib3dsPoint point;
-                    auto init = std::initializer_list<double>({p.second.x(), p.second.y(), p.second.z()});
-                    std::copy(std::begin(init), std::end(init), point.pos);
-                    return point;
+                    Lib3dsPoint lib3ds_point;
+                    auto init = std::initializer_list<double>({point.x(), point.y(), point.z()});
+                    std::copy(std::begin(init), std::end(init), lib3ds_point.pos);
+                    return lib3ds_point;
                 }
             );
 
@@ -231,9 +262,9 @@ namespace urban
                     std::begin(faces), 
                     std::end(faces),
                     0,
-                    [](int & size, std::pair<std::size_t, Face> const& f)
+                    [](int & size, Face const& face)
                         {
-                            return size + static_cast<int>(f.second.get_degree()) - 2;
+                            return size + static_cast<int>(face.degree()) - 2;
                         }
                     )
                 );
@@ -244,9 +275,9 @@ namespace urban
                 std::begin(faces),
                 std::end(faces),
                 mesh->faceL,
-                [this](std::pair<std::size_t, Face> const& t)
+                [this](Face const& face)
                 {
-                    return *t.second.to_3ds(points);
+                    return *(face.to_3ds(points));
                 }
             );
 
@@ -255,31 +286,18 @@ namespace urban
             return mesh;
         }
 
-        std::ostream& operator<<(std::ostream &os, Mesh const& mesh)
+        std::ostream& operator <<(std::ostream &os, Mesh const& mesh)
         {
             os << "Name: " << mesh.name << std::endl
                << "Bounding box: " << mesh.bounding_box << std::endl
                << "Points: " << std::endl;
 
-            std::for_each(
-                std::begin(mesh.points),
-                std::end(mesh.points),
-                [&os](std::pair<std::size_t, Point> const& p)
-                {
-                    os << "Point " << p.first << " : " << p.second << std::endl;
-                }
-            );
+            for(std::size_t idx = 0; idx < mesh.points_size(); ++idx)
+                os << "Point " << idx << " : " << mesh.points.at(idx) << std::endl;
 
             os << "Faces: " << std::endl;
-
-            std::for_each(
-                std::begin(mesh.faces),
-                std::end(mesh.faces),
-                [&os](std::pair<std::size_t, Face> const& t)
-                {
-                    os << "Face " << t.first << " : " << t.second << std::endl;
-                }
-            );
+            for(std::size_t idx = 0; idx < mesh.faces_size(); ++idx)
+                os << "Face " << idx << " : " << mesh.faces.at(idx) << std::endl;
 
             return os;
         }
@@ -290,32 +308,14 @@ namespace urban
                 std::begin(points),
                 std::end(points),
                 Bbox(),
-                [](Bbox & box, std::pair<std::size_t, Point> const& point)
+                [](Bbox & box, Point const& point)
                 {
-                    return box + point.second.bbox();
+                    return box + point.bbox();
                 }
             );
         }
 
-        std::size_t Mesh::get_index(Polyhedron::Halfedge const& halfedge)
-        {
-            std::size_t index(0);
-            auto point_handle = std::find_if(
-                std::begin(points),
-                std::end(points),
-                [&halfedge](std::pair<std::size_t, Point> const& p)
-                {
-                    return p.second == Point(halfedge.vertex()->point());
-                }
-            );
-            if(point_handle != std::end(points))
-                index = point_handle->first;
-            else
-                throw std::out_of_range("The face contains a non listed point");
-            return index;
-        }
-
-        bool operator==(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
+        bool operator ==(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
         {
             bool equal(lhs.points_size() == rhs.points_size() && lhs.faces_size() == rhs.faces_size());
             if(equal)
@@ -326,10 +326,7 @@ namespace urban
                     rhs.points_cbegin(),
                     true,
                     std::logical_and<bool>(),
-                    [](std::pair<std::size_t, Point> const& l_point_pair, std::pair<std::size_t, Point> const& r_point_pair)
-                    {
-                        return l_point_pair.second == r_point_pair.second;
-                    }
+                    std::equal_to<Point>()
                 );
                 if(equal)
                 {
@@ -339,17 +336,14 @@ namespace urban
                         rhs.faces_cbegin(),
                         true,
                         std::logical_and<bool>(),
-                        [](std::pair<std::size_t, Face> const& l_face_pair, std::pair<std::size_t, Face> const& r_face_pair)
-                        {
-                            return l_face_pair.second == r_face_pair.second;
-                        }
+                        std::equal_to<Face>()
                     );
                 }
             }
             return equal;
         }
 
-        bool operator!=(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
+        bool operator !=(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
         {
             return !(lhs == rhs);
         }        

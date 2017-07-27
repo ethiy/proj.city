@@ -1,4 +1,5 @@
 #include "face.h"
+#include "utils.h"
 
 #include "../Vector/vector.h"
 
@@ -15,25 +16,38 @@ namespace urban
     namespace shadow
     {
         Face::Face(void)
-            : degree(0) {}
+        {}
         Face::Face(Face const& other)
-            : degree(other.degree), points(other.points) {}
+            : points(other.points) {}
         Face::Face(Face && other)
-            : degree(std::move(other.degree)), points(std::move(other.points)) {}
+            : points(std::move(other.points)) {}
         Face::Face(std::initializer_list<std::size_t> initializer)
-            : degree(initializer.size()), points(initializer)
+            : points(initializer)
         {
-            if(degree<3)
+            if(points.size()<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
         Face::Face(std::vector<std::size_t> const& indices)
-            : degree(indices.size()), points(indices)
+            : points(indices)
         {
-            if(degree<3)
+            if(points.size()<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
+        Face::Face(Polyhedron::Facet const& facet, std::vector<Point> const& map_points)
+            : points(facet.facet_degree())
+        {
+            points[0] = get_index(*(facet.facet_begin()), map_points);
+            std::transform(
+                std::next(facet.facet_begin(), 1),
+                std::next(facet.facet_begin(), static_cast<long>(points.size())),
+                std::next(std::begin(points), 1),
+                [this, &map_points](Polyhedron::Halfedge const& halfedge)
+                {
+                    return get_index(halfedge, map_points);
+                }
+            );
+        }
         Face::Face(std::size_t first, std::size_t second, std::size_t third, bool orientation)
-            : degree(3)
         {
             if(orientation)
                 points = std::vector<std::size_t>{{first, second, third}};
@@ -45,18 +59,15 @@ namespace urban
         void Face::swap(Face & other)
         {
             using std::swap;
-            swap(degree, other.degree);
             swap(points, other.points);
         }
         Face & Face::operator=(Face const& other) noexcept
         {
-            degree = other.degree;
             points = other.points;
             return *this;
         }
         Face & Face::operator=(Face && other) noexcept
         {
-            degree = std::move(other.degree);
             points = std::move(other.points);
             return *this;
         }
@@ -70,9 +81,13 @@ namespace urban
             return points[index];
         }        
 
-        std::size_t Face::get_degree(void) const noexcept
+        std::size_t Face::degree(void) const noexcept
         {
-            return degree;
+            return points.size();
+        }
+        std::vector<std::size_t> const& Face::indexes(void) const noexcept
+        {
+            return points;
         }
 
         Face::iterator Face::begin(void) noexcept
@@ -126,8 +141,10 @@ namespace urban
             return success;
         }
 
-        bool Face::is_convex(std::map<std::size_t, Point> const& coordinates) const
+        bool Face::is_convex(std::vector<Point> const& coordinates) const
         {
+            std::size_t degree = points.size();
+
             if(coordinates.size() < degree)
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
 
@@ -173,8 +190,10 @@ namespace urban
             return convexity;
         }
 
-        Lib3dsFace* Face::to_3ds(std::map<std::size_t, Point> const& coordinates) const
+        Lib3dsFace* Face::to_3ds(std::vector<Point> const& coordinates) const
         {
+            std::size_t degree = points.size();
+            
             if(coordinates.size() < degree)
                 throw std::out_of_range("The coordinates map must have at least the same size as the indexes registry");
             Lib3dsFace* face = reinterpret_cast<Lib3dsFace*>(calloc(sizeof(Lib3dsFace), degree-2));
@@ -207,7 +226,7 @@ namespace urban
 
         std::ostream& operator<<(std::ostream & os, Face const& face)
         {
-            os << face.degree << " ";
+            os << face.points.size() << " ";
             auto it = std::begin(face.points);
             for(; it != std::end(face.points); ++it)
             {
@@ -221,14 +240,14 @@ namespace urban
 
         bool operator==(Face const& lhs, Face const& rhs)
         {
-            bool result(lhs.get_degree() == rhs.get_degree());
+            bool result(lhs.degree() == rhs.degree());
             if(result)
             {
                 auto placeholder = std::find(std::begin(rhs.points),std::end(rhs.points), lhs.points.at(0));
                 result = (placeholder != std::end(rhs.points));
                 if(result)
                 {
-                    std::vector<std::size_t> rotated_points(lhs.get_degree());
+                    std::vector<std::size_t> rotated_points(lhs.degree());
                     std::rotate_copy(
                         std::begin(rhs.points),
                         placeholder,

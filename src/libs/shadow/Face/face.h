@@ -88,6 +88,7 @@ namespace urban
              * @see ~Face(void);
              */
             Face(std::vector<std::size_t> const& indices);
+            Face(Polyhedron::Facet const& facet, std::vector<Point> const& points);
             /**
              * Triangular face constructor. 
              * @param first point index
@@ -120,34 +121,35 @@ namespace urban
             /**
              * Copy assignement operator.
              * @param other an other face to move
-             * @see operator=(Face &&)
+             * @see operator =(Face &&)
              */
-            Face & operator=(Face const& other) noexcept;
+            Face & operator =(Face const& other) noexcept;
             /**
              * Move assignement operator.
              * @param other an other face to copy
-             * @see operator=(Face const&)
+             * @see operator =(Face const&)
              */
-            Face & operator=(Face && other) noexcept;
+            Face & operator =(Face && other) noexcept;
             
             /**
-             * Access operator[].
+             * Access operator [].
              * @param index point index to access
              * @return reference to the requested element
              */
-            std::size_t & operator[](std::size_t index);
+            std::size_t & operator [](std::size_t index);
             /**
-             * Access operator[].
+             * Access operator [].
              * @param index point index to access
              * @return constant reference to the requested element
              */
-            std::size_t const& operator[](std::size_t index) const;
+            std::size_t const& operator [](std::size_t index) const;
             
             /**
              * Access Facet degree.
              * @return facet degree
              */
-            std::size_t get_degree(void) const noexcept;
+            std::size_t degree(void) const noexcept;
+            std::vector<std::size_t> const& indexes(void) const noexcept;
 
             /** Iterator over face vertices */
             typedef std::vector<std::size_t>::iterator iterator;
@@ -202,7 +204,7 @@ namespace urban
             /**
              * Find an index.
              * @param index the index to find inside the facet
-             * @return iterator to the index (it sould be unique)
+             * @return iterator to the index (it should be unique)
              */
             iterator find(std::size_t index);
             /**
@@ -218,7 +220,7 @@ namespace urban
              * @param coordinates map associating point indexes to their coordinates
              * @return true if facet is convex
              */
-            bool is_convex(std::map<std::size_t, Point> const& coordinates) const;
+            bool is_convex(std::vector<Point> const& coordinates) const;
 
             /**
              * Writes to a 3ds face structure.
@@ -226,10 +228,8 @@ namespace urban
              * @return pointer to `Lib3dsFace` list
              * @throws std::logic_error
              */
-            Lib3dsFace * to_3ds(std::map<std::size_t, Point> const& coordinates) const;
+            Lib3dsFace * to_3ds(std::vector<Point> const& coordinates) const;
         private:
-            /** Face degree */
-            std::size_t degree;
             /** Points array */
             std::vector<std::size_t> points;
 
@@ -240,7 +240,7 @@ namespace urban
             * @param rhs right-hand Face.
             * @return boolean indicating if the two faces are equal
             */
-            friend bool operator==(Face const& lhs, Face const& rhs);
+            friend bool operator ==(Face const& lhs, Face const& rhs);
 
             /** 
              * Writes Face to output stream.
@@ -248,7 +248,7 @@ namespace urban
              * @param face the facet to write
              * @return reference to the output stream
              */
-            friend std::ostream & operator<<(std::ostream & os, Face const& face);
+            friend std::ostream & operator <<(std::ostream & os, Face const& face);
         };
 
         /**
@@ -258,7 +258,7 @@ namespace urban
         * @param rhs right-hand Face.
         * @return boolean indicating if the two faces are different
         */
-        bool operator!=(Face const& lhs, Face const& rhs);
+        bool operator !=(Face const& lhs, Face const& rhs);
 
         /**
         * Swaps two faces.

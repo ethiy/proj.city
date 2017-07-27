@@ -62,7 +62,7 @@ namespace urban
                     );
                     if (lines.empty())
                     {
-                        error_message << "This file: " << filepath.string() << " containes only comments!";
+                        error_message << "This file: " << filepath.string() << " contains only comments!";
                         throw std::out_of_range(error_message.str());
                     }
 
@@ -71,7 +71,7 @@ namespace urban
                     {
                         if (lines.empty())
                         {
-                            error_message << "This file: " << filepath.string() << " containes only the OFF header!";
+                            error_message << "This file: " << filepath.string() << " contains only the OFF header!";
                             throw std::out_of_range(error_message.str());
                         }
 
@@ -82,57 +82,60 @@ namespace urban
                         if (sizes.size() != 3)
                             throw std::range_error("Error parsing the second line! There should be 3 integers.");
                         if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
-                            throw std::range_error("Error parsing the second line! The first and second integers sould be positive and the third is always equal to 0.");
+                            throw std::range_error("Error parsing the second line! The first and second integers should be positive and the third is always equal to 0.");
                         if (static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
                             throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
                         /*Parsing vertex points*/
                         std::vector<std::string> buffer_lines(static_cast<std::size_t>(sizes[0]));
                         std::copy(std::next(std::begin(lines), 2), std::next(std::begin(lines), 2 + sizes[0]), std::begin(buffer_lines));
-                        std::size_t idx(0);
 
-                        std::map<std::size_t, shadow::Point> points;
+                        std::vector<shadow::Point> points(buffer_lines.size());
                         std::vector<double> coordinates;
                         coordinates.reserve(3);
                         std::istringstream sline;
-                        std::for_each(
+                        std::transform(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
-                            [&points, &idx, &sline, &coordinates](const std::string & line)
+                            std::begin(points),
+                            [&points, &sline, &coordinates](std::string const& line)
                             {
-                                sline.str(line);
-                                std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
-                                points.emplace(std::make_pair(idx++, shadow::Point(coordinates[0], coordinates[1], coordinates[2])));
                                 coordinates.clear();
                                 sline.clear();
+                                sline.str(line);
+                                std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
+                                return shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
                             }
                         );
 
                         /*Parsing faces*/
-                        idx = 0;
                         buffer_lines.clear();
                         sline.clear();
 
-                        std::map<std::size_t, shadow::Face> faces;
                         buffer_lines.resize(static_cast<std::size_t>(sizes[1]));
                         std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
 
+                        std::vector<shadow::Face> faces(buffer_lines.size());
+
                         std::vector<std::size_t> indexes;
                         std::size_t n(0);
-                        std::for_each(
+                        std::transform(
                             std::begin(buffer_lines),
                             std::end(buffer_lines),
-                            [&indexes, &sline, &n, &idx, &faces](std::string line) {
+                            std::begin(faces),
+                            [&indexes, &sline, &n, &faces](std::string line)
+                            {
+                                indexes.clear();
+                                sline.clear();
                                 sline.str(line);
                                 sline >> n;
                                 indexes.resize(n);
                                 std::copy(std::istream_iterator<std::size_t>(sline), std::istream_iterator<std::size_t>(), std::begin(indexes));
                                 if (indexes.size() != n)
                                     throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                                faces.emplace(std::make_pair(idx++, shadow::Face(indexes)));
-                                indexes.clear();
-                                sline.clear();
-                            });
+                                return shadow::Face(indexes);
+                            }
+                        );
                         /*Mesh to return*/
                         mesh = shadow::Mesh(name, points, faces);
                     }
@@ -187,9 +190,9 @@ namespace urban
                 std::for_each(
                     mesh.points_cbegin(),
                     mesh.points_cend(),
-                    [this](std::pair<std::size_t, shadow::Point> p)
+                    [this](shadow::Point const& point)
                     {
-                        file << p.second << std::endl;
+                        file << point << std::endl;
                     }
                 );
                 
@@ -197,9 +200,9 @@ namespace urban
                 std::for_each(
                     mesh.faces_cbegin(),
                     mesh.faces_cend(),
-                    [this](std::pair<std::size_t, shadow::Face> p)
+                    [this](shadow::Face const& face)
                     {
-                        file << p.second << std::endl;
+                        file << face << std::endl;
                     }
                 );
 

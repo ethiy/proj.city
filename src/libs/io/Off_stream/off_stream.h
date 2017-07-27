@@ -93,9 +93,9 @@ namespace urban
                 std::for_each(
                     mesh.points_cbegin(),
                     mesh.points_cend(),
-                    [this](std::pair<std::size_t, shadow::Point> const &_points)
+                    [this](shadow::Point const& points)
                     {
-                        ios << _points.second << std::endl;
+                        ios << points << std::endl;
                     }
                 );
 
@@ -103,9 +103,9 @@ namespace urban
                 std::for_each(
                     mesh.faces_cbegin(),
                     mesh.faces_cend(),
-                    [this](std::pair<std::size_t, shadow::Face> const &_facets)
+                    [this](shadow::Face const& facets)
                     {
-                        ios << _facets.second << std::endl;
+                        ios << facets << std::endl;
                     }
                 );
 
@@ -158,7 +158,7 @@ namespace urban
                     if (sizes.size() != 3)
                         throw std::range_error("Error parsing the second line! There should be 3 integers.");
                     if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
-                        throw std::range_error("Error parsing the second line! The first and second integers sould be positive and the third is always equal to 0.");
+                        throw std::range_error("Error parsing the second line! The first and second integers should be positive and the third is always equal to 0.");
                     if (static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
                         throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
@@ -170,51 +170,52 @@ namespace urban
                         std::begin(buffer_lines)
                     );
 
-                    std::size_t idx(0);
-                    std::map<std::size_t, shadow::Point> points;
-                    std::stringstream sline;
-                    for(auto const& line : buffer_lines)
-                    {
-                        sline.str(line);
-                        std::vector<double> coordinates(3, 0);
-                        std::copy(
-                            std::istream_iterator<double>(sline),
-                            std::istream_iterator<double>(),
-                            std::begin(coordinates)
-                        );
-                        points.emplace(std::make_pair(idx++, shadow::Point(coordinates.at(0), coordinates.at(1), coordinates.at(2))));
-                        sline.clear();
-                    }
+                    std::vector<shadow::Point> points(buffer_lines.size());
+                    std::vector<double> coordinates;
+                    coordinates.reserve(3);
+                    std::istringstream sline;
+                    std::transform(
+                        std::begin(buffer_lines),
+                        std::end(buffer_lines),
+                        std::begin(points),
+                        [&points, &sline, &coordinates](std::string const& line)
+                        {
+                            coordinates.clear();
+                            sline.clear();
+                            sline.str(line);
+                            std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
+                            return shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
+                        }
+                    );
 
                     /*Parsing faces*/
-                    idx = 0;
                     buffer_lines.clear();
                     sline.clear();
 
-                    std::map<std::size_t, shadow::Face> faces;
-                    buffer_lines = std::vector<std::string>(static_cast<std::size_t>(sizes[1]));
-                    std::copy(
-                        std::next(std::begin(lines), 2 + sizes[0]),
-                        std::next(std::begin(lines), 2 + sizes[0] + sizes[1]),
-                        std::begin(buffer_lines)
-                    );
+                    buffer_lines.resize(static_cast<std::size_t>(sizes[1]));
+                    std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
 
+                    std::vector<shadow::Face> faces(buffer_lines.size());
+
+                    std::vector<std::size_t> indexes;
                     std::size_t n(0);
-                    for(auto const& line : buffer_lines)
-                    {
-                        sline.str(line);
-                        sline >> n;
-                        std::vector<std::size_t> indexes(n, 0);
-                        std::copy(
-                            std::istream_iterator<std::size_t>(sline),
-                            std::istream_iterator<std::size_t>(),
-                            std::begin(indexes)
-                        );
-                        if (indexes.size() != n)
-                            throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                        faces.emplace(std::make_pair(idx++, shadow::Face(indexes)));
-                        sline.clear();
-                    }
+                    std::transform(
+                        std::begin(buffer_lines),
+                        std::end(buffer_lines),
+                        std::begin(faces),
+                        [&indexes, &sline, &n, &faces](std::string line)
+                        {
+                            indexes.clear();
+                            sline.clear();
+                            sline.str(line);
+                            sline >> n;
+                            indexes.resize(n);
+                            std::copy(std::istream_iterator<std::size_t>(sline), std::istream_iterator<std::size_t>(), std::begin(indexes));
+                            if (indexes.size() != n)
+                                throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
+                            return shadow::Face(indexes);
+                        }
+                    );
 
                     /*Mesh to return*/
                     mesh = shadow::Mesh(points, faces);
