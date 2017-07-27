@@ -26,6 +26,7 @@ namespace urban
             shadow::Point const& get_reference_point(void) const noexcept;
             unsigned short get_epsg(void) const noexcept;
             Bbox_2 const& bbox(void) const noexcept;
+            BrickPrint const& data(void) const noexcept;
 
             using iterator = BrickPrint::iterator;
             using const_iterator = BrickPrint::const_iterator;

@@ -17,30 +17,34 @@ SCENARIO("Input/Output from Shadow Mesh:")
 {
     GIVEN("A test shadow Mesh")
     {
-        urban::shadow::Mesh test_mesh(
-            "test_mesh",
-            std::map<std::size_t, urban::shadow::Point>
-            {
-                {0, urban::shadow::Point(-10, 6, 8)},
-                {1, urban::shadow::Point(-18, -14, 5)},
-                {2, urban::shadow::Point(-2, -14, 6)},
-                {3, urban::shadow::Point(-10, -10, -15)},
-                {4, urban::shadow::Point(-2, 10, 0)},
-                {5, urban::shadow::Point(-18, 9, 1)}
-            },
-            std::map<std::size_t, urban::shadow::Face>
-            {
-                {0, urban::shadow::Face{{0, 1, 2}}},
-                {1, urban::shadow::Face{{4, 3, 5}}},
-                {2, urban::shadow::Face{{0, 2, 4}}},
-                {3, urban::shadow::Face{{3, 4, 2}}},
-                {4, urban::shadow::Face{{5, 1, 0}}},
-                {5, urban::shadow::Face{{1, 5, 3}}},
-                {6, urban::shadow::Face{{5, 0, 4}}},
-                {7, urban::shadow::Face{{1, 3, 2}}}
-            }
+        std::vector<urban::Point_3> points{{
+            urban::Point_3(-10, 6, 8),
+            urban::Point_3(-18, -14, 5),
+            urban::Point_3(-2, -13, 6),
+            urban::Point_3(-10, -10, -15),
+            urban::Point_3(-2, 10, 0),
+            urban::Point_3(-18, 9, 1)
+        }};
+        std::vector< std::vector<std::size_t> > polygons{{
+            std::vector<std::size_t>{{0, 1, 2}},
+            std::vector<std::size_t>{{4, 3, 5}},
+            std::vector<std::size_t>{{0, 2, 4}},
+            std::vector<std::size_t>{{3, 4, 2}},
+            std::vector<std::size_t>{{5, 1, 0}},
+            std::vector<std::size_t>{{1, 5, 3}},
+            std::vector<std::size_t>{{5, 0, 4}},
+            std::vector<std::size_t>{{1, 3, 2}}
+        }};
+
+        urban::projection::FootPrint test_footprint(
+            urban::scene::UNode(
+                "test_mesh",
+                urban::shadow::Point(),
+                2154,
+                points,
+                polygons
+            )
         );
-        urban::projection::BrickPrint test_proj = urban::project(urban::scene::Brick(test_mesh, urban::shadow::Point()));
 
         std::ostringstream file_name;
 
@@ -52,11 +56,11 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
             );
-            handler.write(test_proj);
+            handler.write(test_footprint);
             THEN("The output checks:")
             {
-                urban::projection::BrickPrint read_proj = handler.read<urban::projection::BrickPrint>();
-                REQUIRE(read_proj == test_proj);
+                urban::projection::FootPrint read_proj = handler.read<urban::projection::FootPrint>();
+                REQUIRE(read_proj == test_footprint);
             }
         }
         WHEN("the projection is rasterized and written to a GeoTIFF")
@@ -67,7 +71,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
             );
-            urban::projection::RasterPrint rasta = urban::rasterize(test_proj, 1, urban::shadow::Point());
+            urban::projection::RasterPrint rasta(test_footprint, 1);
             handler.write(rasta);
             THEN("The output checks:")
             {

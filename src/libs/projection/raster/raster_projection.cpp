@@ -52,7 +52,7 @@ namespace urban
             }
             epsg_index = epsg_buffer > 0 ? static_cast<unsigned short>(epsg_buffer) : 2154;
 
-            double geographic_transform[6] = {0,.06,0,0,0,.06};
+            double geographic_transform[6] = {0, .06, 0, 0, 0, .06};
             if( raster_file->GetGeoTransform( geographic_transform ) != CE_None )
                 throw std::runtime_error("GDAL could not retrieve any registered Geometric Transform");
             if(std::abs(geographic_transform[1] + geographic_transform[5]) > std::numeric_limits<double>::epsilon())

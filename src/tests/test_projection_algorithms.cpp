@@ -1,5 +1,5 @@
 #include "../libs/scene/unode.h"
-#include "../libs/projection/scene/brick_projection.h"
+#include "../libs/projection/scene/scene_projection.h"
 
 
 #include "utils.h"
@@ -224,97 +224,81 @@ SCENARIO("Occlusion management")
             }
         );
 
-        urban::scene::Brick test_brick(test_mesh, urban::shadow::Point());
+        std::vector<urban::Point_3> points{{
+            urban::Point_3(-10, 6, 8),
+            urban::Point_3(-18, -14, 5),
+            urban::Point_3(-2, -13, 6),
+            urban::Point_3(-10, -10, -15),
+            urban::Point_3(-2, 10, 0),
+            urban::Point_3(-18, 9, 1)
+        }};
+        std::vector< std::vector<std::size_t> > polygons{{
+            std::vector<std::size_t>{{0, 1, 2}},
+            std::vector<std::size_t>{{4, 3, 5}},
+            std::vector<std::size_t>{{0, 2, 4}},
+            std::vector<std::size_t>{{3, 4, 2}},
+            std::vector<std::size_t>{{5, 1, 0}},
+            std::vector<std::size_t>{{1, 5, 3}},
+            std::vector<std::size_t>{{5, 0, 4}},
+            std::vector<std::size_t>{{1, 3, 2}}
+        }};
 
-        urban::projection::BrickPrint test_proj = urban::project(test_brick);
+        urban::projection::FootPrint test_footprint(
+            urban::scene::UNode(
+                "test_mesh",
+                urban::shadow::Point(),
+                2154,
+                points,
+                polygons
+            )
+        );
         THEN("The output checks:")
         {
-            std::vector<urban::Point_2> buffer{{
-                urban::Point_2(-10, 6),
-                urban::Point_2(-18, -14),
-                urban::Point_2(-2, -13)
-            }};
-            
-            std::vector<urban::projection::FacePrint> _result{{
-                urban::projection::FacePrint(
-                    urban::Polygon_with_holes(
-                        urban::Polygon(
-                            std::begin(buffer),
-                            std::end(buffer)                            
-                        )
-                    ),
-                    urban::Plane_3(-17, -40, 312, -2426)
+            auto _test_brickprint = urban::projection::BrickPrint(
+                    test_facet_projection(
+                        std::vector<urban::Point_2>{{
+                            urban::Point_2(-10, 6),
+                            urban::Point_2(-18, -14),
+                            urban::Point_2(-2, -13)
+                        }},
+                        urban::Plane_3(-17, -40, 312, -2426)
+                    )
                 )
-            }};
-
-            buffer.clear();
-            buffer = std::vector<urban::Point_2>{{
-                urban::Point_2(-18, 9),
-                urban::Point_2(-18, -14),
-                urban::Point_2(-10, 6)
-            }};
-
-            _result.push_back(
-                urban::projection::FacePrint(
-                    urban::Polygon_with_holes(
-                        urban::Polygon(
-                            std::begin(buffer),
-                            std::end(buffer)                            
-                        )
-                    ),
-                    urban::Plane_3(-149, 32, 184, -3154)
+                +
+                urban::projection::BrickPrint(
+                    test_facet_projection(
+                        std::vector<urban::Point_2>{{
+                            urban::Point_2(-18, 9),
+                            urban::Point_2(-18, -14),
+                            urban::Point_2(-10, 6)
+                        }},
+                        urban::Plane_3(-149, 32, 184, -3154)
+                    )
                 )
-            );
-
-            buffer.clear();
-            buffer = std::vector<urban::Point_2>{{
-                urban::Point_2(-10, 6),
-                urban::Point_2(-2, -13),
-                urban::Point_2(-2, 10)
-            }};
-
-            _result.push_back(
-                urban::projection::FacePrint(
-                    urban::Polygon_with_holes(
-                        urban::Polygon(
-                            std::begin(buffer),
-                            std::end(buffer)                            
-                        )
-                    ),
-                    urban::Plane_3(160, 48, 184, -160)
+                +
+                urban::projection::BrickPrint(
+                    test_facet_projection(
+                        std::vector<urban::Point_2>{{
+                            urban::Point_2(-10, 6),
+                            urban::Point_2(-2, -13),
+                            urban::Point_2(-2, 10)
+                        }},
+                        urban::Plane_3(160, 48, 184, -160)
+                    )
                 )
-            );
+                +
+                urban::projection::BrickPrint(
+                    test_facet_projection(
+                        std::vector<urban::Point_2>{{
+                            urban::Point_2(-18, 9),
+                            urban::Point_2(-10, 6),
+                            urban::Point_2(-2, 10)
+                        }},
+                        urban::Plane_3(-4, 120, 56, -1208)
+                    )
+                );
 
-            buffer.clear();
-            buffer = std::vector<urban::Point_2>{{
-                urban::Point_2(-18, 9),
-                urban::Point_2(-10, 6),
-                urban::Point_2(-2, 10)
-            }};
-
-            _result.push_back(
-                urban::projection::FacePrint(
-                    urban::Polygon_with_holes(
-                        urban::Polygon(
-                            std::begin(buffer),
-                            std::end(buffer)                            
-                        )
-                    ),
-                    urban::Plane_3(-4, 120, 56, -1208)
-                )
-            );
-
-            urban::projection::BrickPrint _test_proj(
-                "test_mesh_xy",
-                urban::Bbox_3(-18, -14, 0, -2, 10, 0),
-                urban::shadow::Point(),
-                2154
-            );
-
-            for(auto & facet : _result)
-                _test_proj.insert(facet);
-
-            REQUIRE(test_proj == _test_proj);
+            REQUIRE(test_footprint.data() == _test_brickprint);
         }
     }
 }

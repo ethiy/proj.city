@@ -17,6 +17,7 @@ set(Projection_HEADER
 )
 set(Projection_SRC
     "${proj.city_SOURCE_DIR}/src/libs/projection/scene/brick_projection.cpp"
+    "${proj.city_SOURCE_DIR}/src/libs/projection/scene/scene_projection.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/projection/camera/camera.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/projection/face/face_projection.cpp"
     "${proj.city_SOURCE_DIR}/src/libs/projection/raster/raster_projection.cpp"

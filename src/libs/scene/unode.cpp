@@ -68,7 +68,6 @@ namespace urban
 
             std::vector< std::vector<std::size_t> > polygons;
             std::vector< std::vector<std::size_t> > face_buffer;
-            std::vector<std::size_t> _face_buffer;
             for(auto const& mesh : meshes)
             {
                 face_buffer = std::vector< std::vector<std::size_t> >(mesh.faces_size());
@@ -76,16 +75,56 @@ namespace urban
                     mesh.faces_cbegin(),
                     mesh.faces_cend(),
                     std::begin(face_buffer),
-                    [&_face_buffer](std::pair<std::size_t, shadow::Face> const& face_p)
+                    [](std::pair<std::size_t, shadow::Face> const& face_p)
                     {
-                        _face_buffer = std::vector<std::size_t>(face_p.second.get_degree());
-                        std::copy(std::begin(face_p.second), std::end(face_p.second), std::begin(_face_buffer));
-                        return _face_buffer;
+                        return std::vector<std::size_t>(std::begin(face_p.second), std::end(face_p.second));
                     }
                 );
                 polygons.insert(std::end(polygons), std::begin(face_buffer), std::end(face_buffer));
             }
 
+            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+            if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
+                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+        }
+        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
+            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        {
+            std::vector<Point_3> points(mesh.points_size());
+            std::transform(
+                mesh.points_cbegin(),
+                mesh.points_cend(),
+                std::begin(points),
+                [](std::pair<std::size_t, shadow::Point> const& point_p)
+                {
+                    return Point_3(point_p.second.x(), point_p.second.y(), point_p.second.z());
+                }
+            );
+
+            std::vector< std::vector<std::size_t> > polygons(mesh.faces_size());
+            std::transform(
+                mesh.faces_cbegin(),
+                mesh.faces_cend(),
+                std::begin(polygons),
+                [](std::pair<std::size_t, shadow::Face> const& face_p)
+                {
+                    return std::vector<std::size_t>(std::begin(face_p.second), std::end(face_p.second));
+                }
+            );
+
+            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+            if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
+                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+        }
+        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons)
+            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        {
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))

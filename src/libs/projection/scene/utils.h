@@ -9,7 +9,12 @@ namespace urban
 {
     namespace projection
     {
-        Polygon trace(scene::UNode::Facet const& facet, Plane_3 & plane)
+        static Polygon trace(scene::UNode::Facet const& facet, Plane_3 & plane);
+        static FacePrint orthoprint(scene::UNode::Facet const& facet);
+        static std::vector<FacePrint> orthoprint(scene::UNode const& unode);
+        static std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, Plane_3 const& plane);
+
+        static Polygon trace(scene::UNode::Facet const& facet, Plane_3 & plane)
         {
             std::vector<Point_2> facet_trace(facet.facet_degree());
 
@@ -26,7 +31,7 @@ namespace urban
             return Polygon(std::begin(facet_trace), std::end(facet_trace));
         }
 
-        FacePrint orthoprint(scene::UNode::Facet const& facet)
+        static FacePrint orthoprint(scene::UNode::Facet const& facet)
         {
             Plane_3 plane;
             Polygon facet_proj = trace(facet, plane);
@@ -37,7 +42,7 @@ namespace urban
             return FacePrint(Polygon_with_holes(facet_proj), plane);
         }
 
-        std::vector<FacePrint> orthoprint(scene::UNode const& unode)
+        static std::vector<FacePrint> orthoprint(scene::UNode const& unode)
         {
             std::vector<FacePrint> prints(unode.facets_size());
 
@@ -66,7 +71,7 @@ namespace urban
             return prints;
         }
 
-        std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, Plane_3 const& plane)
+        static std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, Plane_3 const& plane)
         {
             std::list<Polygon_with_holes> polygons;
             polygon_set.polygons_with_holes(std::back_inserter(polygons));

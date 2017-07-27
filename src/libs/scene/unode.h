@@ -26,6 +26,8 @@ namespace urban
             UNode(UNode const& other);
             UNode(UNode && other);
             UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, io::FileHandler<Lib3dsFile> const& mesh_file);
+            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh);
+            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons);
             ~UNode(void);
 
             void swap(UNode & other);

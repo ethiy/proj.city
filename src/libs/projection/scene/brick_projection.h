@@ -20,6 +20,7 @@ namespace urban
         public:
             BrickPrint(void);
             BrickPrint(FacePrint const& face_projection);
+            BrickPrint(OGRLayer* projection_layer);
             BrickPrint(BrickPrint const& other);
             BrickPrint(BrickPrint && other);
             ~BrickPrint(void);
@@ -55,14 +56,17 @@ namespace urban
 
             void filter(void);
 
-            BrickPrint & operator +=(BrickPrint & other);
+            BrickPrint & operator +=(BrickPrint const& other);
+
+            std::vector<FacePrint> occlusion(FacePrint const& new_facet);
+            BrickPrint occlusion(BrickPrint const& other);
+
+            void to_ogr(OGRLayer* projection_layer, shadow::Point const& reference_point, bool labels) const;
         private:
             Bbox_2 bounding_box;
             std::vector<FacePrint> projected_facets;
             Polygon_set projected_surface;
 
-            std::vector<FacePrint> occlusion(FacePrint const& new_facet);
-            BrickPrint & occlusion(BrickPrint & other);
             bool equal_print(BrickPrint const& other) const;
             bool equal_facets(BrickPrint const& other) const;
 
@@ -71,7 +75,7 @@ namespace urban
             friend bool operator !=(BrickPrint const& lhs, BrickPrint const& rhs);
         };
 
-        BrickPrint & operator +(BrickPrint & lhs, BrickPrint & rhs);
+        BrickPrint operator +(BrickPrint const& lhs, BrickPrint const& rhs);
     }
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 }

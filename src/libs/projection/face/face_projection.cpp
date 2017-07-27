@@ -237,7 +237,7 @@ namespace urban
             return contains(to_exact(inexact_point));
         }
 
-        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, const shadow::Point & reference_point, bool labels) const
+        OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
             feature->SetGeometry(urban::to_ogr(border, reference_point));
