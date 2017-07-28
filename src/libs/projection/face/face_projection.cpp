@@ -276,14 +276,14 @@ namespace urban
                 for(auto const& index : indexes)
                 {
                     bool hit = false;
-                    double height = get_height(
+                    double z = get_height(
                         bb.xmin() + static_cast<double>(index%w) * pixel_size,
                         bb.ymax() - static_cast<double>(index/w) * pixel_size,
                         pixel_size,
                         hit
                     );
                     if(hit)
-                        image.at((i_min + index/w) * width + j_min + index%w) = (image.at((i_min + index/w) * width + j_min + index%w) * hits.at((i_min + index/w) * width + j_min + index%w) + height) / (++hits.at((i_min + index/w) * width + j_min + index%w));
+                        image.at((i_min + index/w) * width + j_min + index%w) = (image.at((i_min + index/w) * width + j_min + index%w) * static_cast<double>(hits.at((i_min + index/w) * width + j_min + index%w)) + z) / static_cast<double>(++hits.at((i_min + index/w) * width + j_min + index%w));
                 }
             }
             

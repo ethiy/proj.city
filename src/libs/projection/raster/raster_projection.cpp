@@ -18,8 +18,8 @@ namespace urban
             : name(footprint.get_name()),
               reference_point(footprint.get_reference_point()),
               epsg_index(footprint.get_epsg()),
-              height(static_cast<std::size_t>(std::ceil((footprint.bbox().ymax() - footprint.bbox().ymin()) / pixel_size))),
-              width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / pixel_size))),
+              height(static_cast<std::size_t>(std::ceil((footprint.bbox().ymax() - footprint.bbox().ymin()) / _pixel_size))),
+              width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / _pixel_size))),
               pixel_size(_pixel_size),
               image_matrix(height * width, 0.),
               pixel_hits(height * width, 0)
@@ -63,7 +63,7 @@ namespace urban
             
             double* buffer = reinterpret_cast<double*>(calloc(sizeof(double), width * height));
             GDALRasterBand* raster_band = raster_file->GetRasterBand(1);
-            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, width, height, buffer, width, height, GDT_Float64, 0, 0);
+            CPLErr error = raster_band->RasterIO(GF_Read, 0, 0, static_cast<int>(width), static_cast<int>(height), buffer, static_cast<int>(width), static_cast<int>(height), GDT_Float64, 0, 0);
             if(error != CE_None)
                 throw std::runtime_error("GDAL could not read raster band");
 
@@ -226,7 +226,7 @@ namespace urban
         {
             name = std::move(other.name);
             reference_point = std::move(other.reference_point);
-            epsg_index = std::move(epsg_index);
+            epsg_index = std::move(other.epsg_index);
             height = std::move(other.height);
             width = std::move(other.width);
             pixel_size = std::move(other.pixel_size);

@@ -401,7 +401,7 @@ namespace urban
                     auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
                     if(placeholder != std::end(facets))
                     {
-                        long index = std::distance(std::begin(facets), placeholder) + static_cast<long>(offset);
+                        std::size_t index = static_cast<std::size_t>(std::distance(std::begin(facets), placeholder)) + offset;
                         matrix.at((line + offset) * size + index) = true;
                     }
                 }
