@@ -40,10 +40,10 @@ SCENARIO("Occlusion management")
             {
                 std::ostringstream auxilary, _auxilary;
                 auxilary << *std::begin(lhs) << *std::begin(rhs);
-                _auxilary << "The Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 " << std::endl 
-                          << "The supporting plane coefficients : 0 -3.2 0.34 -0.644" << std::endl 
-                          << "The Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  " << std::endl 
-                          << "The supporting plane coefficients : 3 -0.23 2 -7" << std::endl;
+                _auxilary << "The Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  " << std::endl
+                          << "The supporting plane coefficients : 3 -0.23 2 -7" << std::endl
+                          << "The Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 " << std::endl
+                          << "The supporting plane coefficients : 0 -3.2 0.34 -0.644" << std::endl;
                 REQUIRE(auxilary.str() == _auxilary.str());
             }
         }

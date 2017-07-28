@@ -26,7 +26,11 @@ namespace urban
                 ++iter;
             }while(++h != facet.facet_begin());
 
-            plane = facet.plane();
+            plane = Plane_3(
+                h->vertex()->point(),
+                h->next()->vertex()->point(),
+                h->next()->next()->vertex()->point()
+            );
 
             return Polygon(std::begin(facet_trace), std::end(facet_trace));
         }

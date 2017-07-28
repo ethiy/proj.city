@@ -8,7 +8,7 @@ SCENARIO("Face manipulation:")
 {
     GIVEN("A triangular facet and a coordinates map:" )
     {
-        urban::shadow::Face facet{{145,45,97}};
+        urban::shadow::Face facet{{2,0,1}};
         std::vector<urban::shadow::Point> coord{{
             urban::shadow::Point(15.5343,-13.4504, 60.8789),
             urban::shadow::Point(15.7204, -13.188, 60.8789),
@@ -21,7 +21,7 @@ SCENARIO("Face manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << facet;
-                REQUIRE( auxilary.str() == "3 145 45 97" );
+                REQUIRE( auxilary.str() == "3 2 0 1" );
             }
         }
 
@@ -31,7 +31,7 @@ SCENARIO("Face manipulation:")
 
             THEN("the output checks")
             {
-                urban::shadow::Face test_face{{145,97,45}};
+                urban::shadow::Face test_face{{2,1,0}};
                 REQUIRE( facet == test_face );
             }
         }
@@ -59,14 +59,14 @@ SCENARIO("Face manipulation:")
 
     GIVEN("Four indices:" )
     {
-        urban::shadow::Face facet{{145,45,97,85}};
+        urban::shadow::Face facet{{3,0,2,1}};
         WHEN("the facet is created")
         {
             THEN("Out stream is checked")
             {
                 std::ostringstream auxilary;
                 auxilary << facet;
-                REQUIRE( auxilary.str() == "4 145 45 97 85" );
+                REQUIRE( auxilary.str() == "4 3 0 2 1" );
             }
         }
 
@@ -75,7 +75,7 @@ SCENARIO("Face manipulation:")
             facet.invert_orientation();
             THEN("the output checks")
             {
-                urban::shadow::Face test_facet{{145,85,97,45}};
+                urban::shadow::Face test_facet{{3,1,2,0}};
                 REQUIRE( facet == test_facet );
             }
         }
@@ -97,9 +97,9 @@ SCENARIO("Face manipulation:")
         {
             std::vector<urban::shadow::Point> coord{{
                 urban::shadow::Point(15.5343, -13.4504, 60.8789),
-                urban::shadow::Point(15.7204, -13.188, 60.8789),
+                urban::shadow::Point(15.65, -14.325, 60.8789),
                 urban::shadow::Point(15.65, -12.988, 60.8789),
-                urban::shadow::Point(15.65, -14.325, 60.8789)
+                urban::shadow::Point(15.7204, -13.188, 60.8789)
             }};
             THEN("It does not checkout ")
             {
@@ -148,7 +148,7 @@ SCENARIO("Face manipulation:")
             {
                 std::ostringstream auxilary;
                 auxilary << face_3ds->points[0] << " " << face_3ds->points[1] << " " << face_3ds->points[2] << " and " << (face_3ds + 1)->points[0] << " " << (face_3ds + 1)->points[1] << " " << (face_3ds + 1)->points[2];
-                REQUIRE( auxilary.str() == "145 45 97 and 145 97 85" );
+                REQUIRE( auxilary.str() == "3 0 2 and 3 2 1" );
             }
             if(face_3ds)
                 std::free(face_3ds);

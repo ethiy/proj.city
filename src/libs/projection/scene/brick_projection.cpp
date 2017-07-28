@@ -220,11 +220,19 @@ namespace urban
 
         BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
         {
-            bounding_box += other.bounding_box;
-            projected_surface.join(other.projected_surface);
+            if(!other.projected_facets.empty())
+            {
+                bounding_box += other.bounding_box;
+                projected_surface.join(other.projected_surface);
 
-            auto temp = occlusion(other);
-            projected_facets.insert(std::end(projected_facets), std::begin(temp.projected_facets), std::end(temp.projected_facets));
+                if(projected_facets.empty())
+                    projected_facets = other.projected_facets;
+                else
+                {
+                    auto temp = occlusion(other);
+                    projected_facets.insert(std::end(projected_facets), std::begin(temp.projected_facets), std::end(temp.projected_facets));
+                }
+            }
             return *this;
         }
 
