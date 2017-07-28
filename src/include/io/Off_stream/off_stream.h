@@ -84,30 +84,9 @@ namespace urban
              */
             Off_stream & operator <<(shadow::Mesh const& mesh)
             {
-                /*Writing comments, header and sizes*/
-                ios << "# Mesh: " << mesh.get_name() << std::endl
-                    << "OFF" << std::endl
-                    << mesh.points_size() << " " << mesh.faces_size() << " 0" << std::endl;
-
-                /*Writing points*/
-                std::for_each(
-                    mesh.points_cbegin(),
-                    mesh.points_cend(),
-                    [this](shadow::Point const& points)
-                    {
-                        ios << points << std::endl;
-                    }
-                );
-
-                /*Writing faces*/
-                std::for_each(
-                    mesh.faces_cbegin(),
-                    mesh.faces_cend(),
-                    [this](shadow::Face const& facets)
-                    {
-                        ios << facets << std::endl;
-                    }
-                );
+                print_header(mesh);
+                print_points(mesh);
+                print_faces(mesh);
 
                 return *this;
             }
@@ -116,7 +95,7 @@ namespace urban
              * @param mesh the Mesh to write
              * @return the output stream
              */
-            io::Off_stream & operator >>(shadow::Mesh & mesh)
+            Off_stream & operator >>(shadow::Mesh & mesh)
             {
                 std::stringstream error_message;
                 
@@ -228,6 +207,35 @@ namespace urban
         private:
             /** reference to a stream */
             std::iostream & ios;
+
+            void print_header(shadow::Mesh const& mesh)
+            {
+                ios << "# Mesh: " << mesh.get_name() << std::endl
+                    << "OFF" << std::endl
+                    << mesh.points_size() << " " << mesh.faces_size() << " 0" << std::endl;
+            }
+            void print_points(shadow::Mesh const& mesh)
+            {
+                std::for_each(
+                    mesh.points_cbegin(),
+                    mesh.points_cend(),
+                    [this](shadow::Point const& points)
+                    {
+                        ios << points << std::endl;
+                    }
+                );
+            }
+            void print_faces(shadow::Mesh const& mesh)
+            {
+                std::for_each(
+                    mesh.faces_cbegin(),
+                    mesh.faces_cend(),
+                    [this](shadow::Face const& facets)
+                    {
+                        ios << facets << std::endl;
+                    }
+                );
+            }
         };
     }
 }

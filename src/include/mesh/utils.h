@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../geometry_definitions.h"
+#include "../geometry_definitions.h"
 #include "../Point/point.h"
 
 namespace urban

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../geometry_definitions.h"
+#include "../geometry_definitions.h"
 #include "../../shadow/mesh.h"
 #include "../../projection/face/face_projection.h"
 

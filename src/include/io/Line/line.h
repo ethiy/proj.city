@@ -23,7 +23,8 @@ namespace urban
              * @see Line(std::string const& _line);
              * @see ~Line(void);
              */
-            Line(void) {}
+            Line(void)
+            {}
             /**
              * Copy Constructor
              * @param other Line to copy
@@ -32,7 +33,9 @@ namespace urban
              * @see Line(std::string const& _line);
              * @see ~Line(void);
              */
-            Line(const Line & other): line(other.line){}
+            Line(const Line & other)
+                : line(other.line)
+            {}
             /**
              * Move Constructor
              * @param other Line to move
@@ -41,7 +44,9 @@ namespace urban
              * @see Line(std::string const& _line);
              * @see ~Line(void);
              */
-            Line(Line && other): line(std::move(other.line)){}
+            Line(Line && other)
+                : line(std::move(other.line))
+            {}
             /**
              * Constructor from STL string
              * @param _line Line content
@@ -50,7 +55,9 @@ namespace urban
              * @see Line(Line && other);
              * @see ~Line(void);
              */
-            Line(std::string const& _line): line(_line){}
+            Line(std::string const& _line)
+                : line(_line)
+            {}
             /**
              * Default Destructor
              * @see Line(void);
@@ -58,7 +65,8 @@ namespace urban
              * @see Line(Line && other);
              * @see Line(std::string const& _line);
              */
-            ~Line(void) {}
+            ~Line(void)
+            {}
 
             /**
              * STL string cast
