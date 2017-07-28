@@ -1,5 +1,6 @@
-#include "../libs/projection/scene/brick_projection.h"
 #include "utils.h"
+
+#include <projection/scene/brick_projection.h>
 
 #include <catch.hpp>
 

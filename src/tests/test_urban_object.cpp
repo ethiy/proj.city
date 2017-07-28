@@ -1,5 +1,5 @@
-#include "../libs/scene/unode.h"
-#include "../libs/io/io_3ds.h"
+#include <scene/unode.h>
+#include <io/io_3ds.h>
 
 #include <boost/filesystem.hpp>
 

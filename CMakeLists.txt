@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.2)
 
 project("proj.city"
         VERSION 0.4.1
-        LANGUAGES CXX)
+        LANGUAGES CXX
+)
+
+configure_file (
+        "${PROJECT_SOURCE_DIR}/src/config.h.in"
+        "${PROJECT_BINARY_DIR}/config.h"
+)
 
 ##
 # ________________________________________________ Modules __________________________________________________
@@ -14,6 +20,7 @@ include(cmake/dependencies.cmake)
 # _______________________________________________ Libraries __________________________________________________
 ##
 
+include_directories("${PROJECT_SOURCE_DIR}/src/libs")
 add_subdirectory(src/libs libs)
 
 ##

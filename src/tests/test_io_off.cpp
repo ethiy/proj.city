@@ -1,5 +1,5 @@
-#include "../libs/io/io_off.h"
-#include "../libs/io/Line/line.h"
+#include <io/io_off.h>
+#include <io/Line/line.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>

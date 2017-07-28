@@ -1,4 +1,4 @@
-#include "../libs/shadow/Face/face.h"
+#include <shadow/Face/face.h>
 
 #include <catch.hpp>
 

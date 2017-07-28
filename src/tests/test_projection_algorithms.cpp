@@ -1,8 +1,7 @@
-#include "../libs/scene/unode.h"
-#include "../libs/projection/scene/scene_projection.h"
-
-
 #include "utils.h"
+
+#include <scene/unode.h>
+#include <projection/scene/scene_projection.h>
 
 #include <CGAL/Boolean_set_operations_2.h>
 

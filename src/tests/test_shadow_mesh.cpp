@@ -1,6 +1,4 @@
-#include "../libs/shadow/mesh.h"
-
-#include "../libs/urban.h"
+#include <shadow/mesh.h>
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>
