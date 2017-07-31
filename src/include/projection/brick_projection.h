@@ -56,10 +56,10 @@ namespace urban
 
             void filter(void);
 
+            BrickPrint & operator +=(FacePrint const& lfacet);
             BrickPrint & operator +=(BrickPrint const& other);
 
-            std::vector<FacePrint> occlusion(FacePrint const& new_facet);
-            BrickPrint occlusion(BrickPrint const& other);
+            std::vector<FacePrint> occlusion(FacePrint const& lfacet);
 
             void to_ogr(OGRLayer* projection_layer, shadow::Point const& reference_point, bool labels) const;
         private:

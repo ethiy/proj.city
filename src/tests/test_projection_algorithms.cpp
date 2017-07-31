@@ -23,12 +23,10 @@ SCENARIO("Occlusion management")
                 to_exact(urban::InexactKernel::Point_3(0, 1., 3.615))
             )
         );
-        urban::projection::BrickPrint rhs(
-            test_facet_projection(
-                to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.)),
-                to_exact(urban::InexactKernel::Point_3(.5, .33, 5.)),
-                to_exact(urban::InexactKernel::Point_3(0, .67, 8.2))
-            )
+        auto rhs = test_facet_projection(
+            to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.)),
+            to_exact(urban::InexactKernel::Point_3(.5, .33, 5.)),
+            to_exact(urban::InexactKernel::Point_3(0, .67, 8.2))
         );
 
         WHEN("Occlusion is computed")
@@ -38,7 +36,7 @@ SCENARIO("Occlusion management")
             THEN("the output checks:")
             {
                 std::ostringstream auxilary, _auxilary;
-                auxilary << *std::begin(lhs) << *std::begin(rhs);
+                auxilary << *std::begin(lhs) << rhs;
                 _auxilary << "The Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  " << std::endl
                           << "The supporting plane coefficients : 3 -0.23 2 -7" << std::endl
                           << "The Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 " << std::endl
@@ -70,26 +68,24 @@ SCENARIO("Occlusion management")
             )
         );
 
-        urban::projection::BrickPrint rhs(
-            test_facet_projection(
-                std::vector<urban::Point_2>{{
-                            urban::Point_2(-6, 8),
-                            urban::Point_2(-10, -10),
-                            urban::Point_2(2, -10),
-                            urban::Point_2(-2, -2),
-                            urban::Point_2(-4, 6),
-                            urban::Point_2(4, 4)
-                }},
-                std::vector<urban::Point_2>{{
-                    urban::Point_2(-6, 4),
-                    urban::Point_2(-4, 2),
-                    urban::Point_2(-6, 2)
-                }},
-                urban::Plane_3(
-                    urban::Point_3(-6, 8, 10),
-                    urban::Point_3(-10, 10, 10),
-                    urban::Point_3(2, -10, 10)
-                )
+        auto rhs = test_facet_projection(
+            std::vector<urban::Point_2>{{
+                urban::Point_2(-6, 8),
+                urban::Point_2(-10, -10),
+                urban::Point_2(2, -10),
+                urban::Point_2(-2, -2),
+                urban::Point_2(-4, 6),
+                urban::Point_2(4, 4)
+            }},
+            std::vector<urban::Point_2>{{
+                urban::Point_2(-6, 4),
+                urban::Point_2(-4, 2),
+                urban::Point_2(-6, 2)
+            }},
+            urban::Plane_3(
+                urban::Point_3(-6, 8, 10),
+                urban::Point_3(-10, 10, 10),
+                urban::Point_3(2, -10, 10)
             )
         );
         WHEN("Occlusion is computed")

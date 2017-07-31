@@ -22,7 +22,7 @@ namespace urban
                 projection,
                 [](BrickPrint & proj, FacePrint const& face_print)
                 {
-                    return proj + BrickPrint(face_print);
+                    return proj + face_print;
                 }
             );
         }

@@ -216,21 +216,41 @@ namespace urban
             );
         }
 
-        BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
+        BrickPrint & BrickPrint::operator +=(FacePrint const& lfacet)
         {
-            if(!other.projected_facets.empty())
+            if(projected_facets.empty())
+                projected_facets.push_back(lfacet);
+            else
             {
-                bounding_box += other.bounding_box;
-                projected_surface.join(other.projected_surface);
-
-                if(projected_facets.empty())
-                    projected_facets = other.projected_facets;
+                /* If lfacet does not intersect the surface we push it directly*/
+                if(!overlaps(lfacet))
+                    projected_facets.push_back(lfacet);
                 else
                 {
-                    auto temp = occlusion(other);
-                    projected_facets.insert(std::end(projected_facets), std::begin(temp.projected_facets), std::end(temp.projected_facets));
+                    /* If lfacet is under the surface we loose it*/
+                    if(!is_under(lfacet))
+                    {
+                        std::vector<FacePrint> result;
+                        BrickPrint lfacets(lfacet);
+
+                        for(auto const& rfacet : projected_facets)
+                        {
+                            auto temp = lfacets.occlusion(rfacet);
+                            result.insert(std::end(result), std::begin(temp), std::end(temp));
+                        }
+                        result.insert(std::end(result), std::begin(lfacets.projected_facets), std::end(lfacets.projected_facets));
+                        projected_facets = std::move(result);
+                    }
                 }
             }
+            projected_surface.join(lfacet.get_polygon());
+
+            return *this;
+        }
+        BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
+        {
+            for(auto const& facet : other.projected_facets)
+                operator +=(facet);
             return *this;
         }
 
@@ -238,8 +258,8 @@ namespace urban
         {
             filter();
 
-            std::vector<FacePrint> lhs;
-            std::vector<FacePrint> rhs;
+            std::vector<FacePrint>  lhs,
+                                    rhs;
 
             for(auto const& rfacet : projected_facets)
             {
@@ -269,19 +289,9 @@ namespace urban
                     rhs = unpack(rhs, _rhs, rfacet.get_plane());
                 }
             }
-
             projected_facets = rhs;
+
             return lhs;
-        }
-        BrickPrint BrickPrint::occlusion(BrickPrint const& other)
-        {
-            BrickPrint result;
-            for(auto const& facet : other.projected_facets)
-            {
-                auto ofacet = occlusion(facet);
-                result.projected_facets.insert(std::end(result), std::begin(ofacet), std::end(ofacet));
-            }
-            return result;
         }
 
         void BrickPrint::to_ogr(OGRLayer* projection_layer, shadow::Point const& reference_point, bool labels) const
