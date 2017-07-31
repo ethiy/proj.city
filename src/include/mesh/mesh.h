@@ -8,14 +8,14 @@
  */
 
 
-#include "Face/face.h"
-#include "Bbox/bbox.h"
-#include "Point/point.h"
-#include "Vector/vector.h"
+#include <shadow/face.h>
+#include <shadow/bbox.h>
+#include <shadow/point.h>
+#include <shadow/vector.h>
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
-#include "../geometry_definitions.h"
+#include <geometry_definitions.h>
 
 #include <map>
 #include <string>

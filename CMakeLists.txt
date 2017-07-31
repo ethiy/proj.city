@@ -6,7 +6,7 @@ project("proj.city"
 )
 
 configure_file (
-        "${PROJECT_SOURCE_DIR}/src/config.h.in"
+        "${PROJECT_SOURCE_DIR}/src/include/config.h.in"
         "${PROJECT_BINARY_DIR}/config.h"
 )
 
@@ -20,8 +20,8 @@ include(cmake/dependencies.cmake)
 # _______________________________________________ Libraries __________________________________________________
 ##
 
-include_directories("${PROJECT_SOURCE_DIR}/src/libs")
-add_subdirectory(src/libs libs)
+include_directories(BEFORE "${PROJECT_SOURCE_DIR}/src/include")
+add_subdirectory(src/lib lib)
 
 ##
 # ___________________________________________________ Samples ___________________________________________________

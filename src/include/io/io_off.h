@@ -1,9 +1,9 @@
 #pragma once
 
-#include "io.h"
+#include <io/io.h>
 
-#include "../shadow/mesh.h"
-#include "Off_stream/off_stream.h"
+#include <shadow/mesh.h>
+#include <io/Off_stream/off_stream.h>
 
 #include <boost/filesystem/path.hpp>
 

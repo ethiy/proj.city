@@ -1,6 +1,6 @@
-#include "scene.h"
+#include <scene/scene.h>
 
-#include "../algorithms/utils/util_algorithms.h"
+#include <algorithms/util_algorithms.h>
 
 namespace urban
 {

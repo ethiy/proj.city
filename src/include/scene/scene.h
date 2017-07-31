@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../shadow/mesh.h"
+#include <shadow/mesh.h>
 
-#include "unode.h"
+#include <scene/unode.h>
 
 #include <string>
 #include <map>

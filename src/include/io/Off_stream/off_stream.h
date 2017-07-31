@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../shadow/mesh.h"
+#include <shadow/mesh.h>
 
-#include "../Line/line.h"
+#include <io/Line/line.h>
 
 #include <ostream>
 

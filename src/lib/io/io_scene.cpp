@@ -1,6 +1,6 @@
-#include "io_scene.h"
+#include <io/io_scene.h>
 
-#include "../shadow/Bbox/bbox.h"
+#include <shadow/bbox.h>
 
 #include <boost/filesystem/operations.hpp>
 

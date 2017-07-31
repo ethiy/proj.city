@@ -1,4 +1,4 @@
-#include "utils.h"
+#include <algorithms/test_utils.h>
 
 #include <projection/scene/brick_projection.h>
 

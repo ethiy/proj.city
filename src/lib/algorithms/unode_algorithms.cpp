@@ -1,5 +1,5 @@
-#include "unode_algorithms.h"
-#include "../utils/util_algorithms.h"
+#include <algorithms/unode_algorithms.h>
+#include <algorithms/util_algorithms.h>
 
 #include <CGAL/aff_transformation_tags.h>
 

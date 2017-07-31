@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "../../shadow/Point/point.h"
-#include "../face/face_projection.h"
+#include <geometry_definitions.h>
+#include <shadow/point.h>
+#include <projection/face_projection.h>
 
 #include <ogrsf_frmts.h>
 

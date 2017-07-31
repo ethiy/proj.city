@@ -1,4 +1,4 @@
-#include "vector.h"
+#include <shadow/vector.h>
 
 #include <algorithm>
 
@@ -6,7 +6,7 @@
 #include <limits>
 #include <stdexcept>
 
-#include "../Point/point.h"
+#include <shadow/point.h>
 
 namespace urban
 {

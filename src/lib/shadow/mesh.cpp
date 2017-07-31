@@ -1,5 +1,4 @@
-#include "mesh.h"
-#include "Vector/vector.h"
+#include <shadow/mesh.h>
 
 #include <stdexcept>
 

@@ -1,8 +1,6 @@
-#include "brick_projection.h"
+#include <projection/brick_projection.h>
 
-#include "../../algorithms/ogr/ogr_algorithms.h"
-
-#include "utils.h"
+#include <projection/utilities.h>
 
 #include <CGAL/Boolean_set_operations_2.h>
 

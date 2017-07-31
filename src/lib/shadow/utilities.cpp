@@ -1,15 +1,10 @@
-#pragma once
-
-#include "../geometry_definitions.h"
-#include "../Point/point.h"
+#include <shadow/utilities.h>
 
 namespace urban
 {
     namespace shadow
     {
-        static std::size_t get_index(Polyhedron::Halfedge const& halfedge, std::vector<Point> const& points);
-
-        static std::size_t get_index(Polyhedron::Halfedge const& halfedge, std::vector<Point> const& points)
+        std::size_t get_index(Polyhedron::Halfedge const& halfedge, std::vector<Point> const& points)
         {
             std::size_t index(0);
             auto point_handle = std::find_if(

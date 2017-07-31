@@ -7,7 +7,7 @@
  * \date 8 february 2017
  */
 
-#include "../Point/point.h"
+#include <shadow/point.h>
 
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>

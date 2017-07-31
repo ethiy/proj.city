@@ -1,8 +1,8 @@
 #pragma once
 
-#include "brick_projection.h"
+#include <projection/brick_projection.h>
 
-#include "../../scene/unode.h"
+#include <scene/unode.h>
 
 namespace urban
 {

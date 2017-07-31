@@ -1,6 +1,6 @@
-#include "camera.h"
+#include <projection/camera.h>
 
-#include "../../algorithms/utils/util_algorithms.h"
+#include <algorithms/util_algorithms.h>
 
 namespace urban
 {

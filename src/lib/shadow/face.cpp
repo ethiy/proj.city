@@ -1,7 +1,7 @@
-#include "face.h"
-#include "utils.h"
+#include <shadow/face.h>
+#include <shadow/utilities.h>
 
-#include "../Vector/vector.h"
+#include <shadow/vector.h>
 
 #include <algorithm>
 #include <iterator>

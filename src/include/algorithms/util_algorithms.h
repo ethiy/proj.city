@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "../../shadow/mesh.h"
-#include "../../projection/face/face_projection.h"
+#include <geometry_definitions.h>
+#include <shadow/mesh.h>
+#include <projection/face_projection.h>
 
 #include <ogr_geometry.h>
 
@@ -46,34 +46,4 @@ namespace urban
      */
     InexactPoint_2 centroid(Polygon_with_holes const& polygon);
     
-    /**
-     * Sorting heuristic functors
-     */
-    struct Heuristic
-    {
-        Heuristic(void) {}
-        Heuristic(const Heuristic & ) {}
-        Heuristic(Heuristic && ) {}
-        virtual ~Heuristic(void) {}
-        virtual bool operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b) = 0;
-    };
-
-    struct SimpleHeuristic : public Heuristic
-    {
-        SimpleHeuristic(void) {}
-        SimpleHeuristic(SimpleHeuristic const& other): Heuristic(other) {}
-        SimpleHeuristic(SimpleHeuristic && ) {}
-        ~SimpleHeuristic(void) {}
-        bool operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b);
-    };
-
-    // To be checked
-    struct NaiveHeuristic : public Heuristic
-    {
-        NaiveHeuristic(void) {}
-        NaiveHeuristic(NaiveHeuristic const& other): Heuristic(other) {}
-        NaiveHeuristic(NaiveHeuristic && ) {}
-        ~NaiveHeuristic(void) {}
-        bool operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b);
-    };
 }

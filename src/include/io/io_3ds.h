@@ -1,8 +1,8 @@
 #pragma once
 
-#include "io.h"
+#include <io/io.h>
 
-#include "../shadow/mesh.h"
+#include <shadow/mesh.h>
 
 #include <lib3ds/file.h>
 

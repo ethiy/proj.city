@@ -1,5 +1,6 @@
-#include "scene_projection.h"
-#include "utils.h"
+#include <projection/scene_projection.h>
+
+#include <projection/utilities.h>
 
 #include <algorithm>
 #include <numeric>

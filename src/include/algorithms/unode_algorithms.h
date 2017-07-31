@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "../../scene/unode.h"
+#include <geometry_definitions.h>
+#include <scene/unode.h>
 
 #include <vector>
 

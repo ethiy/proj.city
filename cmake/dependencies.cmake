@@ -16,12 +16,12 @@ list(APPEND LIBS ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY})
 # Find CGAL
 FIND_PACKAGE(CGAL REQUIRED)
 include( ${CGAL_USE_FILE} ) 
-include_directories(${CGAL_INCLUDE_DIRS})
+include_directories(SYSTEM ${CGAL_INCLUDE_DIRS})
 list(APPEND LIBS_DIRS ${CGAL_LIBRARIES_DIR})
 
 # Find GDAL
 find_package(GDAL REQUIRED)
-include_directories(${GDAL_INCLUDE_DIR})
+include_directories(SYSTEM ${GDAL_INCLUDE_DIR})
 list(APPEND LIBS ${GDAL_LIBRARY})
 
 # Find Lib3ds

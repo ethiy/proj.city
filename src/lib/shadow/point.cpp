@@ -1,7 +1,7 @@
-#include "point.h"
+#include <shadow/point.h>
 
-#include "../Vector/vector.h"
-#include "../Bbox/bbox.h"
+#include <shadow/vector.h>
+#include <shadow/bbox.h>
 
 #include <CGAL/number_utils.h>
 

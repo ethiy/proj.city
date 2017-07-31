@@ -1,5 +1,4 @@
 #pragma once
 
-#include "unode_algorithms.h"
-#include "util_algorithms.h"
-#include "ogr_algorithms.h"
+#include <algorithms/unode_algorithms.h>
+#include <algorithms/util_algorithms.h>

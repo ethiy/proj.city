@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../geometry_definitions.h"
-#include "../../shadow/Point/point.h"
+#include <geometry_definitions.h>
+#include <shadow/point.h>
 
 #include <ogrsf_frmts.h>
 

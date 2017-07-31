@@ -1,9 +1,9 @@
 #pragma once
 
-#include "io.h"
-#include "io_3ds.h"
+#include <io/io.h>
+#include <io/io_3ds.h>
 
-#include "../scene/scene.h"
+#include <scene/scene.h>
 
 #include <tinyxml2.h>
 

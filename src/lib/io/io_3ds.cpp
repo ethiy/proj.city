@@ -1,4 +1,4 @@
-#include "io_3ds.h"
+#include <io/io_3ds.h>
 
 #include <lib3ds/node.h>
 #include <lib3ds/types.h>

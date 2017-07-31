@@ -1,4 +1,4 @@
-#include "util_algorithms.h"
+#include <algorithms/util_algorithms.h>
 
 #include <CGAL/centroid.h>
 
@@ -112,61 +112,5 @@ namespace urban
     InexactPoint_2 centroid(Polygon_with_holes const& polygon)
     {
         return centroid(polygon.outer_boundary());
-    }
-
-
-    bool SimpleHeuristic::operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b)
-    {
-        /* If one of the faces is perpendicular do not bother changing order
-         */
-        bool greater(false); 
-        if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
-        {
-            Point_2 point_a(
-                CGAL::centroid(
-                    facet_a.outer_boundary()[0],
-                    facet_a.outer_boundary()[1],
-                    facet_a.outer_boundary()[2]
-                )
-            );
-            Point_2 point_b(
-                CGAL::centroid(
-                    facet_b.outer_boundary()[0],
-                    facet_b.outer_boundary()[1],
-                    facet_b.outer_boundary()[2]
-                )
-            );
-            ExactToInexact to_inexact;
-            greater = facet_b.get_plane_height(to_inexact(point_b)) < facet_a.get_plane_height(to_inexact(point_a));
-        }
-        return greater;
-    }
-
-    bool NaiveHeuristic::operator()(projection::FacePrint const& facet_a, projection::FacePrint const& facet_b)
-    {
-        bool greater(false); 
-        if(!facet_a.is_perpendicular() && !facet_b.is_perpendicular())
-        {
-            auto m_a = std::min_element(
-                facet_a.outer_boundary().vertices_begin(),
-                facet_a.outer_boundary().vertices_end(),
-                [& facet_a](const Point_2 & A, const Point_2 & B)
-                {
-                    return facet_a.get_plane_height(A) < facet_a.get_plane_height(B);
-                }
-            );
-            auto m_b = std::max_element(
-                facet_b.outer_boundary().vertices_begin(),
-                facet_b.outer_boundary().vertices_end(),
-                [& facet_b](const Point_2 & A, const Point_2 & B)
-                {
-                    return facet_b.get_plane_height(A) < facet_b.get_plane_height(B);
-                }
-            );
-            
-            ExactToInexact to_inexact;
-            greater = facet_b.get_plane_height(to_inexact(*m_b)) < facet_a.get_plane_height(to_inexact(*m_a));
-        }
-        return greater;
     }
 }

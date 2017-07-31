@@ -1,6 +1,6 @@
-#include "bbox.h"
+#include <shadow/bbox.h>
 
-#include "../Point/point.h"
+#include <shadow/point.h>
 
 #include <algorithm>
 
