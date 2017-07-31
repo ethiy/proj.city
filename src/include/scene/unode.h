@@ -2,11 +2,11 @@
 
 #include <geometry_definitions.h>
 
-#include "../shadow/Point/point.h"
+#include <shadow/point.h>
 
-#include "../io/io_3ds.h"
+#include <io/io_3ds.h>
 
-#include "../io/Adjacency_stream/adjacency_stream.h"
+#include <io/Adjacency_stream/adjacency_stream.h>
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Geomview_stream.h>

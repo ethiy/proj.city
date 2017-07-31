@@ -1,6 +1,6 @@
 #include <algorithms/test_utils.h>
 
-#include <projection/scene/brick_projection.h>
+#include <projection/brick_projection.h>
 
 #include <catch.hpp>
 

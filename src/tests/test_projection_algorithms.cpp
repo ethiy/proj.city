@@ -1,7 +1,7 @@
 #include <algorithms/test_utils.h>
 
 #include <scene/unode.h>
-#include <projection/scene/scene_projection.h>
+#include <projection/scene_projection.h>
 
 #include <CGAL/Boolean_set_operations_2.h>
 

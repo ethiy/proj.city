@@ -1,6 +1,6 @@
 #include <algorithms/test_utils.h>
 
-#include <projection/face/face_projection.h>
+#include <projection/face_projection.h>
 
 #include <catch.hpp>
 

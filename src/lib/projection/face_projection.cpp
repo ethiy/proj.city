@@ -1,7 +1,7 @@
 #include <projection/face_projection.h>
 
 #include <projection/raster_projection.h>
-#include <algorithms/ogr_algorithms.h>
+#include <projection/utilities.h>
 #include <algorithms/util_algorithms.h>
 
 #include <ogr_geometry.h>
@@ -240,7 +240,7 @@ namespace urban
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
-            feature->SetGeometry(to_ogr(border, reference_point));
+            feature->SetGeometry(::urban::projection::to_ogr(border, reference_point));
             ExactToInexact to_inexact;
             feature->SetField("coeff_a", to_inexact(supporting_plane.a()));
             feature->SetField("coeff_b", to_inexact(supporting_plane.b()));

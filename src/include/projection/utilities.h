@@ -23,7 +23,7 @@ namespace urban
         * @param point a CGAL Point_2
         * @return a pointer to an OGR Point
         */
-        OGRPoint* to_ogr(const Point_2 & point, const shadow::Point & reference_point
+        OGRPoint* to_ogr(const Point_2 & point, const shadow::Point & reference_point);
         /**
         * construct OGRPolygon from a CGAL Polygon
         * @param polygon a CGAL Polygon
