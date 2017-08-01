@@ -19,9 +19,9 @@ static const char USAGE[]=
 R"(project_scene_xy.
 
     Usage:
-      project_scene_xy <filename> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
-      project_scene_xy (-h | --help)
-      project_scene_xy --version
+      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
+      orthoproject (-h | --help)
+      orthoproject --version
     Options:
       -h --help             Show this screen.
       --version             Show version.
@@ -43,7 +43,7 @@ int main(int argc, const char** argv)
                 USAGE,
                 { argv + 1, argv + argc },
                 true,
-                "project_scene_xy " + std::string(VERSION)
+                "orthoproject " + std::string(VERSION)
             )
         );
         std::cout << std::boolalpha << arguments << std::endl;

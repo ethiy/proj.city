@@ -51,6 +51,6 @@ add_library(urban_io ${IO_SRC})
 target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 
 # urban
-add_library(urban STATIC)
+add_library(urban SHARED)
 link_directories(urban ${LIBS_DIRS})
 target_link_libraries(urban urban_shadow urban_io urban_scene urban_projection urban_algorithms ${LIBS})
