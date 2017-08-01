@@ -59,7 +59,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
             THEN("The output checks:")
             {
                 urban::projection::FootPrint read_proj = handler.read<urban::projection::FootPrint>();
-                REQUIRE(read_proj == test_footprint);
+                REQUIRE(read_proj.data() == test_footprint.data());
             }
         }
         WHEN("the projection is rasterized and written to a GeoTIFF")

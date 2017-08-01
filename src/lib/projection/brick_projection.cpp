@@ -244,6 +244,7 @@ namespace urban
                 }
             }
             projected_surface.join(lfacet.get_polygon());
+            bounding_box += lfacet.bbox();
 
             return *this;
         }
