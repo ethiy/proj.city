@@ -1,7 +1,7 @@
 
 /** Project version*/
-#define _VERSION_MAJOR @3DSceneModel_VERSION_MAJOR@
-#define _VERSION_MINOR @3DSceneModel_VERSION_MINOR@
-#define _VERSION_PATCH @3DSceneModel_VERSION_PATCH@
+#define VERSION_MAJOR @proj.city_VERSION_MAJOR@
+#define VERSION_MINOR @proj.city_VERSION_MINOR@
+#define VERSION_PATCH @proj.city_VERSION_PATCH@
 
-#define VERSION "@3DSceneModel_VERSION_MAJOR@.@3DSceneModel_VERSION_MINOR@.@3DSceneModel_VERSION_PATCH@"
+#define VERSION "@proj.city_VERSION_MAJOR@.@proj.city_VERSION_MINOR@.@proj.city_VERSION_PATCH@"
