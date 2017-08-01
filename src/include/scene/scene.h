@@ -84,6 +84,18 @@ namespace urban
             unsigned short get_epsg(void) const noexcept;
 
             std::vector<std::string> identifiers(void) const;
+
+            using iterator = std::vector<UNode>::iterator;
+            using const_iterator = std::vector<UNode>::const_iterator;
+
+            iterator begin(void) noexcept;
+            iterator end(void) noexcept;
+            const_iterator begin(void) const noexcept;
+            const_iterator end(void) const noexcept;
+            const_iterator cbegin(void) const noexcept;
+            const_iterator cend(void) const noexcept;
+
+            std::size_t building_size(void) const noexcept;
         private:
             /** Pivot */
             urban::shadow::Point pivot;

@@ -86,6 +86,36 @@ namespace urban
             return ids;
         }
 
+        Scene::iterator Scene::begin(void) noexcept
+        {
+            return buildings.begin();
+        }
+        Scene::iterator Scene::end(void) noexcept
+        {
+            return buildings.end();
+        }
+        Scene::const_iterator Scene::begin(void) const noexcept
+        {
+            return buildings.begin();
+        }
+        Scene::const_iterator Scene::end(void) const noexcept
+        {
+            return buildings.end();
+        }
+        Scene::const_iterator Scene::cbegin(void) const noexcept
+        {
+            return buildings.cbegin();
+        }
+        Scene::const_iterator Scene::cend(void) const noexcept
+        {
+            return buildings.cend();
+        }
+
+        std::size_t Scene::building_size(void) const noexcept
+        {
+            return buildings.size();
+        }
+
         void swap(Scene & lhs, Scene & rhs)
         {
             lhs.swap(rhs);
