@@ -130,11 +130,6 @@ namespace urban
             return pixel_size;
         }
 
-        std::array<double, 6> RasterPrint::get_geographic_transform(void) const
-        {
-            return std::array<double, 6>{{reference_point.x(), pixel_size, 0, reference_point.y(), 0, - pixel_size}};
-        }
-
         double* RasterPrint::data(void) noexcept
         {
             return image_matrix.data();
@@ -248,6 +243,49 @@ namespace urban
 
                 offset = true;
             }
+        }
+
+        void RasterPrint::set_geotransform(GDALDataset* file) const
+        {
+            double adfGeoTransform[6] = {reference_point.x(), pixel_size, 0, reference_point.y(), 0, - pixel_size};
+            file->SetGeoTransform(adfGeoTransform);
+        }
+
+        void RasterPrint::set_projection(GDALDataset* file) const
+        {
+            OGRSpatialReference spatial_reference_system;
+            char* spatial_reference_system_name = NULL;
+            spatial_reference_system.importFromEPSG(epsg_index);
+            spatial_reference_system.exportToWkt(&spatial_reference_system_name);
+            file->SetProjection(spatial_reference_system_name);
+            CPLFree(spatial_reference_system_name);
+        }
+        
+        void RasterPrint::save_image(GDALDataset* file) const
+        {
+            GDALRasterBand* unique_band = file->GetRasterBand(1);
+            CPLErr error = unique_band->RasterIO(
+                GF_Write,
+                0,
+                0,
+                width,
+                height,
+                const_cast<double*>(image_matrix.data()),
+                width,
+                height,
+                GDT_Float64,
+                0,
+                0
+            );
+            if(error != CE_None)
+                throw std::runtime_error("GDAL could not save raster band");
+        }
+
+        void RasterPrint::to_gdal(GDALDataset* file) const
+        {
+            set_geotransform(file);
+            set_projection(file);
+            save_image(file);
         }
 
         std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection)

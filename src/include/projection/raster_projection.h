@@ -36,8 +36,6 @@ namespace urban
             std::size_t get_width(void) const noexcept;
             double const& get_pixel_size() const noexcept;
 
-            std::array<double, 6> get_geographic_transform(void) const;
-
             std::size_t get_index(std::size_t const& i, std::size_t const& j) const noexcept;
             double* data(void) noexcept;
             const double* data(void) const noexcept;
@@ -47,9 +45,8 @@ namespace urban
             short & hit(std::size_t const& i, std::size_t const& j);
             const short & hit(std::size_t const& i, std::size_t const& j) const;
 
-            typedef std::vector<double>::iterator iterator;
-            typedef std::vector<double>::const_iterator const_iterator;
-
+            using iterator = std::vector<double>::iterator;
+            using const_iterator = std::vector<double>::const_iterator;
             iterator begin(void) noexcept;
             const_iterator begin(void) const noexcept;
             const_iterator cbegin(void) const noexcept;
@@ -59,8 +56,7 @@ namespace urban
 
             void vertical_offset(void);
 
-            RasterPrint & operator +=(RasterPrint const& other);
-            RasterPrint & operator -=(RasterPrint const& other);
+            void to_gdal(GDALDataset* file) const;
         private:
             std::string name;
             shadow::Point reference_point;
@@ -72,13 +68,16 @@ namespace urban
             std::vector<short> pixel_hits;
             bool offset = false;
 
-            bool equal_metadata(RasterPrint const& other) const;
             friend std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection);
+
+            bool equal_metadata(RasterPrint const& other) const;
             friend bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs);
+
+            void set_geotransform(GDALDataset* file) const;
+            void set_projection(GDALDataset* file) const;
+            void save_image(GDALDataset* file) const;
         };
 
-        RasterPrint & operator +(RasterPrint & lhs, RasterPrint const& rhs);
-        RasterPrint & operator -(RasterPrint & lhs, RasterPrint const& rhs);
         bool operator !=(RasterPrint & lhs, RasterPrint const& rhs);
     }
     void swap(projection::RasterPrint & lhs, projection::RasterPrint & rhs);

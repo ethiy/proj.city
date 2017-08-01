@@ -175,40 +175,24 @@ namespace urban
                 if(raster)
                 {
                     GDALAllRegister();
-                    GDALDriver* driver = GetGDALDriverManager()->GetDriverByName(driver_name.c_str());
+                    GDALDriver* driver = GetGDALDriverManager()
+                                            ->GetDriverByName(driver_name.c_str());
                     if(driver == NULL)
                     {
                         error_message << "GDAL could not find a driver for: " << driver_name;
                         throw std::runtime_error(error_message.str());
                     }
 
-                    std::size_t height(raster_image.get_height()),
-                                width(raster_image.get_width());
-                    double adfGeoTransform[6];
-
-                    double* gdal_buffer = const_cast<double*>(raster_image.data());
-
-                    std::array<double, 6> geographic_transform = raster_image.get_geographic_transform();
-                    std::copy(std::begin(geographic_transform), std::end(geographic_transform), adfGeoTransform);
-
-                    GDALDataset* file =  driver->Create(filepath.string().c_str(), width, height, 1, GDT_Float64, NULL);
-
-                    file->SetGeoTransform( adfGeoTransform );
-
-                    OGRSpatialReference spatial_reference_system;
-                    char* spatial_reference_system_name = NULL;
-                    spatial_reference_system.importFromEPSG(
-                        raster_image.get_epsg()
+                    GDALDataset* file =  driver->Create(
+                        filepath.string().c_str(),
+                        raster_image.get_width(),
+                        raster_image.get_height(),
+                        1,
+                        GDT_Float64,
+                        NULL
                     );
-                    spatial_reference_system.exportToWkt(&spatial_reference_system_name);
-                    file->SetProjection(spatial_reference_system_name);
-                    CPLFree(spatial_reference_system_name);
 
-                    GDALRasterBand* unique_band = file->GetRasterBand(1);
-                    CPLErr error = unique_band->RasterIO(GF_Write, 0, 0, width, height, gdal_buffer, width, height, GDT_Float64,0, 0);
-                    if(error != CE_None)
-                        throw std::runtime_error("GDAL could not save raster band");
-
+                    raster_image.to_gdal(file);
                     GDALClose(dynamic_cast<GDALDatasetH>(file));
                 }
                 else
