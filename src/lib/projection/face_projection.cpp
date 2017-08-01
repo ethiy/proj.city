@@ -22,7 +22,8 @@ namespace urban
     {
         FacePrint::FacePrint(void)
         {}
-        FacePrint::FacePrint(Polygon_with_holes const& _border, const Plane_3 & _supporting_plane):border(_border), supporting_plane(_supporting_plane)
+        FacePrint::FacePrint(Polygon_with_holes const& _border, const Plane_3 & _supporting_plane)
+            : border(_border), supporting_plane(_supporting_plane)
         {}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
@@ -42,9 +43,14 @@ namespace urban
                 throw std::runtime_error("GDAL could not read a polygon from the feature");
         }
         
-        FacePrint::FacePrint(FacePrint const& other):border(other.border), supporting_plane(other.supporting_plane){}
-        FacePrint::FacePrint(FacePrint && other):border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane)){}
-        FacePrint::~FacePrint(void){}
+        FacePrint::FacePrint(FacePrint const& other)
+            : border(other.border), supporting_plane(other.supporting_plane)
+        {}
+        FacePrint::FacePrint(FacePrint && other)
+            : border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane))
+        {}
+        FacePrint::~FacePrint(void)
+        {}
 
         void FacePrint::swap(FacePrint & other)
         {
@@ -255,13 +261,13 @@ namespace urban
             return feature;
         }
 
-        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& reference_point, double const height, double const width, double const pixel_size) const
+        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, double const height, double const width, double const pixel_size) const
         {
             if(!is_degenerate())
             {
                 Bbox_2 bb = bbox();
-                std::size_t  i_min = static_cast<std::size_t>(std::floor((reference_point.y() - bb.ymax()) / pixel_size)),
-                             j_min = static_cast<std::size_t>(std::floor((bb.xmin() - reference_point.x()) / pixel_size));
+                std::size_t  i_min = static_cast<std::size_t>(std::floor((top_left.y() - bb.ymax()) / pixel_size)),
+                             j_min = static_cast<std::size_t>(std::floor((bb.xmin() - top_left.x()) / pixel_size));
                 std::size_t  w = static_cast<std::size_t>(std::ceil((bb.xmax() - bb.xmin()) / pixel_size)),
                              h = static_cast<std::size_t>(std::ceil((bb.ymax() - bb.ymin()) / pixel_size));
                 if(i_min + h > height && j_min + w > width)

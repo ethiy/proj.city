@@ -1,5 +1,7 @@
 #include <projection/raster_projection.h>
 
+#include <shadow/vector.h>
+
 #include <cpl_string.h>
 
 #include <iterator>
@@ -16,7 +18,7 @@ namespace urban
         {}
         RasterPrint::RasterPrint(FootPrint const& footprint, double const _pixel_size)
             : name(footprint.get_name()),
-              reference_point(footprint.get_reference_point()),
+              reference_point(footprint.get_reference_point() + shadow::Vector(footprint.bbox().xmin(), footprint.bbox().ymax(), 0)),
               epsg_index(footprint.get_epsg()),
               height(static_cast<std::size_t>(std::ceil((footprint.bbox().ymax() - footprint.bbox().ymin()) / _pixel_size))),
               width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / _pixel_size))),
@@ -28,9 +30,9 @@ namespace urban
                 std::begin(footprint),
                 std::end(footprint),
                 image_matrix,
-                [this](std::vector<double> & image, projection::FacePrint const& face_projection)
+                [this, &footprint](std::vector<double> & image, projection::FacePrint const& face_projection)
                 {
-                    return face_projection.rasterize(image, pixel_hits, reference_point, height, width, pixel_size);
+                    return face_projection.rasterize(image, pixel_hits, shadow::Point(footprint.bbox().xmin(), footprint.bbox().ymax(), 0), height, width, pixel_size);
                 }
             );
             vertical_offset();
