@@ -15,6 +15,7 @@ RUN apt-get -y upgrade
 RUN apt-get install -y \
             libboost-filesystem-dev\
             libboost-system-dev\
+            libboost-thread-dev\
             libboost-regex-dev\
             lib3ds-dev\
             libtinyxml2-dev\
