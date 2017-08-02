@@ -27,7 +27,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << face_proj;
-                REQUIRE(auxilary.str() == "Bounding box: 1.25 0.029 87.3 98.64\nFace Projections: 1\nThe Polygon describing borders :3 64.25 50 1.25 98.64 87.3 0.029  0 \nThe supporting plane coefficients : 425.689 342.995 2027.02 -44500.2\n\nProjected surface: \n3 1.25 98.64 87.3 0.029 64.25 50  0 \n");
+                REQUIRE(auxilary.str() == "Bounding box: 1.25 0.029 87.3 98.64\nFace Projections: 1\nThe Polygon describing borders :3 64.25 50 1.25 98.64 87.3 0.029  0 \nThe supporting plane coefficients : 425.689 342.995 2027.02 -44500.2\n\n");
             }
         }
         WHEN("it is compared to an encapsulated brick projection:")
@@ -59,7 +59,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Bounding box: -0.5 0.33 0.5 0.67\nFace Projections: 1\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\nProjected surface: \n3 -0.5 0.33 0.5 0.33 0 0.67  0 \n");
+                REQUIRE(auxilary.str() == "Bounding box: -0.5 0.33 0.5 0.67\nFace Projections: 1\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\n");
             }
         }
         WHEN("face_1 is compared to the other")
@@ -85,7 +85,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Bounding box: -1 0 1 1\nFace Projections: 2\nThe Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  \nThe supporting plane coefficients : 3 -0.23 2 -7\n\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\nProjected surface: \n3 -1 0 1 0 0 1  0 \n");
+                REQUIRE(auxilary.str() == "Bounding box: -1 0 1 1\nFace Projections: 2\nThe Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  \nThe supporting plane coefficients : 3 -0.23 2 -7\n\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\n");
             }
         }
     }

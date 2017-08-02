@@ -49,7 +49,6 @@ namespace urban
             bool overlaps(Polygon_with_holes const& polygon) const;
             bool overlaps(FacePrint const& facet) const;
             bool is_under(FacePrint const&) const;
-            bool check_integrity(void) const;
 
             double get_height(Point_2 const&) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
@@ -65,9 +64,7 @@ namespace urban
         private:
             Bbox_2 bounding_box;
             std::vector<FacePrint> projected_facets;
-            Polygon_set projected_surface;
 
-            bool equal_print(BrickPrint const& other) const;
             bool equal_facets(BrickPrint const& other) const;
 
             friend std::ostream & operator <<(std::ostream & os, BrickPrint const& brick_projection);
