@@ -21,6 +21,7 @@ include(cmake/dependencies.cmake)
 ##
 
 include_directories(BEFORE "${PROJECT_SOURCE_DIR}/src/include")
+
 add_subdirectory(src/lib lib)
 
 ##
