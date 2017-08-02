@@ -13,8 +13,10 @@ public:
           graphs(docopt_args.at("--graphs").asBool()),
           labels(docopt_args.at("--labels").asBool())
     {
+        std::cout << "Parsing arguments... " << std::flush;
         std::stringstream sconverter(docopt_args.at("--pixel_size").asString());
         sconverter >> pixel_size;
+        std::cout << "Done." << std::flush << std::endl;
     }
     ~Arguments(void)
     {}
