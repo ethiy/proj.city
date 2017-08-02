@@ -7,7 +7,8 @@ RUN apt-get install -y \
             libgcc-5-dev\
             g++\
             cmake\
-            git
+            git\
+            wget
 RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
 RUN apt-get -y update
 RUN apt-get -y upgrade
@@ -17,10 +18,18 @@ RUN apt-get install -y \
             libboost-regex-dev\
             lib3ds-dev\
             libtinyxml2-dev\
-            libcgal-dev\
-            libcgal-qt5-dev\
-            libqt5opengl5-dev\
-            libgdal-dev
+            libgdal-dev\
+            libgmp-dev\
+            libmpfr-dev\
+            libmpfrc++-dev
+WORKDIR /home
+RUN wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
+RUN mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1
+WORKDIR CGAL-4.10
+RUN mkdir build
+WORKDIR build
+RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+RUN make -j `nproc` install && make install_FindCGAL
 WORKDIR /home
 RUN git clone https://github.com/Ethiy/proj.city.git
 WORKDIR proj.city/

@@ -31,10 +31,15 @@ matrix:
       before_install:
         - brew update
         - brew outdated boost || brew upgrade boost
-        - brew outdated cgal || brew upgrade cgal
         - brew install lib3ds
         - brew install tinyxml2
         - mkdir -p 3rdParty && cd 3rdParty
+        - wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
+        - mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1 && cd CGAL-4.10
+        - mkdir build && cd build
+        - cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+        - make -j `nproc` install && make install_FindCGAL
+        - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p GDAL && cd GDAL
         - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-2.1.dmg
         - sudo hdiutil attach GDAL_Complete-2.1.dmg
