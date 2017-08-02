@@ -29,7 +29,7 @@ namespace urban
             Plane_3 plane;
             Polygon facet_proj = trace(facet, plane);
 
-            if(facet_proj.orientation() == CGAL::CLOCKWISE)
+            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
                 facet_proj.reverse_orientation();
 
             return FacePrint(Polygon_with_holes(facet_proj), plane);
