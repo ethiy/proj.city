@@ -7,7 +7,7 @@ struct Arguments
 {
 public:
     Arguments(std::map<std::string, docopt::value> const& docopt_args)
-        : input_path(docopt_args.at("<filename>").asString()),
+        : input_path(docopt_args.at("<scene>").asString()),
           rasterize(docopt_args.at("--rasterize").asBool()),
           buildings(docopt_args.at("--buildings").asBool()),
           graphs(docopt_args.at("--graphs").asBool()),
