@@ -112,7 +112,7 @@ namespace urban
             return projection.cend();
         }
 
-        FootPrint & FootPrint::operator +=(FootPrint & other)
+        FootPrint & FootPrint::operator +=(FootPrint const& other)
         {
             if(reference_point != other.reference_point || epsg_index != other.epsg_index)
                 throw std::logic_error("Feature not supported");
@@ -157,9 +157,10 @@ namespace urban
             return !(lhs == rhs);
         }
 
-        FootPrint & operator +(FootPrint & lhs, FootPrint & rhs)
+        FootPrint operator +(FootPrint const& lhs, FootPrint const& rhs)
         {
-            return lhs += rhs;
+            FootPrint result(lhs);
+            return result += rhs;
         }
 
         void swap(FootPrint & lhs, FootPrint & rhs)

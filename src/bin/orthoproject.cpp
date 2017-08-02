@@ -16,7 +16,7 @@
 #include <iterator>
 
 static const char USAGE[]=
-R"(project_scene_xy.
+R"(orthoproject.
 
     Usage:
       orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
@@ -33,10 +33,10 @@ R"(project_scene_xy.
 )";
 
 
-void save_building_duals(boost::filesystem::path const& root_path, urban::scene::Scene const& scene)
+inline void save_building_duals(boost::filesystem::path const& root_path, urban::scene::Scene const& scene)
 {
     std::cout << "Saving brick duals... " << std::flush;
-    boost::filesystem::path dual_dir(root_path / "dual_graphs")
+    boost::filesystem::path dual_dir(root_path / "dual_graphs");
     boost::filesystem::create_directory(dual_dir);
     for(auto const& building : scene)
     {
@@ -50,10 +50,10 @@ void save_building_duals(boost::filesystem::path const& root_path, urban::scene:
     std::cout << " Done." << std::flush << std::endl;
 }
 
-std::vector<urban::projection::FootPrint> orthoproject(urban::scene::Scene const& scene)
+inline std::vector<urban::projection::FootPrint> orthoproject(urban::scene::Scene const& scene)
 {
     std::cout << "Projecting... " << std::flush;
-    std::vector<urban::projection::FootPrint> ortho_projections(scene.size());
+    std::vector<urban::projection::FootPrint> ortho_projections(scene.building_size());
     std::transform(
         std::begin(scene),
         std::end(scene),
@@ -104,6 +104,12 @@ int main(int argc, const char** argv)
         auto projections = orthoproject(scene);
 
         std::cout << "Summing and saving scene projections... " << std::flush;
+
+        auto scene_projection = std::accumulate(
+            std::begin(projections),
+            std::end(projections),
+            urban::projection::FootPrint()
+        );
 
         urban::io::FileHandler<GDALDriver>(
             urban::io::GdalFormat::gml,

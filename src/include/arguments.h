@@ -29,7 +29,7 @@ public:
     bool labels = false;
 };
 
-std::ostream & operator <<(std::ostream & os, Arguments & arguments)
+inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
 {
     os << "Arguments:" << std::endl
        << "  Input path: " << arguments.input_path << std::endl

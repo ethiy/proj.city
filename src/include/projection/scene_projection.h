@@ -38,7 +38,7 @@ namespace urban
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            FootPrint & operator +=(FootPrint & other);
+            FootPrint & operator +=(FootPrint const& other);
 
             void to_ogr(GDALDataset* file, bool labels) const;
         private:
@@ -51,7 +51,7 @@ namespace urban
             friend bool operator ==(FootPrint const& lhs, FootPrint const& rhs);
             friend bool operator !=(FootPrint const& lhs, FootPrint const& rhs);
         };
-        FootPrint & operator +(FootPrint & lhs, FootPrint & rhs);
+        FootPrint operator +(FootPrint const& lhs, FootPrint const& rhs);
 
         void swap(FootPrint & lhs, FootPrint & rhs);
     }
