@@ -5,6 +5,8 @@
 #include <docopt.h>
 #include <arguments.h>
 
+#include <CGAL/IO/Geomview_stream.h>
+
 #include <boost/filesystem.hpp>
 
 #include <tinyxml2.h>
@@ -54,12 +56,22 @@ inline std::vector<urban::projection::FootPrint> orthoproject(urban::scene::Scen
 {
     std::cout << "Projecting... " << std::flush;
     std::vector<urban::projection::FootPrint> ortho_projections(scene.building_size());
+    int it = 0;
     std::transform(
         std::begin(scene),
         std::end(scene),
         std::begin(ortho_projections),
-        [](urban::scene::UNode const& building)
+        [&it](urban::scene::UNode const& building)
         {
+            std::cout << it++ << std::endl;
+            if(it >= 149)
+            {
+                CGAL::Geomview_stream geomview_stream;
+                geomview_stream << building;
+                std::cout << building << std::endl;
+                geomview_stream.look_recenter();
+                geomview_stream.look_recenter();
+            }
             return urban::projection::FootPrint(building);
         }
     );

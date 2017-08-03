@@ -287,16 +287,15 @@ namespace urban
 
         std::ostream& operator <<(std::ostream &os, Mesh const& mesh)
         {
-            os << "Name: " << mesh.name << std::endl
-               << "Bounding box: " << mesh.bounding_box << std::endl
-               << "Points: " << std::endl;
+            os << "#Name: " << mesh.name << std::endl
+               << "#Bounding box: " << mesh.bounding_box << std::endl;
 
+            os << mesh.points_size() << " " << mesh.faces_size() << " 0" << std::endl;
             for(std::size_t idx = 0; idx < mesh.points_size(); ++idx)
-                os << "Point " << idx << " : " << mesh.points.at(idx) << std::endl;
+                os << mesh.points.at(idx) << std::endl;
 
-            os << "Faces: " << std::endl;
             for(std::size_t idx = 0; idx < mesh.faces_size(); ++idx)
-                os << "Face " << idx << " : " << mesh.faces.at(idx) << std::endl;
+                os << mesh.faces.at(idx) << std::endl;
 
             return os;
         }

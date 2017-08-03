@@ -38,22 +38,38 @@ namespace urban
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<shadow::Mesh> meshes = mesh_file.read(building_id);
-            std::vector<Point_3> points;
-            std::vector< std::vector<std::size_t> > polygons;
+            std::vector<Polyhedron> surfaces(meshes.size());
 
-            for(auto const& mesh : meshes)
+            std::transform(
+                std::begin(meshes),
+                std::end(meshes),
+                std::begin(surfaces),
+                [](shadow::Mesh const& mesh)
+                {
+                    auto points = mesh.get_cgal_points();
+                    auto polygons = mesh.get_cgal_faces();
+                    CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+                    Polyhedron poly;
+                    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, poly);
+                    if (CGAL::is_closed(poly) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(poly)))
+                        CGAL::Polygon_mesh_processing::reverse_face_orientations(poly);
+                    CGAL::Polygon_mesh_processing::stitch_borders(poly);
+                    return poly;
+                }
+            );
+            
+            Nef_polyhedron nef;
+
+            for(auto const& poly : surfaces)
             {
-                auto buffer_points = mesh.get_cgal_points();
-                auto buffer_faces = mesh.get_cgal_faces();
-                points.insert(std::end(points), std::begin(buffer_points), std::end(buffer_points));
-                polygons.insert(std::end(polygons), std::begin(buffer_faces), std::end(buffer_faces));
+                Nef_polyhedron toto(poly);
+                nef.join(toto);
             }
 
-            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
-            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
-            if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
-                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            std::cout << nef << std::endl;
+            
+            if(nef.is_simple())
+                nef.convert_to_polyhedron(surface);
             bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)

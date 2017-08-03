@@ -257,7 +257,6 @@ namespace urban
 
             for(auto const& facet : other.projected_facets)
             {
-                std::cout << facet << std::endl;
                 if(!facet.is_empty() && !facet.is_degenerate())
                     operator +=(facet);
             }

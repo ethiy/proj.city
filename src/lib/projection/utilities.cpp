@@ -74,6 +74,8 @@ namespace urban
                 std::begin(buffer),
                 [&plane](Polygon_with_holes const& polygon)
                 {
+                    if(!polygon.outer_boundary().is_simple())
+                        std::cout << polygon << std::endl;
                     return FacePrint(polygon, plane);
                 }
             );
