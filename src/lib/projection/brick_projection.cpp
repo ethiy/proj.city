@@ -253,8 +253,17 @@ namespace urban
         }
         BrickPrint & BrickPrint::operator +=(BrickPrint const& other)
         {
+            filter();
+
             for(auto const& facet : other.projected_facets)
-                operator +=(facet);
+            {
+                std::cout << facet << std::endl;
+                if(!facet.is_empty() && !facet.is_degenerate())
+                    operator +=(facet);
+            }
+
+            filter();
+
             return *this;
         }
 
