@@ -68,6 +68,25 @@ namespace urban
             return meshes;
         }
 
+        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_roofs(std::string const& node_name) const
+        {
+            std::ostringstream error_message;
+            std::vector<urban::shadow::Mesh> meshes;
+            
+            if (modes.at("read"))
+            {
+                Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
+                roof_nodes(p_node, meshes);
+            }
+            else
+            {
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
+            }
+            return meshes;
+        }
+
         std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void) const
         {
             std::ostringstream error_message;
@@ -129,6 +148,22 @@ namespace urban
                 return ;            
 
             meshes.push_back(urban::shadow::Mesh(mesh));
+        }
+        void FileHandler<Lib3dsFile>::roof_nodes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const
+        {
+            node_meshes(node, meshes);
+
+            meshes.erase(
+                std::remove_if(
+                    std::begin(meshes),
+                    std::end(meshes),
+                    [](shadow::Mesh const& mesh)
+                    {
+                        return mesh.get_name().at(0) != 'T';
+                    }
+                ),
+                std::end(meshes)
+            );
         }
     }
 }

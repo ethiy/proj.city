@@ -24,6 +24,7 @@ namespace urban
             ~FileHandler(void);
 
             std::vector<shadow::Mesh> read(std::string const& node_name) const;
+            std::vector<shadow::Mesh> read_roofs(std::string const& node_name) const;
             std::vector<shadow::Mesh> read(void) const;
 
             void write(std::vector<shadow::Mesh> meshes);
@@ -33,6 +34,7 @@ namespace urban
             std::map<std::string, bool> modes;
 
             void node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const;
+            void roof_nodes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const;
         };
     }
 }
