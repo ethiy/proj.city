@@ -35,43 +35,8 @@ namespace urban
              bounding_box(std::move(other.bounding_box))
         {}
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, io::FileHandler<Lib3dsFile> const& mesh_file)
-            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
-        {
-            std::vector<shadow::Mesh> meshes = mesh_file.read(building_id);
-            std::vector<Polyhedron> surfaces(meshes.size());
-
-            std::transform(
-                std::begin(meshes),
-                std::end(meshes),
-                std::begin(surfaces),
-                [](shadow::Mesh const& mesh)
-                {
-                    auto points = mesh.get_cgal_points();
-                    auto polygons = mesh.get_cgal_faces();
-                    CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
-                    Polyhedron poly;
-                    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, poly);
-                    if (CGAL::is_closed(poly) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(poly)))
-                        CGAL::Polygon_mesh_processing::reverse_face_orientations(poly);
-                    CGAL::Polygon_mesh_processing::stitch_borders(poly);
-                    return poly;
-                }
-            );
-            
-            Nef_polyhedron nef;
-
-            for(auto const& poly : surfaces)
-            {
-                Nef_polyhedron toto(poly);
-                nef.join(toto);
-            }
-
-            std::cout << nef << std::endl;
-            
-            if(nef.is_simple())
-                nef.convert_to_polyhedron(surface);
-            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
-        }
+            : UNode(building_id, _reference_point, _epsg_index, mesh_file.read_and_stitch(building_id))
+        {}
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {

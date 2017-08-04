@@ -5,7 +5,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/vscode/cli/project_scene_xy",
+            "program": "${workspaceRoot}/build/vscode/cli/orthoproject",
             "args": ["-h"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/build/vscode",

@@ -234,6 +234,30 @@ namespace urban
             return bounding_box;
         }
 
+        Mesh & Mesh::operator +=(Mesh const& other)
+        {
+            name += other.name;
+            bounding_box += other.bounding_box;
+
+            auto diff = points.size();
+            auto placeholder = std::end(faces);
+            
+            points.insert(std::end(points), std::begin(other.points), std::end(other.points));
+            faces.insert(std::end(faces), std::begin(other.faces), std::end(other.faces));
+
+            std::transform(
+                placeholder,
+                std::end(faces),
+                placeholder,
+                [diff](Face & face)
+                {
+                    return face.offset(diff);
+                }
+            );
+
+            return *this;
+        }
+
         Lib3dsMesh* Mesh::to_3ds(void) const
         {
             char name_buffer[64];
@@ -313,7 +337,12 @@ namespace urban
             );
         }
 
-        bool operator ==(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
+        Mesh operator +(Mesh const& lhs, Mesh const& rhs)
+        {
+            return Mesh(lhs) += rhs;
+        }
+
+        bool operator ==(Mesh const& lhs, Mesh const& rhs)
         {
             bool equal(lhs.points_size() == rhs.points_size() && lhs.faces_size() == rhs.faces_size());
             if(equal)
@@ -341,7 +370,7 @@ namespace urban
             return equal;
         }
 
-        bool operator !=(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
+        bool operator !=(Mesh const& lhs, Mesh const& rhs)
         {
             return !(lhs == rhs);
         }        
