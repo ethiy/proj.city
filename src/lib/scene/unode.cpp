@@ -48,7 +48,8 @@ namespace urban
             if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
-            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+            if(!surface.empty())
+                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons)
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
@@ -58,7 +59,8 @@ namespace urban
             if (CGAL::is_closed(surface) && (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface)))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
-            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+            if(!surface.empty())
+                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
         UNode::~UNode(void)
         {}
