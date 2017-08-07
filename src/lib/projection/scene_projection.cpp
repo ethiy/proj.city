@@ -114,10 +114,15 @@ namespace urban
 
         FootPrint & FootPrint::operator +=(FootPrint const& other)
         {
-            if(reference_point != other.reference_point || epsg_index != other.epsg_index)
-                throw std::logic_error("Feature not supported");
-            
-            projection += other.projection;
+            if(projection.is_empty())
+                *this = other;
+            else
+            {
+                if(reference_point != other.reference_point || epsg_index != other.epsg_index)
+                    throw std::logic_error("Feature not supported");
+                
+                projection += other.projection;
+            }
             return *this;
         }
 

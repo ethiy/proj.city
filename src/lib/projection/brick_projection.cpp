@@ -101,6 +101,10 @@ namespace urban
         {
             return projected_facets.cend();
         }
+        bool BrickPrint::is_empty(void) const noexcept
+        {
+            return projected_facets.empty();
+        }
 
 
         bool BrickPrint::contains(Point_2 const& point) const
