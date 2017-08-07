@@ -4,6 +4,7 @@
 #include <projection/utilities.h>
 #include <algorithms/util_algorithms.h>
 
+#include <ogr_feature.h>
 #include <ogr_geometry.h>
 
 #include <CGAL/Boolean_set_operations_2.h>

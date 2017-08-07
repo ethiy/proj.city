@@ -91,7 +91,7 @@ SCENARIO("shadow::Mesh manipulation:")
     {
         WHEN("they are stitched")
         {
-            /* auto mesh = urban::io::FileHandler<std::fstream>(
+             auto mesh = urban::io::FileHandler<std::fstream>(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29051.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
@@ -135,7 +135,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 boost::filesystem::path("../../ressources/3dModels/OFF/T11108.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read();
- */
+ 
             THEN("The output checks:")
             {
                 //std::cout << mesh << std::endl;

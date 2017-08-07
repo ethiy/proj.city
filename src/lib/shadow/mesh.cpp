@@ -240,15 +240,15 @@ namespace urban
             bounding_box += other.bounding_box;
 
             auto diff = points.size();
-            auto placeholder = std::end(faces);
+            auto shift = faces.size();
             
             points.insert(std::end(points), std::begin(other.points), std::end(other.points));
             faces.insert(std::end(faces), std::begin(other.faces), std::end(other.faces));
 
             std::transform(
-                placeholder,
+                std::next(std::begin(faces), shift),
                 std::end(faces),
-                placeholder,
+                std::next(std::begin(faces), shift),
                 [diff](Face & face)
                 {
                     return face.offset(diff);

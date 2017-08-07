@@ -83,6 +83,7 @@ namespace urban
 
             return facets;
         }
+        
         OGRPoint* to_ogr(const Point_2 & point, const shadow::Point & reference_point)
         {
             return new OGRPoint(to_double(point.x() + reference_point.x()), to_double(point.y() + reference_point.y()));
