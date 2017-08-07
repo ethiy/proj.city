@@ -208,7 +208,7 @@ namespace urban
              * @return constant end faces iterator
              */
             faces_const_iterator faces_cend(void) const noexcept;
-            
+            bool is_empty(void) const noexcept;
 
             /**
              * Name the mesh

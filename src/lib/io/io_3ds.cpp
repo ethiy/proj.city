@@ -58,12 +58,6 @@ namespace urban
             {
                 Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
                 node_meshes(p_node, meshes);
-                std::cout << node_name << " : ";
-                for(auto const& mesh : meshes)
-                {
-                    std::cout << mesh << std::endl;
-                }
-                std::cout << std::endl;
             }
             else
             {

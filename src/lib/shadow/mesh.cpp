@@ -165,6 +165,10 @@ namespace urban
         {
             return faces.cend();
         }
+        bool Mesh::is_empty(void) const noexcept
+        {
+            return points.empty();
+        }
 
 
         void Mesh::set_name(std::string const& _name) noexcept
@@ -236,25 +240,29 @@ namespace urban
 
         Mesh & Mesh::operator +=(Mesh const& other)
         {
-            name += other.name;
-            bounding_box += other.bounding_box;
+            if(is_empty())
+                *this = other;
+            else
+            {
+                name += "_" + other.name;
+                bounding_box += other.bounding_box;
 
-            auto diff = points.size();
-            auto shift = faces.size();
-            
-            points.insert(std::end(points), std::begin(other.points), std::end(other.points));
-            faces.insert(std::end(faces), std::begin(other.faces), std::end(other.faces));
+                auto diff = points.size();
+                auto shift = faces.size();
+                
+                points.insert(std::end(points), std::begin(other.points), std::end(other.points));
+                faces.insert(std::end(faces), std::begin(other.faces), std::end(other.faces));
 
-            std::transform(
-                std::next(std::begin(faces), shift),
-                std::end(faces),
-                std::next(std::begin(faces), shift),
-                [diff](Face & face)
-                {
-                    return face.offset(diff);
-                }
-            );
-
+                std::transform(
+                    std::next(std::begin(faces), shift),
+                    std::end(faces),
+                    std::next(std::begin(faces), shift),
+                    [diff](Face & face)
+                    {
+                        return face.offset(diff);
+                    }
+                );
+            }
             return *this;
         }
 
@@ -312,7 +320,8 @@ namespace urban
         std::ostream& operator <<(std::ostream &os, Mesh const& mesh)
         {
             os << "#Name: " << mesh.name << std::endl
-               << "#Bounding box: " << mesh.bounding_box << std::endl;
+               << "#Bounding box: " << mesh.bounding_box << std::endl
+               << "OFF" << std::endl;
 
             os << mesh.points_size() << " " << mesh.faces_size() << " 0" << std::endl;
             for(std::size_t idx = 0; idx < mesh.points_size(); ++idx)

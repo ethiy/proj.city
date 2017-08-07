@@ -61,6 +61,7 @@ SCENARIO("shadow::Mesh manipulation:")
                 auxilary << u_mesh;
                 _auxilary << "#Name: " << std::endl
                           << "#Bounding box: " << u_mesh.bbox() << std::endl
+                          << "OFF" << std::endl
                           << points.size() << " " << faces.size() << " 0" << std::endl;
                 
                 for(std::size_t idx(0); idx < points.size(); ++idx)
@@ -138,7 +139,7 @@ SCENARIO("shadow::Mesh manipulation:")
  
             THEN("The output checks:")
             {
-                //std::cout << mesh << std::endl;
+                std::cout << mesh << std::endl;
             }
         }
     }
