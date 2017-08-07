@@ -139,7 +139,12 @@ SCENARIO("shadow::Mesh manipulation:")
  
             THEN("The output checks:")
             {
-                std::cout << mesh << std::endl;
+                auto test_mesh = urban::io::FileHandler<std::fstream>(
+                    boost::filesystem::path("../../ressources/tests/building_sum_mesh.off"),
+                    std::map<std::string, bool>{{"read", true}}
+                ).read();
+                
+                REQUIRE(mesh == test_mesh);
             }
         }
     }
