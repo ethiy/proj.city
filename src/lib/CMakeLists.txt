@@ -18,6 +18,7 @@ set(Algorithms_SRC
     "${proj.city_SOURCE_DIR}/src/lib/algorithms/unode_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/algorithms/util_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/algorithms/test_utils.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/algorithms/scene_algorithms.cpp"
 )
 set(Scene_SRC
     "${proj.city_SOURCE_DIR}/src/lib/scene/unode.cpp"
