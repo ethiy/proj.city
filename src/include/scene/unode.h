@@ -186,6 +186,7 @@ namespace urban
             */
             Plane_const_iterator planes_cend(void) const noexcept;
 
+             std::vector<Point_3> points(const UNode::Facet & facet) const;
             /**
             * Compute the centroid of a urban node facet
             * @param facet a urban node facet
