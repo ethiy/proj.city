@@ -191,19 +191,19 @@ namespace urban
             * @param facet a urban node facet
             * @return centroid of the facet
             */
-            Point_3 centroid(const UNode::Facet & facet) const;
+            Point_3 centroid(UNode::Facet & facet) const;
             /**
             * Compute the normal of a urban node facet
             * @param facet a urban node facet
             * @return the normal of the facet
             */
-            Vector_3 normal(const UNode::Facet & facet) const;
+            Vector_3 normal(UNode::Facet & facet) const;
             /**
             * Compute the area of a urban node facet
             * @param facet a urban node facet
             * @return area of the facet
             */
-            double area(const UNode::Facet & facet) const;
+            double area(UNode::Facet & facet) const;
 
             /** 
             * Finds a joinable halfedge.
