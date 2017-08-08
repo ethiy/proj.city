@@ -251,35 +251,33 @@ namespace urban
         std::vector<UNode::Halfedge_handle> UNode::pruning_halfedges(void)
         {
             std::vector<UNode::Halfedge_handle> combining_edges;
-            std::vector<UNode::Halfedge_handle> buffer;
 
             std::for_each(
                 facets_begin(),
                 facets_end(),
-                [&combining_edges, &buffer, this](Facet & facet)
+                [&combining_edges, this](Facet & facet)
                 {
-                    buffer = combinable(facet);
-                    std::copy_if(
+                    auto buffer = combinable(facet);
+
+                    combining_edges.insert(
+                        std::end(combining_edges),
                         std::begin(buffer),
-                        std::end(buffer),
-                        std::back_inserter(combining_edges),
-                        [&combining_edges](UNode::Halfedge_handle const& h)
+                        std::end(buffer)
+                    );
+
+                    std::unique(
+                        std::begin(combining_edges),
+                        std::end(combining_edges),
+                        [](UNode::Halfedge_handle const& lhs, UNode::Halfedge_handle const& rhs)
                         {
-                            return std::none_of(
-                                std::begin(combining_edges),
-                                std::end(combining_edges),
-                                [&h](UNode::Halfedge_handle const& present)
-                                {
-                                    return  (present->vertex()->point() == h->vertex()->point() && present->opposite()->vertex()->point() == h->opposite()->vertex()->point())
-                                            ||
-                                            (present->opposite()->vertex()->point() == h->vertex()->point() && present->vertex()->point() == h->opposite()->vertex()->point());
-                                }
-                            );
+                            return  (rhs->vertex()->point() == lhs->vertex()->point() && rhs->opposite()->vertex()->point() == lhs->opposite()->vertex()->point())
+                                    ||
+                                    (rhs->opposite()->vertex()->point() == lhs->vertex()->point() && rhs->vertex()->point() == lhs->opposite()->vertex()->point());
                         }
                     );
-                    buffer.clear();
                 }
             );
+            
             return combining_edges;
         }
 
