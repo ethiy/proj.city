@@ -132,6 +132,7 @@ namespace urban
     }
     scene::Scene & prune(scene::Scene & scene)
     {
+        std::cout << "(Pruning scene...";
         std::transform(
             std::begin(scene),
             std::end(scene),
@@ -141,6 +142,7 @@ namespace urban
                 return prune(unode);
             }
         );
+        std::cout << "Done)";
         return scene;
     }
 }

@@ -61,6 +61,7 @@ int main(int argc, const char** argv)
                 )
             )
         );
+        urban::prune(scene);
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.graphs)
