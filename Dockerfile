@@ -37,7 +37,7 @@ WORKDIR proj.city/
 RUN git checkout build-system-trial
 RUN mkdir build && mkdir build/linux
 WORKDIR build/xenial
-RUN cmake ../..
+RUN cmake ../.. -DCGAL_DIR=/usr/lib/CGAL
 RUN cmake ../..
 RUN make -j `nproc` all
 RUN tests/tests

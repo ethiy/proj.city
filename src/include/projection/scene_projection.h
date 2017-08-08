@@ -4,6 +4,8 @@
 
 #include <scene/unode.h>
 
+#include <gdal_priv.h>
+
 namespace urban
 {
     namespace projection
