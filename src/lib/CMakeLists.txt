@@ -41,7 +41,7 @@ target_link_libraries(urban_scene urban_shadow urban_projection ${LIBS})
 
 # Algorithms
 add_library(urban_algorithms ${Algorithms_SRC})
-target_link_libraries(urban_algorithms urban_scene urban_shadow ${LIBS})
+target_link_libraries(urban_algorithms urban_scene urban_shadow urban_io ${LIBS})
 
 # Projections
 add_library(urban_projection ${Projection_SRC})
