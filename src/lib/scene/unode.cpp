@@ -7,8 +7,6 @@
 #include <CGAL/Polygon_mesh_processing/bbox.h>
 #include <CGAL/IO/Polyhedron_iostream.h>
 
-#include <CGAL/Polygon_mesh_processing/compute_normal.h>
-
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Polyhedron_geomview_ostream.h>
 #endif // CGAL_USE_GEOMVIEW
@@ -40,7 +38,7 @@ namespace urban
             : UNode(building_id, _reference_point, _epsg_index, mesh_file.read_and_stitch(building_id))
         {}
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
-            : name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<Point_3> points = mesh.get_cgal_points();
             std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
@@ -289,19 +287,6 @@ namespace urban
             return *this;
         }
 
-        std::vector<Point_3> UNode::points(const UNode::Facet & facet) const
-        {
-            std::vector<Point_3> face_points(facet.facet_degree());
-            Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
-            auto cursor = std::begin(face_points);
-
-            do
-            {
-                *cursor = circulator->vertex()->point();
-            }while(++circulator != facet.facet_begin());
-            return face_points;
-        }
-
         Point_3 UNode::centroid(UNode::Facet const& facet) const
         {
             Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
@@ -317,20 +302,15 @@ namespace urban
                             to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n)
                                 /
                             6;
-            }while(++circulator != facet.facet_begin());
+            }while(circulator != facet.facet_begin());
 
             return CGAL::ORIGIN + centroid / area(facet);
         }
 
         Vector_3 UNode::normal(UNode::Facet const& facet) const
         {
-            auto _points = points(facet);
-            std::sort(std::begin(_points), std::end(_points));
-            _points.erase(
-                std::unique(std::begin(_points), std::end(_points)),
-                std::end(_points)
-            );
-            return CGAL::normal(_points.at(0), _points.at(1), _points.at(2));
+            Polyhedron::Halfedge_around_facet_const_circulator circulator = facet.facet_begin();
+            return CGAL::normal(circulator->vertex()->point(), circulator->next()->vertex()->point(), circulator->next()->next()->vertex()->point());
         }
 
         double UNode::area(UNode::Facet const& facet) const
@@ -341,8 +321,8 @@ namespace urban
             double area(0);
             do
             {
-                area += to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n) / 2.;
-            }while(++circulator != facet.facet_begin());
+                area += to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n/2.);
+            }while(circulator != facet.facet_begin());
 
             return area;
         }
@@ -426,7 +406,7 @@ namespace urban
                 unode.facets_cend(),
                 [&as, &unode](UNode::Facet const& facet)
                 {
-                    as << facet.facet_degree() << " " << unode.centroid(facet) << std::endl;
+                    as << facet.facet_degree() << " " << unode.area(facet) << " " << unode.centroid(facet) << unode.normal(facet) << std::endl;
                 }
             );
 

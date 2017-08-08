@@ -34,7 +34,7 @@ install:
         Set-Location 3rParty
   - appveyor DownloadFile https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/lib3ds/lib3ds-1.3.0.zip
   - 7z x lib3ds-1.3.0.zip
-  - Get-ChildItem
+  - ps : Get-ChildItem
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/proj.city/3rParty/lib3ds-1.3.0/; ./configure; make -j4; make install"
 build_script:
   - ps: New-Item -ItemType Directory -Path ..\build\MSYS2
