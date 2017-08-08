@@ -305,7 +305,7 @@ namespace urban
                             to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n)
                                 /
                             6;
-            }while(circulator != facet->facet_begin());
+            }while(++circulator != facet->facet_begin());
 
             return CGAL::ORIGIN + centroid / area(facet);
         }
