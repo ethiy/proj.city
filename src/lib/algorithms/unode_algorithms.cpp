@@ -94,7 +94,7 @@ namespace urban
         return unode;
     }
 
-    double area(scene::UNode& unode)
+    double area(scene::UNode & unode)
     {
         return std::accumulate(
             unode.facets_begin(),
@@ -102,7 +102,7 @@ namespace urban
             .0,
             [&unode](double & area, scene::UNode::Facet & facet)
             {
-                return area + unode.area(facet);
+                return area + unode.area(facet.halfedge()->facet());
             }
         );
     }

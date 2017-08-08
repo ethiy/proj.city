@@ -191,19 +191,19 @@ namespace urban
             * @param facet a urban node facet
             * @return centroid of the facet
             */
-            Point_3 centroid(UNode::Facet & facet) const;
+            Point_3 centroid(UNode::Facet_handle facet) const;
             /**
             * Compute the normal of a urban node facet
             * @param facet a urban node facet
             * @return the normal of the facet
             */
-            Vector_3 normal(UNode::Facet & facet) const;
+            Vector_3 normal(UNode::Facet_handle facet) const;
             /**
             * Compute the area of a urban node facet
             * @param facet a urban node facet
             * @return area of the facet
             */
-            double area(UNode::Facet & facet) const;
+            double area( UNode::Facet_handle facet) const;
 
             /** 
             * Finds a joinable halfedge.
@@ -276,7 +276,7 @@ namespace urban
             * @param unode the unode to stream
             * @return the output stream
             */
-            friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, UNode const& unode);
+            friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, UNode & unode);
             #ifdef CGAL_USE_GEOMVIEW
             /**
             * Outstreaming urban node to GeomView
