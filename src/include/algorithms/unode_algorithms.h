@@ -25,16 +25,12 @@ namespace urban
     /*! Computes plane equations*/
     void plane_equations(scene::UNode &);
 
-    /** Prunes surfaces of unode.
+    /**
+     * Prunes surfaces of unode.
      * @param unode unode to prune
      * @return scene::UNode with pruned surfaces
      */
     scene::UNode & prune(scene::UNode & unode);
-    /** Prunes surfaces of unodes.
-     * @param unode a vector of unodes to prune
-     * @return a vector of unodes with pruned surfaces
-     */
-    std::vector<scene::UNode> & prune(std::vector<scene::UNode> & unode);
 
     /** Computes unode surface area*/
     double area(scene::UNode & unode);

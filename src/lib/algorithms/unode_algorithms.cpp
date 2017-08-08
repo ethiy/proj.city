@@ -94,20 +94,6 @@ namespace urban
         return unode;
     }
 
-    std::vector<scene::UNode> & prune(std::vector<scene::UNode> & unodes)
-    {
-        std::transform(
-            std::begin(unodes),
-            std::end(unodes),
-            std::begin(unodes),
-            [](scene::UNode & unode)
-            {
-                return prune(unode);
-            }
-        );
-        return unodes;
-    }
-
     double area(scene::UNode& unode)
     {
         return std::accumulate(

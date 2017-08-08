@@ -1,5 +1,7 @@
 #include <algorithms/scene_algorithms.h>
 
+#include <algorithms/unode_algorithms.h>
+
 #include <io/Adjacency_stream/adjacency_stream.h>
 #include <io/io_gdal.h>
 
@@ -127,5 +129,18 @@ namespace urban
         std::cout << "Done." << std::flush << std::endl;
 
         return raster_projections;
+    }
+    scene::Scene & prune(scene::Scene & scene)
+    {
+        std::transform(
+            std::begin(scene),
+            std::end(scene),
+            std::begin(scene),
+            [](scene::UNode & unode)
+            {
+                return prune(unode);
+            }
+        );
+        return scene;
     }
 }

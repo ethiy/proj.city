@@ -15,4 +15,5 @@ namespace urban
 
     std::vector<projection::FootPrint> orthoproject(scene::Scene const& scene);
     std::vector<projection::RasterPrint> rasterize_scene(std::vector<projection::FootPrint> const& projections, double const  pixel_size);
+    scene::Scene & prune(scene::Scene & scene);
 }
