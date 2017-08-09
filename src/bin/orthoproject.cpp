@@ -21,7 +21,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels --no_sum]
+      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels --no_sum --prune]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -33,6 +33,7 @@ R"(orthoproject.
       --graphs              Save the Facets dual graph for buildings.
       --labels              Save vector projections with error fields.
       --no_sum              Do not save the scene projection.
+      --prune               Prune building faces.
 )";
 
 int main(int argc, const char** argv)
@@ -62,7 +63,8 @@ int main(int argc, const char** argv)
                 )
             )
         );
-        urban::prune(scene);
+        if(arguments.prune)
+            urban::prune(scene);
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.graphs)
