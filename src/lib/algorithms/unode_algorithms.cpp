@@ -93,6 +93,8 @@ namespace urban
             unode = unode.join_facet(halfedge_handle);
             halfedge_handle = unode.prunable();
         }
+
+        unode.stitch_borders();
         
         return unode;
     }

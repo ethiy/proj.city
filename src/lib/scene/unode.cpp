@@ -404,15 +404,12 @@ namespace urban
 
         io::Adjacency_stream & operator <<(io::Adjacency_stream & as, UNode const& unode)
         {
-            std::cout << unode <<std::endl;
             std::for_each(
                 unode.facets_cbegin(),
                 unode.facets_cend(),
                 [&as, &unode](UNode::Facet const& facet)
                 {
-                    std::cout << facet.facet_degree() << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
-                    std::cout << facet.facet_degree() << " " << CGAL::Polygon_mesh_processing::area(unode.surface) << std::endl;
-                    as << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << unode.normal(facet.halfedge()->facet()) << std::endl;
+                    as << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
                 }
             );
 
