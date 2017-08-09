@@ -290,7 +290,7 @@ namespace urban
             return *this;
         }
 
-        Point_3 UNode::centroid(UNode::Facet_handle facet) const
+        Point_3 UNode::centroid(UNode::Facet_const_handle facet) const
         {
             Polyhedron::Halfedge_around_facet_const_circulator circulator = facet->facet_begin();
             Vector_3 n = normal(facet);
@@ -310,14 +310,19 @@ namespace urban
             return CGAL::ORIGIN + centroid / area(facet);
         }
 
-        Vector_3 UNode::normal(UNode::Facet_handle facet) const
+        Vector_3 UNode::normal(UNode::Facet_const_handle facet) const
         {
-            return CGAL::Polygon_mesh_processing::compute_face_normal(facet, surface);
+            UNode::Facet _face = *facet;
+            return CGAL::Polygon_mesh_processing::compute_face_normal(&_face, surface);
         }
 
-        double UNode::area(UNode::Facet_handle facet) const
+        double UNode::area(UNode::Facet_const_handle facet) const
         {
-            return to_double(CGAL::Polygon_mesh_processing::face_area(facet, surface));
+            UNode::Facet _face = *facet;
+            ExactToInexact to_inexact;
+            auto a = CGAL::Polygon_mesh_processing::face_area(&_face, surface);
+            std::cout << a << std::endl;
+            return to_inexact(a);
         }
         
         std::vector<UNode::Facet_const_handle> UNode::facet_adjacents(UNode::Facet const& facet) const
@@ -385,21 +390,23 @@ namespace urban
             return matrix;
         }
 
-        std::ostream & operator<<(std::ostream &os, UNode const& unode)
+        std::ostream & operator <<(std::ostream &os, UNode const& unode)
         {
             os  << "# Name: " << unode.name << std::endl
                 << unode.surface;
             return os;
         }
 
-        io::Adjacency_stream & operator<<(io::Adjacency_stream & as, UNode & unode)
+        io::Adjacency_stream & operator <<(io::Adjacency_stream & as, UNode const& unode)
         {
+            std::cout << unode <<std::endl;
             std::for_each(
-                unode.facets_begin(),
-                unode.facets_end(),
-                [&as, &unode](UNode::Facet & facet)
+                unode.facets_cbegin(),
+                unode.facets_cend(),
+                [&as, &unode](UNode::Facet const& facet)
                 {
-                    as << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(&facet) << unode.normal(&facet) << std::endl;
+                    std::cout << facet.facet_degree() << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
+                    as << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << unode.normal(facet.halfedge()->facet()) << std::endl;
                 }
             );
 
