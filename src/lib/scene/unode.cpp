@@ -49,7 +49,6 @@ namespace urban
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
-            CGAL::Polygon_mesh_processing::stitch_borders(surface);
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
@@ -61,7 +60,6 @@ namespace urban
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            CGAL::Polygon_mesh_processing::stitch_borders(surface);
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
@@ -287,20 +285,18 @@ namespace urban
         UNode & UNode::join_facet(UNode::Halfedge_handle & h)
         {
             surface.join_facet(h);
-            stitch_borders();
             return *this;
         }
         void UNode::stitch_borders(void)
         {
-            if (!CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
-                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
+                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
         }
 
         Point_3 UNode::centroid(UNode::Facet_const_handle facet) const
         {
-            Polyhedron::Halfedge_around_facet_const_circulator circulator = facet->facet_begin();
+            auto circulator = facet->facet_begin();
             Vector_3 n = normal(facet);
 
             Vector_3 centroid = CGAL::NULL_VECTOR;
@@ -324,11 +320,16 @@ namespace urban
         }
         double UNode::area(UNode::Facet_const_handle facet) const
         {
-            UNode::Facet _face = *facet;
-            ExactToInexact to_inexact;
-            auto a = CGAL::Polygon_mesh_processing::face_area(&_face, surface);
-            std::cout << a << std::endl;
-            return to_inexact(a);
+            double _area = 0;
+            Vector_3 n = normal(facet);
+
+            auto circulator = facet->facet_begin();
+            do
+            {
+                _area += to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n) / 2.;
+            }while(++circulator != facet->facet_begin());
+
+            return _area;
         }
         
         std::vector<UNode::Facet_const_handle> UNode::facet_adjacents(UNode::Facet const& facet) const
@@ -410,6 +411,7 @@ namespace urban
                 [&as, &unode](UNode::Facet const& facet)
                 {
                     std::cout << facet.facet_degree() << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
+                    std::cout << facet.facet_degree() << " " << CGAL::Polygon_mesh_processing::area(unode.surface) << std::endl;
                     as << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << unode.normal(facet.halfedge()->facet()) << std::endl;
                 }
             );
