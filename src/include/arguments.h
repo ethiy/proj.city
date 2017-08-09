@@ -11,7 +11,8 @@ public:
           rasterize(docopt_args.at("--rasterize").asBool()),
           buildings(docopt_args.at("--buildings").asBool()),
           graphs(docopt_args.at("--graphs").asBool()),
-          labels(docopt_args.at("--labels").asBool())
+          labels(docopt_args.at("--labels").asBool()),
+          no_sum(docopt_args.at("--no_sum").asBool())
     {
         std::cout << "Parsing arguments... " << std::flush;
         std::stringstream sconverter(docopt_args.at("--pixel_size").asString());
@@ -27,6 +28,7 @@ public:
     bool buildings = false;
     bool graphs = false;
     bool labels = false;
+    bool no_sum = false;
 };
 
 inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
@@ -37,6 +39,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Rasterize: " << arguments.rasterize << std::endl
        << "  Buildings: " << arguments.buildings << std::endl
        << "  Graphs: " << arguments.graphs << std::endl
-       << "  Labels: " << arguments.labels << std::endl;
+       << "  Labels: " << arguments.labels << std::endl
+       << "  Sum: " << !arguments.no_sum << std::endl;
     return os;
 }

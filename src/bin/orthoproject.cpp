@@ -21,7 +21,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
+      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels --no_sum]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -32,6 +32,7 @@ R"(orthoproject.
       --buildings           Save projections per building.
       --graphs              Save the Facets dual graph for buildings.
       --labels              Save vector projections with error fields.
+      --no_sum              Do not save the scene projection.
 )";
 
 int main(int argc, const char** argv)
@@ -69,7 +70,8 @@ int main(int argc, const char** argv)
         
         auto projections = urban::orthoproject(scene);
 
-        urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
+        if(!arguments.no_sum)
+            urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
         
         if(arguments.buildings)
         {
