@@ -86,11 +86,14 @@ namespace urban
 
     scene::UNode & prune(scene::UNode & unode)
     {
-        std::vector<scene::UNode::Halfedge_handle> prunables = unode.pruning_halfedges();
-        for(auto prunable : prunables)
+        auto halfedge_handle = unode.prunable();
+
+        while(halfedge_handle != unode.halfedges_end())
         {
-            unode = unode.join_facet(prunable);
+            unode = unode.join_facet(halfedge_handle);
+            halfedge_handle = unode.prunable();
         }
+        
         return unode;
     }
 

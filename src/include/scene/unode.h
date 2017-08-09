@@ -232,6 +232,8 @@ namespace urban
             */
             UNode & join_facet(Halfedge_handle & h);
 
+            void stitch_borders(void);
+
             /** 
             * Get facets adjacent to a facet
             * @param facet a urban node facet

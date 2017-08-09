@@ -12,7 +12,8 @@ public:
           buildings(docopt_args.at("--buildings").asBool()),
           graphs(docopt_args.at("--graphs").asBool()),
           labels(docopt_args.at("--labels").asBool()),
-          no_sum(docopt_args.at("--no_sum").asBool())
+          no_sum(docopt_args.at("--no_sum").asBool()),
+          prune(docopt_args.at("--prune").asBool())
     {
         std::cout << "Parsing arguments... " << std::flush;
         std::stringstream sconverter(docopt_args.at("--pixel_size").asString());
@@ -29,6 +30,7 @@ public:
     bool graphs = false;
     bool labels = false;
     bool no_sum = false;
+    bool prune = false;
 };
 
 inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
@@ -40,6 +42,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Buildings: " << arguments.buildings << std::endl
        << "  Graphs: " << arguments.graphs << std::endl
        << "  Labels: " << arguments.labels << std::endl
-       << "  Sum: " << !arguments.no_sum << std::endl;
+       << "  Sum projections: " << !arguments.no_sum << std::endl
+       << "  Prune faces: " << !arguments.prune << std::endl;
     return os;
 }
