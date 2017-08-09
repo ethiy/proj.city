@@ -320,16 +320,9 @@ namespace urban
         }
         double UNode::area(UNode::Facet_const_handle facet) const
         {
-            double _area = 0;
-            Vector_3 n = normal(facet);
-
-            auto circulator = facet->facet_begin();
-            do
-            {
-                _area += to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n) / 2.;
-            }while(++circulator != facet->facet_begin());
-
-            return _area;
+            ExactToInexact to_inexact;
+            UNode::Facet _face = *facet;
+            return to_inexact(CGAL::Polygon_mesh_processing::face_area(&_face, surface));
         }
         
         std::vector<UNode::Facet_const_handle> UNode::facet_adjacents(UNode::Facet const& facet) const
