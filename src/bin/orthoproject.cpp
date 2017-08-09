@@ -21,19 +21,20 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels --no_sum --prune]
+      orthoproject <scene> [--prune --buildings --graphs --save_projections --sum_projections --labels --rasterize --pixel_size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
       -h --help             Show this screen.
       --version             Show version.
-      --pixel_size=<size>   Pixel size [default: 1].
-      --rasterize           Rasterize projections.
-      --buildings           Save projections per building.
-      --graphs              Save the Facets dual graph for buildings.
-      --labels              Save vector projections with error fields.
-      --no_sum              Do not save the scene projection.
       --prune               Prune building faces.
+      --buildings           Save buildings.
+      --graphs              Save the Facets dual graph per building.
+      --save_projections    Save projections per building.
+      --sum_projections     Sum and save the scene projection.
+      --labels              Save vector projections with error fields.
+      --rasterize           Rasterize and save projections.
+      --pixel_size=<size>   Pixel size [default: 1].
 )";
 
 int main(int argc, const char** argv)
@@ -63,6 +64,8 @@ int main(int argc, const char** argv)
                 )
             )
         );
+        if(arguments.buildings)
+            urban::save_buildings(root, scene);
         if(arguments.prune)
             urban::prune(scene);
         std::cout << "Done." << std::flush << std::endl;
@@ -72,7 +75,7 @@ int main(int argc, const char** argv)
         
         auto projections = urban::orthoproject(scene);
 
-        if(!arguments.no_sum)
+        if(arguments.save_projections)
             urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
         
         if(arguments.buildings)
