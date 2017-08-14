@@ -27,7 +27,7 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{boost,cmake}"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-eigen3"
-  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-cgal"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-gmp"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{gdal,tinyxml2}"
   - ps: |
         New-Item -ItemType Directory -Path .\3rParty
