@@ -242,19 +242,12 @@ namespace urban
             * @return handle to facets adjacent to facet
             */
             std::vector<UNode::Facet_const_handle> facet_adjacents(UNode::Facet const& facet) const;
-
-            /** 
-            * Get facet adjacency matrix (dual matrix)
-            * @return the facet adjacency matrix
-            */
-            std::vector<bool> facet_adjacency_matrix(void) const;
+            std::vector<UNode::Facet_const_handle> facet_handles(void) const;
             /** 
             * Write facet adjacency matrix to building matrix
-            * @param matrix the matrix to write on
-            * @param offset the index of the block where to write
-            * @return the matrix
+            * @return the adjacency matrix of facets
             */
-            std::vector<bool> & facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const;
+            std::vector<bool> facet_adjacency_matrix(void) const;
         private:
             /** Node name */
             std::string name;

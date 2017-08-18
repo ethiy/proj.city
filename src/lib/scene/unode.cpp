@@ -352,22 +352,9 @@ namespace urban
             }while(++circulator != facet.facet_begin());
             return adjacents;
         }
-        std::vector<bool> UNode::facet_adjacency_matrix(void) const
+        std::vector<UNode::Facet_const_handle> UNode::facet_handles(void) const
         {
-            std::vector<bool> adjacency(facets_size() * facets_size(), false);
-            return facet_adjacency_matrix(adjacency, 0);
-        }
-        std::vector<bool> & UNode::facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const
-        {
-            std::size_t n = static_cast<std::size_t>(std::floor(std::sqrt(matrix.size())));
-            std::size_t size = facets_size();
-
-            if(n * n != matrix.size())
-                throw std::logic_error("The adjacency matrix must be square!");
-            if(n < offset + facets_size())
-                throw std::underflow_error("The matrix cannot hold the whole brick!");
-
-            std::vector<UNode::Facet_const_handle> facets(size);
+            std::vector<UNode::Facet_const_handle> facets(facets_size());
             std::transform(
                 facets_cbegin(),
                 facets_cend(),
@@ -377,12 +364,19 @@ namespace urban
                     return &facet;
                 }
             );
+            return facets;
+        }
+        std::vector<bool> UNode::facet_adjacency_matrix(void) const
+        {
+            std::vector<bool> matrix(facets_size() * facets_size(), false);
 
-            for(std::size_t diag(offset); diag != size + offset; ++diag)
-                matrix.at(diag * size + diag) = true;
+            for(std::size_t diag(0); diag != facets_size(); ++diag)
+                matrix.at(diag * facets_size() + diag) = true;
+
+            auto facets = facet_handles();
 
             std::vector<UNode::Facet_const_handle> line_adjacents;
-            for(std::size_t line(0); line != size; ++line)
+            for(std::size_t line(0); line != facets_size(); ++line)
             {
                 line_adjacents = facet_adjacents(*facets.at(line));
 
@@ -390,13 +384,14 @@ namespace urban
                 {
                     auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
                     if(placeholder != std::end(facets))
-                    {
-                        std::size_t index = static_cast<std::size_t>(std::distance(std::begin(facets), placeholder)) + offset;
-                        matrix.at((line + offset) * size + index) = true;
-                    }
+                        matrix.at(
+                            line * facets_size()
+                            +
+                            static_cast<std::size_t>(std::distance(std::begin(facets), placeholder))
+                        )
+                        =
+                        true;
                 }
-
-                line_adjacents.clear();
             }   
             return matrix;
         }
@@ -415,7 +410,7 @@ namespace urban
                 unode.facets_cend(),
                 [&as, &unode](UNode::Facet const& facet)
                 {
-                    as << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
+                    as << facet.id() << " " << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
                 }
             );
 
