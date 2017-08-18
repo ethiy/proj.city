@@ -301,8 +301,8 @@ namespace urban
                             _lhs.difference(intersection);
                     }
 
-                    lhs = unpack(lhs, _lhs, lfacet.get_plane());
-                    rhs = unpack(rhs, _rhs, rfacet.get_plane());
+                    lhs = unpack(lhs, _lhs, lfacet.get_id(), lfacet.get_plane());
+                    rhs = unpack(rhs, _rhs, rfacet.get_id(), rfacet.get_plane());
                 }
             }
             projected_facets = rhs;
@@ -312,6 +312,9 @@ namespace urban
 
         void BrickPrint::to_ogr(OGRLayer* projection_layer, shadow::Point const& reference_point, bool labels) const
         {
+            OGRFieldDefn* facet_id = new OGRFieldDefn("Id", OFTInteger64);
+            projection_layer->CreateField(facet_id);
+
             OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff_a", OFTReal);
             projection_layer->CreateField(plane_coefficient_a);
             OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff_b", OFTReal);

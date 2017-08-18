@@ -1,6 +1,7 @@
 #pragma once
 
 #include <geometry_definitions.h>
+#include <scene/unode.h>
 #include <shadow/point.h>
 
 #include <ogrsf_frmts.h>
@@ -20,7 +21,8 @@ namespace urban
         {
         public:
             FacePrint(void);
-            FacePrint(const Polygon_with_holes & _border, Plane_3 const& _supporting_plane);
+            FacePrint(::urban::scene::UNode::Facet const& facet);
+            FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane);
             FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition);
             FacePrint(FacePrint const& other);
             FacePrint(FacePrint && other);
@@ -31,6 +33,7 @@ namespace urban
             FacePrint & operator =(FacePrint const& other) noexcept;
             FacePrint & operator =(FacePrint && other) noexcept;
 
+            std::size_t get_id() const noexcept;
             Polygon_with_holes const& get_polygon(void) const noexcept;
             Polygon const& outer_boundary(void) const;
             Plane_3 const& get_plane(void) const noexcept;
@@ -74,6 +77,7 @@ namespace urban
             
             std::vector<double> & rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, double const height, double const width, double const pixel_size) const;
         private:
+            std::size_t id;
             Polygon_with_holes border;
             Plane_3 supporting_plane;
 

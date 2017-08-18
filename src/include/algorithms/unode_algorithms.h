@@ -22,9 +22,6 @@ namespace urban
     /*! Rotate unodes*/
     scene::UNode & rotate(scene::UNode &, const std::map<double, Vector_3> &);
 
-    /*! Computes plane equations*/
-    void plane_equations(scene::UNode &);
-
     /**
      * Prunes surfaces of unode.
      * @param unode unode to prune

@@ -18,12 +18,14 @@ SCENARIO("Occlusion management")
         urban::InexactToExact to_exact;
         urban::projection::BrickPrint lhs(
             test_facet_projection(
+                0,
                 to_exact(urban::InexactKernel::Point_3(-1., 0, 5.)),
                 to_exact(urban::InexactKernel::Point_3(1., 0., 2.)),
                 to_exact(urban::InexactKernel::Point_3(0, 1., 3.615))
             )
         );
         auto rhs = test_facet_projection(
+            1,
             to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.)),
             to_exact(urban::InexactKernel::Point_3(.5, .33, 5.)),
             to_exact(urban::InexactKernel::Point_3(0, .67, 8.2))
@@ -37,8 +39,10 @@ SCENARIO("Occlusion management")
             {
                 std::ostringstream auxilary, _auxilary;
                 auxilary << *std::begin(lhs) << rhs;
-                _auxilary << "The Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  " << std::endl
+                _auxilary << "Id: 0" << std::endl
+                          << "The Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  " << std::endl
                           << "The supporting plane coefficients : 3 -0.23 2 -7" << std::endl
+                          << "Id: 1" << std::endl
                           << "The Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 " << std::endl
                           << "The supporting plane coefficients : 0 -3.2 0.34 -0.644" << std::endl;
                 REQUIRE(auxilary.str() == _auxilary.str());
@@ -48,9 +52,9 @@ SCENARIO("Occlusion management")
 
     GIVEN("two non convex faces with holes")
     {
-        
         urban::projection::BrickPrint lhs( 
             test_facet_projection(
+                0,
                 std::vector<urban::Point_2>{{
                     urban::Point_2(-10, 6),
                     urban::Point_2(-12, 0),
@@ -69,6 +73,7 @@ SCENARIO("Occlusion management")
         );
 
         auto rhs = test_facet_projection(
+            1,
             std::vector<urban::Point_2>{{
                 urban::Point_2(-6, 8),
                 urban::Point_2(-10, -10),
@@ -96,6 +101,7 @@ SCENARIO("Occlusion management")
             {
                 urban::projection::BrickPrint _rhs(
                     test_facet_projection(
+                        2,
                         std::vector<urban::Point_2>{{
                             urban::Point_2(-10, -10),
                             urban::Point_2(2, -10),
@@ -119,6 +125,7 @@ SCENARIO("Occlusion management")
 
                 auto _lhs = urban::projection::BrickPrint(
                         test_facet_projection(
+                            3,
                             std::vector<urban::Point_2>{{
                                 urban::Point_2(-6, 2),
                                 urban::Point_2(-4, 2),
@@ -134,6 +141,7 @@ SCENARIO("Occlusion management")
                     +
                     urban::projection::BrickPrint(
                         test_facet_projection(
+                            4,
                             std::vector<urban::Point_2>{{
                                 urban::Point_2(-0.8, 5.2),
                                 urban::Point_2(-2, 4),
@@ -157,6 +165,7 @@ SCENARIO("Occlusion management")
                     +
                     urban::projection::BrickPrint(
                         test_facet_projection(
+                            5,
                             std::vector<urban::Point_2>{{
                                 urban::Point_2(2, 8),
                                 urban::Point_2(-2/7, 40/7),
@@ -177,6 +186,7 @@ SCENARIO("Occlusion management")
                     +
                     urban::projection::BrickPrint(
                         test_facet_projection(
+                            6,
                             std::vector<urban::Point_2>{{
                                 urban::Point_2(-6.63158, 5.15789),
                                 urban::Point_2(-10, 6),
@@ -229,6 +239,7 @@ SCENARIO("Occlusion management")
         {
             auto _test_brickprint = urban::projection::BrickPrint(
                     test_facet_projection(
+                        0,
                         std::vector<urban::Point_2>{{
                             urban::Point_2(-10, 6),
                             urban::Point_2(-18, -14),
@@ -240,6 +251,7 @@ SCENARIO("Occlusion management")
                 +
                 urban::projection::BrickPrint(
                     test_facet_projection(
+                        1,
                         std::vector<urban::Point_2>{{
                             urban::Point_2(-18, 9),
                             urban::Point_2(-18, -14),
@@ -251,6 +263,7 @@ SCENARIO("Occlusion management")
                 +
                 urban::projection::BrickPrint(
                     test_facet_projection(
+                        2,
                         std::vector<urban::Point_2>{{
                             urban::Point_2(-10, 6),
                             urban::Point_2(-2, -13),
@@ -262,6 +275,7 @@ SCENARIO("Occlusion management")
                 +
                 urban::projection::BrickPrint(
                     test_facet_projection(
+                        3,
                         std::vector<urban::Point_2>{{
                             urban::Point_2(-18, 9),
                             urban::Point_2(-10, 6),

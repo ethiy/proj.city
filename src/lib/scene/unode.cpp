@@ -287,11 +287,13 @@ namespace urban
             surface.join_facet(h);
             return *this;
         }
-        void UNode::stitch_borders(void)
+        UNode & UNode::stitch_borders(void)
         {
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
             if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+            
+                return *this;
         }
 
         Point_3 UNode::centroid(UNode::Facet_const_handle facet) const
@@ -323,6 +325,17 @@ namespace urban
             ExactToInexact to_inexact;
             UNode::Facet _face = *facet;
             return to_inexact(CGAL::Polygon_mesh_processing::face_area(&_face, surface));
+        }
+
+        UNode & UNode::set_face_ids(void)
+        {
+            size_t index(0);
+            auto iterator = surface.facets_begin();
+
+            for(; iterator != surface.facets_end(); ++iterator)
+                iterator->id() = index ++;
+            
+            return *this;
         }
         
         std::vector<UNode::Facet_const_handle> UNode::facet_adjacents(UNode::Facet const& facet) const

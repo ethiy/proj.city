@@ -65,25 +65,6 @@ namespace urban
         return affine_transform(unode, rotation);
     }
 
-
-    void plane_equations(scene::UNode& unode)
-    {
-        std::transform(
-            unode.facets_begin(),
-            unode.facets_end(),
-            unode.planes_begin(),
-            [](scene::UNode::Facet & facet)
-            {
-                scene::UNode::Halfedge_handle halfedge = facet.halfedge();
-                return scene::UNode::Facet::Plane_3(
-                    halfedge->vertex()->point(),
-                    halfedge->next()->vertex()->point(),
-                    halfedge->next()->next()->vertex()->point()
-                );
-            }
-        );
-    }
-
     scene::UNode & prune(scene::UNode & unode)
     {
         auto halfedge_handle = unode.prunable();
@@ -94,7 +75,7 @@ namespace urban
             halfedge_handle = unode.prunable();
         }
 
-        unode.stitch_borders();
+        unode.stitch_borders().set_face_ids();
         
         return unode;
     }
