@@ -64,28 +64,32 @@ int main(int argc, const char** argv)
                 )
             )
         );
-        if(arguments.buildings)
-            urban::save_buildings(root, scene);
         if(arguments.prune)
             urban::prune(scene);
+        
+        if(arguments.buildings)
+            urban::save_buildings(root, scene);
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.graphs)
             urban::save_building_duals(root, scene);
         
-        auto projections = urban::orthoproject(scene);
-
-        if(arguments.save_projections)
-            urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
-        
-        if(arguments.buildings)
+        if(arguments.sum_projections || arguments.save_projections)
         {
-            urban::save_building_prints(root, projections, arguments.labels);
-            if(arguments.rasterize)
+            auto projections = urban::orthoproject(scene);
+            
+            if(arguments.sum_projections)
+                urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
+                    
+            if(arguments.save_projections)
             {
-                auto raster_projections = urban::rasterize_scene(projections, arguments.pixel_size);
-                urban::save_building_rasters(root, raster_projections);
-            }
+                urban::save_building_prints(root, projections, arguments.labels);
+                if(arguments.rasterize)
+                {
+                    auto raster_projections = urban::rasterize_scene(projections, arguments.pixel_size);
+                    urban::save_building_rasters(root, raster_projections);
+                }
+            }            
         }
     }
     catch(std::exception const& except)

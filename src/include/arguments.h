@@ -42,8 +42,8 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Prune faces: " << arguments.prune << std::endl
        << "  Buildings: " << arguments.buildings << std::endl
        << "  Graphs: " << arguments.graphs << std::endl
-       << "  Save projections: " << !arguments.sum_projections << std::endl
-       << "  Sum projections: " << !arguments.sum_projections << std::endl
+       << "  Save projections: " << arguments.save_projections << std::endl
+       << "  Sum projections: " << arguments.sum_projections << std::endl
        << "  Save Labels: " << arguments.labels << std::endl
        << "  Rasterize: " << arguments.rasterize << std::endl
        << "  Pixel size: " << arguments.pixel_size << std::endl;
