@@ -39,5 +39,4 @@ RUN mkdir build && mkdir build/linux
 WORKDIR build/xenial
 RUN cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/
 RUN cmake ../..
-RUN make -j `nproc` all
-RUN tests/tests
+RUN make -j`nproc`
