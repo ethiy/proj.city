@@ -19,7 +19,7 @@ matrix:
       before_install:
         - docker pull ethiy/proj.city
       script:
-        - docker run ethiy/proj.city /bin/sh -c "cmake ../.. ; cmake ../..;"
+        - docker run ethiy/proj.city /bin/sh -c "cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/ ; cmake ../..;"
         - docker run ethiy/proj.city /bin/sh -c "make -j4"
 
 
