@@ -21,7 +21,6 @@ matrix:
       script:
         - docker run ethiy/proj.city /bin/sh -c "export CC=/usr/bin/gcc; export CXX=/usr/bin/g++; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
 
-  include:
     - os: linux
       services:
         - docker
