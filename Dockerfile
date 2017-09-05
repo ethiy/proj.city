@@ -15,9 +15,6 @@ RUN apt-get install -y \
             g++
 
 RUN apt-get install -y \
-            python
-
-RUN apt-get install -y \
             clang-4.0
 
 RUN apt-get install -y \
@@ -26,7 +23,7 @@ RUN apt-get install -y \
             wget
 
 RUN apt-get install -y \
-            libboost-all-dev\
+            libboost-all-dev
             
 RUN apt-get install -y \
             libkml-dev\
