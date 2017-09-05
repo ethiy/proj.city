@@ -16,8 +16,11 @@ matrix:
     - os: linux
       services:
         - docker
+      before_install:
+        - docker pull ethiy/proj.city
       script:
-        - docker build .
+        - docker run --name ethiy/proj.city /bin/sh -c "cmake ../.. ; cmake ../.."
+        - docker run --name ethiy/proj.city /bin/sh -c "make -j4"
 
 
     - os: osx
