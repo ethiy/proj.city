@@ -19,8 +19,8 @@ matrix:
       before_install:
         - docker pull ethiy/proj.city
       script:
-        - docker run --name ethiy/proj.city /bin/sh -c "cmake ../.. ; cmake ../.."
-        - docker run --name ethiy/proj.city /bin/sh -c "make -j4"
+        - docker run ethiy/proj.city /bin/sh -c "cmake ../.. ; cmake ../..;"
+        - docker run ethiy/proj.city /bin/sh -c "make -j4"
 
 
     - os: osx
