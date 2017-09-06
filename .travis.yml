@@ -16,6 +16,15 @@ matrix:
     - os: linux
       env:
         - cc=/usr/bin/gcc cxx=/usr/bin/g++
+      services:
+        - docker
+      before_install:
+        - docker pull ethiy/proj.city
+      script:
+        - docker run ethiy/proj.city /bin/sh -c "export CC=cc; export CXX=cxx; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
+
+    - os: linux
+      env:
         - cc=/usr/bin/clang cxx=/usr/bin/clang++
       services:
         - docker
