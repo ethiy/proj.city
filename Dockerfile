@@ -15,7 +15,9 @@ RUN apt-get install -y \
             g++
 
 RUN apt-get install -y \
-            llvm-toolchain-4.0
+            clang-4.0
+
+RUN clang++ --version
 
 RUN apt-get install -y \
             cmake\
