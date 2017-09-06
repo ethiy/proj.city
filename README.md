@@ -20,9 +20,9 @@ In order to build this project you need first to check for these dependencies:
 | Library               | Version       |
 | --------------------- |:-------------:|
 | `boost`               | > `v1.58.0`   |
-| `Cgal`                | > `v4.7-4`    |
-| `Gdal`                | > `v2.0.0`    |
-| `lib3ds`              | > `v1.3.0`    |
+| `CGAL`                | > `v4.10`    |
+| `Gdal`                | = `v2.1.x`    |
+| `lib3ds`              | = `v1.3.0`    |
 | `tinyXML2`            | > `v2.6.0`    |
 | `Catch`               | > `v1.6.0`    |
 | `docopt.cpp`          | > `v0.6.2`    |
@@ -52,9 +52,9 @@ You can check the project's [docker file](Dockerfile) for an inspiration. We wil
 | Step         | `APT`           |
 |:------------:|:------------- |
 | Update       | `apt update && apt upgrade -y` |
-| boost        | This project uses only  `filesystem` and `system` boost libraries. However, since `Cgal` uses other libraries it may be wise to get all of them:<br>`apt install libboost-all-dev` |
-| Cgal         | `apt install libcgal-dev` |
-| Gdal         | `Gdal` > `v2.0.0` is not available in the official repositories. The easiest way to get a newer version would be through the unstable `ubuntugis` ppa:<br>`add-apt-repository ppa:ubuntugis/ubuntugis-unstable`<br>`apt update && apt upgrade`*<br>`apt install libgdal-dev`|
+| boost        | This project uses only  `filesystem` and `system` boost libraries. However, since `CGAL` uses other libraries it may be wise to get all of them:<br>`apt install libboost-all-dev` |
+| CGAL         | You should download the [release](https://github.com/CGAL/cgal/releases/tag/releases%2FCGAL-4.10) and build it |
+| Gdal         | `Gdal` = `v2.1.x` is not available in the official repositories. The easiest way to get a newer version would be through the unstable `ubuntugis` ppa:<br>`add-apt-repository ppa:ubuntugis/ppa`<br>`apt update && apt upgrade`<br>`apt install libgdal-dev`|
 | lib3ds       | `apt install lib3ds-dev` |
 | tinyXML2       | `apt install libtinyxml-dev` |
 
@@ -70,7 +70,7 @@ You can check the project's [travis file](/.travis.yml) for an inspiration. Ther
 | Installation | `/usr/bin/ruby -e $(curl -fsSL https://raw.githubusercontent.com/`<br>`Homebrew/install/master/install)` | You should follow the instructions on [`port` official website](https://www.macports.org/install.php) |
 | Update       | `brew update` | `port selfupdate && port upgrade outdated` |
 | boost        | `brew install boost` | `port install boost` |
-| Cgal         | `brew install cgal` | `port install cgal` |
+| CGAL         | `brew install cgal` | `port install cgal` |
 | Gdal         | You can find the latest release in this [website](http://www.kyngchaos.com/software/frameworks) | `port install gdal` |
 | lib3ds       | `brew install lib3ds` | `port install lib3ds13` |
 | TinyXML2     | `brew install tinyxml2` | `port install tinyxml2` |
@@ -82,7 +82,7 @@ You can check the project's [travis file](/.travis.yml) for an inspiration. Ther
 | Installation  | Check the [MSYS2 official website](http://www.msys2.org). `MinGW-w64` is provided with `MSYS2` |
 | Update       | `pacman --noconfirm -Syu pacman` |
 | boost        | `pacman --noconfirm -S mingw-w64-x86_64-boost` |
-| Cgal         | `pacman --noconfirm -S mingw-w64-x86_64-cgal` |
+| CGAL         | `pacman --noconfirm -S mingw-w64-x86_64-cgal` |
 | Gdal         | `pacman --noconfirm -S mingw-w64-x86_64-gdal`|
 | lib3ds       | You should download and build the library locally. Check out the [Appveyor configuration](appveyor.yml/#L35) for more details |
 | TinyXML2     | `pacman --noconfirm -S mingw-w64-x86_64-tinyxml2`|

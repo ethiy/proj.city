@@ -5,6 +5,8 @@ RUN apt-get -y upgrade
 
 RUN apt-get install -y software-properties-common
 
+RUN apt-get install -y build-essential
+
 RUN add-apt-repository -y ppa:ubuntugis/ppa
 RUN apt-get -y update
 RUN apt-get -y upgrade
@@ -14,16 +16,14 @@ RUN apt-get install -y \
             libgcc-5-dev\
             g++
 
-RUN apt-get install -y \
-            clang-4.0
+RUN apt-get install -y clang
 
 RUN apt-get install -y \
             cmake\
             git\
             wget
 
-RUN apt-get install -y \
-            libboost-all-dev
+RUN apt-get install -y libboost-all-dev
             
 RUN apt-get install -y \
             libkml-dev\
