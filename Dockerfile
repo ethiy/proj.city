@@ -17,8 +17,6 @@ RUN apt-get install -y \
 RUN apt-get install -y \
             clang-4.0
 
-RUN clang++ --version
-
 RUN apt-get install -y \
             cmake\
             git\

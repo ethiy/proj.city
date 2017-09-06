@@ -27,7 +27,7 @@ matrix:
       before_install:
         - docker pull ethiy/proj.city
       script:
-        - docker run ethiy/proj.city /bin/sh -c "export CC=/usr/bin/clang; export CXX=/usr/bin/clang++; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
+        - docker run ethiy/proj.city /bin/sh -c "export CC=/usr/bin/clang; export CXX='/usr/bin/clang -x c++'; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
 
     - os: osx
       osx_image: xcode8
