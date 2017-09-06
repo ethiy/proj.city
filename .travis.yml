@@ -14,20 +14,15 @@ branches:
 matrix:
   include:
     - os: linux
+      env:
+        - cc=/usr/bin/gcc cxx=/usr/bin/g++
+        - cc=/usr/bin/clang cxx=/usr/bin/clang++
       services:
         - docker
       before_install:
         - docker pull ethiy/proj.city
       script:
-        - docker run ethiy/proj.city /bin/sh -c "export CC=/usr/bin/gcc; export CXX=/usr/bin/g++; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
-
-    - os: linux
-      services:
-        - docker
-      before_install:
-        - docker pull ethiy/proj.city
-      script:
-        - docker run ethiy/proj.city /bin/sh -c "export CC=/usr/bin/clang; export CXX='/usr/bin/clang++'; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
+        - docker run ethiy/proj.city /bin/sh -c "export CC=cc; export CXX=cxx; cmake ../.. -DCGAL_DIR=/usr/lib/x86_64-linux-gnu/CGAL/; cmake ../..; make -j4"
 
     - os: osx
       osx_image: xcode8
