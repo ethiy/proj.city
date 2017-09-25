@@ -135,6 +135,14 @@ namespace urban
         {
             return surface.facets_end();
         }
+        UNode::Facet_const_iterator UNode::facets_begin(void) const noexcept
+        {
+            return surface.facets_begin();
+        }
+        UNode::Facet_const_iterator UNode::facets_end(void) const noexcept
+        {
+            return surface.facets_end();
+        }
         UNode::Facet_const_iterator UNode::facets_cbegin(void) const noexcept
         {
             return surface.facets_begin();
@@ -149,6 +157,14 @@ namespace urban
             return surface.halfedges_begin();
         }
         UNode::Halfedge_iterator UNode::halfedges_end(void) noexcept
+        {
+            return surface.halfedges_end();
+        }
+        UNode::Halfedge_const_iterator UNode::halfedges_begin(void) const noexcept
+        {
+            return surface.halfedges_begin();
+        }
+        UNode::Halfedge_const_iterator UNode::halfedges_end(void) const noexcept
         {
             return surface.halfedges_end();
         }

@@ -106,6 +106,16 @@ namespace urban
             * Returns facets constant begin iterator
             * @return facets constant begin iterator
             */
+            Facet_const_iterator facets_begin(void) const noexcept;
+            /**
+            * Returns facets constant end iterator
+            * @return facets constant end iterator
+            */
+            Facet_const_iterator facets_end(void) const noexcept;
+            /**
+            * Returns facets constant begin iterator
+            * @return facets constant begin iterator
+            */
             Facet_const_iterator facets_cbegin(void) const noexcept;
             /**
             * Returns facets constant end iterator
@@ -123,6 +133,16 @@ namespace urban
             * @return halfedges end iterator
             */
             Halfedge_iterator halfedges_end(void) noexcept;
+            /**
+            * Returns halfedges constant begin iterator
+            * @return halfedges constant begin iterator
+            */
+            Halfedge_const_iterator halfedges_begin(void) const noexcept;
+            /**
+            * Returns halfedges constant end iterator
+            * @return halfedges constant end iterator
+            */
+            Halfedge_const_iterator halfedges_end(void) const noexcept;
             /**
             * Returns halfedges constant begin iterator
             * @return halfedges constant begin iterator
@@ -203,7 +223,7 @@ namespace urban
             * @param facet a urban node facet
             * @return area of the facet
             */
-            double area( UNode::Facet_const_handle facet) const;
+            double area(UNode::Facet_const_handle facet) const;
 
             UNode & set_face_ids(void);
 

@@ -2,6 +2,7 @@
 #include <algorithms/util_algorithms.h>
 
 #include <CGAL/aff_transformation_tags.h>
+#include <CGAL/squared_distance_3.h>
 
 #include <stdexcept>
 
@@ -13,7 +14,7 @@
 
 namespace urban
 {
-    double border_length(scene::UNode & unode)
+    double border_length(scene::UNode const& unode)
     {
         return std::accumulate(
             unode.border_halfedges_begin(),
@@ -80,15 +81,37 @@ namespace urban
         return unode;
     }
 
-    double area(scene::UNode & unode)
+    double area(scene::UNode const& unode)
     {
         return std::accumulate(
             unode.facets_begin(),
             unode.facets_end(),
             .0,
-            [&unode](double & area, scene::UNode::Facet & facet)
+            [&unode](double area, scene::UNode::Facet const& facet)
             {
                 return area + unode.area(facet.halfedge()->facet());
+            }
+        );
+    }
+
+    double total_edge_length(scene::UNode const& unode)
+    {
+        return std::accumulate(
+            unode.halfedges_begin(),
+            unode.halfedges_end(),
+            .0,
+            [](double total_length, Polyhedron::Halfedge const& halfedge)
+            {
+                return  total_length
+                        +
+                        std::sqrt(
+                            to_double(
+                                CGAL::squared_distance(
+                                    halfedge.vertex()->point(),
+                                    halfedge.opposite()->vertex()->point()
+                                )
+                            )
+                        );
             }
         );
     }
