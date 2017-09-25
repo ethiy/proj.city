@@ -54,6 +54,9 @@ namespace urban
             double get_height(Point_2 const&) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
 
+            double area(void) const;
+            double circumference(void) const;
+            
             void filter(void);
 
             BrickPrint & operator +=(FacePrint const& lfacet);
@@ -76,4 +79,7 @@ namespace urban
         BrickPrint operator +(BrickPrint const& lhs, BrickPrint const& rhs);
     }
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
+
+    double area(BrickPrint const& brick_projection) const;
+    double circumference(BrickPrint const& brick_projection) const;
 }

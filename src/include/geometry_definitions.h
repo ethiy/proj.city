@@ -37,6 +37,7 @@ namespace urban
     using Point_2 = Kernel::Point_2;
     using InexactPoint_2 = InexactKernel::Point_2;
     using Vector_2 = Kernel::Vector_2;
+    using Segment_2 = Kernel::Segment_2;
     using InexactVector_2 = InexactKernel::Vector_2;
     using Intersect_2 = Kernel::Intersect_2;
     using Affine_transformation_2 = CGAL::Aff_transformation_2<Kernel>;

@@ -192,7 +192,6 @@ namespace urban
                 );
             return height;
         }
-
         double BrickPrint::get_height(InexactPoint_2 const& inexact_point) const
         {
             double height(0.);
@@ -207,6 +206,38 @@ namespace urban
                     }
                 );
             return height;
+        }
+
+        double BrickPrint::area(void) const
+        {
+            return std::accumulate(
+                std::begin(projected_faces),
+                std::end(projected_faces),
+                0.,
+                [](double _area, Facet const facet)
+                {
+                    return _area + facet.area();
+                }
+            );
+        }
+        double BrickPrint::circumference(void) const
+        {
+            Polygon_set ps;
+            for(auto const& _facet : projected_facets)
+                ps.join(_facet.get_polygon());
+            
+            std::list<Polygon_with_holes> footprint_polygons;
+            ps.polygons_with_holes(std::back_inserter(footprint_polygons));
+    
+            return std::accumulate(
+                std::begin(footprint_polygons),
+                std::end(footprint_polygons),
+                0.,
+                [](double total_length, Polygon const& footprint)
+                {
+                    return total_length + circumference(footprint);
+                }
+            );
         }
 
         void BrickPrint::filter(void)
@@ -382,5 +413,14 @@ namespace urban
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs)
     {
         lhs.swap(rhs);
+    }
+
+    double area(BrickPrint const& brick_projection) const
+    {
+        return brick_projection.area();
+    }
+    double circumference(BrickPrint const& brick_projection) const
+    {
+        return brick_projection.circumference();
     }
 }

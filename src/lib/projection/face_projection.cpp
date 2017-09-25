@@ -183,20 +183,23 @@ namespace urban
         {
             return urban::centroid(border.outer_boundary());
         }
-        
         double FacePrint::area(void) const
         {
             return std::accumulate(
                         border.holes_begin(),
                         border.holes_end(),
                         to_double(border.outer_boundary().area()),
-                        [](double & holes_area, const Polygon & hole)
+                        [](double holes_area, Polygon const& hole)
                         {
                             return holes_area - to_double(hole.area());
                         }
                     );
         }
-
+        double circumference(void) const
+        {
+            return circumference(border.outer_boundary());
+        }
+        
         bool FacePrint::equal_border(FacePrint const& other) const
         {
             bool result = std::distance(border.holes_begin(), border.holes_end()) == std::distance(other.border.holes_begin(), other.border.holes_end());
@@ -349,5 +352,8 @@ namespace urban
     {
         return facet.area();
     }
-
+    double circumference(projection::FacePrint const& facet)
+    {
+        return facet.circumference();
+    }
 }

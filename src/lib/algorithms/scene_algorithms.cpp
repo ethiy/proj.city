@@ -48,6 +48,10 @@ namespace urban
                 boost::filesystem::path(vector_dir / (projection.get_name() + ".gml")),
                 std::map<std::string,bool>{{"write", true}}
             ).write(projection);
+
+            std::fstream attributes_file(boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(), std::ios::in);
+            attributes_file << projection.area() << " " << projection.circumference() << std::endl;
+            attributes_file.close();
         }
         if(labels)
         {

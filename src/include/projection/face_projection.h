@@ -50,7 +50,8 @@ namespace urban
 
             InexactPoint_2 centroid(void) const;
             double area(void) const;
-
+            double circumference(void) const;
+            
             bool equal_border(FacePrint const& other) const;
             bool equal_plane(FacePrint const& other) const;
 
@@ -94,5 +95,12 @@ namespace urban
      * @param facet a facet projection
      * @return area of the facet projection
      */
-    double area(const projection::FacePrint & facet);
+    double area(projection::FacePrint const& facet);
+    
+    /**
+     * Compute FacePrint circumference.
+     * @param facet a facet projection
+     * @return circumference of the facet projection
+     */
+    double circumference(projection::FacePrint const& facet);
 }

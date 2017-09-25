@@ -342,7 +342,26 @@ namespace urban
             UNode::Facet _face = *facet;
             return to_inexact(CGAL::Polygon_mesh_processing::face_area(&_face, surface));
         }
+        double UNode::circumference(UNode::Facet_const_handle facet) const
+        {
+            auto circulator = facet->facet_begin();
+            double result = 0;
+            
+            do
+            {
+                result += std::sqrt(
+                    to_double(
+                        CGAL::squared_distance(
+                            circulator->vertex()->point(),
+                            circulator->opposite()->vertex()->point()
+                        )
+                    )
+                );
+            }while(++circulator != facet->facet_begin());
 
+            return result;
+        }
+        
         UNode & UNode::set_face_ids(void)
         {
             size_t index(0);
@@ -426,7 +445,7 @@ namespace urban
                 unode.facets_cend(),
                 [&as, &unode](UNode::Facet const& facet)
                 {
-                    as << facet.id() << " " << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
+                    as << facet.id() << " " << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.circumference(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
                 }
             );
 

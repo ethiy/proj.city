@@ -224,7 +224,13 @@ namespace urban
             * @return area of the facet
             */
             double area(UNode::Facet_const_handle facet) const;
-
+            /**
+            * Compute the circumference of a urban node facet
+            * @param facet a urban node facet
+            * @return circumference of the facet
+            */
+            double circumference(UNode::Facet_const_handle facet) const;
+            
             UNode & set_face_ids(void);
 
             /** 

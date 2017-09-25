@@ -113,4 +113,23 @@ namespace urban
     {
         return centroid(polygon.outer_boundary());
     }
+
+    double circumference(Polygon const& polygon)
+    {
+        return std::accumulate(
+            polygon.edges_begin(),
+            polygon.edges_end(),
+            0.,
+            [](double total_length, Segment_2 const& edge)
+            {
+                return  total_length
+                        +
+                        std::sqrt(
+                            to_double(
+                                edge.squared_length()
+                            )
+                        );
+            }
+        );
+    }
 }

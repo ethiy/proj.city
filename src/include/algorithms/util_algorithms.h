@@ -46,4 +46,5 @@ namespace urban
      */
     InexactPoint_2 centroid(Polygon_with_holes const& polygon);
     
+    double circumference(Polygon const& polygon);
 }
