@@ -185,8 +185,8 @@ namespace urban
 
                     GDALDataset* file =  driver->Create(
                         filepath.string().c_str(),
-                        raster_image.get_width(),
-                        raster_image.get_height(),
+                        static_cast<int>(raster_image.get_width()),
+                        static_cast<int>(raster_image.get_height()),
                         1,
                         GDT_Float64,
                         NULL

@@ -290,7 +290,7 @@ namespace urban
             return feature;
         }
 
-        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, double const height, double const width, double const pixel_size) const
+        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
             if(!is_degenerate())
             {
