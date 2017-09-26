@@ -30,6 +30,9 @@ namespace urban
             Bbox_2 const& bbox(void) const noexcept;
             BrickPrint const& data(void) const noexcept;
 
+            double area(void) const;
+            double circumference(void) const;
+            
             using iterator = BrickPrint::iterator;
             using const_iterator = BrickPrint::const_iterator;
 
@@ -55,6 +58,9 @@ namespace urban
         };
         FootPrint operator +(FootPrint const& lhs, FootPrint const& rhs);
 
-        void swap(FootPrint & lhs, FootPrint & rhs);
     }
+    void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
+
+    double area(projection::FootPrint const& footprint);
+    double circumference(projection::FootPrint const& footprint);
 }

@@ -87,6 +87,15 @@ namespace urban
             return projection;
         }
 
+        double FootPrint::area(void) const
+        {
+            return projection.area();
+        }
+        double FootPrint::circumference(void) const
+        {
+            return projection.circumference();
+        }
+
         FootPrint::iterator FootPrint::begin(void) noexcept
         {
             return projection.begin();
@@ -167,10 +176,19 @@ namespace urban
             FootPrint result(lhs);
             return result += rhs;
         }
+    }
 
-        void swap(FootPrint & lhs, FootPrint & rhs)
-        {
-            lhs.swap(rhs);
-        }
+    void swap(projection::FootPrint & lhs, projection::FootPrint & rhs)
+    {
+        lhs.swap(rhs);
+    }
+
+    double area(projection::FootPrint const& footprint)
+    {
+        return footprint.area();
+    }
+    double circumference(projection::FootPrint const& footprint)
+    {
+        return footprint.circumference();
     }
 }

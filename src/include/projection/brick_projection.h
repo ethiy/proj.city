@@ -80,6 +80,6 @@ namespace urban
     }
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 
-    double area(BrickPrint const& brick_projection) const;
-    double circumference(BrickPrint const& brick_projection) const;
+    double area(projection::BrickPrint const& brick_projection);
+    double circumference(projection::BrickPrint const& brick_projection);
 }

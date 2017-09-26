@@ -195,9 +195,9 @@ namespace urban
                         }
                     );
         }
-        double circumference(void) const
+        double FacePrint::circumference(void) const
         {
-            return circumference(border.outer_boundary());
+            return ::urban::circumference(border.outer_boundary());
         }
         
         bool FacePrint::equal_border(FacePrint const& other) const
@@ -318,7 +318,14 @@ namespace urban
                         hit
                     );
                     if(hit)
-                        image.at((i_min + index/w) * width + j_min + index%w) = (image.at((i_min + index/w) * width + j_min + index%w) * static_cast<double>(hits.at((i_min + index/w) * width + j_min + index%w)) + z) / static_cast<double>(++hits.at((i_min + index/w) * width + j_min + index%w));
+                        image.at((i_min + index/w) * width + j_min + index%w)
+                        =   (
+                                image.at((i_min + index/w) * width + j_min + index%w) * static_cast<double>(hits.at((i_min + index/w) * width + j_min + index%w))
+                                +
+                                z
+                            )
+                            /
+                            static_cast<double>(++hits.at((i_min + index/w) * width + j_min + index%w));
                 }
             }
             

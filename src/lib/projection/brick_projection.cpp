@@ -2,6 +2,8 @@
 
 #include <projection/utilities.h>
 
+#include <algorithms/util_algorithms.h>
+
 #include <CGAL/Boolean_set_operations_2.h>
 
 #include <list>
@@ -211,10 +213,10 @@ namespace urban
         double BrickPrint::area(void) const
         {
             return std::accumulate(
-                std::begin(projected_faces),
-                std::end(projected_faces),
+                std::begin(projected_facets),
+                std::end(projected_facets),
                 0.,
-                [](double _area, Facet const facet)
+                [](double _area, FacePrint const facet)
                 {
                     return _area + facet.area();
                 }
@@ -233,9 +235,9 @@ namespace urban
                 std::begin(footprint_polygons),
                 std::end(footprint_polygons),
                 0.,
-                [](double total_length, Polygon const& footprint)
+                [](double total_length, Polygon_with_holes const& footprint)
                 {
-                    return total_length + circumference(footprint);
+                    return total_length + ::urban::circumference(footprint.outer_boundary());
                 }
             );
         }
@@ -415,11 +417,11 @@ namespace urban
         lhs.swap(rhs);
     }
 
-    double area(BrickPrint const& brick_projection) const
+    double area(projection::BrickPrint const& brick_projection)
     {
         return brick_projection.area();
     }
-    double circumference(BrickPrint const& brick_projection) const
+    double circumference(projection::BrickPrint const& brick_projection)
     {
         return brick_projection.circumference();
     }
