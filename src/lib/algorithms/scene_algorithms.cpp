@@ -49,8 +49,18 @@ namespace urban
                 std::map<std::string,bool>{{"write", true}}
             ).write(projection);
 
-            std::fstream attributes_file(boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(), std::ios::in);
-            attributes_file << projection.area() << " " << projection.circumference() << std::endl;
+            std::fstream attributes_file(
+                boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(),
+                std::ios::out
+            );
+
+            auto areas = urban::areas(projection);
+            auto edges = urban::edge_lengths(projection);
+
+            std::copy(std::begin(areas), std::end(areas), std::ostream_iterator<double>(attributes_file, " "));
+            attributes_file << std::endl;
+            std::copy(std::begin(edges), std::end(edges), std::ostream_iterator<double>(attributes_file, " "));
+            attributes_file << std::endl;
             attributes_file.close();
         }
         if(labels)
