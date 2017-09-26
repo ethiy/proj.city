@@ -46,5 +46,6 @@ namespace urban
      */
     InexactPoint_2 centroid(Polygon_with_holes const& polygon);
     
+    std::vector<double> edge_lengths(Polygon const& polygon);
     double circumference(Polygon const& polygon);
 }

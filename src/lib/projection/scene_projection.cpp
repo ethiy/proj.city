@@ -87,10 +87,18 @@ namespace urban
             return projection;
         }
 
+        std::vector<double> FootPrint::areas(void) const
+        {
+            return projection.areas();
+        }
         double FootPrint::area(void) const
         {
             return projection.area();
         }
+        std::vector<double> FootPrint::edge_lengths(void) const
+        {
+            return projection.edge_lengths();
+        }        
         double FootPrint::circumference(void) const
         {
             return projection.circumference();
@@ -183,9 +191,17 @@ namespace urban
         lhs.swap(rhs);
     }
 
+    std::vector<double> areas(projection::FootPrint const& footprint)
+    {
+        return footprint.areas();
+    }
     double area(projection::FootPrint const& footprint)
     {
         return footprint.area();
+    }
+    std::vector<double> edge_lengths(projection::FootPrint const& footprint)
+    {
+        return footprint.edge_lengths();
     }
     double circumference(projection::FootPrint const& footprint)
     {

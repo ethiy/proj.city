@@ -210,19 +210,32 @@ namespace urban
             return height;
         }
 
-        double BrickPrint::area(void) const
+        std::vector<double> BrickPrint::areas(void) const
         {
-            return std::accumulate(
+            std::vector<double> results(projected_facets.size());
+            std::transform(
                 std::begin(projected_facets),
                 std::end(projected_facets),
-                0.,
-                [](double _area, FacePrint const facet)
+                std::begin(results),
+                [](FacePrint const& facet)
                 {
-                    return _area + facet.area();
+                    return facet.area();
                 }
             );
+            return results;
         }
-        double BrickPrint::circumference(void) const
+        double BrickPrint::area(void) const
+        {
+            auto results = areas();
+
+            return std::accumulate(
+                std::begin(results),
+                std::end(results),
+                0.,
+                std::plus<double>()
+            );
+        }
+        std::vector<double> BrickPrint::edge_lengths(void) const
         {
             Polygon_set ps;
             for(auto const& _facet : projected_facets)
@@ -230,15 +243,35 @@ namespace urban
             
             std::list<Polygon_with_holes> footprint_polygons;
             ps.polygons_with_holes(std::back_inserter(footprint_polygons));
-    
-            return std::accumulate(
+
+            auto size = std::accumulate(
                 std::begin(footprint_polygons),
                 std::end(footprint_polygons),
-                0.,
-                [](double total_length, Polygon_with_holes const& footprint)
+                std::size_t(0),
+                [](std::size_t const _size, Polygon_with_holes const& footprint)
                 {
-                    return total_length + ::urban::circumference(footprint.outer_boundary());
+                    return _size + footprint.outer_boundary().size();
                 }
+            );
+
+            std::vector<double> result;
+            result.reserve(size);
+            for(auto const& footprint : footprint_polygons)
+            {
+                auto buffer = ::urban::edge_lengths(footprint.outer_boundary());
+                result.insert(std::end(result), std::begin(buffer), std::end(buffer));
+            }
+            return result;
+        }
+        double BrickPrint::circumference(void) const
+        {
+            auto lengths = edge_lengths();
+    
+            return std::accumulate(
+                std::begin(lengths),
+                std::end(lengths),
+                0.,
+                std::plus<double>()
             );
         }
 
@@ -417,9 +450,17 @@ namespace urban
         lhs.swap(rhs);
     }
 
+    std::vector<double> areas(projection::BrickPrint const& brick_projection)
+    {
+        return brick_projection.areas();
+    }
     double area(projection::BrickPrint const& brick_projection)
     {
         return brick_projection.area();
+    }
+    std::vector<double> edge_lengths(projection::BrickPrint const& brick_projection)
+    {
+        return brick_projection.edge_lengths();
     }
     double circumference(projection::BrickPrint const& brick_projection)
     {

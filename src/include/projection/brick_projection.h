@@ -54,7 +54,9 @@ namespace urban
             double get_height(Point_2 const&) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
 
+            std::vector<double> areas(void) const;
             double area(void) const;
+            std::vector<double> edge_lengths(void) const;
             double circumference(void) const;
             
             void filter(void);
@@ -80,6 +82,8 @@ namespace urban
     }
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs);
 
+    std::vector<double> areas(projection::BrickPrint const& brick_projection);
     double area(projection::BrickPrint const& brick_projection);
+    std::vector<double> edge_lengths(projection::BrickPrint const& brick_projection);
     double circumference(projection::BrickPrint const& brick_projection);
 }

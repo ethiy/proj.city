@@ -30,7 +30,9 @@ namespace urban
             Bbox_2 const& bbox(void) const noexcept;
             BrickPrint const& data(void) const noexcept;
 
+            std::vector<double> areas(void) const;
             double area(void) const;
+            std::vector<double> edge_lengths(void) const;
             double circumference(void) const;
             
             using iterator = BrickPrint::iterator;
@@ -61,6 +63,8 @@ namespace urban
     }
     void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
 
+    std::vector<double> areas(projection::FootPrint const& footprint);
     double area(projection::FootPrint const& footprint);
+    std::vector<double> edge_lengths(projection::FootPrint const& footprint);
     double circumference(projection::FootPrint const& footprint);
 }
