@@ -102,8 +102,6 @@ namespace urban
                 /*Read Lines*/
                 std::vector<std::string> lines;
                 readlines(ios, std::back_inserter(lines));
-                if (lines.empty())
-                    throw std::out_of_range("The stream is empty!");
 
                 /*Ignore Comments*/
                 lines.erase(
@@ -123,81 +121,22 @@ namespace urban
                 /*Parsing file*/
                 if (lines.at(0) == "OFF")
                 {
-                    if (lines.empty())
+                    if (lines.size() <= 1)
                         throw std::out_of_range("The stream contains only the header; nothing to parse!");
 
-                    /*Parsing sizes*/
-                    std::vector<long> sizes(3);
-                    std::stringstream _sizes(lines[1]);
-                    std::copy(
-                        std::istream_iterator<std::size_t>(_sizes),
-                        std::istream_iterator<std::size_t>(),
-                        std::begin(sizes)
+                    auto sizes = read_header(lines);
+
+                    mesh = shadow::Mesh(
+                        read_points(
+                            lines,
+                            static_cast<std::size_t>(sizes[0])
+                        ),
+                        read_faces(
+                            lines,
+                            static_cast<std::size_t>(2 + sizes[0]),
+                            static_cast<std::size_t>(sizes[1])
+                        )
                     );
-                    if (sizes.size() != 3)
-                        throw std::range_error("Error parsing the second line! There should be 3 integers.");
-                    if (sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
-                        throw std::range_error("Error parsing the second line! The first and second integers should be positive and the third is always equal to 0.");
-                    if (static_cast<long>(lines.size()) != (2 + sizes[0] + sizes[1]))
-                        throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
-
-                    /*Parsing vertex points*/
-                    std::vector<std::string> buffer_lines(static_cast<std::size_t>(sizes[0]));
-                    std::copy(
-                        std::next(std::begin(lines), 2),
-                        std::next(std::begin(lines), 2 + sizes[0]),
-                        std::begin(buffer_lines)
-                    );
-
-                    std::vector<shadow::Point> points(buffer_lines.size());
-                    std::vector<double> coordinates;
-                    coordinates.reserve(3);
-                    std::istringstream sline;
-                    std::transform(
-                        std::begin(buffer_lines),
-                        std::end(buffer_lines),
-                        std::begin(points),
-                        [&points, &sline, &coordinates](std::string const& line)
-                        {
-                            coordinates.clear();
-                            sline.clear();
-                            sline.str(line);
-                            std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
-                            return shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
-                        }
-                    );
-
-                    /*Parsing faces*/
-                    buffer_lines.clear();
-                    sline.clear();
-
-                    buffer_lines.resize(static_cast<std::size_t>(sizes[1]));
-                    std::copy(std::next(std::begin(lines), 2 + sizes[0]), std::next(std::begin(lines), 2 + sizes[0] + sizes[1]), std::begin(buffer_lines));
-
-                    std::vector<shadow::Face> faces(buffer_lines.size());
-
-                    std::vector<std::size_t> indexes;
-                    std::size_t n(0);
-                    std::transform(
-                        std::begin(buffer_lines),
-                        std::end(buffer_lines),
-                        std::begin(faces),
-                        [&indexes, &sline, &n, &faces](std::string line)
-                        {
-                            indexes.clear();
-                            sline.clear();
-                            sline.str(line);
-                            sline >> n;
-                            indexes.resize(n);
-                            std::copy(std::istream_iterator<std::size_t>(sline), std::istream_iterator<std::size_t>(), std::begin(indexes));
-                            if (indexes.size() != n)
-                                throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
-                            return shadow::Face(indexes);
-                        }
-                    );
-
-                    /*Mesh to return*/
-                    mesh = shadow::Mesh(points, faces);
                 }
                 else
                     throw std::ios_base::failure("Not identified as OFF format! OFF files starts with a \'OFF\' hearder line.");
@@ -235,6 +174,95 @@ namespace urban
                         ios << facets << std::endl;
                     }
                 );
+            }
+
+            std::vector<std::size_t> read_header(std::vector<std::string> const& lines)
+            {
+                std::vector<long long> sizes(3);
+                std::stringstream _sizes(lines[1]);
+                std::copy(
+                    std::istream_iterator<std::size_t>(_sizes),
+                    std::istream_iterator<std::size_t>(),
+                    std::begin(sizes)
+                );
+                if(sizes.size() != 3)
+                    throw std::range_error("Error parsing the second line! There should be 3 integers.");
+                if(sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
+                    throw std::range_error("Error parsing the second line! The first and second integers should be positive and the third is always equal to 0.");
+                if(static_cast<long long>(lines.size()) != (2 + sizes[0] + sizes[1]))
+                    throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
+
+                return sizes;
+            }
+            std::vector<shadow::Point> read_points(std::vector<std::string> const& lines, std::size_t const number_of_points)
+            {
+                std::vector<std::string> buffer_lines(static_cast<std::size_t>(number_of_points));
+                std::copy(
+                    std::next(std::begin(lines), 2),
+                    std::next(std::begin(lines), 2 + number_of_points),
+                    std::begin(buffer_lines)
+                );
+
+                std::vector<shadow::Point> points(buffer_lines.size());
+                std::vector<double> coordinates;
+                coordinates.reserve(3);
+                std::istringstream sline;
+                std::transform(
+                    std::begin(buffer_lines),
+                    std::end(buffer_lines),
+                    std::begin(points),
+                    [&points, &sline, &coordinates](std::string const& line)
+                    {
+                        coordinates.clear();
+                        sline.clear();
+                        sline.str(line);
+                        std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
+                        return shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
+                    }
+                );
+
+                return points;
+            }
+            std::vector<shadow::Face> read_faces(std::vector<std::string> const& lines, std::size_t const shift, std::size_t const number_of_faces)
+            {
+                std::vector<std::string> buffer_lines(number_of_faces);
+                std::copy(
+                    std::next(std::begin(lines), shift),
+                    std::next(std::begin(lines), shift + number_of_faces),
+                    std::begin(buffer_lines)
+                );
+
+                std::vector<shadow::Face> faces(buffer_lines.size());
+
+                std::vector<std::size_t> indexes;
+                std::istringstream sline;
+                std::transform(
+                    std::begin(buffer_lines),
+                    std::end(buffer_lines),
+                    std::begin(faces),
+                    [&indexes, &sline, &n, &faces](std::string line)
+                    {
+                        indexes.clear();
+
+                        sline.clear();
+                        sline.str(line);
+                        std::size_t n(0);
+                        sline >> n;
+                        indexes.resize(n);
+
+                        std::copy(
+                            std::istream_iterator<std::size_t>(sline),
+                            std::istream_iterator<std::size_t>(),
+                            std::begin(indexes)
+                        );
+
+                        if (indexes.size() != n)
+                            throw std::range_error("Error parsing facet! The number of points parsed do not match the number of points in the line.");
+                        return shadow::Face(indexes);
+                    }
+                );
+
+                return faces;
             }
         };
     }
