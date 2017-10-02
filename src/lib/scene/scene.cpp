@@ -69,12 +69,15 @@ namespace urban
         {
             return pivot;
         }
-        
         unsigned short Scene::get_epsg(void) const noexcept
         {
             return epsg_index;
         }
-
+        UNode const& Scene::get_terrain(void) const noexcept
+        {
+            return terrain;
+        }
+        
         std::vector<std::string> Scene::identifiers(void) const
         {
             std::vector<std::string> ids(buildings.size());

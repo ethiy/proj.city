@@ -82,7 +82,12 @@ namespace urban
              * @return the EPSG projection system code
              */
             unsigned short get_epsg(void) const noexcept;
-
+            /**
+             * Access the terrain surface
+             * @return a const reference to the terrain surface
+             */
+            UNode const& get_terrain(void) const noexcept;
+            
             std::vector<std::string> identifiers(void) const;
 
             using iterator = std::vector<UNode>::iterator;

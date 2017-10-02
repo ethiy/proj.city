@@ -68,7 +68,7 @@ int main(int argc, const char** argv)
             urban::prune(scene);
         
         if(arguments.buildings)
-            urban::save_buildings(root, scene);
+            urban::save_scene(root, scene);
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.graphs)

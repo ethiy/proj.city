@@ -7,7 +7,7 @@
 
 namespace urban
 {
-    void save_buildings(boost::filesystem::path const& root_path, scene::Scene const& scene)
+    void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
         boost::filesystem::path buildings_dir(root_path / "buildings");
         boost::filesystem::create_directory(buildings_dir);
@@ -19,6 +19,12 @@ namespace urban
             );
             _file << building;
         }
+
+        std::fstream _file(
+            boost::filesystem::path(buildings_dir /"terrain.off").string(),
+            std::ios::out        
+        );
+        _file << scene.get_terrain();
     }
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
