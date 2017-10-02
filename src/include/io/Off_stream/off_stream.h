@@ -98,7 +98,7 @@ namespace urban
             Off_stream & operator >>(shadow::Mesh & mesh)
             {
                 auto lines = parse();
-                
+
                 if (lines.empty())
                     throw std::out_of_range("The stream contains only comments and/or empty lines!");
 
@@ -189,7 +189,7 @@ namespace urban
                 );
                 if(sizes.size() != 3)
                     throw std::range_error("Error parsing the second line! There should be 3 integers.");
-                if(sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
+                if(sizes[2] != 0)
                     throw std::range_error("Error parsing the second line! The first and second integers should be positive and the third is always equal to 0.");
                 if(lines.size() != (2 + sizes[0] + sizes[1]))
                     throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
