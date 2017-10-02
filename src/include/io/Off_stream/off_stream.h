@@ -129,12 +129,12 @@ namespace urban
                     mesh = shadow::Mesh(
                         read_points(
                             lines,
-                            static_cast<std::size_t>(sizes[0])
+                            sizes[0]
                         ),
                         read_faces(
                             lines,
-                            static_cast<std::size_t>(2 + sizes[0]),
-                            static_cast<std::size_t>(sizes[1])
+                            2 + sizes[0],
+                            sizes[1]
                         )
                     );
                 }
@@ -178,7 +178,7 @@ namespace urban
 
             std::vector<std::size_t> read_header(std::vector<std::string> const& lines)
             {
-                std::vector<long long> sizes(3);
+                std::vector<std::size_t> sizes(3);
                 std::stringstream _sizes(lines[1]);
                 std::copy(
                     std::istream_iterator<std::size_t>(_sizes),
@@ -189,7 +189,7 @@ namespace urban
                     throw std::range_error("Error parsing the second line! There should be 3 integers.");
                 if(sizes[2] != 0 || sizes[0] < 0 || sizes[1] < 0)
                     throw std::range_error("Error parsing the second line! The first and second integers should be positive and the third is always equal to 0.");
-                if(static_cast<long long>(lines.size()) != (2 + sizes[0] + sizes[1]))
+                if(lines.size() != (2 + sizes[0] + sizes[1]))
                     throw std::range_error("Error parsing the second line! The file should exactly contain the header, the sizes, the points and the faces: no more and no less.");
 
                 return sizes;
@@ -199,7 +199,7 @@ namespace urban
                 std::vector<std::string> buffer_lines(static_cast<std::size_t>(number_of_points));
                 std::copy(
                     std::next(std::begin(lines), 2),
-                    std::next(std::begin(lines), 2 + number_of_points),
+                    std::next(std::begin(lines), 2 + static_cast<long>(number_of_points)),
                     std::begin(buffer_lines)
                 );
 
@@ -227,8 +227,8 @@ namespace urban
             {
                 std::vector<std::string> buffer_lines(number_of_faces);
                 std::copy(
-                    std::next(std::begin(lines), shift),
-                    std::next(std::begin(lines), shift + number_of_faces),
+                    std::next(std::begin(lines), static_cast<long>(shift)),
+                    std::next(std::begin(lines), static_cast<long>(shift) + static_cast<long>(number_of_faces)),
                     std::begin(buffer_lines)
                 );
 
@@ -240,7 +240,7 @@ namespace urban
                     std::begin(buffer_lines),
                     std::end(buffer_lines),
                     std::begin(faces),
-                    [&indexes, &sline, &n, &faces](std::string line)
+                    [&indexes, &sline, &faces](std::string line)
                     {
                         indexes.clear();
 
