@@ -132,7 +132,7 @@ namespace urban
     std::vector<projection::FootPrint> orthoproject(scene::Scene const& scene)
     {
         std::cout << "Projecting... " << std::flush;
-        std::vector<projection::FootPrint> ortho_projections(scene.size());
+        std::vector<projection::FootPrint> ortho_projections(scene.size() + 1);
         std::transform(
             std::begin(scene),
             std::end(scene),
@@ -142,6 +142,8 @@ namespace urban
                 return projection::FootPrint(building);
             }
         );
+        ortho_projections[scene.size()] = projection::FootPrint(scene.get_terrain());
+        
         std::cout << "Done." << std::flush << std::endl;
 
         return ortho_projections;
