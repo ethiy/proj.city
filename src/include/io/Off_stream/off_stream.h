@@ -97,49 +97,31 @@ namespace urban
              */
             Off_stream & operator >>(shadow::Mesh & mesh)
             {
-                std::stringstream error_message;
+                auto lines = parse();
                 
-                /*Read Lines*/
-                std::vector<std::string> lines;
-                readlines(ios, std::back_inserter(lines));
-
-                /*Ignore Comments*/
-                lines.erase(
-                    std::remove_if(
-                        std::begin(lines),
-                        std::end(lines),
-                        [](std::string const& line)
-                        {
-                            return line.at(0) == '#' || line.empty();
-                        }
-                    ),
-                    std::end(lines)
-                );
                 if (lines.empty())
                     throw std::out_of_range("The stream contains only comments and/or empty lines!");
 
-                /*Parsing file*/
-                if (lines.at(0) == "OFF")
-                {
-                    if (lines.size() <= 1)
-                        throw std::out_of_range("The stream contains only the header; nothing to parse!");
+                if (lines.at(0) != "OFF")
+                    throw std::ios_base::failure("Not identified as OFF format! OFF files starts with a \'OFF\' hearder line.");                
 
-                    auto sizes = read_header(lines);
+                if (lines.size() <= 1)
+                    throw std::out_of_range("The stream contains only the header; nothing to parse!");
 
-                    mesh = shadow::Mesh(
-                        read_points(
-                            lines,
-                            sizes[0]
-                        ),
-                        read_faces(
-                            lines,
-                            2 + sizes[0],
-                            sizes[1]
-                        )
-                    );
-                }
-                else
-                    throw std::ios_base::failure("Not identified as OFF format! OFF files starts with a \'OFF\' hearder line.");
+                auto sizes = read_header(lines);
+
+                mesh = shadow::Mesh(
+                    read_points(
+                        lines,
+                        sizes[0]
+                    ),
+                    read_faces(
+                        lines,
+                        2 + sizes[0],
+                        sizes[1]
+                    )
+                );
+
                 return *this;
             }
 
@@ -176,6 +158,26 @@ namespace urban
                 );
             }
 
+            std::vector<std::string> parse(void)
+            {
+                std::vector<std::string> lines;
+                readlines(ios, std::back_inserter(lines));
+
+                /*Ignore Comments*/
+                lines.erase(
+                    std::remove_if(
+                        std::begin(lines),
+                        std::end(lines),
+                        [](std::string const& line)
+                        {
+                            return line.at(0) == '#' || line.empty();
+                        }
+                    ),
+                    std::end(lines)
+                );
+
+                return lines;
+            }
             std::vector<std::size_t> read_header(std::vector<std::string> const& lines)
             {
                 std::vector<std::size_t> sizes(3);
