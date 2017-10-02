@@ -18,25 +18,11 @@ namespace urban
         FileHandler<tinyxml2::XMLDocument>::~FileHandler(void)
         {}
 
-        std::vector<std::string> FileHandler<tinyxml2::XMLDocument>::building_ids(void) const
-        {
-            std::vector<std::string> ids;
-
-            tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("Building");
-            while(p_building != NULL)
-            {
-                ids.push_back(std::string(p_building->Attribute("Id")));
-                p_building = p_building->NextSiblingElement("Building");
-            }
-
-            return ids;
-        }
-
         scene::Scene FileHandler<tinyxml2::XMLDocument>::read(FileHandler<Lib3dsFile> const& mesh_file) const
         {
             bool centered = true;
             shadow::Point reference = pivot(centered);
-            return scene::Scene(reference, centered, epsg_index(), building_ids(), mesh_file);
+            return scene::Scene(reference, centered, epsg_index(), building_ids(), terrain_id(), mesh_file);
         }
 
         shadow::Bbox FileHandler<tinyxml2::XMLDocument>::bbox(void) const
@@ -69,7 +55,6 @@ namespace urban
             
             return shadow::Bbox(x_min, x_max, y_min, y_max, z_min, z_max);
         }
-
         shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(bool & centered) const
         {
             centered = true;
@@ -99,7 +84,6 @@ namespace urban
             
             return urban::shadow::Point(x_offset, y_offset, z_offset);
         }
-
         unsigned short FileHandler<tinyxml2::XMLDocument>::epsg_index(void) const
         {
             unsigned int epsg_code = 2154;
@@ -108,5 +92,24 @@ namespace urban
                 std::cout << "Warning: projection system EPSG code not found! It was set to 2154 - i.e. LAMBERT 93 - by default." << std::endl;
             return static_cast<unsigned short>(epsg_code);
         }
+        std::vector<std::string> FileHandler<tinyxml2::XMLDocument>::building_ids(void) const
+        {
+            std::vector<std::string> ids;
+
+            tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("Building");
+            while(p_building != NULL)
+            {
+                ids.push_back(std::string(p_building->Attribute("Id")));
+                p_building = p_building->NextSiblingElement("Building");
+            }
+
+            return ids;
+        }
+        std::string FileHandler<tinyxml2::XMLDocument>::terrain_id(void) const
+        {
+            return std::string(
+                scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("TINRelief")->Attribute("Id")
+            );
+        }        
     }
 }

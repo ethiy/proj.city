@@ -23,7 +23,7 @@ namespace urban
              * @see ~Scene(void);
              */
             Scene(void);
-            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, io::FileHandler<Lib3dsFile> const& mesh_file);
+            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id, io::FileHandler<Lib3dsFile> const& mesh_file);
             /**
              * Copy Constructor.
              * @param other Scene to copy
@@ -95,7 +95,7 @@ namespace urban
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            std::size_t building_size(void) const noexcept;
+            std::size_t size(void) const noexcept;
         private:
             /** Pivot */
             urban::shadow::Point pivot;
@@ -105,6 +105,8 @@ namespace urban
             unsigned short epsg_index = 2154;
             /** Scene Buildings */
             std::vector<UNode> buildings;
+            /** Scene terrain */
+            UNode terrain;
         };
 
         /**
