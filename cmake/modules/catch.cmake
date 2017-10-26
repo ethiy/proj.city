@@ -7,11 +7,11 @@ if(NOT TARGET Catch)
     elseif(WIN32)
         set(GB_FETCH_EXTERNAL_CATCH
             URL https://github.com/philsquared/Catch/archive/v1.2.1-develop.12.zip
-            URL_HASH MD5=cda228922a1c9248364c99a3ff9cd9fa)
+        )
     else()
         set(GB_FETCH_EXTERNAL_CATCH
             URL https://github.com/philsquared/Catch/archive/v1.2.1-develop.12.tar.gz
-            URL_HASH MD5=a8dfb7be899a6e7fb30bd55d53426122)
+        )
     endif()
     ExternalProject_Add(libcatch
         PREFIX ${CMAKE_BINARY_DIR}/external/Catch

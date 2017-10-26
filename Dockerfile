@@ -49,6 +49,6 @@ RUN make -j `nproc` install && make install_FindCGAL
 WORKDIR /home
 RUN git clone https://github.com/Ethiy/proj.city.git
 WORKDIR proj.city/
-RUN git checkout build-system-trial
-RUN mkdir build && mkdir build/linux
+RUN git checkout dev
+RUN mkdir build && mkdir build/xenial
 WORKDIR build/xenial
