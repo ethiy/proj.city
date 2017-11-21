@@ -5,17 +5,7 @@
 #include <docopt.h>
 #include <arguments.h>
 
-#include <CGAL/IO/Geomview_stream.h>
-
 #include <boost/filesystem.hpp>
-
-#include <tinyxml2.h>
-
-#include <vector>
-#include <iostream>
-#include <map>
-#include <algorithm>
-#include <iterator>
 
 static const char USAGE[]=
 R"(orthoproject.
