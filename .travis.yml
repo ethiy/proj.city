@@ -40,9 +40,6 @@ matrix:
       before_install:
         - brew update
         - brew outdated boost || brew upgrade boost
-        - brew outdated sqlite || brew upgrade sqlite
-        - brew outdated proj || brew upgrade proj
-        - brew outdated geos || brew upgrade geos
         - brew install lib3ds
         - brew install tinyxml2
         - mkdir -p 3rdParty && cd 3rdParty
@@ -52,11 +49,25 @@ matrix:
         - cmake ..
         - sudo make -j `nproc` install && sudo make install_FindCGAL
         - cd $TRAVIS_BUILD_DIR/3rdParty
+        - mkdir -p PROJ && cd PROJ
+        - wget http://www.kyngchaos.com/files/software/frameworks/PROJ_Framework-4.9.2-2.dmg-1.5.3.dmg
+        - sudo hdiutil attach PROJ_Framework-1.5.3.dmg
+        - sudo installer -package "/Volumes/PROJ Framework/PROJ Framework.pkg" -target /
+        - cd $TRAVIS_BUILD_DIR/3rdParty
+        - mkdir -p GEOS && cd GEOS
+        - wget http://www.kyngchaos.com/files/software/frameworks/GEOS_Framework-3.6.1-1.dmg
+        - sudo hdiutil attach GEOS_Framework-1.5.3.dmg
+        - sudo installer -package "/Volumes/GEOS Framework/GEOS Framework.pkg" -target /
+        - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p UnixImageIO && cd UnixImageIO
         - wget http://www.kyngchaos.com/files/software/frameworks/UnixImageIO_Framework-1.5.3.dmg
         - sudo hdiutil attach UnixImageIO_Framework-1.5.3.dmg
-        - ls /Volumes/ && ls .
         - sudo installer -package "/Volumes/UnixImageIO Framework/UnixImageIO Framework.pkg" -target /
+        - cd $TRAVIS_BUILD_DIR/3rdParty
+        - mkdir -p SQLite3 && cd SQLite3
+        - wget http://www.kyngchaos.com/files/software/frameworks/SQLite3_Framework-3.14.1-1.dmg
+        - sudo hdiutil attach SQLite3_Framework-1.5.3.dmg
+        - sudo installer -package "/Volumes/SQLite3 Framework/SQLite3 Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p GDAL && cd GDAL
         - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Framework-2.1.3-1.dmg
