@@ -55,6 +55,7 @@ matrix:
         - mkdir -p UnixImageIO && cd UnixImageIO
         - wget http://www.kyngchaos.com/files/software/frameworks/UnixImageIO_Framework-1.5.3.dmg
         - sudo hdiutil attach UnixImageIO_Framework-1.5.3.dmg
+        - ls /Volumes/ && ls .
         - sudo installer -package "/Volumes/UnixImageIO Framework/UnixImageIO Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p GDAL && cd GDAL
