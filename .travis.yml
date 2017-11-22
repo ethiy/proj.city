@@ -50,7 +50,7 @@ matrix:
         - sudo make -j `nproc` install && sudo make install_FindCGAL
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p PROJ && cd PROJ
-        - wget http://www.kyngchaos.com/files/software/frameworks/PROJ_Framework-4.9.2-2.dmg-1.5.3.dmg
+        - wget http://www.kyngchaos.com/files/software/frameworks/PROJ_Framework-4.9.2-2.dmg
         - sudo hdiutil attach PROJ_Framework-1.5.3.dmg
         - sudo installer -package "/Volumes/PROJ Framework/PROJ Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR/3rdParty
