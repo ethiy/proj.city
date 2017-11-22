@@ -51,12 +51,12 @@ matrix:
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p PROJ && cd PROJ
         - wget http://www.kyngchaos.com/files/software/frameworks/PROJ_Framework-4.9.2-2.dmg
-        - sudo hdiutil attach PROJ_Framework-1.5.3.dmg
+        - sudo hdiutil attach PROJ_Framework-4.9.2-2.dmg
         - sudo installer -package "/Volumes/PROJ Framework/PROJ Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p GEOS && cd GEOS
         - wget http://www.kyngchaos.com/files/software/frameworks/GEOS_Framework-3.6.1-1.dmg
-        - sudo hdiutil attach GEOS_Framework-1.5.3.dmg
+        - sudo hdiutil attach GEOS_Framework-3.6.1-1.dmg
         - sudo installer -package "/Volumes/GEOS Framework/GEOS Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p UnixImageIO && cd UnixImageIO
@@ -66,7 +66,7 @@ matrix:
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p SQLite3 && cd SQLite3
         - wget http://www.kyngchaos.com/files/software/frameworks/SQLite3_Framework-3.14.1-1.dmg
-        - sudo hdiutil attach SQLite3_Framework-1.5.3.dmg
+        - sudo hdiutil attach SQLite3_Framework-3.14.1-1.dmg
         - sudo installer -package "/Volumes/SQLite3 Framework/SQLite3 Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - mkdir -p GDAL && cd GDAL
