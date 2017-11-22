@@ -1,7 +1,5 @@
 #include <algorithms/scene_algorithms.h>
 
-#include <algorithms/unode_algorithms.h>
-
 #include <io/Adjacency_stream/adjacency_stream.h>
 #include <io/io_gdal.h>
 
@@ -129,10 +127,10 @@ namespace urban
         std::cout << "Done." << std::flush << std::endl;        
     }
 
-    std::vector<projection::FootPrint> orthoproject(scene::Scene const& scene)
+    std::vector<projection::FootPrint> orthoproject(scene::Scene const& scene, bool const terrain)
     {
         std::cout << "Projecting... " << std::flush;
-        std::vector<projection::FootPrint> ortho_projections(scene.size() + 1);
+        std::vector<projection::FootPrint> ortho_projections(scene.size() + static_cast<std::size_t>(terrain));
         std::transform(
             std::begin(scene),
             std::end(scene),
@@ -142,7 +140,8 @@ namespace urban
                 return projection::FootPrint(building);
             }
         );
-        ortho_projections[scene.size()] = projection::FootPrint(scene.get_terrain());
+        if(terrain)
+            ortho_projections[scene.size()] = projection::FootPrint(scene.get_terrain());
         
         std::cout << "Done." << std::flush << std::endl;
 
@@ -164,20 +163,5 @@ namespace urban
         std::cout << "Done." << std::flush << std::endl;
 
         return raster_projections;
-    }
-    scene::Scene & prune(scene::Scene & scene)
-    {
-        std::cout << "(Pruning scene...";
-        std::transform(
-            std::begin(scene),
-            std::end(scene),
-            std::begin(scene),
-            [](scene::UNode & unode)
-            {
-                return prune(unode);
-            }
-        );
-        std::cout << "Done)";
-        return scene;
     }
 }

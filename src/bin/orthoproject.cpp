@@ -11,7 +11,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> [--prune --buildings --graphs --save_projections --sum_projections --labels --rasterize --pixel_size=<size>]
+      orthoproject <scene> [--prune --buildings --graphs --save_projections --sum_projections --labels --rasterize --terrain --pixel_size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -24,6 +24,7 @@ R"(orthoproject.
       --sum_projections     Sum and save the scene projection.
       --labels              Save vector projections with error fields.
       --rasterize           Rasterize and save projections.
+      --terrain             Rasterize the terrain also.
       --pixel_size=<size>   Pixel size [default: 1].
 )";
 
@@ -66,7 +67,7 @@ int main(int argc, const char** argv)
         
         if(arguments.sum_projections || arguments.save_projections)
         {
-            auto projections = urban::orthoproject(scene);
+            auto projections = urban::orthoproject(scene, arguments.terrain);
             
             if(arguments.sum_projections)
                 urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);

@@ -101,6 +101,8 @@ namespace urban
             const_iterator cend(void) const noexcept;
 
             std::size_t size(void) const noexcept;
+
+            Scene & prune(void);
         private:
             /** Pivot */
             urban::shadow::Point pivot;
@@ -122,4 +124,6 @@ namespace urban
          */
         void swap(Scene & lhs, Scene & rhs);
     }
+
+    scene::Scene & prune(scene::Scene & scene);
 }

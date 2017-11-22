@@ -1,6 +1,7 @@
 #include <scene/scene.h>
 
 #include <algorithms/util_algorithms.h>
+#include <algorithms/unode_algorithms.h>
 
 namespace urban
 {
@@ -127,5 +128,26 @@ namespace urban
         {
             lhs.swap(rhs);
         }
+
+        Scene & Scene::prune(void)
+        {
+            std::transform(
+                std::begin(buildings),
+                std::end(buildings),
+                std::begin(buildings),
+                [](scene::UNode & building)
+                {
+                    return ::urban::prune(building);
+                }
+            );
+            // terrain = ::urban::prune(terrain);
+
+            return *this;
+        }
+    }
+
+    scene::Scene & prune(scene::Scene & scene)
+    {
+        return scene.prune();
     }
 }

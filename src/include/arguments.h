@@ -14,7 +14,8 @@ public:
           save_projections(docopt_args.at("--save_projections").asBool()),
           sum_projections(docopt_args.at("--sum_projections").asBool()),
           labels(docopt_args.at("--labels").asBool()),
-          rasterize(docopt_args.at("--rasterize").asBool())
+          rasterize(docopt_args.at("--rasterize").asBool()),
+          terrain(docopt_args.at("--terrain").asBool())
     {
         std::cout << "Parsing arguments... " << std::flush;
         std::stringstream sconverter(docopt_args.at("--pixel_size").asString());
@@ -32,6 +33,7 @@ public:
     bool sum_projections = false;
     bool labels = false;
     bool rasterize = false;
+    bool terrain = false;
     double pixel_size = 1;
 };
 
@@ -46,6 +48,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Sum projections: " << arguments.sum_projections << std::endl
        << "  Save Labels: " << arguments.labels << std::endl
        << "  Rasterize: " << arguments.rasterize << std::endl
+       << "  Terrain: " << arguments.terrain << std::endl
        << "  Pixel size: " << arguments.pixel_size << std::endl;
     return os;
 }
