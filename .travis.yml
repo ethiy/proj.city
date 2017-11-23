@@ -72,7 +72,7 @@ matrix:
         - mkdir -p GDAL && cd GDAL
         - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Framework-2.1.3-1.dmg
         - sudo hdiutil attach GDAL_Framework-2.1.3-1.dmg
-        - sudo installer -package "/Volumes/GDAL Complete/GDAL Complete.pkg" -target /
+        - sudo installer -package "/Volumes/GDAL Framework/GDAL Framework.pkg" -target /
         - cd $TRAVIS_BUILD_DIR
         - mkdir build
         - mkdir build/darwin
