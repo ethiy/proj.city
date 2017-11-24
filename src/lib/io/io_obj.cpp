@@ -22,7 +22,7 @@ namespace urban
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
-                    std::fstream obj_file(filepath, std::ios::in);
+                    std::fstream obj_file(filepath, std::ios::in | std::ios::nocreate);
                     Obj_stream object_stream(obj_file);
                     Obj_stream >> objects;
                 }
