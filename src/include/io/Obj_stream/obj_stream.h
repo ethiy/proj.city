@@ -4,6 +4,8 @@
 
 #include <io/Line/line.h>
 
+#include <boost/range/combine.hpp>
+
 #include <ostream>
 
 #include <stdexcept>
@@ -83,10 +85,26 @@ namespace urban
              * @param mesh the Mesh to write
              * @return the off output stream
              */
-            Obj_stream & operator <<(shadow::Mesh const& mesh)
+            Obj_stream & operator <<(std::vector<shadow::Mesh> const& meshes)
             {
-                print_points(mesh);
-                print_objects(mesh);
+                std::vector<std::size_t> shifts(meshes.size(), 0);
+                std::transform(
+                    std::begin(meshes),
+                    std::prev(std::end(meshes)),
+                    std::next(std::begin(shifts)),
+                    [](shadow::Mesh const& mesh)
+                    {
+                        return mesh.points_size();
+                    }
+                );
+                std::partial_sum(
+                    std::begin(shifts),
+                    std::end(shifts),
+                    std::begin(shifts)
+                );
+
+                print_points(meshes);
+                print_faces(meshes, shifts);
 
                 return *this;
             }
@@ -102,6 +120,11 @@ namespace urban
                 if (lines.empty())
                     throw std::out_of_range("The stream contains only comments and/or empty lines!");
 
+                auto cursor = std::begin(lines);
+
+                auto points = read_points(lines, cursor);
+                
+                meshes = read_objects(lines, cursor, points)
 
                 return *this;
             }
@@ -110,9 +133,51 @@ namespace urban
             /** reference to a stream */
             std::iostream & ios;
 
+            void print_points(std::vector<shadow::Mesh> const& meshes)
+            {
+                for(auto const& mesh : meshes)
+                    print_mesh_points(mesh);
+            }
+            void print_mesh_points(shadow::Mesh const& mesh)
+            {
+                std::for_each(
+                    mesh.points_cbegin(),
+                    mesh.points_cend(),
+                    [this](shadow::Point const& points)
+                    {
+                        ios << "v " << points << std::endl;
+                    }
+                );
+                ios << std::endl;
+            }
+            void print_faces(std::vector<shadow::Mesh> const& meshes, std::vector<std::size_t> const& shifts)
+            {
+                for(auto const& tuple : boos::combine(meshes, shifts))
+                {
+                    shadow::Mesh mesh;
+                    std::size_t shift;
+                    boost::tie(mesh, shift) = tuple;
+
+                    print_mesh_faces(mesh, shift);
+                }
+            }
+            void print_mesh_faces(shadow::Mesh const& mesh)
+            {
+                ios << "o " << mesh.get_name() << std::endl;
+
+                std::for_each(
+                    mesh.faces_cbegin(),
+                    mesh.faces_cend(),
+                    [this](shadow::Face const& facets)
+                    {
+                        ios << "f " << facets << std::endl;
+                    }
+                );
+            }
+
             std::vector<std::string> parse(void)
             {
-                std::vector<std::string> lines;
+                std::list<std::string> lines;
                 readlines(ios, std::back_inserter(lines));
 
                 /*Ignore Comments*/
@@ -131,7 +196,7 @@ namespace urban
                 return lines;
             }
 
-            std::vector<shadow::Point> read_points(std::vector<std::string> const& lines, std::vector<std::string>::iterator & cursor)
+            std::vector<shadow::Point> read_points(std::list<std::string> const& lines, std::vector<std::string>::iterator & cursor)
             {
                 /*
                    It is initialized by the origin:
@@ -141,19 +206,17 @@ namespace urban
                 std::vector<shadow::Point> points(1);
                 points.reserve(lines.size() / 2);
 
-                while(cursor != std::end(lines) && *cursor[0] == 'v')
-                {
+                for(; cursor != std::end(lines) && cursor->front() == 'v'; ++cursor)
                     points.push_back(
                         str2pt(cursor->substr(1))
                     );
-                    ++cursor;
-                }
+
                 return points;
             }
 
-            std:vector<shadow::Mesh> read_objects(std::vector<std::string> const& lines, std::vector<std::string>::iterator & cursor, std::vector<shadow::Point> const& points)
+            std:vector<shadow::Mesh> read_objects(std::list<std::string> const& lines, std::vector<std::string>::iterator & cursor, std::vector<shadow::Point> const& points)
             {
-                std::vector<std::string> objects = object_names(lines, cursor);
+                auto objects = object_names(lines, cursor);
 
                 std::vector<shadow::Mesh> meshes(objects.size());
 
@@ -161,35 +224,45 @@ namespace urban
                     std::begin(objects),
                     std::end(objects),
                     std::begin(meshes),
-                    [&lines, &points](std::string const& name)
+                    [&lines, &points](std::pair<std::string, std::pair<std::size_t, size_t> > const& object_id)
                     {
-                        return read_object(lines, points, name);
+                        return read_object(lines, points, object_id.first, object_id.second.first, object_id.second.second);
                     }
                 );
 
                 return meshes;
             }
 
-            shadow:Mesh read_object(std::vector<std::string> const& lines, std::vector<shadow::Point> const& points, std::string const& name)
+            shadow:Mesh read_object(std::list<std::string> const& lines, std::vector<shadow::Point> const& points, std::string const& name, std::size_t const index, std::size_t const number_of_facets)
             {
-                std::map<std::size_t, std::size_t> indexe_map;
-                std::vector<Face> facets = read_facets(lines, name, index_map);
+                std::map<std::size_t, std::size_t> index_map;
+                std::vector<Face> facets = read_facets(lines, index, number_of_facets, index_map);
 
-                return shadow::Mesh(name, filter(points, index_map), facets);
+                return shadow::Mesh(name, select(points, index_map), facets);
             }
 
-            std::vector<Face> read_facets(std::vector<std::string> const& lines, std::string const& name, std::map<std::size_t, std::size_t> & index_map)
+            std::vector<Face> read_facets(std::list<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
             {
-                
-                return ;
+                std::vector<Face> object_faces(number_of_facets);
+
+                std::transform(
+                    std::next(std::begin(lines), index),
+                    std::next(std::begin(lines), index + number_of_facets),
+                    std::begin(object_faces),
+                    [&index_map](std::string const& facet_line)
+                    {
+                        return read_facet(facet_line.substr(1), index_map);
+                    }
+                );
+
+                return object_faces;
             }
 
             shadow::Face read_facet(std::string const& line, std::map<std::size_t, std::size_t> & index_map)
             {
                 std::istringstream buffer_line(line);
 
-                std::vector<std::size_t> indexes;
-                indexes.reserve(4);
+                std::list<std::size_t> indexes;
 
                 std::copy(
                     std::istream_iterator<double>(buffer_line),
@@ -197,39 +270,100 @@ namespace urban
                     std::back_inserter(indexes)
                 );
 
-                auto new_index = index_map.size();
+                auto maped_index = index_map.size();
                 for(auto index : indexes)
-                    index_map.emplace(std::make_pair(index, new_index++));
+                    index_map.emplace(std::make_pair(index, maped_index++));
 
-                return shadow::Face(indexes);
+                std::vector<std::size_t> new_indexes(indexes.size());
+                std::transform(
+                    std::begin(indexes),
+                    std::end(indexes),
+                    std::begin(new_indexes),
+                    [](std::size_t const index)
+                    {
+                        return index_map[index];
+                    }
+                );
+                return shadow::Face(new_indexes);
             }
 
-            std::vector<std::string> object_names(std::vector<std::string> const& lines, std::vector<std::string>::iterator & cursor)
+            std::map<std::string, std::pair<std::size_t, std::size_t> > object_names(std::list<std::string> const& lines, std::vector<std::string>::iterator & cursor)
             {
-                std::vector<std::string> objects;
-                objects.reserve(
-                    static_cast<std::size_t>(
-                        std::distance(std::begin(lines), cursor)
-                    )
-                    /
-                    3
-                );
+                std::map<std::string, std::pair<std::size_t, std::size_t> > objects;
 
                 std::stringstream buffer;
 
+                std::list<std::string> names;
+                std::list<std::size_t> indexes;
                 for(; cursor != std::end(lines); ++cursor)
-                    if(*cursor[0] == 'o')
+                {
+                    if(cursor->front() == 'o')
                     {
                         buffer.str(cursor->substr(1));
                         std::string name("");
                         buffer >> name;
-                        objects.push_back(name);
+                        names.push_back(name);
+                        indexes.push_back(
+                            static_cast<std:size_t>(
+                                std::distance(
+                                    std::begin(lines),
+                                    cursor
+                                )
+                            )
+                        );
                         buffer.clear();
                     }
-                
+                }
+                indexes.push_back(names.size());
+
+                std::vector< std::size_t > sizes(indexes.size() + 1);
+
+                std::adjacent_difference(
+                    std::rbegin(indexes),
+                    std::rend(indexes),
+                    std::rbegin(sizes)
+                );
+
+                std::transform(
+                    std::begin(sizes),
+                    std::end(sizes),
+                    std::begin(sizes),
+                    [](std::size_t const s)
+                    {
+                        return s - 1;
+                    }
+                );
+
+                sizes.pop_back();
+
+                std::size_t size, index;
+                std::string name;
+
+                for(boost::tie(name, size, index) : boost::combine(names, sizes, indexes))
+                    objects.emplace( 
+                        std::make_pair(
+                            name
+                            std::make_pair(
+                                index,
+                                size
+                            )
+                        )
+                    );
+                    
                 return objects;
             }
         };
+
+        template<typename T>
+        std::vector<T> select(std::vector<T> & container, std::map<std::size_t, std::size_t> & index_map)
+        {
+            std::vector<T> selected(index_map.size());
+            
+            for(auto const index_pair : index_map)
+                selected[index_pair.second] = container[index_pair.first - 1];
+
+            return selected;
+        }
 
         shadow::Point str2pt(std::string const& line)
         {
