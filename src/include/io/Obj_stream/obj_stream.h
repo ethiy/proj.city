@@ -245,6 +245,7 @@ namespace urban
             {
                 std::vector<Face> object_faces(number_of_facets);
 
+                std::map<std::size_t, std::size_t> index_map;
                 std::transform(
                     std::next(std::begin(lines), index),
                     std::next(std::begin(lines), index + number_of_facets),
