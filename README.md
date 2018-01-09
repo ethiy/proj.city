@@ -2,8 +2,8 @@
 
 | Technology               | Status        |
 | ------------------------ |:-------------:|
-| Travis CI (Linux - MacOS)| [![Build Status](https://travis-ci.org/ethiy/proj.city.svg?branch=master)](https://travis-ci.org/ethiy/proj.city)|
-| Appveyor (MinGW-w64)     | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/master?svg=true)](https://ci.appveyor.com/project/ethiy/proj.city/branch/master)|
+| Travis CI (Linux - MacOS)| [![Build Status](https://travis-ci.org/ethiy/proj.city.svg?branch=dev)](https://travis-ci.org/ethiy/proj.city)|
+| Appveyor (MinGW-w64)     | [![Build Status](https://ci.appveyor.com/api/projects/status/855pa36o55g3hwq7/branch/dev?svg=true)](https://ci.appveyor.com/project/ethiy/proj.city/branch/dev)|
 | Coverity Scan            |[![Coverity Scan Build Status](https://scan.coverity.com/projects/11095/badge.svg)](https://scan.coverity.com/projects/ethiy-proj-city)|
 | Code Quality             |[![BCH compliance](https://bettercodehub.com/edge/badge/ethiy/proj.city?branch=dev)](https://bettercodehub.com/)
 
@@ -54,7 +54,7 @@ You can check the project's [docker file](Dockerfile) for an inspiration. We wil
 | Update       | `apt update && apt upgrade -y` |
 | boost        | This project uses only  `filesystem` and `system` boost libraries. However, since `CGAL` uses other libraries it may be wise to get all of them:<br>`apt install libboost-all-dev` |
 | CGAL         | You should download the [release](https://github.com/CGAL/cgal/releases/tag/releases%2FCGAL-4.10) and build it |
-| Gdal         | `Gdal` = `v2.1.x` is not available in the official repositories. The easiest way to get a newer version would be through the unstable `ubuntugis` ppa:<br>`add-apt-repository ppa:ubuntugis/ppa`<br>`apt update && apt upgrade`<br>`apt install libgdal-dev`|
+| Gdal         | `Gdal` = `v2.1.x` is not available in the official repositories. The easiest way to get a newer version would be through the stable `ubuntugis` ppa:<br>`add-apt-repository ppa:ubuntugis/ppa`<br>`apt update && apt upgrade`<br>`apt install libgdal-dev`|
 | lib3ds       | `apt install lib3ds-dev` |
 | tinyXML2       | `apt install libtinyxml-dev` |
 
@@ -71,7 +71,7 @@ You can check the project's [travis file](/.travis.yml) for an inspiration. Ther
 | Update       | `brew update` | `port selfupdate && port upgrade outdated` |
 | boost        | `brew install boost` | `port install boost` |
 | CGAL         | `brew install cgal` | `port install cgal` |
-| Gdal         | You can find the latest release in this [website](http://www.kyngchaos.com/software/frameworks) | `port install gdal` |
+| Gdal         | You can find the latest release in this [website](http://www.kyngchaos.com/software/frameworks) | `port install gdal@2.1.3` |
 | lib3ds       | `brew install lib3ds` | `port install lib3ds13` |
 | TinyXML2     | `brew install tinyxml2` | `port install tinyxml2` |
 
