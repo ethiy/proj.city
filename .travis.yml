@@ -4,13 +4,13 @@ dist: trusty
 language: cpp
 
 git:
-    depth: 3
+  depth: 3
 
 branches:
-    only:
-    - master
-    - travis-macos-build
-    - dev
+  only:
+  - master
+  - travis-macos-build
+  - dev
 
 os: linux
 services:
