@@ -4,6 +4,8 @@
 
 #include <io/Line/line.h>
 
+#include <algorithms/io_algorithms.h>
+
 #include <boost/range/combine.hpp>
 
 #include <ostream>
@@ -20,11 +22,6 @@ namespace urban
 {
     namespace io
     {
-        template<typename T>
-        std::vector<T> select(std::vector<T> const& container, std::map<std::size_t, std::size_t> & index_map);
-        shadow::Point line2pt(std::string const& line);
-        shadow::Point str2pt(std::vector<double> const& coordinates);
-
         /**
          * @ingroup io
          * @brief formats an output stream to the OFF
@@ -213,7 +210,7 @@ namespace urban
 
                 for(; cursor != std::end(lines) && cursor->front() == 'v'; ++cursor)
                     points.push_back(
-                        line2pt(cursor->substr(1))
+                        ::urban::line2pt(cursor->substr(1))
                     );
 
                 return points;
@@ -243,7 +240,7 @@ namespace urban
                 std::map<std::size_t, std::size_t> index_map;
                 std::vector<shadow::Face> facets = read_facets(lines, index, number_of_facets, index_map);
 
-                return shadow::Mesh(name, select(points, index_map), facets);
+                return shadow::Mesh(name, ::urban::select(points, index_map), facets);
             }
 
             std::vector<shadow::Face> read_facets(std::list<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
@@ -341,10 +338,12 @@ namespace urban
 
                 sizes.pop_back();
 
-                std::size_t size, index;
-                std::string name;
-
-                for(boost::tie(name, size, index) : boost::combine(names, sizes, indexes))
+                for(auto const tpl : boost::combine(names, sizes, indexes))
+                {
+                    std::size_t size, index;
+                    std::string name;
+                    boost::tie(name, size, index) = tpl;
+                    
                     objects.emplace( 
                         std::make_pair(
                             name,
@@ -354,57 +353,10 @@ namespace urban
                             )
                         )
                     );
+                }
                     
                 return objects;
             }
         };
-
-        template<typename T>
-        std::vector<T> select(std::vector<T> const& container, std::map<std::size_t, std::size_t> & index_map)
-        {
-            std::vector<T> selected(index_map.size());
-            
-            for(auto const index_pair : index_map)
-                selected[index_pair.second] = container[index_pair.first - 1];
-
-            return selected;
-        }
-
-        shadow::Point line2pt(std::string const& line)
-        {
-            std::istringstream buffer_line(line);
-
-            std::vector<double> buffer;
-            buffer.reserve(4);
-
-            std::copy(
-                std::istream_iterator<double>(buffer_line),
-                std::istream_iterator<double>(),
-                std::back_inserter(buffer)
-            );
-
-            return str2pt(buffer);
-        }
-        shadow::Point str2pt(std::vector<double> const& coordinates)
-        {
-            shadow::Point point;
-
-            switch(coordinates.size())
-            {
-                case 3: 
-                    shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
-                    break;
-                case 4:
-                    static_cast<bool>(coordinates[4])
-                        ? shadow::Point(coordinates[0] / coordinates[4], coordinates[1] / coordinates[4], coordinates[2] / coordinates[4])
-                        : throw std::logic_error("Not implemented in this scope!");
-                    break;
-                default:
-                    throw std::ios_base::failure("Unable to read points!");
-                    break;
-            }
-
-            return point;
-        }
     }
 }
