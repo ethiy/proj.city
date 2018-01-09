@@ -51,7 +51,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( urban::io::FileHandler<Lib3dsFile> handler(filepath, std::map<std::string,bool>{{"read", true}}) );
+                REQUIRE_THROWS( urban::io::FileHandler<Lib3dsFile>(filepath, std::map<std::string,bool>{{"read", true}}) );
             }
         }
 
@@ -59,7 +59,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( urban::io::FileHandler<Lib3dsFile> handler(filepath, std::map<std::string,bool>{{}}) );
+                REQUIRE_THROWS( urban::io::FileHandler<Lib3dsFile>(filepath, std::map<std::string,bool>{{}}) );
             }
         }
     }
