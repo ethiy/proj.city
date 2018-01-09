@@ -32,7 +32,7 @@ WORKDIR build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr
 RUN make -j `nproc` install && make install_FindCGAL
 WORKDIR /home
-RUN git clone https://github.com/Ethiy/proj.city.git
+RUN git clone https://github.com/ethiy/proj.city.git
 WORKDIR proj.city/
 RUN git checkout build-system-trial
 RUN mkdir build && mkdir build/linux
