@@ -26,7 +26,10 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "intelliSenseMode": "clang-x64"
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ]
         },
         {
             "name": "Linux",
@@ -45,8 +48,7 @@
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
-            },
-            "intelliSenseMode": "clang-x64"
+            }
         },
         {
             "name": "Win32",
@@ -66,9 +68,8 @@
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
-            },
-            "intelliSenseMode": "msvc-x64"
+            }
         }
     ],
-    "version": 2
+    "version": 3
 }
