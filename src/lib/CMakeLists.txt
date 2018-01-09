@@ -28,6 +28,7 @@ set(IO_SRC
     "${proj.city_SOURCE_DIR}/src/lib/io/io_3ds.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_scene.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_off.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_obj.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_gdal.cpp"
 )
 

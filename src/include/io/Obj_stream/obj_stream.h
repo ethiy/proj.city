@@ -20,6 +20,11 @@ namespace urban
 {
     namespace io
     {
+        template<typename T>
+        std::vector<T> select(std::vector<T> const& container, std::map<std::size_t, std::size_t> & index_map);
+        shadow::Point line2pt(std::string const& line);
+        shadow::Point str2pt(std::vector<double> const& coordinates);
+
         /**
          * @ingroup io
          * @brief formats an output stream to the OFF
@@ -81,9 +86,9 @@ namespace urban
             }
 
             /** 
-             * Writes Mesh to output off stream.
-             * @param mesh the Mesh to write
-             * @return the off output stream
+             * Writes Mesh to output obj stream.
+             * @param meshes the Mesh to write
+             * @return the obj output stream
              */
             Obj_stream & operator <<(std::vector<shadow::Mesh> const& meshes)
             {
@@ -109,8 +114,8 @@ namespace urban
                 return *this;
             }
             /** 
-             * Reads Mesh from off stream.
-             * @param mesh the Mesh to write
+             * Reads Mesh from obj stream.
+             * @param meshes the Mesh to write
              * @return the output stream
              */
             Obj_stream & operator >>(std::vector<shadow::Mesh> & meshes)
@@ -124,7 +129,7 @@ namespace urban
 
                 auto points = read_points(lines, cursor);
                 
-                meshes = read_objects(lines, cursor, points)
+                meshes = read_objects(lines, cursor, points);
 
                 return *this;
             }
@@ -152,7 +157,7 @@ namespace urban
             }
             void print_faces(std::vector<shadow::Mesh> const& meshes, std::vector<std::size_t> const& shifts)
             {
-                for(auto const& tuple : boos::combine(meshes, shifts))
+                for(auto const tuple : boost::combine(meshes, shifts))
                 {
                     shadow::Mesh mesh;
                     std::size_t shift;
@@ -161,7 +166,7 @@ namespace urban
                     print_mesh_faces(mesh, shift);
                 }
             }
-            void print_mesh_faces(shadow::Mesh const& mesh)
+            void print_mesh_faces(shadow::Mesh const& mesh, std::size_t const shift)
             {
                 ios << "o " << mesh.get_name() << std::endl;
 
@@ -175,7 +180,7 @@ namespace urban
                 );
             }
 
-            std::vector<std::string> parse(void)
+            std::list<std::string> parse(void)
             {
                 std::list<std::string> lines;
                 readlines(ios, std::back_inserter(lines));
@@ -196,7 +201,7 @@ namespace urban
                 return lines;
             }
 
-            std::vector<shadow::Point> read_points(std::list<std::string> const& lines, std::vector<std::string>::iterator & cursor)
+            std::vector<shadow::Point> read_points(std::list<std::string> const& lines, std::list<std::string>::iterator & cursor)
             {
                 /*
                    It is initialized by the origin:
@@ -208,13 +213,13 @@ namespace urban
 
                 for(; cursor != std::end(lines) && cursor->front() == 'v'; ++cursor)
                     points.push_back(
-                        str2pt(cursor->substr(1))
+                        line2pt(cursor->substr(1))
                     );
 
                 return points;
             }
 
-            std:vector<shadow::Mesh> read_objects(std::list<std::string> const& lines, std::vector<std::string>::iterator & cursor, std::vector<shadow::Point> const& points)
+            std::vector<shadow::Mesh> read_objects(std::list<std::string> const& lines, std::list<std::string>::iterator & cursor, std::vector<shadow::Point> const& points)
             {
                 auto objects = object_names(lines, cursor);
 
@@ -224,7 +229,7 @@ namespace urban
                     std::begin(objects),
                     std::end(objects),
                     std::begin(meshes),
-                    [&lines, &points](std::pair<std::string, std::pair<std::size_t, size_t> > const& object_id)
+                    [&lines, &points, this](std::pair<std::string, std::pair<std::size_t, size_t> > const& object_id)
                     {
                         return read_object(lines, points, object_id.first, object_id.second.first, object_id.second.second);
                     }
@@ -233,24 +238,23 @@ namespace urban
                 return meshes;
             }
 
-            shadow:Mesh read_object(std::list<std::string> const& lines, std::vector<shadow::Point> const& points, std::string const& name, std::size_t const index, std::size_t const number_of_facets)
+            shadow::Mesh read_object(std::list<std::string> const& lines, std::vector<shadow::Point> const& points, std::string const& name, std::size_t const index, std::size_t const number_of_facets)
             {
                 std::map<std::size_t, std::size_t> index_map;
-                std::vector<Face> facets = read_facets(lines, index, number_of_facets, index_map);
+                std::vector<shadow::Face> facets = read_facets(lines, index, number_of_facets, index_map);
 
                 return shadow::Mesh(name, select(points, index_map), facets);
             }
 
-            std::vector<Face> read_facets(std::list<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
+            std::vector<shadow::Face> read_facets(std::list<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
             {
-                std::vector<Face> object_faces(number_of_facets);
+                std::vector<shadow::Face> object_faces(number_of_facets);
 
-                std::map<std::size_t, std::size_t> index_map;
                 std::transform(
-                    std::next(std::begin(lines), index),
-                    std::next(std::begin(lines), index + number_of_facets),
+                    std::next(std::begin(lines), static_cast<long>(index)),
+                    std::next(std::begin(lines), static_cast<long>(index) + static_cast<long>(number_of_facets)),
                     std::begin(object_faces),
-                    [&index_map](std::string const& facet_line)
+                    [&index_map, this](std::string const& facet_line)
                     {
                         return read_facet(facet_line.substr(1), index_map);
                     }
@@ -280,7 +284,7 @@ namespace urban
                     std::begin(indexes),
                     std::end(indexes),
                     std::begin(new_indexes),
-                    [](std::size_t const index)
+                    [&index_map](std::size_t const index)
                     {
                         return index_map[index];
                     }
@@ -288,7 +292,7 @@ namespace urban
                 return shadow::Face(new_indexes);
             }
 
-            std::map<std::string, std::pair<std::size_t, std::size_t> > object_names(std::list<std::string> const& lines, std::vector<std::string>::iterator & cursor)
+            std::map<std::string, std::pair<std::size_t, std::size_t> > object_names(std::list<std::string> const& lines, std::list<std::string>::iterator & cursor)
             {
                 std::map<std::string, std::pair<std::size_t, std::size_t> > objects;
 
@@ -305,8 +309,8 @@ namespace urban
                         buffer >> name;
                         names.push_back(name);
                         indexes.push_back(
-                            static_cast<std:size_t>(
-                                std::distance(
+                            static_cast<std::size_t>(
+                                std::distance<std::list<std::string>::const_iterator>(
                                     std::begin(lines),
                                     cursor
                                 )
@@ -320,9 +324,9 @@ namespace urban
                 std::vector< std::size_t > sizes(indexes.size() + 1);
 
                 std::adjacent_difference(
-                    std::rbegin(indexes),
-                    std::rend(indexes),
-                    std::rbegin(sizes)
+                    indexes.rbegin(),
+                    indexes.rend(),
+                    sizes.rbegin()
                 );
 
                 std::transform(
@@ -343,7 +347,7 @@ namespace urban
                 for(boost::tie(name, size, index) : boost::combine(names, sizes, indexes))
                     objects.emplace( 
                         std::make_pair(
-                            name
+                            name,
                             std::make_pair(
                                 index,
                                 size
@@ -356,7 +360,7 @@ namespace urban
         };
 
         template<typename T>
-        std::vector<T> select(std::vector<T> & container, std::map<std::size_t, std::size_t> & index_map)
+        std::vector<T> select(std::vector<T> const& container, std::map<std::size_t, std::size_t> & index_map)
         {
             std::vector<T> selected(index_map.size());
             
@@ -366,7 +370,7 @@ namespace urban
             return selected;
         }
 
-        shadow::Point str2pt(std::string const& line)
+        shadow::Point line2pt(std::string const& line)
         {
             std::istringstream buffer_line(line);
 

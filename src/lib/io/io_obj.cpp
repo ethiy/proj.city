@@ -1,5 +1,6 @@
 #include <io/io_obj.h>
 
+#include <boost/filesystem/operations.hpp>
 
 #include <fstream>
 
@@ -12,7 +13,7 @@ namespace urban
 
         FileHandler<Obj_stream>::~FileHandler(void) {}
 
-        std::vector<shadow::Mesh> read(void)
+        std::vector<shadow::Mesh> FileHandler<Obj_stream>::read(void)
         {
             std::ostringstream error_message;
 
@@ -22,9 +23,9 @@ namespace urban
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
-                    std::fstream obj_file(filepath, std::ios::in | std::ios::nocreate);
+                    std::fstream obj_file(filepath.string(), std::ios::in);
                     Obj_stream object_stream(obj_file);
-                    Obj_stream >> objects;
+                    object_stream >> objects;
                 }
                 else
                 {
@@ -42,18 +43,17 @@ namespace urban
 
             return objects;
         }
-        void write(std::vector<shadow::Mesh> const& meshes)
+        void FileHandler<Obj_stream>::write(std::vector<shadow::Mesh> const& meshes)
         {
-            std::ostringstream error_message;
-
             if (modes["write"])
             {
-                    std::fstream obj_file(filepath, std::ios::out);
+                    std::fstream obj_file(filepath.string(), std::ios::out);
                     Obj_stream object_stream(obj_file);
-                    Obj_stream << meshes;
+                    object_stream << meshes;
             }
             else
             {
+                std::ostringstream error_message;
                 error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
