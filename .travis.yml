@@ -9,46 +9,11 @@ git:
 branches:
     only:
     - master
+    - travis-macos-build
     - dev
 
-matrix:
-  include:
-    - os: linux
-      services:
-        - docker
-      script:
-        - docker build .
-
-
-    - os: osx
-      osx_image: xcode8
-      cache:
-        directories:
-          - $HOME/Library/Caches/Homebrew
-          - ./external
-          - $HOME/3rdParty
-      compiler: clang
-      before_install:
-        - brew update
-        - brew outdated boost || brew upgrade boost
-        - brew install lib3ds
-        - brew install tinyxml2
-        - mkdir -p 3rdParty && cd 3rdParty
-        - wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
-        - mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1 && cd CGAL-4.10
-        - mkdir build && cd build
-        - cmake ..
-        - sudo make -j `nproc` install && sudo make install_FindCGAL
-        - cd $TRAVIS_BUILD_DIR/3rdParty
-        - mkdir -p GDAL && cd GDAL
-        - wget http://www.kyngchaos.com/files/software/frameworks/GDAL_Complete-2.1.dmg
-        - sudo hdiutil attach GDAL_Complete-2.1.dmg
-        - sudo installer -package "/Volumes/GDAL Complete/GDAL Complete.pkg" -target /
-        - cd $TRAVIS_BUILD_DIR
-        - mkdir build
-        - mkdir build/darwin
-      install:
-        - cd build/darwin
-        - cmake -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../..
-      script:
-        - make -j4 all
+os: linux
+services:
+  - docker
+script:
+  - docker build .
