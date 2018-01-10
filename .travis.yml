@@ -43,14 +43,18 @@ matrix:
         - brew install lib3ds
         - brew install tinyxml2
         - brew tap osgeo/osgeo4mac && brew tap --repair
-        - brew install jasper netcdf
-        - brew install gdal2 --with-complete
+        - brew install jasper netcdf libpng giflib libtiff proj libgeotiff geos readline sqlite pcre freexl libxml2 json-c liblwgeom libspatialite webp cfitsio popt epsilon openssl libdap little-cms2 openjpeg unixodbc xerces-c xz
         - mkdir -p 3rdParty && cd 3rdParty
         - wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
         - mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1 && cd CGAL-4.10
         - mkdir build && cd build
         - cmake ..
         - sudo make -j `nproc` install && sudo make install_FindCGAL
+        - cd $TRAVIS_BUILD_DIR/3rdParty
+        - wget http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
+        - mkdir gdal-2.1.3 && tar xf gdal-2.1.3.tar.gz -C gdal-2.1.3 --strip-components 1 && cd gdal-2.1.3
+        - ./configure
+        - make -j4 && make install
         - cd $TRAVIS_BUILD_DIR
         - mkdir build
         - mkdir build/darwin
