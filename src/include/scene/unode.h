@@ -106,6 +106,16 @@ namespace urban
             * Returns facets constant begin iterator
             * @return facets constant begin iterator
             */
+            Facet_const_iterator facets_begin(void) const noexcept;
+            /**
+            * Returns facets constant end iterator
+            * @return facets constant end iterator
+            */
+            Facet_const_iterator facets_end(void) const noexcept;
+            /**
+            * Returns facets constant begin iterator
+            * @return facets constant begin iterator
+            */
             Facet_const_iterator facets_cbegin(void) const noexcept;
             /**
             * Returns facets constant end iterator
@@ -123,6 +133,16 @@ namespace urban
             * @return halfedges end iterator
             */
             Halfedge_iterator halfedges_end(void) noexcept;
+            /**
+            * Returns halfedges constant begin iterator
+            * @return halfedges constant begin iterator
+            */
+            Halfedge_const_iterator halfedges_begin(void) const noexcept;
+            /**
+            * Returns halfedges constant end iterator
+            * @return halfedges constant end iterator
+            */
+            Halfedge_const_iterator halfedges_end(void) const noexcept;
             /**
             * Returns halfedges constant begin iterator
             * @return halfedges constant begin iterator
@@ -191,19 +211,27 @@ namespace urban
             * @param facet a urban node facet
             * @return centroid of the facet
             */
-            Point_3 centroid(const UNode::Facet & facet) const;
+            Point_3 centroid(UNode::Facet_const_handle facet) const;
             /**
             * Compute the normal of a urban node facet
             * @param facet a urban node facet
             * @return the normal of the facet
             */
-            Vector_3 normal(const UNode::Facet & facet) const;
+            Vector_3 normal(UNode::Facet_const_handle facet) const;
             /**
             * Compute the area of a urban node facet
             * @param facet a urban node facet
             * @return area of the facet
             */
-            double area(const UNode::Facet & facet) const;
+            double area(UNode::Facet_const_handle facet) const;
+            /**
+            * Compute the circumference of a urban node facet
+            * @param facet a urban node facet
+            * @return circumference of the facet
+            */
+            double circumference(UNode::Facet_const_handle facet) const;
+            
+            UNode & set_face_ids(void);
 
             /** 
             * Finds a joinable halfedge.
@@ -232,25 +260,20 @@ namespace urban
             */
             UNode & join_facet(Halfedge_handle & h);
 
+            UNode & stitch_borders(void);
+
             /** 
             * Get facets adjacent to a facet
             * @param facet a urban node facet
             * @return handle to facets adjacent to facet
             */
             std::vector<UNode::Facet_const_handle> facet_adjacents(UNode::Facet const& facet) const;
-
-            /** 
-            * Get facet adjacency matrix (dual matrix)
-            * @return the facet adjacency matrix
-            */
-            std::vector<bool> facet_adjacency_matrix(void) const;
+            std::vector<UNode::Facet_const_handle> facet_handles(void) const;
             /** 
             * Write facet adjacency matrix to building matrix
-            * @param matrix the matrix to write on
-            * @param offset the index of the block where to write
-            * @return the matrix
+            * @return the adjacency matrix of facets
             */
-            std::vector<bool> & facet_adjacency_matrix(std::vector<bool> & matrix, std::size_t offset) const;
+            std::vector<bool> facet_adjacency_matrix(void) const;
         private:
             /** Node name */
             std::string name;

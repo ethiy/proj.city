@@ -23,7 +23,7 @@ namespace urban
              * @see ~Scene(void);
              */
             Scene(void);
-            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, io::FileHandler<Lib3dsFile> const& mesh_file);
+            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id, io::FileHandler<Lib3dsFile> const& mesh_file);
             /**
              * Copy Constructor.
              * @param other Scene to copy
@@ -82,7 +82,12 @@ namespace urban
              * @return the EPSG projection system code
              */
             unsigned short get_epsg(void) const noexcept;
-
+            /**
+             * Access the terrain surface
+             * @return a const reference to the terrain surface
+             */
+            UNode const& get_terrain(void) const noexcept;
+            
             std::vector<std::string> identifiers(void) const;
 
             using iterator = std::vector<UNode>::iterator;
@@ -95,7 +100,9 @@ namespace urban
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
 
-            std::size_t building_size(void) const noexcept;
+            std::size_t size(void) const noexcept;
+
+            Scene & prune(void);
         private:
             /** Pivot */
             urban::shadow::Point pivot;
@@ -105,6 +112,8 @@ namespace urban
             unsigned short epsg_index = 2154;
             /** Scene Buildings */
             std::vector<UNode> buildings;
+            /** Scene terrain */
+            UNode terrain;
         };
 
         /**
@@ -115,4 +124,6 @@ namespace urban
          */
         void swap(Scene & lhs, Scene & rhs);
     }
+
+    scene::Scene & prune(scene::Scene & scene);
 }

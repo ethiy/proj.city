@@ -25,7 +25,8 @@ namespace urban
             shadow::Bbox bbox(void) const;
             unsigned short epsg_index(void) const;
             std::vector<std::string> building_ids(void) const;
-
+            std::string terrain_id(void) const;
+            
             scene::Scene read(FileHandler<Lib3dsFile> const& mesh_file) const;
         private:
             tinyxml2::XMLDocument scene_tree;

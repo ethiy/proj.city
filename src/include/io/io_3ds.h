@@ -24,6 +24,7 @@ namespace urban
             ~FileHandler(void);
 
             std::vector<shadow::Mesh> read(std::string const& node_name) const;
+            shadow::Mesh read_and_stitch(std::string const& node_name) const;
             std::vector<shadow::Mesh> read_roofs(std::string const& node_name) const;
             std::vector<shadow::Mesh> read(void) const;
 

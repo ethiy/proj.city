@@ -141,6 +141,21 @@ namespace urban
             return success;
         }
 
+        Face & Face::offset(std::size_t const diff)
+        {
+            std::transform(
+                std::begin(points),
+                std::end(points),
+                std::begin(points),
+                [diff](std::size_t const index)
+                {
+                    return index + diff;
+                }
+            );
+
+            return *this;
+        }
+
         bool Face::is_convex(std::vector<Point> const& coordinates) const
         {
             std::size_t degree = points.size();

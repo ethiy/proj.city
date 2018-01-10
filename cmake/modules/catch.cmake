@@ -2,16 +2,16 @@ if(NOT TARGET Catch)
     include(ExternalProject)
     if(IS_TRAVIS_BUILD)     # on travis, use git for fetching instead of wget
         set(GB_FETCH_EXTERNAL_CATCH
-            GIT_REPOSITORY https://github.com/philsquared/Catch.git
-            GIT_TAG 0c1c9fa9229c7358ce16c9910004a39290b20f5f)
+            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+            GIT_TAG 19ab2117c5bac2f376f8da4a4b25e183137bcec0)
     elseif(WIN32)
         set(GB_FETCH_EXTERNAL_CATCH
-            URL https://github.com/philsquared/Catch/archive/v1.2.1-develop.12.zip
-            URL_HASH MD5=cda228922a1c9248364c99a3ff9cd9fa)
+            URL https://github.com/catchorg/Catch2/archive/v2.0.1.zip
+        )
     else()
         set(GB_FETCH_EXTERNAL_CATCH
-            URL https://github.com/philsquared/Catch/archive/v1.2.1-develop.12.tar.gz
-            URL_HASH MD5=a8dfb7be899a6e7fb30bd55d53426122)
+            URL https://github.com/catchorg/Catch2/archive/v2.0.1.tar.gz
+        )
     endif()
     ExternalProject_Add(libcatch
         PREFIX ${CMAKE_BINARY_DIR}/external/Catch

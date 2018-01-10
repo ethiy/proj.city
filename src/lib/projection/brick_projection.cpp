@@ -2,6 +2,8 @@
 
 #include <projection/utilities.h>
 
+#include <algorithms/util_algorithms.h>
+
 #include <CGAL/Boolean_set_operations_2.h>
 
 #include <list>
@@ -101,6 +103,10 @@ namespace urban
         {
             return projected_facets.cend();
         }
+        bool BrickPrint::is_empty(void) const noexcept
+        {
+            return projected_facets.empty();
+        }
 
 
         bool BrickPrint::contains(Point_2 const& point) const
@@ -188,7 +194,6 @@ namespace urban
                 );
             return height;
         }
-
         double BrickPrint::get_height(InexactPoint_2 const& inexact_point) const
         {
             double height(0.);
@@ -203,6 +208,71 @@ namespace urban
                     }
                 );
             return height;
+        }
+
+        std::vector<double> BrickPrint::areas(void) const
+        {
+            std::vector<double> results(projected_facets.size());
+            std::transform(
+                std::begin(projected_facets),
+                std::end(projected_facets),
+                std::begin(results),
+                [](FacePrint const& facet)
+                {
+                    return facet.area();
+                }
+            );
+            return results;
+        }
+        double BrickPrint::area(void) const
+        {
+            auto results = areas();
+
+            return std::accumulate(
+                std::begin(results),
+                std::end(results),
+                0.,
+                std::plus<double>()
+            );
+        }
+        std::vector<double> BrickPrint::edge_lengths(void) const
+        {
+            Polygon_set ps;
+            for(auto const& _facet : projected_facets)
+                ps.join(_facet.get_polygon());
+            
+            std::list<Polygon_with_holes> footprint_polygons;
+            ps.polygons_with_holes(std::back_inserter(footprint_polygons));
+
+            auto size = std::accumulate(
+                std::begin(footprint_polygons),
+                std::end(footprint_polygons),
+                std::size_t(0),
+                [](std::size_t const _size, Polygon_with_holes const& footprint)
+                {
+                    return _size + footprint.outer_boundary().size();
+                }
+            );
+
+            std::vector<double> result;
+            result.reserve(size);
+            for(auto const& footprint : footprint_polygons)
+            {
+                auto buffer = ::urban::edge_lengths(footprint.outer_boundary());
+                result.insert(std::end(result), std::begin(buffer), std::end(buffer));
+            }
+            return result;
+        }
+        double BrickPrint::circumference(void) const
+        {
+            auto lengths = edge_lengths();
+    
+            return std::accumulate(
+                std::begin(lengths),
+                std::end(lengths),
+                0.,
+                std::plus<double>()
+            );
         }
 
         void BrickPrint::filter(void)
@@ -257,7 +327,6 @@ namespace urban
 
             for(auto const& facet : other.projected_facets)
             {
-                std::cout << facet << std::endl;
                 if(!facet.is_empty() && !facet.is_degenerate())
                     operator +=(facet);
             }
@@ -298,8 +367,8 @@ namespace urban
                             _lhs.difference(intersection);
                     }
 
-                    lhs = unpack(lhs, _lhs, lfacet.get_plane());
-                    rhs = unpack(rhs, _rhs, rfacet.get_plane());
+                    lhs = unpack(lhs, _lhs, lfacet.get_id(), lfacet.get_plane());
+                    rhs = unpack(rhs, _rhs, rfacet.get_id(), rfacet.get_plane());
                 }
             }
             projected_facets = rhs;
@@ -309,6 +378,9 @@ namespace urban
 
         void BrickPrint::to_ogr(OGRLayer* projection_layer, shadow::Point const& reference_point, bool labels) const
         {
+            OGRFieldDefn* facet_id = new OGRFieldDefn("Id", OFTInteger64);
+            projection_layer->CreateField(facet_id);
+
             OGRFieldDefn* plane_coefficient_a = new OGRFieldDefn("coeff_a", OFTReal);
             projection_layer->CreateField(plane_coefficient_a);
             OGRFieldDefn* plane_coefficient_b = new OGRFieldDefn("coeff_b", OFTReal);
@@ -376,5 +448,22 @@ namespace urban
     void swap(projection::BrickPrint & lhs, projection::BrickPrint & rhs)
     {
         lhs.swap(rhs);
+    }
+
+    std::vector<double> areas(projection::BrickPrint const& brick_projection)
+    {
+        return brick_projection.areas();
+    }
+    double area(projection::BrickPrint const& brick_projection)
+    {
+        return brick_projection.area();
+    }
+    std::vector<double> edge_lengths(projection::BrickPrint const& brick_projection)
+    {
+        return brick_projection.edge_lengths();
+    }
+    double circumference(projection::BrickPrint const& brick_projection)
+    {
+        return brick_projection.circumference();
     }
 }

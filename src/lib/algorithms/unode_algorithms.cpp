@@ -2,6 +2,7 @@
 #include <algorithms/util_algorithms.h>
 
 #include <CGAL/aff_transformation_tags.h>
+#include <CGAL/squared_distance_3.h>
 
 #include <stdexcept>
 
@@ -13,7 +14,7 @@
 
 namespace urban
 {
-    double border_length(scene::UNode & unode)
+    double border_length(scene::UNode const& unode)
     {
         return std::accumulate(
             unode.border_halfedges_begin(),
@@ -65,58 +66,52 @@ namespace urban
         return affine_transform(unode, rotation);
     }
 
-
-    void plane_equations(scene::UNode& unode)
-    {
-        std::transform(
-            unode.facets_begin(),
-            unode.facets_end(),
-            unode.planes_begin(),
-            [](scene::UNode::Facet & facet)
-            {
-                scene::UNode::Halfedge_handle halfedge = facet.halfedge();
-                return scene::UNode::Facet::Plane_3(
-                    halfedge->vertex()->point(),
-                    halfedge->next()->vertex()->point(),
-                    halfedge->next()->next()->vertex()->point()
-                );
-            }
-        );
-    }
-
     scene::UNode & prune(scene::UNode & unode)
     {
-        std::vector<scene::UNode::Halfedge_handle> prunables = unode.pruning_halfedges();
-        for(auto prunable : prunables)
+        auto halfedge_handle = unode.prunable();
+
+        while(halfedge_handle != unode.halfedges_end())
         {
-            unode = unode.join_facet(prunable);
+            unode = unode.join_facet(halfedge_handle);
+            halfedge_handle = unode.prunable();
         }
+
+        unode.stitch_borders().set_face_ids();
+        
         return unode;
     }
 
-    std::vector<scene::UNode> & prune(std::vector<scene::UNode> & unodes)
-    {
-        std::transform(
-            std::begin(unodes),
-            std::end(unodes),
-            std::begin(unodes),
-            [](scene::UNode & unode)
-            {
-                return prune(unode);
-            }
-        );
-        return unodes;
-    }
-
-    double area(scene::UNode& unode)
+    double area(scene::UNode const& unode)
     {
         return std::accumulate(
             unode.facets_begin(),
             unode.facets_end(),
             .0,
-            [&unode](double & area, scene::UNode::Facet & facet)
+            [&unode](double area, scene::UNode::Facet const& facet)
             {
-                return area + unode.area(facet);
+                return area + unode.area(facet.halfedge()->facet());
+            }
+        );
+    }
+
+    double total_edge_length(scene::UNode const& unode)
+    {
+        return std::accumulate(
+            unode.halfedges_begin(),
+            unode.halfedges_end(),
+            .0,
+            [](double total_length, Polyhedron::Halfedge const& halfedge)
+            {
+                return  total_length
+                        +
+                        std::sqrt(
+                            to_double(
+                                CGAL::squared_distance(
+                                    halfedge.vertex()->point(),
+                                    halfedge.opposite()->vertex()->point()
+                                )
+                            )
+                        );
             }
         );
     }

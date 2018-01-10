@@ -7,67 +7,26 @@
 
 #include <boost/filesystem.hpp>
 
-#include <tinyxml2.h>
-
-#include <vector>
-#include <iostream>
-#include <map>
-#include <algorithm>
-#include <iterator>
-
 static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> [--pixel_size=<size> --rasterize --buildings --graphs --labels]
+      orthoproject <scene> [--prune --buildings --graphs --save_projections --sum_projections --labels --rasterize --terrain --pixel_size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
       -h --help             Show this screen.
       --version             Show version.
-      --pixel_size=<size>   Pixel size [default: 1].
-      --rasterize           Rasterize projections.
-      --buildings           Save projections per building.
-      --graphs              Save the Facets dual graph for buildings.
+      --prune               Prune building faces.
+      --buildings           Save buildings.
+      --graphs              Save the Facets dual graph per building.
+      --save_projections    Save projections per building.
+      --sum_projections     Sum and save the scene projection.
       --labels              Save vector projections with error fields.
+      --rasterize           Rasterize and save projections.
+      --terrain             Rasterize the terrain also.
+      --pixel_size=<size>   Pixel size [default: 1].
 )";
-
-
-inline void save_building_duals(boost::filesystem::path const& root_path, urban::scene::Scene const& scene)
-{
-    std::cout << "Saving brick duals... " << std::flush;
-    boost::filesystem::path dual_dir(root_path / "dual_graphs");
-    boost::filesystem::create_directory(dual_dir);
-    for(auto const& building : scene)
-    {
-        std::fstream adjacency_file(
-            boost::filesystem::path(dual_dir / (building.get_name() + ".txt")).string(),
-            std::ios::out
-        );
-        urban::io::Adjacency_stream as(adjacency_file);
-        as << building;
-    }
-    std::cout << " Done." << std::flush << std::endl;
-}
-
-inline std::vector<urban::projection::FootPrint> orthoproject(urban::scene::Scene const& scene)
-{
-    std::cout << "Projecting... " << std::flush;
-    std::vector<urban::projection::FootPrint> ortho_projections(scene.building_size());
-    std::transform(
-        std::begin(scene),
-        std::end(scene),
-        std::begin(ortho_projections),
-        [](urban::scene::UNode const& building)
-        {
-            return urban::projection::FootPrint(building);
-        }
-    );
-    std::cout << "Done." << std::flush << std::endl;
-
-    return ortho_projections;
-}
-
 
 int main(int argc, const char** argv)
 {
@@ -96,95 +55,32 @@ int main(int argc, const char** argv)
                 )
             )
         );
+        if(arguments.prune)
+            urban::prune(scene);
+        
+        if(arguments.buildings)
+            urban::save_scene(root, scene);
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.graphs)
-            save_building_duals(root, scene);
+            urban::save_building_duals(root, scene);
         
-        auto projections = orthoproject(scene);
-
-        std::cout << "Summing and saving scene projections... " << std::flush;
-
-        auto scene_projection = std::accumulate(
-            std::begin(projections),
-            std::end(projections),
-            urban::projection::FootPrint()
-        );
-
-        urban::io::FileHandler<GDALDriver>(
-            urban::io::GdalFormat::gml,
-            boost::filesystem::path(root / (arguments.input_path.stem().string() + ".gml")),
-            std::map<std::string,bool>{{"write", true}}
-        ).write(scene_projection);
-        std::cout << "Done." << std::flush << std::endl;
-        
-        std::cout << "Saving vector projections... " << std::flush;
-        if(arguments.buildings)
+        if(arguments.sum_projections || arguments.save_projections)
         {
-            boost::filesystem::path vector_dir(root / "vectors");
-            boost::filesystem::create_directory(vector_dir);
-            for(auto const& projection : projections)
+            auto projections = urban::orthoproject(scene, arguments.terrain);
+            
+            if(arguments.sum_projections)
+                urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
+                    
+            if(arguments.save_projections)
             {
-                urban::io::FileHandler<GDALDriver>(
-                    urban::io::GdalFormat::gml,
-                    boost::filesystem::path(vector_dir / (projection.get_name() + ".gml")),
-                    std::map<std::string,bool>{{"write", true}}
-                ).write(projection);
-            }
-            if(arguments.labels)
-            {
-                boost::filesystem::path label_dir(root / "labels");
-                boost::filesystem::create_directory(label_dir);
-                for(auto const& projection : projections)
+                urban::save_building_prints(root, projections, arguments.labels);
+                if(arguments.rasterize)
                 {
-                    urban::io::FileHandler<GDALDriver>(
-                        urban::io::GdalFormat::shapefile,
-                        boost::filesystem::path(label_dir / (projection.get_name() + ".shp")),
-                        std::map<std::string,bool>{{"write", true}}
-                    ).write(projection, true);
+                    auto raster_projections = urban::rasterize_scene(projections, arguments.pixel_size);
+                    urban::save_building_rasters(root, raster_projections);
                 }
-            }
-        }
-
-        std::cout << "Done." << std::flush << std::endl;
-
-
-        if(arguments.rasterize)
-        {
-            std::cout << "rasterizing projections... " << std::flush;
-            urban::projection::RasterPrint global_rasta(scene_projection, arguments.pixel_size);
-            std::vector<urban::projection::RasterPrint> raster_projections(projections.size());
-            std::transform(
-                std::begin(projections),
-                std::end(projections),
-                std::begin(raster_projections),
-                [&arguments](urban::projection::FootPrint const& projection)
-                {
-                    return urban::projection::RasterPrint(projection, arguments.pixel_size);
-                }
-            );
-            std::cout << "Done." << std::flush << std::endl;
-
-            if(arguments.buildings)
-            {
-                std::cout << "Saving raster projections... " << std::flush;
-                urban::io::FileHandler<GDALDriver>(
-                    urban::io::GdalFormat::geotiff,
-                    boost::filesystem::path(root / (arguments.input_path.stem().string() + ".tiff")),
-                    std::map<std::string,bool>{{"write", true}}
-                ).write(global_rasta);
-                boost::filesystem::path raster_dir(root / "rasters");
-                boost::filesystem::create_directory(raster_dir);
-                for(auto const& rasta : raster_projections)
-                {
-                    urban::io::FileHandler<GDALDriver>(
-                        urban::io::GdalFormat::geotiff,
-                        boost::filesystem::path(raster_dir / (rasta.get_name() + ".tiff")),
-                        std::map<std::string,bool>{{"write", true}}
-                    ).write(rasta);
-                }
-                std::cout << "Done." << std::flush << std::endl;
-            }
+            }            
         }
     }
     catch(std::exception const& except)

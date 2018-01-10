@@ -15,6 +15,7 @@ SCENARIO("Brick projection manipulation")
     {
         urban::InexactToExact to_exact;
         auto facet = test_facet_projection(
+            0,
             to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.)),
             to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.)),
             to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615))
@@ -27,7 +28,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << face_proj;
-                REQUIRE(auxilary.str() == "Bounding box: 1.25 0.029 87.3 98.64\nFace Projections: 1\nThe Polygon describing borders :3 64.25 50 1.25 98.64 87.3 0.029  0 \nThe supporting plane coefficients : 425.689 342.995 2027.02 -44500.2\n\n");
+                REQUIRE(auxilary.str() == "Bounding box: 1.25 0.029 87.3 98.64\nFace Projections: 1\nId: 0\nThe Polygon describing borders :3 64.25 50 1.25 98.64 87.3 0.029  0 \nThe supporting plane coefficients : 425.689 342.995 2027.02 -44500.2\n\n");
             }
         }
         WHEN("it is compared to an encapsulated brick projection:")
@@ -42,11 +43,13 @@ SCENARIO("Brick projection manipulation")
     {
         urban::InexactToExact to_exact;
         auto face_1 = test_facet_projection(
+            1,
             to_exact(urban::InexactKernel::Point_3(-1., 0, 5.)),
             to_exact(urban::InexactKernel::Point_3(1., 0., 2.)),
             to_exact(urban::InexactKernel::Point_3(0, 1., 3.615))
         );
         auto face_2 = test_facet_projection(
+            2,
             to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.)),
             to_exact(urban::InexactKernel::Point_3(.5, .33, 5.)),
             to_exact(urban::InexactKernel::Point_3(0, .67, 8.2))
@@ -59,7 +62,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Bounding box: -0.5 0.33 0.5 0.67\nFace Projections: 1\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\n");
+                REQUIRE(auxilary.str() == "Bounding box: -0.5 0.33 0.5 0.67\nFace Projections: 1\nId: 2\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\n");
             }
         }
         WHEN("face_1 is compared to the other")
@@ -85,7 +88,7 @@ SCENARIO("Brick projection manipulation")
             {
                 std::stringstream auxilary;
                 auxilary << proj;
-                REQUIRE(auxilary.str() == "Bounding box: -1 0 1 1\nFace Projections: 2\nThe Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  \nThe supporting plane coefficients : 3 -0.23 2 -7\n\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\n");
+                REQUIRE(auxilary.str() == "Bounding box: -1 0 1 1\nFace Projections: 2\nId: 1\nThe Polygon describing borders :3 -1 0 1 0 0 1  1 3 0.5 0.33 -0.5 0.33 0 0.67  \nThe supporting plane coefficients : 3 -0.23 2 -7\n\nId: 2\nThe Polygon describing borders :3 -0.5 0.33 0.5 0.33 0 0.67  0 \nThe supporting plane coefficients : 0 -3.2 0.34 -0.644\n\n");
             }
         }
     }
@@ -94,6 +97,7 @@ SCENARIO("Brick projection manipulation")
     {
         urban::projection::BrickPrint proj(
             test_facet_projection(
+                1,
                 std::vector<urban::Point_2>{{
                     urban::Point_2(-10, 6),
                     urban::Point_2(-12, 0),
@@ -112,6 +116,7 @@ SCENARIO("Brick projection manipulation")
         );
 
         auto face_2 = test_facet_projection(
+                2,
                 std::vector<urban::Point_2>{{
                     urban::Point_2(-6, 8),
                     urban::Point_2(-10, -10),
