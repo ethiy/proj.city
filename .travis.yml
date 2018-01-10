@@ -53,6 +53,8 @@ matrix:
         - cd $TRAVIS_BUILD_DIR/3rdParty
         - wget http://download.osgeo.org/gdal/2.1.3/gdal-2.1.3.tar.gz
         - mkdir gdal-2.1.3 && tar xf gdal-2.1.3.tar.gz -C gdal-2.1.3 --strip-components 1 && cd gdal-2.1.3
+        - mv ../../ressources/patch_gdal-2.1.3/jpeg2000_vsil_io.patch ./frmts/jpeg2000/jpeg2000_vsil_io.patch
+        - cd ./frmts/jpeg2000 && patch < jpeg2000_vsil_io.patch && cd -
         - ./configure
         - make -j4 && make install
         - cd $TRAVIS_BUILD_DIR
