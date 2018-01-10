@@ -47,7 +47,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
+                REQUIRE_THROWS(handler.read());
             }
         }
     }
@@ -62,7 +62,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
+                REQUIRE_THROWS(handler.read());
             }
         }
 
@@ -72,7 +72,7 @@ SCENARIO("Input/Output from OFF file:")
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS(urban::shadow::Mesh mesh = handler.read());
+                REQUIRE_THROWS(handler.read());
             }
         }
     }

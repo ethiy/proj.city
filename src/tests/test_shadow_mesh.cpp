@@ -1,9 +1,7 @@
 #include <shadow/mesh.h>
+#include <io/io_off.h>
 
-#ifdef CGAL_USE_GEOMVIEW
-#include <CGAL/IO/Geomview_stream.h>
-#endif // CGAL_USE_GEOMVIEW
-
+#include <boost/filesystem.hpp>
 
 #include <catch.hpp>
 
@@ -61,17 +59,16 @@ SCENARIO("shadow::Mesh manipulation:")
             {
                 std::ostringstream auxilary, _auxilary;
                 auxilary << u_mesh;
-                _auxilary << "Name: " << std::endl
-                          << "Bounding box: " << u_mesh.bbox() << std::endl
-                          << "Points: " << std::endl;
+                _auxilary << "#Name: " << std::endl
+                          << "#Bounding box: " << u_mesh.bbox() << std::endl
+                          << "OFF" << std::endl
+                          << points.size() << " " << faces.size() << " 0" << std::endl;
                 
                 for(std::size_t idx(0); idx < points.size(); ++idx)
-                        _auxilary << "Point " << idx << " : " << points.at(idx).x() << " " << points.at(idx).y() << " " << points.at(idx).z() << std::endl;
-
-                _auxilary << "Faces: " << std::endl;
+                        _auxilary << points.at(idx).x() << " " << points.at(idx).y() << " " << points.at(idx).z() << std::endl;
 
                 for(std::size_t idx(0); idx < faces.size(); ++idx)
-                        _auxilary << "Face " << idx << " : " << faces.at(idx) << std::endl;
+                        _auxilary << faces.at(idx) << std::endl;
 
                 REQUIRE( auxilary.str() == _auxilary.str() );
             }
@@ -89,5 +86,66 @@ SCENARIO("shadow::Mesh manipulation:")
             }
         }
         lib3ds_mesh_free(test_mesh);
+    }
+
+    GIVEN( "some entry meshes:")
+    {
+        WHEN("they are stitched")
+        {
+             auto mesh = urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29051.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29054.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29057.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29060.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29063.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29066.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29069.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/T11107.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read()
+            +
+            urban::io::FileHandler<std::fstream>(
+                boost::filesystem::path("../../ressources/3dModels/OFF/T11108.off"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read();
+ 
+            THEN("The output checks:")
+            {
+                auto test_mesh = urban::io::FileHandler<std::fstream>(
+                    boost::filesystem::path("../../ressources/tests/building_sum_mesh.off"),
+                    std::map<std::string, bool>{{"read", true}}
+                ).read();
+                
+                REQUIRE(mesh == test_mesh);
+            }
+        }
     }
 }

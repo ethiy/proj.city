@@ -20,7 +20,7 @@ SCENARIO("Face Projection manipulation:")
                         B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 0.))),
                         C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
 
-        auto perpendicular = test_facet_projection(A, B, C);
+        auto perpendicular = test_facet_projection(0, A, B, C);
 
         WHEN("the perpendicularity is tested")
         {
@@ -76,6 +76,7 @@ SCENARIO("Face Projection manipulation:")
                        C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
 
         auto degenerate = test_facet_projection(
+            0,
             std::vector<urban::Point_2>{{
                 urban::Point_2(A.x(), A.y()),
                 urban::Point_2(B.x(), B.y()),
@@ -149,33 +150,23 @@ SCENARIO("Face Projection manipulation:")
                        C(to_exact(urban::InexactKernel::Point_3(3, 5, 0.))),
                        D(to_exact(urban::InexactKernel::Point_3(-3, 5, .0)));
 
-        std::vector<urban::Point_2> vertices{{
-            urban::Point_2(A.x(), A.y()),
-            urban::Point_2(B.x(), B.y()),
-            urban::Point_2(C.x(), C.y()),
-            urban::Point_2(D.x(), D.y())
-        }};
-
-        std::vector<urban::Point_2> hole_vertices{{
-            urban::Point_2(-1, -3),
-            urban::Point_2(-1, 3),
-            urban::Point_2(1, 3),
-            urban::Point_2(1, -3)
-        }};
-
-        std::list<urban::Polygon> hole_list_buffer{urban::Polygon(std::begin(hole_vertices), std::end(hole_vertices))};
-
-        urban::projection::FacePrint example(
-            urban::Polygon_with_holes(
-                urban::Polygon(
-                    std::begin(vertices),
-                    std::end(vertices)
-                ),
-                std::begin(hole_list_buffer),
-                std::end(hole_list_buffer)
-            ),
-            urban::Plane_3(A, B, C)
+        auto example = test_facet_projection(
+            0,
+            std::vector<urban::Point_2>{{
+                urban::Point_2(A.x(), A.y()),
+                urban::Point_2(B.x(), B.y()),
+                urban::Point_2(C.x(), C.y()),
+                urban::Point_2(D.x(), D.y())
+            }},
+            std::vector<urban::Point_2>{{
+                urban::Point_2(-1, -3),
+                urban::Point_2(-1, 3),
+                urban::Point_2(1, 3),
+                urban::Point_2(1, -3)
+            }},
+            urban::Plane_3(A, B, C)            
         );
+
         WHEN("the perpendicularity is tested")
         {
             THEN("the test checks:")

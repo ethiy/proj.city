@@ -4,6 +4,7 @@
 #include <projection/utilities.h>
 #include <algorithms/util_algorithms.h>
 
+#include <ogr_feature.h>
 #include <ogr_geometry.h>
 
 #include <CGAL/Boolean_set_operations_2.h>
@@ -22,13 +23,26 @@ namespace urban
     {
         FacePrint::FacePrint(void)
         {}
-        FacePrint::FacePrint(Polygon_with_holes const& _border, const Plane_3 & _supporting_plane)
-            : border(_border), supporting_plane(_supporting_plane)
+        FacePrint::FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane)
+            : id(_id), border(_border), supporting_plane(_supporting_plane)
         {}
+        FacePrint::FacePrint(::urban::scene::UNode::Facet const& facet)
+            : id(facet.id())
+        {
+            Polygon facet_proj = trace(facet, supporting_plane);
+
+            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
+                facet_proj.reverse_orientation();
+
+            border = Polygon_with_holes(facet_proj);
+        }
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
-            if(facet_definition->GetFieldCount() < 4)
+            if(facet_definition->GetFieldCount() < 5)
                 throw std::overflow_error("GDAL could not read the projection due to incorrect number of fields");
+            
+            id = static_cast<std::size_t>(ogr_facet->GetFieldAsInteger64("Id"));
+
             InexactToExact to_exact;
             supporting_plane = Plane_3(
                 to_exact(ogr_facet->GetFieldAsDouble("coeff_a")),
@@ -36,18 +50,18 @@ namespace urban
                 to_exact(ogr_facet->GetFieldAsDouble("coeff_c")),
                 to_exact(ogr_facet->GetFieldAsDouble("coeff_d"))
             );
+
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
             if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
                 border = get_ogr_polygon(dynamic_cast<OGRPolygon*>(feature_polygon));
             else
                 throw std::runtime_error("GDAL could not read a polygon from the feature");
         }
-        
         FacePrint::FacePrint(FacePrint const& other)
-            : border(other.border), supporting_plane(other.supporting_plane)
+            : id(other.id), border(other.border), supporting_plane(other.supporting_plane)
         {}
         FacePrint::FacePrint(FacePrint && other)
-            : border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane))
+            : id(std::move(other.id)), border(std::move(other.border)), supporting_plane(std::move(other.supporting_plane))
         {}
         FacePrint::~FacePrint(void)
         {}
@@ -55,23 +69,30 @@ namespace urban
         void FacePrint::swap(FacePrint & other)
         {
             using std::swap;
+            swap(id, other.id);
             swap(border, other.border);
             swap(supporting_plane, other.supporting_plane);
         }
 
         FacePrint & FacePrint::operator =(FacePrint const& other) noexcept
         {
+            id = other.id;
             border = other.border;
             supporting_plane = other.supporting_plane;
             return *this;
         }
         FacePrint & FacePrint::operator =(FacePrint && other) noexcept
         {
+            id = std::move(other.id);
             border = std::move(other.border);
             supporting_plane = std::move(other.supporting_plane);
             return *this;
         }
 
+        std::size_t FacePrint::get_id() const noexcept
+        {
+            return id;
+        }        
         Polygon_with_holes const& FacePrint::get_polygon(void) const noexcept
         {
             return border;
@@ -162,20 +183,23 @@ namespace urban
         {
             return urban::centroid(border.outer_boundary());
         }
-        
         double FacePrint::area(void) const
         {
             return std::accumulate(
                         border.holes_begin(),
                         border.holes_end(),
                         to_double(border.outer_boundary().area()),
-                        [](double & holes_area, const Polygon & hole)
+                        [](double holes_area, Polygon const& hole)
                         {
                             return holes_area - to_double(hole.area());
                         }
                     );
         }
-
+        double FacePrint::circumference(void) const
+        {
+            return ::urban::circumference(border.outer_boundary());
+        }
+        
         bool FacePrint::equal_border(FacePrint const& other) const
         {
             bool result = std::distance(border.holes_begin(), border.holes_end()) == std::distance(other.border.holes_begin(), other.border.holes_end());
@@ -246,12 +270,17 @@ namespace urban
         OGRFeature* FacePrint::to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const
         {
             OGRFeature* feature = OGRFeature::CreateFeature(feature_definition);
+
+            feature->SetField("Id", static_cast<GIntBig>(id));
+
             feature->SetGeometry(::urban::projection::to_ogr(border, reference_point));
+
             ExactToInexact to_inexact;
             feature->SetField("coeff_a", to_inexact(supporting_plane.a()));
             feature->SetField("coeff_b", to_inexact(supporting_plane.b()));
             feature->SetField("coeff_c", to_inexact(supporting_plane.c()));
             feature->SetField("coeff_d", to_inexact(supporting_plane.d() + reference_point.z()));
+            
             if(labels)
             {
                 feature->SetField("Unq_Errors", "None");
@@ -261,7 +290,7 @@ namespace urban
             return feature;
         }
 
-        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, double const height, double const width, double const pixel_size) const
+        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
             if(!is_degenerate())
             {
@@ -289,7 +318,14 @@ namespace urban
                         hit
                     );
                     if(hit)
-                        image.at((i_min + index/w) * width + j_min + index%w) = (image.at((i_min + index/w) * width + j_min + index%w) * static_cast<double>(hits.at((i_min + index/w) * width + j_min + index%w)) + z) / static_cast<double>(++hits.at((i_min + index/w) * width + j_min + index%w));
+                        image.at((i_min + index/w) * width + j_min + index%w)
+                        =   (
+                                image.at((i_min + index/w) * width + j_min + index%w) * static_cast<double>(hits.at((i_min + index/w) * width + j_min + index%w))
+                                +
+                                z
+                            )
+                            /
+                            static_cast<double>(++hits.at((i_min + index/w) * width + j_min + index%w));
                 }
             }
             
@@ -298,7 +334,8 @@ namespace urban
 
         std::ostream & operator <<(std::ostream & os, FacePrint const& facet)
         {
-            return os << "The Polygon describing borders :" << facet.border << std::endl
+            return os << "Id: " << facet.id << std::endl
+                      << "The Polygon describing borders :" << facet.border << std::endl
                       << "The supporting plane coefficients : " << facet.supporting_plane << std::endl;
         }
 
@@ -322,5 +359,8 @@ namespace urban
     {
         return facet.area();
     }
-
+    double circumference(projection::FacePrint const& facet)
+    {
+        return facet.circumference();
+    }
 }

@@ -68,6 +68,17 @@ namespace urban
             return meshes;
         }
 
+        shadow::Mesh FileHandler<Lib3dsFile>::read_and_stitch(std::string const& node_name) const
+        {
+            auto meshes = read(node_name);
+
+            return std::accumulate(
+                std::begin(meshes),
+                std::end(meshes),
+                shadow::Mesh()
+            );
+        }
+
         std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_roofs(std::string const& node_name) const
         {
             std::ostringstream error_message;

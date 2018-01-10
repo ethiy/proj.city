@@ -4,6 +4,8 @@
 #include <CGAL/Cartesian_converter.h>
 
 #include <CGAL/Polyhedron_3.h>
+#include <CGAL/Polyhedron_items_with_id_3.h>
+
 #include <CGAL/Aff_transformation_3.h>
 
 #include <CGAL/Polygon_2.h>
@@ -22,7 +24,7 @@ namespace urban
     using Point_3 = Kernel::Point_3;
     using Vector_3 = Kernel::Vector_3;
     using Plane_3 = Kernel::Plane_3;
-    using Polyhedron = CGAL::Polyhedron_3<Kernel>;
+    using Polyhedron = CGAL::Polyhedron_3<Kernel, CGAL::Polyhedron_items_with_id_3>;
     using Color = CGAL::Color;
     using Affine_transformation_3 = CGAL::Aff_transformation_3<Kernel>;
     using Bbox_3 = CGAL::Bbox_3;
@@ -35,6 +37,7 @@ namespace urban
     using Point_2 = Kernel::Point_2;
     using InexactPoint_2 = InexactKernel::Point_2;
     using Vector_2 = Kernel::Vector_2;
+    using Segment_2 = Kernel::Segment_2;
     using InexactVector_2 = InexactKernel::Vector_2;
     using Intersect_2 = Kernel::Intersect_2;
     using Affine_transformation_2 = CGAL::Aff_transformation_2<Kernel>;

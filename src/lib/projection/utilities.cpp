@@ -24,16 +24,6 @@ namespace urban
 
             return Polygon(std::begin(facet_trace), std::end(facet_trace));
         }
-        FacePrint orthoprint(scene::UNode::Facet const& facet)
-        {
-            Plane_3 plane;
-            Polygon facet_proj = trace(facet, plane);
-
-            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
-                facet_proj.reverse_orientation();
-
-            return FacePrint(Polygon_with_holes(facet_proj), plane);
-        }
         std::vector<FacePrint> orthoprint(scene::UNode const& unode)
         {
             std::vector<FacePrint> prints(unode.facets_size());
@@ -44,7 +34,7 @@ namespace urban
                 std::begin(prints),
                 [](scene::UNode::Facet const& facet)
                 {
-                    return orthoprint(facet);
+                    return FacePrint(facet);
                 }
             );
 
@@ -62,7 +52,7 @@ namespace urban
 
             return prints;
         }
-        std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, Plane_3 const& plane)
+        std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, std::size_t const id, Plane_3 const& plane)
         {
             std::list<Polygon_with_holes> polygons;
             polygon_set.polygons_with_holes(std::back_inserter(polygons));
@@ -72,15 +62,16 @@ namespace urban
                 std::begin(polygons),
                 std::end(polygons),
                 std::begin(buffer),
-                [&plane](Polygon_with_holes const& polygon)
+                [id, &plane](Polygon_with_holes const& polygon)
                 {
-                    return FacePrint(polygon, plane);
+                    return FacePrint(id, polygon, plane);
                 }
             );
             facets.insert(std::end(facets), std::begin(buffer), std::end(buffer));
 
             return facets;
         }
+        
         OGRPoint* to_ogr(const Point_2 & point, const shadow::Point & reference_point)
         {
             return new OGRPoint(to_double(point.x() + reference_point.x()), to_double(point.y() + reference_point.y()));

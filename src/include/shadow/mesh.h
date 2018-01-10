@@ -208,7 +208,7 @@ namespace urban
              * @return constant end faces iterator
              */
             faces_const_iterator faces_cend(void) const noexcept;
-            
+            bool is_empty(void) const noexcept;
 
             /**
              * Name the mesh
@@ -250,6 +250,8 @@ namespace urban
              */
             Bbox const& bbox(void) const noexcept;
 
+            Mesh & operator +=(Mesh const& other);
+
             /**
              * Returns 3ds mesh structure.
              * @return pointer to `Lib3dsMesh`
@@ -276,6 +278,8 @@ namespace urban
              */
             friend std::ostream& operator <<(std::ostream & os, Mesh const& mesh);
         };
+
+        Mesh operator +(Mesh const& lhs, Mesh const& rhs);
 
         /**
         * Comparison operator 

@@ -87,6 +87,23 @@ namespace urban
             return projection;
         }
 
+        std::vector<double> FootPrint::areas(void) const
+        {
+            return projection.areas();
+        }
+        double FootPrint::area(void) const
+        {
+            return projection.area();
+        }
+        std::vector<double> FootPrint::edge_lengths(void) const
+        {
+            return projection.edge_lengths();
+        }        
+        double FootPrint::circumference(void) const
+        {
+            return projection.circumference();
+        }
+
         FootPrint::iterator FootPrint::begin(void) noexcept
         {
             return projection.begin();
@@ -114,10 +131,15 @@ namespace urban
 
         FootPrint & FootPrint::operator +=(FootPrint const& other)
         {
-            if(reference_point != other.reference_point || epsg_index != other.epsg_index)
-                throw std::logic_error("Feature not supported");
-            
-            projection += other.projection;
+            if(projection.is_empty())
+                *this = other;
+            else
+            {
+                if(reference_point != other.reference_point || epsg_index != other.epsg_index)
+                    throw std::logic_error("Feature not supported");
+                
+                projection += other.projection;
+            }
             return *this;
         }
 
@@ -162,10 +184,27 @@ namespace urban
             FootPrint result(lhs);
             return result += rhs;
         }
+    }
 
-        void swap(FootPrint & lhs, FootPrint & rhs)
-        {
-            lhs.swap(rhs);
-        }
+    void swap(projection::FootPrint & lhs, projection::FootPrint & rhs)
+    {
+        lhs.swap(rhs);
+    }
+
+    std::vector<double> areas(projection::FootPrint const& footprint)
+    {
+        return footprint.areas();
+    }
+    double area(projection::FootPrint const& footprint)
+    {
+        return footprint.area();
+    }
+    std::vector<double> edge_lengths(projection::FootPrint const& footprint)
+    {
+        return footprint.edge_lengths();
+    }
+    double circumference(projection::FootPrint const& footprint)
+    {
+        return footprint.circumference();
     }
 }

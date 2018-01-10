@@ -165,6 +165,10 @@ namespace urban
         {
             return faces.cend();
         }
+        bool Mesh::is_empty(void) const noexcept
+        {
+            return points.empty();
+        }
 
 
         void Mesh::set_name(std::string const& _name) noexcept
@@ -234,6 +238,34 @@ namespace urban
             return bounding_box;
         }
 
+        Mesh & Mesh::operator +=(Mesh const& other)
+        {
+            if(is_empty())
+                *this = other;
+            else
+            {
+                name += "_" + other.name;
+                bounding_box += other.bounding_box;
+
+                auto diff = points.size();
+                auto shift = faces.size();
+                
+                points.insert(std::end(points), std::begin(other.points), std::end(other.points));
+                faces.insert(std::end(faces), std::begin(other.faces), std::end(other.faces));
+
+                std::transform(
+                    std::next(std::begin(faces), static_cast<long>(shift)),
+                    std::end(faces),
+                    std::next(std::begin(faces), static_cast<long>(shift)),
+                    [diff](Face & face)
+                    {
+                        return face.offset(diff);
+                    }
+                );
+            }
+            return *this;
+        }
+
         Lib3dsMesh* Mesh::to_3ds(void) const
         {
             char name_buffer[64];
@@ -287,16 +319,16 @@ namespace urban
 
         std::ostream& operator <<(std::ostream &os, Mesh const& mesh)
         {
-            os << "Name: " << mesh.name << std::endl
-               << "Bounding box: " << mesh.bounding_box << std::endl
-               << "Points: " << std::endl;
+            os << "#Name: " << mesh.name << std::endl
+               << "#Bounding box: " << mesh.bounding_box << std::endl
+               << "OFF" << std::endl;
 
+            os << mesh.points_size() << " " << mesh.faces_size() << " 0" << std::endl;
             for(std::size_t idx = 0; idx < mesh.points_size(); ++idx)
-                os << "Point " << idx << " : " << mesh.points.at(idx) << std::endl;
+                os << mesh.points.at(idx) << std::endl;
 
-            os << "Faces: " << std::endl;
             for(std::size_t idx = 0; idx < mesh.faces_size(); ++idx)
-                os << "Face " << idx << " : " << mesh.faces.at(idx) << std::endl;
+                os << mesh.faces.at(idx) << std::endl;
 
             return os;
         }
@@ -314,7 +346,12 @@ namespace urban
             );
         }
 
-        bool operator ==(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
+        Mesh operator +(Mesh const& lhs, Mesh const& rhs)
+        {
+            return Mesh(lhs) += rhs;
+        }
+
+        bool operator ==(Mesh const& lhs, Mesh const& rhs)
         {
             bool equal(lhs.points_size() == rhs.points_size() && lhs.faces_size() == rhs.faces_size());
             if(equal)
@@ -342,7 +379,7 @@ namespace urban
             return equal;
         }
 
-        bool operator !=(shadow::Mesh const& lhs, shadow::Mesh const& rhs)
+        bool operator !=(Mesh const& lhs, Mesh const& rhs)
         {
             return !(lhs == rhs);
         }        

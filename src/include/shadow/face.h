@@ -215,6 +215,8 @@ namespace urban
              */
             bool overide(std::size_t old_index, std::size_t new_index);
 
+            Face & offset(std::size_t const diff);
+
             /**
              * Evaluates if facet is convex based on points coordinates.
              * @param coordinates map associating point indexes to their coordinates
