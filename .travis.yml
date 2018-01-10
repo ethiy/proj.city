@@ -43,7 +43,7 @@ matrix:
         - brew install lib3ds
         - brew install tinyxml2
         - brew tap osgeo/osgeo4mac && brew tap --repair
-        - brew install jasper netcdf libpng giflib libtiff proj libgeotiff geos readline sqlite pcre freexl libxml2 json-c liblwgeom libspatialite webp cfitsio popt epsilon openssl libdap little-cms2 openjpeg unixodbc xerces-c xz
+        - brew install jasper netcdf readline sqlite libxml2 liblwgeom webp cfitsio popt epsilon openssl libdap little-cms2 openjpeg unixodbc xerces-c xz
         - mkdir -p 3rdParty && cd 3rdParty
         - wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
         - mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1 && cd CGAL-4.10
