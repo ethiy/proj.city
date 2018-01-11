@@ -1,16 +1,16 @@
 {
   "variant": {
-    "label": "Debug",
+    "label": "Release",
     "keywordSettings": {
-      "buildType": "debug"
+      "buildType": "release"
     },
-    "description": "Emit debug information without performing optimizations"
+    "description": "Enable optimizations, omit debug info"
   },
   "activeEnvironments": [],
   "codeModel": {
     "configurations": [
       {
-        "name": "Debug",
+        "name": "Release",
         "projects": [
           {
             "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
@@ -675,1853 +675,6 @@
                 "name": "Catch",
                 "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city",
                 "type": "INTERFACE_LIBRARY"
-              },
-              {
-                "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib/liburban_projection.a"
-                ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib",
-                "crossReferences": {
-                  "backtrace": [
-                    {
-                      "line": 49,
-                      "name": "add_library",
-                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                    },
-                    {
-                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                    }
-                  ],
-                  "relatedStatements": [
-                    {
-                      "backtrace": [
-                        {
-                          "line": 30,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "line": 221,
-                          "name": "include",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 373,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 234,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 377,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 234,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 381,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 234,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 385,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 23,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 13,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 28,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "line": 221,
-                          "name": "include",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 373,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 230,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 377,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 230,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 381,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 230,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 385,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 57,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 58,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 19,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 24,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 30,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 35,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 40,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 49,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 50,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    }
-                  ]
-                },
-                "fileGroups": [
-                  {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_GMPXX",
-                      "CGAL_USE_MPFI",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "projection/brick_projection.cpp",
-                      "projection/scene_projection.cpp",
-                      "projection/camera.cpp",
-                      "projection/face_projection.cpp",
-                      "projection/raster_projection.cpp",
-                      "projection/utilities.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "liburban_projection.a",
-                "linkerLanguage": "CXX",
-                "name": "urban_projection",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib",
-                "type": "STATIC_LIBRARY"
-              },
-              {
-                "artifacts": [
-                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib/liburban_algorithms.a"
-                ],
-                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib",
-                "crossReferences": {
-                  "backtrace": [
-                    {
-                      "line": 45,
-                      "name": "add_library",
-                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                    },
-                    {
-                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                    }
-                  ],
-                  "relatedStatements": [
-                    {
-                      "backtrace": [
-                        {
-                          "line": 30,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "line": 221,
-                          "name": "include",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 373,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 234,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 377,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 234,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 381,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 234,
-                          "name": "add_definitions",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 385,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_compile_definitions"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 23,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 13,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 28,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
-                        },
-                        {
-                          "line": 221,
-                          "name": "include",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 373,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 230,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 377,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 230,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 381,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 230,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 320,
-                          "name": "use_lib",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 385,
-                          "name": "use_component",
-                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
-                        },
-                        {
-                          "line": 44,
-                          "name": "use_essential_libs",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 57,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 58,
-                          "name": "include_directories",
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
-                        },
-                        {
-                          "line": 18,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 19,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 24,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 30,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 35,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 40,
-                          "name": "include_directories",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
-                        },
-                        {
-                          "line": 17,
-                          "name": "include",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_include_directories"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 45,
-                          "name": "add_library",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    },
-                    {
-                      "backtrace": [
-                        {
-                          "line": 46,
-                          "name": "target_link_libraries",
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        },
-                        {
-                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
-                        }
-                      ],
-                      "type": "target_link_libraries"
-                    }
-                  ]
-                },
-                "fileGroups": [
-                  {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
-                    "defines": [
-                      "CGAL_USE_GMP",
-                      "CGAL_USE_GMPXX",
-                      "CGAL_USE_MPFI",
-                      "CGAL_USE_MPFR"
-                    ],
-                    "includePath": [
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/opt/local/include"
-                      },
-                      {
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/usr/local/include"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Library/Frameworks/GDAL.framework/Headers"
-                      },
-                      {
-                        "isSystem": true,
-                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
-                      }
-                    ],
-                    "isGenerated": false,
-                    "language": "CXX",
-                    "sources": [
-                      "algorithms/unode_algorithms.cpp",
-                      "algorithms/util_algorithms.cpp",
-                      "algorithms/test_utils.cpp",
-                      "algorithms/scene_algorithms.cpp",
-                      "algorithms/io_algorithms.cpp"
-                    ]
-                  }
-                ],
-                "fullName": "liburban_algorithms.a",
-                "linkerLanguage": "CXX",
-                "name": "urban_algorithms",
-                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib",
-                "type": "STATIC_LIBRARY"
               },
               {
                 "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode",
@@ -4089,7 +2242,7 @@
                   ]
                 },
                 "fullName": "liburban.dylib",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib liburban_shadow.a liburban_io.a liburban_scene.a liburban_projection.a liburban_algorithms.a /opt/local/lib/libboost_filesystem-mt-d.dylib /opt/local/lib/libboost_system-mt-d.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a liburban_io.a liburban_scene.a liburban_projection.a liburban_algorithms.a liburban_shadow.a /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt-d.dylib /opt/local/lib/libboost_system-mt-d.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib liburban_shadow.a liburban_io.a liburban_scene.a liburban_projection.a liburban_algorithms.a /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a liburban_io.a liburban_scene.a liburban_projection.a liburban_algorithms.a liburban_shadow.a /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
                 "linkPath": "-L/opt/local/lib",
                 "linkerLanguage": "CXX",
                 "name": "urban",
@@ -4971,7 +3124,7 @@
                 },
                 "fileGroups": [
                   {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
                     "defines": [
                       "CGAL_USE_GMP",
                       "CGAL_USE_GMPXX",
@@ -5016,6 +3169,1853 @@
                 "fullName": "liburban_io.a",
                 "linkerLanguage": "CXX",
                 "name": "urban_io",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib",
+                "type": "STATIC_LIBRARY"
+              },
+              {
+                "artifacts": [
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib/liburban_projection.a"
+                ],
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib",
+                "crossReferences": {
+                  "backtrace": [
+                    {
+                      "line": 49,
+                      "name": "add_library",
+                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                    },
+                    {
+                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                    }
+                  ],
+                  "relatedStatements": [
+                    {
+                      "backtrace": [
+                        {
+                          "line": 30,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "line": 221,
+                          "name": "include",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 373,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 234,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 377,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 234,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 381,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 234,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 385,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 23,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 13,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 28,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "line": 221,
+                          "name": "include",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 373,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 230,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 377,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 230,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 381,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 230,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 385,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 57,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 58,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 19,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 24,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 30,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 35,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 40,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 49,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 50,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    }
+                  ]
+                },
+                "fileGroups": [
+                  {
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_GMPXX",
+                      "CGAL_USE_MPFI",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "projection/brick_projection.cpp",
+                      "projection/scene_projection.cpp",
+                      "projection/camera.cpp",
+                      "projection/face_projection.cpp",
+                      "projection/raster_projection.cpp",
+                      "projection/utilities.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "liburban_projection.a",
+                "linkerLanguage": "CXX",
+                "name": "urban_projection",
+                "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib",
+                "type": "STATIC_LIBRARY"
+              },
+              {
+                "artifacts": [
+                  "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib/liburban_algorithms.a"
+                ],
+                "buildDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib",
+                "crossReferences": {
+                  "backtrace": [
+                    {
+                      "line": 45,
+                      "name": "add_library",
+                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                    },
+                    {
+                      "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                    }
+                  ],
+                  "relatedStatements": [
+                    {
+                      "backtrace": [
+                        {
+                          "line": 30,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "line": 221,
+                          "name": "include",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 373,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 234,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 377,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 234,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 381,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 234,
+                          "name": "add_definitions",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 385,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_compile_definitions"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 23,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 13,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 28,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/CGAL_UseMPFI.cmake"
+                        },
+                        {
+                          "line": 221,
+                          "name": "include",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 373,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 230,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 377,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 230,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 381,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 230,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 320,
+                          "name": "use_lib",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 385,
+                          "name": "use_component",
+                          "path": "/usr/local/lib/CGAL/CGAL_Macros.cmake"
+                        },
+                        {
+                          "line": 44,
+                          "name": "use_essential_libs",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 57,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 58,
+                          "name": "include_directories",
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "path": "/usr/local/lib/CGAL/UseCGAL.cmake"
+                        },
+                        {
+                          "line": 18,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 19,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 24,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 30,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 35,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 40,
+                          "name": "include_directories",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/cmake/dependencies.cmake"
+                        },
+                        {
+                          "line": 17,
+                          "name": "include",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_include_directories"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 45,
+                          "name": "add_library",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    },
+                    {
+                      "backtrace": [
+                        {
+                          "line": 46,
+                          "name": "target_link_libraries",
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        },
+                        {
+                          "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib/CMakeLists.txt"
+                        }
+                      ],
+                      "type": "target_link_libraries"
+                    }
+                  ]
+                },
+                "fileGroups": [
+                  {
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
+                    "defines": [
+                      "CGAL_USE_GMP",
+                      "CGAL_USE_GMPXX",
+                      "CGAL_USE_MPFI",
+                      "CGAL_USE_MPFR"
+                    ],
+                    "includePath": [
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/src/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/opt/local/include"
+                      },
+                      {
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/usr/local/include"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Library/Frameworks/GDAL.framework/Headers"
+                      },
+                      {
+                        "isSystem": true,
+                        "path": "/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/external/docopt/include/docopt"
+                      }
+                    ],
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "algorithms/unode_algorithms.cpp",
+                      "algorithms/util_algorithms.cpp",
+                      "algorithms/test_utils.cpp",
+                      "algorithms/scene_algorithms.cpp",
+                      "algorithms/io_algorithms.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "liburban_algorithms.a",
+                "linkerLanguage": "CXX",
+                "name": "urban_algorithms",
                 "sourceDirectory": "/Users/ETHIY/Workspace/GitHub/proj.city/src/lib",
                 "type": "STATIC_LIBRARY"
               },
@@ -5894,7 +5894,7 @@
                 },
                 "fileGroups": [
                   {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
                     "defines": [
                       "CGAL_USE_GMP",
                       "CGAL_USE_GMPXX",
@@ -6788,7 +6788,7 @@
                 },
                 "fileGroups": [
                   {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
                     "defines": [
                       "CGAL_USE_GMP",
                       "CGAL_USE_GMPXX",
@@ -7595,7 +7595,7 @@
                 },
                 "fileGroups": [
                   {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
                     "defines": [
                       "CGAL_USE_GMP",
                       "CGAL_USE_GMPXX",
@@ -7635,8 +7635,8 @@
                 ],
                 "fullName": "orthoproject",
                 "linkFlags": "-Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
-                "linkLanguageFlags": "-std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../lib/liburban.dylib ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_shadow.a /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt-d.dylib /opt/local/lib/libboost_system-mt-d.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "linkLanguageFlags": "-std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../lib/liburban.dylib ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_shadow.a /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
                 "linkPath": "-L/opt/local/lib",
                 "linkerLanguage": "CXX",
                 "name": "orthoproject",
@@ -8414,7 +8414,7 @@
                 },
                 "fileGroups": [
                   {
-                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0  ",
+                    "compileFlags": " -std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG  ",
                     "defines": [
                       "CGAL_USE_GMP",
                       "CGAL_USE_GMPXX",
@@ -8468,8 +8468,8 @@
                 ],
                 "fullName": "tests",
                 "linkFlags": "-Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib",
-                "linkLanguageFlags": "-std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -g -O0",
-                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../lib/liburban.dylib ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_shadow.a /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib /opt/local/lib/libboost_filesystem-mt-d.dylib /opt/local/lib/libboost_system-mt-d.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
+                "linkLanguageFlags": "-std=c++11 -Wall -Wextra -Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-global-constructors -O3 -DNDEBUG",
+                "linkLibraries": "-Wl,-rpath,/opt/local/lib -Wl,-rpath,/Users/ETHIY/Workspace/GitHub/proj.city/build/vscode/lib /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib ../lib/liburban.dylib ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_io.a ../lib/liburban_scene.a ../lib/liburban_projection.a ../lib/liburban_algorithms.a ../lib/liburban_shadow.a /opt/local/lib/libmpfi.dylib /opt/local/lib/libmpfr.dylib /opt/local/lib/libgmpxx.dylib /opt/local/lib/libgmp.dylib /usr/local/lib/libCGAL.13.0.0.dylib /opt/local/lib/libboost_thread-mt.dylib /opt/local/lib/libboost_filesystem-mt.dylib /opt/local/lib/libboost_system-mt.dylib /opt/local/lib/libboost_chrono-mt.dylib /opt/local/lib/libboost_date_time-mt.dylib /opt/local/lib/libboost_atomic-mt.dylib -framework gdal /opt/local/lib/lib3ds.dylib /usr/local/lib/libtinyxml2.dylib ../external/docopt/lib/libdocopt.a",
                 "linkPath": "-L/opt/local/lib",
                 "linkerLanguage": "CXX",
                 "name": "tests",
@@ -8481,7 +8481,7 @@
         ]
       }
     ],
-    "cookie": "0.5086041912529715",
+    "cookie": "0.49175480436142216",
     "inReplyTo": "codemodel",
     "type": "reply"
   }

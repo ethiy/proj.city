@@ -1,0 +1,11 @@
+--- jpeg2000_vsil_io.cpp	2017-01-20 08:20:54.000000000 +0000
++++ jpeg2000_vsil_io_new.cpp	2018-01-10 22:11:46.000000000 +0000
+@@ -209,7 +209,7 @@
+ 			/* The buffer must be large enough to accommodate maximum
+ 			  putback. */
+ 			assert(bufsize > JAS_STREAM_MAXPUTBACK);
+-			stream->bufbase_ = JAS_CAST(uchar *, buf);
++			stream->bufbase_ = JAS_CAST(u_char *, buf);
+ 			stream->bufsize_ = bufsize - JAS_STREAM_MAXPUTBACK;
+ 		}
+ 	} else {
