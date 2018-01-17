@@ -189,7 +189,7 @@ namespace urban
                         std::end(lines),
                         [](std::string const& line)
                         {
-                            return line.at(0) == '#' || line.empty();
+                            return line.empty() || line.at(0) == '#';
                         }
                     ),
                     std::end(lines)
