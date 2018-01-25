@@ -13,6 +13,7 @@
 #include <stdexcept>
 
 #include <vector>
+#include <deque>
 #include <algorithm>
 #include <iterator>
 #include <ios>
@@ -170,16 +171,19 @@ namespace urban
                 std::for_each(
                     mesh.faces_cbegin(),
                     mesh.faces_cend(),
-                    [this](shadow::Face const& facets)
+                    [this, shift](shadow::Face const& facet)
                     {
-                        ios << "f " << facets << std::endl;
+                        ios << "f ";
+                        for(auto const index: facet)
+                            ios << index + shift << " ";
+                        ios << std::endl;
                     }
                 );
             }
 
-            std::list<std::string> parse(void)
+            std::deque<std::string> parse(void)
             {
-                std::list<std::string> lines;
+                std::deque<std::string> lines;
                 readlines(ios, std::back_inserter(lines));
 
                 /*Ignore Comments*/
@@ -198,7 +202,7 @@ namespace urban
                 return lines;
             }
 
-            std::vector<shadow::Point> read_points(std::list<std::string> const& lines, std::list<std::string>::iterator & cursor)
+            std::vector<shadow::Point> read_points(std::deque<std::string> const& lines, std::deque<std::string>::iterator & cursor)
             {
                 /*
                    It is initialized by the origin:
@@ -216,7 +220,7 @@ namespace urban
                 return points;
             }
 
-            std::vector<shadow::Mesh> read_objects(std::list<std::string> const& lines, std::list<std::string>::iterator & cursor, std::vector<shadow::Point> const& points)
+            std::vector<shadow::Mesh> read_objects(std::deque<std::string> const& lines, std::deque<std::string>::iterator & cursor, std::vector<shadow::Point> const& points)
             {
                 auto objects = object_names(lines, cursor);
 
@@ -235,7 +239,7 @@ namespace urban
                 return meshes;
             }
 
-            shadow::Mesh read_object(std::list<std::string> const& lines, std::vector<shadow::Point> const& points, std::string const& name, std::size_t const index, std::size_t const number_of_facets)
+            shadow::Mesh read_object(std::deque<std::string> const& lines, std::vector<shadow::Point> const& points, std::string const& name, std::size_t const index, std::size_t const number_of_facets)
             {
                 std::map<std::size_t, std::size_t> index_map;
                 std::vector<shadow::Face> facets = read_facets(lines, index, number_of_facets, index_map);
@@ -243,7 +247,7 @@ namespace urban
                 return shadow::Mesh(name, ::urban::select(points, index_map), facets);
             }
 
-            std::vector<shadow::Face> read_facets(std::list<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
+            std::vector<shadow::Face> read_facets(std::deque<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
             {
                 std::vector<shadow::Face> object_faces(number_of_facets);
 
@@ -264,7 +268,7 @@ namespace urban
             {
                 std::istringstream buffer_line(line);
 
-                std::list<std::size_t> indexes;
+                std::deque<std::size_t> indexes;
 
                 std::copy(
                     std::istream_iterator<double>(buffer_line),
@@ -274,7 +278,8 @@ namespace urban
 
                 auto maped_index = index_map.size();
                 for(auto index : indexes)
-                    index_map.emplace(std::make_pair(index, maped_index++));
+                    if(!static_cast<bool>(index_map.count(index)))
+                        index_map.emplace(std::make_pair(index, maped_index++));
 
                 std::vector<std::size_t> new_indexes(indexes.size());
                 std::transform(
@@ -289,14 +294,14 @@ namespace urban
                 return shadow::Face(new_indexes);
             }
 
-            std::map<std::string, std::pair<std::size_t, std::size_t> > object_names(std::list<std::string> const& lines, std::list<std::string>::iterator & cursor)
+            std::map<std::string, std::pair<std::size_t, std::size_t> > object_names(std::deque<std::string> const& lines, std::deque<std::string>::iterator & cursor)
             {
                 std::map<std::string, std::pair<std::size_t, std::size_t> > objects;
 
                 std::stringstream buffer;
 
-                std::list<std::string> names;
-                std::list<std::size_t> indexes;
+                std::deque<std::string> names;
+                std::deque<std::size_t> indexes;
                 for(; cursor != std::end(lines); ++cursor)
                 {
                     if(cursor->front() == 'o')
@@ -307,36 +312,31 @@ namespace urban
                         names.push_back(name);
                         indexes.push_back(
                             static_cast<std::size_t>(
-                                std::distance<std::list<std::string>::const_iterator>(
+                                std::distance<std::deque<std::string>::const_iterator>(
                                     std::begin(lines),
                                     cursor
                                 )
-                            )
+                            ) + 1
                         );
                         buffer.clear();
                     }
                 }
-                indexes.push_back(names.size());
+                indexes.push_back(lines.size());
 
-                std::vector< std::size_t > sizes(indexes.size() + 1);
+                std::vector< std::size_t > sizes(indexes.size());
 
                 std::adjacent_difference(
                     indexes.rbegin(),
                     indexes.rend(),
-                    sizes.rbegin()
-                );
-
-                std::transform(
-                    std::begin(sizes),
-                    std::end(sizes),
-                    std::begin(sizes),
-                    [](std::size_t const s)
+                    sizes.rbegin(),
+                    [](std::size_t const lhs, std::size_t const rhs)
                     {
-                        return s - 1;
+                        return rhs - lhs - 2;
                     }
                 );
 
                 sizes.pop_back();
+                indexes.pop_back();
 
                 for(auto const tpl : boost::combine(names, sizes, indexes))
                 {
