@@ -20,7 +20,6 @@ RUN apt-get install -y clang
 
 RUN apt-get install -y \
             cmake\
-            git\
             wget
 
 RUN apt-get install -y libboost-all-dev
@@ -46,9 +45,8 @@ RUN mkdir build
 WORKDIR build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr
 RUN make -j `nproc` install && make install_FindCGAL
-WORKDIR /home
-RUN git clone https://github.com/ethiy/proj.city.git
-WORKDIR proj.city/
-RUN git checkout dev
-RUN mkdir build && mkdir build/xenial
+RUN mkdir /home/proj.city
+COPY . /home/proj.city
+WORKDIR /home/proj.city
+RUN mkdir -p build && mkdir -p build/xenial
 WORKDIR build/xenial
