@@ -106,7 +106,7 @@ namespace urban
             if (modes.at("read"))
             {
                 Lib3dsMesh *p_meshes = file->meshes;
-                while (p_meshes)
+                while(p_meshes)
                 {
                     meshes.push_back(urban::shadow::Mesh(p_meshes));
                     p_meshes = p_meshes->next;
@@ -118,6 +118,21 @@ namespace urban
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+            return meshes;
+        }
+        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_level(std::size_t const level) const
+        {
+            std::vector<std::string> nodes = get_nodes(level);
+            std::vector<shadow::Mesh> meshes(nodes.size());
+            std::transform(
+                std::begin(nodes),
+                std::end(nodes),
+                std::begin(meshes),
+                [this](std::string const& node)
+                {
+                    return read_and_stitch(node);
+                }
+            );
             return meshes;
         }
 
@@ -175,6 +190,34 @@ namespace urban
                 ),
                 std::end(meshes)
             );
+        }
+        std::vector<std::string> FileHandler<Lib3dsFile>::get_nodes(std::size_t const level) const
+        {
+            std::deque<Lib3dsNode*> p_nodes{{file->nodes}};
+            std::deque<Lib3dsNode*> childs;
+            Lib3dsNode* q_buffer;
+            std::size_t l(0);
+            for(l = 0; l < level; l++)
+                for(auto const node: p_nodes)
+                    if(node->childs != NULL)
+                        for(q_buffer = node->childs; q_buffer != NULL; q_buffer = q_buffer->next)
+                            childs.push_back(q_buffer);
+                p_nodes = childs;
+
+            std::vector<std::string> nodes(p_nodes.size());
+            if(l < level)
+                throw std::runtime_error("The asked level is too deep for the scene tree!");
+            else
+                std::transform(
+                    std::begin(p_nodes),
+                    std::end(p_nodes),
+                    std::begin(nodes),
+                    [](Lib3dsNode const* p_node)
+                    {
+                        return std::string(p_node->name);
+                    }
+                );
+            return nodes;
         }
     }
 }

@@ -10,6 +10,7 @@
 #include <boost/filesystem/operations.hpp>
 
 #include <map>
+#include <vector>
 #include <string>
 
 namespace urban
@@ -27,6 +28,8 @@ namespace urban
             shadow::Mesh read_and_stitch(std::string const& node_name) const;
             std::vector<shadow::Mesh> read_roofs(std::string const& node_name) const;
             std::vector<shadow::Mesh> read(void) const;
+            std::vector<shadow::Mesh> read_level(std::size_t const level) const; 
+            std::vector<std::string> get_nodes(std::size_t const level) const;
 
             void write(std::vector<shadow::Mesh> meshes);
         private:
