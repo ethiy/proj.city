@@ -12,7 +12,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> [--prune --buildings --graphs --save_projections --sum_projections --labels --rasterize --terrain --pixel_size=<size>]
+      orthoproject <scene> [--prune --buildings --graphs --save_projections --sum_projections --labels --rasterize --terrain --pixel_size=<size> --with-xml]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -25,8 +25,9 @@ R"(orthoproject.
       --sum_projections     Sum and save the scene projection.
       --labels              Save vector projections with error fields.
       --rasterize           Rasterize and save projections.
-      --terrain             Rasterize the terrain also.
+      --terrain             Taking care of terrain.
       --pixel_size=<size>   Pixel size [default: 1].
+      --with-xml            Read using the XML scene description
 )";
 
 struct Arguments
@@ -41,7 +42,8 @@ public:
           sum_projections(docopt_args.at("--sum_projections").asBool()),
           labels(docopt_args.at("--labels").asBool()),
           rasterize(docopt_args.at("--rasterize").asBool()),
-          terrain(docopt_args.at("--terrain").asBool())
+          terrain(docopt_args.at("--terrain").asBool()),
+          with_xml(docopt_args.at("--with-xml").asBool())
     {
         std::cout << "Parsing arguments... " << std::flush;
         std::stringstream sconverter(docopt_args.at("--pixel_size").asString());
@@ -61,6 +63,7 @@ public:
     bool rasterize = false;
     bool terrain = false;
     double pixel_size = 1;
+    bool with_xml = false;
 };
 
 inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
@@ -74,7 +77,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Sum projections: " << arguments.sum_projections << std::endl
        << "  Save Labels: " << arguments.labels << std::endl
        << "  Rasterize: " << arguments.rasterize << std::endl
-       << "  Terrain: " << arguments.terrain << std::endl
+       << "  Taking care of terrain: " << arguments.terrain << std::endl
        << "  Pixel size: " << arguments.pixel_size << std::endl;
     return os;
 }
@@ -94,43 +97,52 @@ int main(int argc, const char** argv)
         );
         std::cout << std::boolalpha << arguments << std::endl;
 
-        boost::filesystem::path root(arguments.input_path.parent_path());
+        boost::filesystem::path data_directory(arguments.input_path.parent_path());
 
         std::cout << "Parsing scene tree... " << std::flush;
-        urban::scene::Scene scene(
-            urban::io::FileHandler<tinyxml2::XMLDocument>(
-                boost::filesystem::path(root / (arguments.input_path.stem().string() + ".XML"))
+        urban::scene::Scene scene;
+        
+        if(arguments.with_xml)
+            scene = urban::io::FileHandler<tinyxml2::XMLDocument>(
+                    boost::filesystem::path(data_directory / (arguments.input_path.stem().string() + ".XML"))
             ).read(
                 urban::io::FileHandler<Lib3dsFile>(
                     arguments.input_path,
                     std::map<std::string,bool>{{"read", true}}
                 )
-            )
-        );
+            );
+        else
+        {
+            scene = urban::scene::Scene(
+                urban::io::FileHandler<Lib3dsFile>(
+                    arguments.input_path,
+                    std::map<std::string,bool>{{"read", true}}
+                )
+            );
+        }
         if(arguments.prune)
-            urban::prune(scene);
+            urban::prune(scene, arguments.terrain);
         
         if(arguments.buildings)
-            urban::save_scene(root, scene);
+            urban::save_scene(data_directory, scene);
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.graphs)
-            urban::save_building_duals(root, scene);
+            urban::save_building_duals(data_directory, scene);
         
         if(arguments.sum_projections || arguments.save_projections)
         {
             auto projections = urban::orthoproject(scene, arguments.terrain);
-            
             if(arguments.sum_projections)
-                urban::save_scene_prints(root, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
+                urban::save_scene_prints(data_directory, arguments.input_path.stem().string(), projections, arguments.rasterize, arguments.pixel_size);
                     
             if(arguments.save_projections)
             {
-                urban::save_building_prints(root, projections, arguments.labels);
+                urban::save_building_prints(data_directory, projections, arguments.labels);
                 if(arguments.rasterize)
                 {
                     auto raster_projections = urban::rasterize_scene(projections, arguments.pixel_size);
-                    urban::save_building_rasters(root, raster_projections);
+                    urban::save_building_rasters(data_directory, raster_projections);
                 }
             }            
         }
