@@ -35,16 +35,18 @@ namespace urban
             for(auto const& node: nodes)
             {
                 auto meshes = mesh_file.get_mesh_by_type(node, std::set<char>{'T', 'F', 'M'});
-                buildings.push_back(
-                    UNode(
-                        node,
-                        pivot,
-                        epsg_index,
-                        meshes['T'] + meshes['F']
-                    )
-                );
+                auto mesh = meshes['T'] + meshes['F'];
+                if(mesh != shadow::Mesh())
+                    buildings.push_back(
+                        UNode(
+                            node,
+                            pivot,
+                            epsg_index,
+                            mesh
+                        )
+                    );
                 _terrain += meshes['M'];
-                if(meshes['M'] == shadow::Mesh())
+                if(meshes['M'] != shadow::Mesh())
                     terrain_id += node;
             }
             terrain = UNode(terrain_id, pivot, epsg_index, _terrain);
