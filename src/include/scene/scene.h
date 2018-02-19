@@ -23,6 +23,8 @@ namespace urban
              * @see ~Scene(void);
              */
             Scene(void);
+            Scene(std::size_t const& level, io::FileHandler<Lib3dsFile> const& mesh_file);
+            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, io::FileHandler<Lib3dsFile> const& mesh_file);
             Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id, io::FileHandler<Lib3dsFile> const& mesh_file);
             /**
              * Copy Constructor.
