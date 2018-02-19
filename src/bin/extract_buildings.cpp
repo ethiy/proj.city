@@ -92,7 +92,7 @@ int main(int argc, const char** argv)
         std::cout << "Done." << std::flush << std::endl;
 
         if(arguments.prune)
-            urban::prune(scene);
+            urban::prune(scene, arguments.terrain);
         
         urban::save_scene(data_directory, scene);
     }
