@@ -26,8 +26,8 @@ namespace urban
 
             terrain = UNode(terrain_id, _p, epsg_index, std::set<char>{'M'}, mesh_file);
         }
-        Scene::Scene(io::FileHandler<Lib3dsFile> const& mesh_file)
-            :pivot(shadow::Point()), centered(false), epsg_index(2154)
+        Scene::Scene(io::FileHandler<Lib3dsFile> const& mesh_file, urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index)
+            :pivot(_pivot), centered(_centered), epsg_index(_epsg_index)
         {
             auto nodes = mesh_file.get_nodes(1);
             shadow::Mesh _terrain;

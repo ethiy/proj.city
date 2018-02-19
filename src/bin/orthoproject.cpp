@@ -113,12 +113,32 @@ int main(int argc, const char** argv)
             );
         else
         {
-            scene = urban::scene::Scene(
-                urban::io::FileHandler<Lib3dsFile>(
-                    arguments.input_path,
-                    std::map<std::string,bool>{{"read", true}}
-                )
-            );
+            try
+            {
+                urban::io::FileHandler<tinyxml2::XMLDocument> auxilary_file(
+                    boost::filesystem::path(data_directory / (arguments.input_path.stem().string() + ".XML"))
+                );
+                bool centered = false;
+                scene = urban::scene::Scene(
+                    urban::io::FileHandler<Lib3dsFile>(
+                        arguments.input_path,
+                        std::map<std::string,bool>{{"read", true}}
+                    ),
+                    auxilary_file.pivot(centered),
+                    centered,
+                    auxilary_file.epsg_index()
+                );
+            }
+            catch(std::runtime_error const& err)
+            {
+                scene = urban::scene::Scene(
+                    urban::io::FileHandler<Lib3dsFile>(
+                        arguments.input_path,
+                        std::map<std::string,bool>{{"read", true}}
+                    )
+                );
+            }
+
         }
         if(arguments.prune)
             urban::prune(scene, arguments.terrain);
