@@ -37,8 +37,8 @@ namespace urban
              surface(std::move(other.surface)),
              bounding_box(std::move(other.bounding_box))
         {}
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, io::FileHandler<Lib3dsFile> const& mesh_file)
-            : UNode(building_id, _reference_point, _epsg_index, mesh_file.read_and_stitch(building_id))
+        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::set<char> const& types, io::FileHandler<Lib3dsFile> const& mesh_file)
+            :UNode(building_id, _reference_point, _epsg_index, mesh_file.read(building_id, types))
         {}
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
@@ -48,7 +48,7 @@ namespace urban
 
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
-            if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
+            if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);

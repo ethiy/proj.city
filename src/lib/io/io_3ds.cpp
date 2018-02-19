@@ -49,55 +49,6 @@ namespace urban
         }
 
 
-        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(std::string const& node_name) const
-        {
-            std::ostringstream error_message;
-            std::vector<urban::shadow::Mesh> meshes;
-            
-            if (modes.at("read"))
-            {
-                Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
-                node_meshes(p_node, meshes);
-            }
-            else
-            {
-                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
-                boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                throw boost::filesystem::filesystem_error(error_message.str(), ec);
-            }
-            return meshes;
-        }
-
-        shadow::Mesh FileHandler<Lib3dsFile>::read_and_stitch(std::string const& node_name) const
-        {
-            auto meshes = read(node_name);
-
-            return std::accumulate(
-                std::begin(meshes),
-                std::end(meshes),
-                shadow::Mesh()
-            );
-        }
-
-        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_roofs(std::string const& node_name) const
-        {
-            std::ostringstream error_message;
-            std::vector<urban::shadow::Mesh> meshes;
-            
-            if (modes.at("read"))
-            {
-                Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
-                roof_nodes(p_node, meshes);
-            }
-            else
-            {
-                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
-                boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
-                throw boost::filesystem::filesystem_error(error_message.str(), ec);
-            }
-            return meshes;
-        }
-
         std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void) const
         {
             std::ostringstream error_message;
@@ -120,7 +71,21 @@ namespace urban
             }
             return meshes;
         }
-        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_level(std::size_t const level) const
+        shadow::Mesh FileHandler<Lib3dsFile>::read(std::string const& node_name, std::set<char> const& facet_types) const
+        {
+            auto mesh_by_type = get_mesh_by_type(node_name, facet_types);
+
+            return std::accumulate(
+                std::begin(mesh_by_type),
+                std::end(mesh_by_type),
+                shadow::Mesh(),
+                [](shadow::Mesh const& lhs, std::pair<char, shadow::Mesh> const& rhs)
+                {
+                    return lhs + rhs.second;
+                }
+            );
+        }
+        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read(std::size_t const level, std::set<char> const& facet_types) const
         {
             std::vector<std::string> nodes = get_nodes(level);
             std::vector<shadow::Mesh> meshes(nodes.size());
@@ -128,68 +93,44 @@ namespace urban
                 std::begin(nodes),
                 std::end(nodes),
                 std::begin(meshes),
-                [this](std::string const& node)
+                [this, facet_types](std::string const& node)
                 {
-                    return read_and_stitch(node);
+                    return read(node, facet_types);
                 }
             );
             return meshes;
         }
-
-        void FileHandler<Lib3dsFile>::write(std::vector<urban::shadow::Mesh> meshes)
+        std::map<char, std::deque<shadow::Mesh> > FileHandler<Lib3dsFile>::get_meshes(std::string const& node_name, std::set<char> const& facet_types) const
         {
             std::ostringstream error_message;
-
-            if (modes["write"])
+            std::map<char, std::deque<shadow::Mesh> > meshes;
+            
+            if (modes.at("read"))
             {
-                file->meshes = meshes[0].to_3ds();
-                Lib3dsMesh *current = file->meshes;
-                std::for_each(
-                    std::next(std::begin(meshes), 1),
-                    std::end(meshes),
-                    [&current](urban::shadow::Mesh const& mesh) {
-                        current->next = mesh.to_3ds();
-                        current = current->next;
-                    });
-                current = NULL;
-                lib3ds_file_save(file, filepath.string().c_str());
+                Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
+                node_meshes(p_node, meshes, facet_types);
             }
             else
             {
-                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+            return meshes;
         }
-
-        void FileHandler<Lib3dsFile>::node_meshes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const
+        std::map<char, shadow::Mesh> FileHandler<Lib3dsFile>::get_mesh_by_type(std::string const& node_name, std::set<char> const& facet_types) const
         {
-            Lib3dsNode * p_node;
+            auto meshes = get_meshes(node_name, facet_types);
 
-            for(p_node=node->childs; p_node != NULL; p_node = p_node->next)
-                node_meshes(p_node, meshes);
-            
-            Lib3dsMesh * mesh = lib3ds_file_mesh_by_name(file, node->name);
-            if(!mesh)
-                return ;            
+            std::map<char, shadow::Mesh> mesh_by_type;
 
-            meshes.push_back(urban::shadow::Mesh(mesh));
-        }
-        void FileHandler<Lib3dsFile>::roof_nodes(Lib3dsNode * node, std::vector<shadow::Mesh> & meshes) const
-        {
-            node_meshes(node, meshes);
-
-            meshes.erase(
-                std::remove_if(
-                    std::begin(meshes),
-                    std::end(meshes),
-                    [](shadow::Mesh const& mesh)
-                    {
-                        return mesh.get_name().at(0) != 'T';
-                    }
-                ),
-                std::end(meshes)
-            );
+            for(auto const& pair_tm : meshes)
+                mesh_by_type[pair_tm.first] = std::accumulate(
+                    std::begin(pair_tm.second),
+                    std::end(pair_tm.second),
+                    shadow::Mesh()
+                );
+            return mesh_by_type;
         }
         std::vector<std::string> FileHandler<Lib3dsFile>::get_nodes(std::size_t const level) const
         {
@@ -218,6 +159,48 @@ namespace urban
                     }
                 );
             return nodes;
+        }
+
+
+        void FileHandler<Lib3dsFile>::write(std::vector<urban::shadow::Mesh> meshes)
+        {
+            std::ostringstream error_message;
+
+            if (modes["write"])
+            {
+                file->meshes = meshes[0].to_3ds();
+                Lib3dsMesh *current = file->meshes;
+                std::for_each(
+                    std::next(std::begin(meshes), 1),
+                    std::end(meshes),
+                    [&current](urban::shadow::Mesh const& mesh) {
+                        current->next = mesh.to_3ds();
+                        current = current->next;
+                    });
+                current = NULL;
+                lib3ds_file_save(file, filepath.string().c_str());
+            }
+            else
+            {
+                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
+            }
+        }
+
+        void FileHandler<Lib3dsFile>::node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types) const
+        {
+            Lib3dsNode * p_node;
+
+            for(p_node=node->childs; p_node != NULL; p_node = p_node->next)
+                node_meshes(p_node, meshes, facet_types);
+            
+            Lib3dsMesh * mesh = lib3ds_file_mesh_by_name(file, node->name);
+            auto type = mesh? facet_types.find(mesh->name[0]): std::end(facet_types);
+            if(!mesh || type == std::end(facet_types) ) 
+                return ;
+
+            meshes[*type].push_back(urban::shadow::Mesh(mesh));
         }
     }
 }

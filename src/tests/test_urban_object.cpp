@@ -19,7 +19,7 @@ SCENARIO("Urban Node manipulation:")
 
         WHEN("the \"buildings\" are read into unodes")
         {
-            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0,  test_file);
+            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0, std::set<char>{'S'}, test_file);
 
             THEN("the output checks")
             {
@@ -33,7 +33,7 @@ SCENARIO("Urban Node manipulation:")
         }
         WHEN("the \"buildings\" are read into unodes and stitched")
         {
-            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0,  test_file);
+            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0, std::set<char>{'S'}, test_file);
 
             THEN("the output checks")
             {

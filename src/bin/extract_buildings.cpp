@@ -10,13 +10,14 @@ static const char USAGE[]=
 R"(extract_buildings.
 
     Usage:
-      extract_buildings <scene> [--prune --with-xml]
+      extract_buildings <scene> [--prune --with-xml --terrain]
       extract_buildings (-h | --help)
       extract_buildings --version
     Options:
       -h --help             Show this screen.
       --version             Show version.
       --prune               Prune building faces.
+      --terrain             Taking care of terrain.
       --with-xml            Read using the XML scene description
 )";
 
@@ -26,6 +27,7 @@ public:
     Arguments(std::map<std::string, docopt::value> const& docopt_args)
         : input_path(docopt_args.at("<scene>").asString()),
           prune(docopt_args.at("--prune").asBool()),
+          terrain(docopt_args.at("--terrain").asBool()),
           with_xml(docopt_args.at("--with-xml").asBool())
     {}
     ~Arguments(void)
@@ -33,6 +35,7 @@ public:
 
     boost::filesystem::path input_path;
     bool prune = false;
+    bool terrain = false;
     bool with_xml = false;
 };
 
@@ -41,6 +44,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
     os << "Arguments:" << std::endl
        << "  Input path: " << arguments.input_path << std::endl
        << "  Prune faces: " << arguments.prune << std::endl
+       << "  Taking care of terrain: " << arguments.terrain << std::endl
        << "  With Xml scene description: " << arguments.with_xml << std::endl;
     return os;
 }
@@ -78,7 +82,6 @@ int main(int argc, const char** argv)
         else
         {
             scene = urban::scene::Scene(
-                1,
                 urban::io::FileHandler<Lib3dsFile>(
                     arguments.input_path,
                     std::map<std::string,bool>{{"read", true}}
