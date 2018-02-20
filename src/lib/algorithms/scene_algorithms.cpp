@@ -2,9 +2,56 @@
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 #include <io/io_gdal.h>
+#include <io/io_3ds.h>
+#include <io/io_scene.h>
 
 namespace urban
 {
+    scene::Scene load_3ds_scene(boost::filesystem::path const& input_path, bool const with_xml)
+    {
+        scene::Scene scene;
+        boost::filesystem::path data_directory(input_path.parent_path());
+        urban::io::FileHandler<tinyxml2::XMLDocument> auxilary_file(
+            boost::filesystem::path(
+                data_directory / (input_path.stem().string() + ".XML")
+            )
+        );
+        if(with_xml)
+            scene = auxilary_file.read(
+                urban::io::FileHandler<Lib3dsFile>(
+                    input_path,
+                    std::map<std::string,bool>{{"read", true}}
+                )
+            );
+        else
+        {
+            try
+            {
+                bool centered = false;
+                scene = urban::scene::Scene(
+                    urban::io::FileHandler<Lib3dsFile>(
+                        input_path,
+                        std::map<std::string,bool>{{"read", true}}
+                    ),
+                    auxilary_file.pivot(centered),
+                    centered,
+                    auxilary_file.epsg_index()
+                );
+            }
+            catch(std::runtime_error const& err)
+            {
+                scene = urban::scene::Scene(
+                    urban::io::FileHandler<Lib3dsFile>(
+                        input_path,
+                        std::map<std::string,bool>{{"read", true}}
+                    )
+                );
+            }
+
+        }
+        return scene;
+    }
+
     void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
         boost::filesystem::path buildings_dir(root_path / "buildings");
