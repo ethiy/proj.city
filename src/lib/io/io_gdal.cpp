@@ -10,6 +10,7 @@ namespace urban
     namespace io
     {
         const std::vector<std::string> FileHandler<GDALDriver>::tested_formats{{"ESRI Shapefile", "GeoJSON", "GML", "KML", "GTiff"}};
+        
         FileHandler<GDALDriver>::FileHandler(GdalFormat const& format, boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes)
             : driver_name(tested_formats.at(format)), filepath(_filepath), modes(_modes)
         {
