@@ -43,7 +43,7 @@ namespace urban
             bool raster = false;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
-            static const std::vector<std::string> tested_formats;
+            static const std::vector<std::string> supported_formats;
         };
         
         template<>
