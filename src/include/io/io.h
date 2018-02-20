@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 namespace urban
 {
     /** @defgroup io Input/Output Structures
@@ -21,5 +24,9 @@ namespace urban
          */
         template<class structure>
         class FileHandler;
+
+        extern const std::vector<std::string> supported_scene_formats;
+
+        std::string format(std::string const& input_format);
     }
 }
