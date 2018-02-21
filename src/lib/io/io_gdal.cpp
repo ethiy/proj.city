@@ -10,6 +10,7 @@ namespace urban
     namespace io
     {
         const std::vector<std::string> FileHandler<GDALDriver>::supported_formats{{"ESRI Shapefile", "GeoJSON", "GML", "KML", "GTiff"}};
+        const std::vector<std::string> FileHandler<GDALDriver>::supported_extentions{{".shp", ".geojson", ".gml", ".kml", ".tiff"}};
 
         FileHandler<GDALDriver>::FileHandler(GdalFormat const& format, boost::filesystem::path const& _filepath, const std::map<std::string, bool> & _modes)
             : driver_name(supported_formats.at(format)), filepath(_filepath), modes(_modes)
@@ -209,6 +210,24 @@ namespace urban
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+        }
+
+
+        GdalFormat FileHandler<GDALDriver>::format(std::string const& output_format)
+        {
+            auto found = std::find(
+                std::begin(supported_formats),
+                std::end(supported_formats),
+                output_format
+            );
+            if(found == std::end(supported_formats))
+                throw std::runtime_error("Input format not supported!");
+            else
+                return static_cast<GdalFormat>(std::distance(std::begin(supported_formats), found));
+        }
+        std::string FileHandler<GDALDriver>::extension(GdalFormat const format)
+        {
+            return supported_extentions.at(format);
         }
     }
 }

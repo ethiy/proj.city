@@ -168,7 +168,7 @@ int main(int argc, const char** argv)
         {
             auto projections = urban::orthoproject(scene, arguments.scene_args.terrain);
 
-            urban::save_building_prints(data_directory, projections, arguments.save_args.labels);
+            urban::save_building_prints(data_directory, projections, arguments.save_args.projection_format, arguments.save_args.labels);
 
             if(arguments.save_args.scene)
                 urban::save_scene_prints(

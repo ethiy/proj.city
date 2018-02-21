@@ -87,16 +87,17 @@ namespace urban
         }
         std::cout << " Done." << std::flush << std::endl;
     }
-    void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, bool const labels)
+    void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, std::string const& output_format, bool const labels)
     {
         std::cout << "Saving vector projections... " << std::flush;
         boost::filesystem::path vector_dir(root_path / "vectors");
         boost::filesystem::create_directory(vector_dir);
+        auto format = io::FileHandler<GDALDriver>::format(output_format);
         for(auto const& projection : projections)
         {
             io::FileHandler<GDALDriver>(
-                io::GdalFormat::gml,
-                boost::filesystem::path(vector_dir / (projection.get_name() + ".gml")),
+                format,
+                boost::filesystem::path(vector_dir / (projection.get_name() + io::FileHandler<GDALDriver>::extension(format))),
                 std::map<std::string,bool>{{"write", true}}
             ).write(projection);
 
