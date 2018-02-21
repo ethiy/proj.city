@@ -4,6 +4,7 @@
 
 #include <shadow/mesh.h>
 
+#include <io/io.h>
 #include <io/io_off.h>
 #include <io/io_gdal.h>
 #include <io/io_3ds.h>

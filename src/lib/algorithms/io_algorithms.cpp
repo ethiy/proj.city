@@ -24,18 +24,18 @@ namespace urban
 
         return str2pt(buffer);
     }
-    shadow::Point str2pt(std::vector<double> const& coordinates)
+    shadow::Point str2pt(std::vector<double> & coordinates)
     {
         shadow::Point point;
 
          switch(coordinates.size())
         {
             case 3: 
-                shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
+                point = shadow::Point(coordinates.data());
                 break;
             case 4:
                 static_cast<bool>(coordinates[4])
-                    ? shadow::Point(coordinates[0] / coordinates[4], coordinates[1] / coordinates[4], coordinates[2] / coordinates[4])
+                    ? point = shadow::Point(coordinates[0] / coordinates[4], coordinates[1] / coordinates[4], coordinates[2] / coordinates[4])
                     : throw std::logic_error("Not implemented in this scope!");
                 break;
             default:

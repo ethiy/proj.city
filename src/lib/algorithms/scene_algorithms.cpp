@@ -2,9 +2,56 @@
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 #include <io/io_gdal.h>
+#include <io/io_3ds.h>
+#include <io/io_scene.h>
 
 namespace urban
 {
+    scene::Scene load_3ds_scene(boost::filesystem::path const& input_path, bool const with_xml)
+    {
+        scene::Scene scene;
+        boost::filesystem::path data_directory(input_path.parent_path());
+        urban::io::FileHandler<tinyxml2::XMLDocument> auxilary_file(
+            boost::filesystem::path(
+                data_directory / (input_path.stem().string() + ".XML")
+            )
+        );
+        if(with_xml)
+            scene = auxilary_file.read(
+                urban::io::FileHandler<Lib3dsFile>(
+                    input_path,
+                    std::map<std::string,bool>{{"read", true}}
+                )
+            );
+        else
+        {
+            try
+            {
+                bool centered = false;
+                scene = urban::scene::Scene(
+                    urban::io::FileHandler<Lib3dsFile>(
+                        input_path,
+                        std::map<std::string,bool>{{"read", true}}
+                    ),
+                    auxilary_file.pivot(centered),
+                    centered,
+                    auxilary_file.epsg_index()
+                );
+            }
+            catch(std::runtime_error const& err)
+            {
+                scene = urban::scene::Scene(
+                    urban::io::FileHandler<Lib3dsFile>(
+                        input_path,
+                        std::map<std::string,bool>{{"read", true}}
+                    )
+                );
+            }
+
+        }
+        return scene;
+    }
+
     void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
         boost::filesystem::path buildings_dir(root_path / "buildings");
@@ -40,16 +87,17 @@ namespace urban
         }
         std::cout << " Done." << std::flush << std::endl;
     }
-    void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, bool const labels)
+    void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, std::string const& output_format, bool const labels)
     {
         std::cout << "Saving vector projections... " << std::flush;
         boost::filesystem::path vector_dir(root_path / "vectors");
         boost::filesystem::create_directory(vector_dir);
+        auto format = io::FileHandler<GDALDriver>::format(output_format);
         for(auto const& projection : projections)
         {
             io::FileHandler<GDALDriver>(
-                io::GdalFormat::gml,
-                boost::filesystem::path(vector_dir / (projection.get_name() + ".gml")),
+                format,
+                boost::filesystem::path(vector_dir / (projection.get_name() + io::FileHandler<GDALDriver>::extension(format))),
                 std::map<std::string,bool>{{"write", true}}
             ).write(projection);
 

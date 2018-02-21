@@ -1,54 +1,24 @@
 FROM ubuntu:16.04
 
-RUN apt-get -y update
-RUN apt-get -y upgrade
-
-RUN apt-get install -y software-properties-common
-
-RUN apt-get install -y build-essential
+RUN apt -y update && apt -y upgrade && apt install -y software-properties-common
 
 RUN add-apt-repository -y ppa:ubuntugis/ppa
-RUN apt-get -y update
-RUN apt-get -y upgrade
+RUN apt -y update && apt -y upgrade
+
+RUN apt install -y build-essential gcc-5-base libgcc-5-dev g++ clang libboost-all-dev
+
+RUN apt install -y cmake wget git
             
-RUN apt-get install -y \
-            gcc-5-base\
-            libgcc-5-dev\
-            g++
+RUN apt install -y libkml-dev libgdal-dev
 
-RUN apt-get install -y clang
-
-RUN apt-get install -y \
-            cmake\
-            git\
-            wget
-
-RUN apt-get install -y libboost-all-dev
-            
-RUN apt-get install -y \
-            libkml-dev\
-            libgdal-dev
-
-RUN apt-get install -y \
-            libgmp-dev\
-            libmpfr-dev\
-            libmpfrc++-dev
-
-RUN apt-get install -y \
-            lib3ds-dev\
-            libtinyxml2-dev
+RUN apt install -y libgmp-dev libmpfr-dev libmpfrc++-dev lib3ds-dev libtinyxml2-dev
 
 WORKDIR /home
-RUN wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
-RUN mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1
-WORKDIR CGAL-4.10
-RUN mkdir build
-WORKDIR build
-RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-RUN make -j `nproc` install && make install_FindCGAL
-WORKDIR /home
-RUN git clone https://github.com/ethiy/proj.city.git
-WORKDIR proj.city/
-RUN git checkout dev
-RUN mkdir build && mkdir build/xenial
-WORKDIR build/xenial
+RUN wget https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz && mkdir -p CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1 && mkdir -p CGAL-4.10/build
+WORKDIR CGAL-4.10/build
+RUN cmake .. -DCMAKE_INSTALL_PREFIX=/usr && make -j `nproc` install && make install_FindCGAL
+
+RUN mkdir -p /home/proj.city
+COPY . /home/proj.city
+RUN mkdir -p /home/proj.city/build && mkdir -p /home/proj.city/build/xenial
+WORKDIR /home/proj.city/build/xenial

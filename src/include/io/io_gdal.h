@@ -38,12 +38,16 @@ namespace urban
 
             void write(projection::FootPrint const& brick_projection, bool labels = false) const;
             void write(projection::RasterPrint const& raster_image) const;
+
+            static GdalFormat format(std::string const& output_format);
+            static std::string extension(GdalFormat const format);
         private:
             std::string driver_name;
             bool raster = false;
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
-            static const std::vector<std::string> tested_formats;
+            static const std::vector<std::string> supported_formats;
+            static const std::vector<std::string> supported_extentions;
         };
         
         template<>

@@ -32,6 +32,9 @@ set(IO_SRC
     "${proj.city_SOURCE_DIR}/src/lib/io/io_obj.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_gdal.cpp"
 )
+set(URBAN_SRC
+    "${proj.city_SOURCE_DIR}/src/lib/urban.cpp"
+)
 
 # Shadow
 add_library(urban_shadow ${Shadow_SRC})
@@ -54,6 +57,6 @@ add_library(urban_io ${IO_SRC})
 target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
 
 # urban
-add_library(urban SHARED)
+add_library(urban SHARED ${URBAN_SRC})
 link_directories(urban ${LIBS_DIRS})
 target_link_libraries(urban urban_shadow urban_io urban_scene urban_projection urban_algorithms ${LIBS})
