@@ -16,23 +16,16 @@ namespace urban
                 data_directory / (input_path.stem().string() + ".XML")
             )
         );
+        urban::io::FileHandler<Lib3dsFile> file_3ds(input_path, std::map<std::string,bool>{{"read", true}});
         if(with_xml)
-            scene = auxilary_file.read(
-                urban::io::FileHandler<Lib3dsFile>(
-                    input_path,
-                    std::map<std::string,bool>{{"read", true}}
-                )
-            );
+            scene = auxilary_file.read(file_3ds);
         else
         {
             try
             {
                 bool centered = false;
                 scene = urban::scene::Scene(
-                    urban::io::FileHandler<Lib3dsFile>(
-                        input_path,
-                        std::map<std::string,bool>{{"read", true}}
-                    ),
+                    file_3ds,
                     auxilary_file.pivot(centered),
                     centered,
                     auxilary_file.epsg_index()
@@ -40,12 +33,7 @@ namespace urban
             }
             catch(std::runtime_error const& err)
             {
-                scene = urban::scene::Scene(
-                    urban::io::FileHandler<Lib3dsFile>(
-                        input_path,
-                        std::map<std::string,bool>{{"read", true}}
-                    )
-                );
+                scene = urban::scene::Scene(file_3ds);
             }
 
         }

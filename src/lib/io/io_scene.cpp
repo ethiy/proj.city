@@ -80,6 +80,7 @@ namespace urban
                 shadow::Bbox _bbox = bbox();
                 x_offset = (_bbox.xmax() + _bbox.xmin()) / 2.;
                 y_offset = (_bbox.ymax() + _bbox.ymin()) / 2.;
+                z_offset = (_bbox.zmax() + _bbox.zmin()) / 2.;
             }
             
             return urban::shadow::Point(x_offset, y_offset, z_offset);

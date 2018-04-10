@@ -12,19 +12,17 @@ namespace urban
         Scene::Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id, io::FileHandler<Lib3dsFile> const& mesh_file)
             :pivot(_pivot), centered(_centered), epsg_index(_epsg_index), buildings(building_ids.size())
         {
-            auto _p = centered ? pivot : urban::shadow::Point();
-
             std::transform(
                 std::begin(building_ids),
                 std::end(building_ids),
                 std::begin(buildings),
-                [&mesh_file, &_p, this](std::string const& building_id)
+                [&mesh_file, this](std::string const& building_id)
                 {
-                    return UNode(building_id, _p, epsg_index, std::set<char>{'T', 'F'}, mesh_file);
+                    return UNode(building_id, pivot, epsg_index, std::set<char>{'T', 'F'}, mesh_file);
                 }
             );
 
-            terrain = UNode(terrain_id, _p, epsg_index, std::set<char>{'M'}, mesh_file);
+            terrain = UNode(terrain_id, pivot, epsg_index, std::set<char>{'M'}, mesh_file);
         }
         Scene::Scene(io::FileHandler<Lib3dsFile> const& mesh_file, urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index)
             :pivot(_pivot), centered(_centered), epsg_index(_epsg_index)

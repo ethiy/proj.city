@@ -21,7 +21,7 @@ In order to build this project you need first to check for these dependencies:
 | Library               | Version       |
 | --------------------- |:-------------:|
 | `boost`               | > `v1.58.0`   |
-| `CGAL`                | > `v4.10`    |
+| `CGAL`                | > `v4.10`     |
 | `Gdal`                | = `v2.1.x`    |
 | `lib3ds`              | = `v1.3.0`    |
 | `tinyXML2`            | > `v2.6.0`    |
