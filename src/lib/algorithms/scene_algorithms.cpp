@@ -10,31 +10,25 @@ namespace urban
     scene::Scene load_3ds_scene(boost::filesystem::path const& input_path, bool const with_xml)
     {
         scene::Scene scene;
-        boost::filesystem::path data_directory(input_path.parent_path());
-        urban::io::FileHandler<tinyxml2::XMLDocument> auxilary_file(
-            boost::filesystem::path(
-                data_directory / (input_path.stem().string() + ".XML")
-            )
-        );
         urban::io::FileHandler<Lib3dsFile> file_3ds(input_path, std::map<std::string,bool>{{"read", true}});
-        if(with_xml)
-            scene = auxilary_file.read(file_3ds);
-        else
+        try
         {
-            try
-            {
+            boost::filesystem::path data_directory(input_path.parent_path());
+            urban::io::FileHandler<tinyxml2::XMLDocument> auxilary_file(boost::filesystem::path(data_directory / (input_path.stem().string() + ".XML")));
+            if(with_xml)
+                scene = auxilary_file.read(file_3ds);
+            else
                 scene = urban::scene::Scene(
                     file_3ds,
                     auxilary_file.pivot(),
                     auxilary_file.epsg_index()
                 );
-            }
-            catch(std::runtime_error const& err)
-            {
-                scene = urban::scene::Scene(file_3ds);
-            }
-
         }
+        catch(std::runtime_error const& err)
+        {
+            scene = urban::scene::Scene(file_3ds);
+        }
+
         return scene;
     }
 
