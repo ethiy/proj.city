@@ -23,11 +23,9 @@ namespace urban
         {
             try
             {
-                bool centered = false;
                 scene = urban::scene::Scene(
                     file_3ds,
-                    auxilary_file.pivot(centered),
-                    centered,
+                    auxilary_file.pivot(),
                     auxilary_file.epsg_index()
                 );
             }

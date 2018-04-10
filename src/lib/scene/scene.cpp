@@ -9,8 +9,14 @@ namespace urban
     {
         Scene::Scene(void)
         {}
-        Scene::Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id, io::FileHandler<Lib3dsFile> const& mesh_file)
-            :pivot(_pivot), centered(_centered), epsg_index(_epsg_index), buildings(building_ids.size())
+        Scene::Scene(
+            io::FileHandler<Lib3dsFile> const& mesh_file,
+            urban::shadow::Point const& _pivot,
+            unsigned short _epsg_index,
+            std::vector<std::string> const& building_ids,
+            std::string const& terrain_id
+        )
+            :pivot(_pivot), epsg_index(_epsg_index), buildings(building_ids.size())
         {
             std::transform(
                 std::begin(building_ids),
@@ -24,8 +30,8 @@ namespace urban
 
             terrain = UNode(terrain_id, pivot, epsg_index, std::set<char>{'M'}, mesh_file);
         }
-        Scene::Scene(io::FileHandler<Lib3dsFile> const& mesh_file, urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index)
-            :pivot(_pivot), centered(_centered), epsg_index(_epsg_index)
+        Scene::Scene(io::FileHandler<Lib3dsFile> const& mesh_file, urban::shadow::Point const& _pivot, unsigned short _epsg_index)
+            :pivot(_pivot), epsg_index(_epsg_index)
         {
             auto nodes = mesh_file.get_nodes(1);
             shadow::Mesh _terrain;
@@ -50,10 +56,10 @@ namespace urban
             terrain = UNode(terrain_id, pivot, epsg_index, _terrain);
         }
         Scene::Scene(Scene const& other)
-            :pivot(other.pivot), centered(other.centered), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
+            :pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}
         Scene::Scene(Scene && other)
-            :pivot(std::move(other.pivot)), centered(std::move(other.centered)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(terrain))
+            :pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(terrain))
         {}
         Scene::~Scene(void)
         {}
@@ -62,7 +68,6 @@ namespace urban
         {
             using std::swap;
             swap(pivot, other.pivot);
-            swap(centered, other.centered);
             swap(epsg_index, other.epsg_index);
             swap(buildings, other.buildings);
             swap(terrain, other.terrain);
@@ -71,7 +76,6 @@ namespace urban
         Scene & Scene::operator =(Scene const& other)
         {
             pivot = other.pivot;
-            centered = other.centered;
             epsg_index = other.epsg_index;
             buildings = other.buildings;
             terrain = other.terrain;
@@ -81,7 +85,6 @@ namespace urban
         Scene & Scene::operator =(Scene && other)
         {
             pivot= std::move(other.pivot);
-            centered= std::move(other.centered);
             epsg_index= std::move(other.epsg_index);
             buildings= std::move(other.buildings);
             terrain= std::move(other.terrain);

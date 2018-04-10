@@ -21,7 +21,7 @@ namespace urban
             ~FileHandler(void);
             
 
-            shadow::Point pivot(bool & centered) const;
+            shadow::Point pivot(void) const;
             shadow::Bbox bbox(void) const;
             unsigned short epsg_index(void) const;
             std::vector<std::string> building_ids(void) const;

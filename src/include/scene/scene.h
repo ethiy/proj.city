@@ -23,8 +23,18 @@ namespace urban
              * @see ~Scene(void);
              */
             Scene(void);
-            Scene(io::FileHandler<Lib3dsFile> const& mesh_file, urban::shadow::Point const& _pivot = shadow::Point(), bool _centered = false, unsigned short _epsg_index=2154);
-            Scene(urban::shadow::Point const& _pivot, bool _centered, unsigned short _epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id, io::FileHandler<Lib3dsFile> const& mesh_file);
+            Scene(
+                io::FileHandler<Lib3dsFile> const& mesh_file,
+                urban::shadow::Point const& _pivot = shadow::Point(),
+                unsigned short _epsg_index=2154
+            );
+            Scene(
+                io::FileHandler<Lib3dsFile> const& mesh_file,
+                urban::shadow::Point const& _pivot,
+                unsigned short _epsg_index,
+                std::vector<std::string> const& building_ids,
+                std::string const& terrain_id
+            );
             /**
              * Copy Constructor.
              * @param other Scene to copy
@@ -107,8 +117,6 @@ namespace urban
         private:
             /** Pivot */
             urban::shadow::Point pivot;
-            /** Centered */
-            bool centered = true;
             /** EPSG projection system code */
             unsigned short epsg_index = 2154;
             /** Scene Buildings */

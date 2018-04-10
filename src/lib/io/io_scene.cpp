@@ -20,9 +20,7 @@ namespace urban
 
         scene::Scene FileHandler<tinyxml2::XMLDocument>::read(FileHandler<Lib3dsFile> const& mesh_file) const
         {
-            bool centered = true;
-            shadow::Point reference = pivot(centered);
-            return scene::Scene(reference, centered, epsg_index(), building_ids(), terrain_id(), mesh_file);
+            return scene::Scene(mesh_file, pivot(), epsg_index(), building_ids(), terrain_id());
         }
 
         shadow::Bbox FileHandler<tinyxml2::XMLDocument>::bbox(void) const
@@ -55,9 +53,8 @@ namespace urban
             
             return shadow::Bbox(x_min, x_max, y_min, y_max, z_min, z_max);
         }
-        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(bool & centered) const
+        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(void) const
         {
-            centered = true;
             double  x_offset(0),
                     y_offset(0),
                     z_offset(0);
@@ -76,7 +73,6 @@ namespace urban
             }
             else
             {
-                centered = false;
                 shadow::Bbox _bbox = bbox();
                 x_offset = (_bbox.xmax() + _bbox.xmin()) / 2.;
                 y_offset = (_bbox.ymax() + _bbox.ymin()) / 2.;
