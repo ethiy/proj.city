@@ -5,11 +5,12 @@
 #include <CGAL/Polygon_mesh_processing/orientation.h>
 #include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 #include <CGAL/Polygon_mesh_processing/bbox.h>
-#include <CGAL/IO/Polyhedron_iostream.h>
+#include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
 
+#include <CGAL/IO/Polyhedron_iostream.h>
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Polyhedron_geomview_ostream.h>
 #endif // CGAL_USE_GEOMVIEW
@@ -46,10 +47,34 @@ namespace urban
             std::vector<Point_3> points = mesh.get_cgal_points();
             std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
 
+            // std::vector< shadow::Face > patch;
+            // patch.reserve(points.size());
+            // CGAL::Polygon_mesh_processing::triangulate_hole_polyline(points, std::back_inserter(patch));
+            // // polygons.insert(std::end(polygons), std:begin());
+            // for(std::size_t i = 0; i < patch.size(); ++i)
+            //     std::cout << "Triangle " << i << ": " << patch[i][0] << " " << patch[i][1] << " " << patch[i][2] << std::endl;
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+
+            // CGAL::Polygon_mesh_processing::stitch_borders(surface);
+
+            std::vector<Polyhedron::Facet_handle>  patch_facets;
+            for(auto it = surface.halfedges_begin(); it != surface.halfedges_end(); ++it)
+                if(it->is_border())
+                    CGAL::Polygon_mesh_processing::triangulate_hole(surface, it, std::back_inserter(patch_facets));
+
+            std::cout << patch_facets.size() << std::endl;
+
+            Nef_Polyhedron N(surface);
+            N.boundary().convert_to_polyhedron(surface);
+
+            std::cout << surface << std::endl;
+
+            std::cout << CGAL::is_closed(surface) << std::endl;
+
             if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
