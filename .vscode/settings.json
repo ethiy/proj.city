@@ -72,5 +72,7 @@
         "cmakeccompilerid.c": "cpp"
     },
     "vsicons.presets.angular": true,
-    "cmake.buildDirectory": "${workspaceRoot}/build/vscode"
+    "cmake.buildDirectory": "${workspaceRoot}/build/vscode",
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    "C_Cpp.errorSquiggles": "Disabled"
 }

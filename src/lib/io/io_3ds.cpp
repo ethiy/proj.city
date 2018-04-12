@@ -162,6 +162,41 @@ namespace urban
         }
 
 
+        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_tmps(std::string const& node_name, std::set<char> const& facet_types) const
+        {
+            auto meshes_by_type = get_meshes(node_name, facet_types);
+            std::vector<shadow::Mesh> meshes(
+                std::accumulate(
+                    std::begin(meshes_by_type),
+                    std::end(meshes_by_type),
+                    std::size_t(0),
+                    [](std::size_t const total, std::pair<char, std::deque<shadow::Mesh> > const& type_meshes)
+                    {
+                        return total + type_meshes.second.size();
+                    }
+                )
+            );
+            for(auto type_meshes : meshes_by_type)
+                meshes.insert(std::end(meshes), std::begin(type_meshes.second), std::end(type_meshes.second));
+            return meshes;
+        }
+        std::vector<std::vector<shadow::Mesh> > FileHandler<Lib3dsFile>::read_tmps(std::size_t const level, std::set<char> const& facet_types) const
+        {
+            std::vector<std::string> nodes = get_nodes(level);
+            std::vector<std::vector<shadow::Mesh> > meshes(nodes.size());
+            std::transform(
+                std::begin(nodes),
+                std::end(nodes),
+                std::begin(meshes),
+                [this, facet_types](std::string const& node)
+                {
+                    return read_tmps(node, facet_types);
+                }
+            );
+            return meshes;
+        }
+
+
         void FileHandler<Lib3dsFile>::write(std::vector<urban::shadow::Mesh> meshes)
         {
             std::ostringstream error_message;

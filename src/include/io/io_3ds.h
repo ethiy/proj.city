@@ -29,6 +29,9 @@ namespace urban
             shadow::Mesh read(std::string const& node_name, std::set<char> const& facet_types) const;
             std::vector<shadow::Mesh> read(std::size_t const level, std::set<char> const& facet_types) const;
 
+            std::vector<shadow::Mesh> read_tmps(std::string const& node_name, std::set<char> const& facet_types) const;
+            std::vector<std::vector<shadow::Mesh> > read_tmps(std::size_t const level, std::set<char> const& facet_types) const;
+
             std::map<char, std::deque<shadow::Mesh> > get_meshes(std::string const& node_name, std::set<char> const& facet_types) const;
             std::map<char, shadow::Mesh> get_mesh_by_type(std::string const& node_name, std::set<char> const& facet_types) const;
             std::vector<std::string> get_nodes(std::size_t const level) const;

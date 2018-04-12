@@ -34,26 +34,36 @@ namespace urban
             :pivot(_pivot), epsg_index(_epsg_index)
         {
             auto nodes = mesh_file.get_nodes(1);
-            shadow::Mesh _terrain;
-            std::string terrain_id("");
-            for(auto const& node: nodes)
-            {
-                auto meshes = mesh_file.get_mesh_by_type(node, std::set<char>{'T', 'F', 'M'});
-                auto mesh = meshes['T'] + meshes['F'];
-                if(mesh != shadow::Mesh())
-                    buildings.push_back(
-                        UNode(
-                            node,
-                            pivot,
-                            epsg_index,
-                            mesh
-                        )
-                    );
-                _terrain += meshes['M'];
-                if(meshes['M'] != shadow::Mesh())
-                    terrain_id += node;
-            }
-            terrain = UNode(terrain_id, pivot, epsg_index, _terrain);
+            buildings.reserve(nodes.size());
+            for(auto const& node : nodes)
+                buildings.push_back(
+                    UNode(
+                        node,
+                        pivot,
+                        epsg_index,
+                        mesh_file.read_tmps(node, std::set<char>{'T', 'F'})
+                    )
+                );
+            // shadow::Mesh _terrain;
+            // std::string terrain_id("");
+            // for(auto const& node: nodes)
+            // {
+            //     auto meshes = mesh_file.get_mesh_by_type(node, std::set<char>{'T', 'F', 'M'});
+            //     auto mesh = meshes['T'] + meshes['F'];
+            //     if(mesh != shadow::Mesh())
+            //         buildings.push_back(
+            //             UNode(
+            //                 node,
+            //                 pivot,
+            //                 epsg_index,
+            //                 mesh
+            //             )
+            //         );
+            //     _terrain += meshes['M'];
+            //     if(meshes['M'] != shadow::Mesh())
+            //         terrain_id += node;
+            // }
+            // terrain = UNode(terrain_id, pivot, epsg_index, _terrain);
         }
         Scene::Scene(Scene const& other)
             :pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
