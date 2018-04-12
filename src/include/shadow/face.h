@@ -101,7 +101,7 @@ namespace urban
              * @see Face(std::vector const& indices);
              * @see ~Face(void);
              */
-            Face(std::size_t first, std::size_t second, std::size_t third, bool orientation);
+            Face(std::size_t first, std::size_t second, std::size_t third, bool orientation=true);
             /** 
              * Destructor.
              * @see Face(void)
