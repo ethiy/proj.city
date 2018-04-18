@@ -140,8 +140,8 @@ namespace urban
             std::size_t l(0);
             for(l = 0; l < level; l++)
                 for(auto const node: p_nodes)
-                    if(node->childs != NULL)
-                        for(q_buffer = node->childs; q_buffer != NULL; q_buffer = q_buffer->next)
+                    if(node->childs != nullptr)
+                        for(q_buffer = node->childs; q_buffer != nullptr; q_buffer = q_buffer->next)
                             childs.push_back(q_buffer);
                 p_nodes = childs;
 
@@ -212,7 +212,7 @@ namespace urban
                         current->next = mesh.to_3ds();
                         current = current->next;
                     });
-                current = NULL;
+                current = nullptr;
                 lib3ds_file_save(file, filepath.string().c_str());
             }
             else
@@ -227,7 +227,7 @@ namespace urban
         {
             Lib3dsNode * p_node;
 
-            for(p_node=node->childs; p_node != NULL; p_node = p_node->next)
+            for(p_node=node->childs; p_node != nullptr; p_node = p_node->next)
                 node_meshes(p_node, meshes, facet_types);
             
             Lib3dsMesh * mesh = lib3ds_file_mesh_by_name(file, node->name);

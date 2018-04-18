@@ -27,7 +27,7 @@ namespace urban
             projection_layer->ResetReading();
 
             OGRFeature* ogr_facet;
-            while((ogr_facet = projection_layer->GetNextFeature()) != NULL)
+            while((ogr_facet = projection_layer->GetNextFeature()) != nullptr)
             {
                 FacePrint facet(ogr_facet, projection_layer->GetLayerDefn());
                 projected_facets.push_back(facet);

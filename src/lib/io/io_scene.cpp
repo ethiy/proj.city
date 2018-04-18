@@ -59,7 +59,7 @@ namespace urban
                     y_offset(0),
                     z_offset(0);
             
-            if(scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot") != NULL)
+            if(scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot") != nullptr)
             {
                 auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
                 if(error != tinyxml2::XML_SUCCESS)
@@ -94,7 +94,7 @@ namespace urban
             std::vector<std::string> ids;
 
             tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("Building");
-            while(p_building != NULL)
+            while(p_building != nullptr)
             {
                 ids.push_back(std::string(p_building->Attribute("Id")));
                 p_building = p_building->NextSiblingElement("Building");

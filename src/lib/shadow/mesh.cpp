@@ -25,7 +25,7 @@ namespace urban
                 lib3ds_mesh->pointL,
                 lib3ds_mesh->pointL + lib3ds_mesh->points,
                 std::begin(points),
-                [this](Lib3dsPoint const& lib3ds_point)
+                [](Lib3dsPoint const& lib3ds_point)
                 {
                     return Point(lib3ds_point);
                 }
@@ -65,7 +65,7 @@ namespace urban
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
                 std::begin(points),
-                [this](Point_3 const& point)
+                [](Point_3 const& point)
                 {
                     return Point(point);
                 }
@@ -312,7 +312,7 @@ namespace urban
                 }
             );
 
-            mesh->next = NULL;
+            mesh->next = nullptr;
 
             return mesh;
         }

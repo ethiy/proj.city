@@ -69,7 +69,7 @@ namespace urban
             :pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}
         Scene::Scene(Scene && other)
-            :pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(terrain))
+            :pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(other.terrain))
         {}
         Scene::~Scene(void)
         {}

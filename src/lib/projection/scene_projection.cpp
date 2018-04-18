@@ -148,9 +148,9 @@ namespace urban
             OGRSpatialReference spatial_reference_system;
             spatial_reference_system.importFromEPSG(epsg_index);
 
-            OGRLayer* projection_layer = file->CreateLayer(name.c_str(), &spatial_reference_system, wkbPolygon, NULL);
+            OGRLayer* projection_layer = file->CreateLayer(name.c_str(), &spatial_reference_system, wkbPolygon, nullptr);
 
-            if(projection_layer == NULL)
+            if(projection_layer == nullptr)
                 throw std::runtime_error("GDAL could not create a projection layer!");
             projection.to_ogr(projection_layer, reference_point, labels);            
         }

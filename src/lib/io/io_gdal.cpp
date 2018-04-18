@@ -47,8 +47,8 @@ namespace urban
                 {
                     if (boost::filesystem::is_regular_file(filepath))
                     {
-                        GDALDataset* file = reinterpret_cast<GDALDataset*>(GDALOpenEx(filepath.string().c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL ));
-                        if(file == NULL)
+                        GDALDataset* file = reinterpret_cast<GDALDataset*>(GDALOpenEx(filepath.string().c_str(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ));
+                        if(file == nullptr)
                         {
                             error_message << "GDAL could not open: " << filepath.string();
                             throw std::runtime_error(error_message.str());
@@ -91,14 +91,14 @@ namespace urban
                 {
                     GDALAllRegister();
                     GDALDriver* driver = GetGDALDriverManager()->GetDriverByName(driver_name.c_str());
-                    if(driver == NULL)
+                    if(driver == nullptr)
                     {
                         error_message << "GDAL could not find a driver for: " << driver_name;
                         throw std::runtime_error(error_message.str());
                     }
 
-                    GDALDataset* file = driver->Create(filepath.string().c_str(), 0, 0, 0, GDT_Unknown, NULL);
-                    if(file==NULL)
+                    GDALDataset* file = driver->Create(filepath.string().c_str(), 0, 0, 0, GDT_Unknown, nullptr);
+                    if(file==nullptr)
                     {
                         error_message << "GDAL could not open: \"" << filepath.string() << "\" as an " << driver_name;
                         boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
@@ -135,7 +135,7 @@ namespace urban
                     if (boost::filesystem::is_regular_file(filepath))
                     {
                         GDALDataset* file = reinterpret_cast<GDALDataset*>(GDALOpen(filepath.string().c_str(), GA_ReadOnly));
-                        if(file == NULL)
+                        if(file == nullptr)
                         {
                             error_message << "GDAL could not open: " << filepath.string();
                             throw std::runtime_error(error_message.str());
@@ -179,7 +179,7 @@ namespace urban
                     GDALAllRegister();
                     GDALDriver* driver = GetGDALDriverManager()
                                             ->GetDriverByName(driver_name.c_str());
-                    if(driver == NULL)
+                    if(driver == nullptr)
                     {
                         error_message << "GDAL could not find a driver for: " << driver_name;
                         throw std::runtime_error(error_message.str());
@@ -191,7 +191,7 @@ namespace urban
                         static_cast<int>(raster_image.get_height()),
                         1,
                         GDT_Float64,
-                        NULL
+                        nullptr
                     );
 
                     raster_image.to_gdal(file);

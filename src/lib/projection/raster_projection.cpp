@@ -254,7 +254,7 @@ namespace urban
         void RasterPrint::set_projection(GDALDataset* file) const
         {
             OGRSpatialReference spatial_reference_system;
-            char* spatial_reference_system_name = NULL;
+            char* spatial_reference_system_name = nullptr;
             spatial_reference_system.importFromEPSG(epsg_index);
             spatial_reference_system.exportToWkt(&spatial_reference_system_name);
             file->SetProjection(spatial_reference_system_name);

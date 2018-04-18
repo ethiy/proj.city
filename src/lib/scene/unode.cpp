@@ -431,7 +431,7 @@ namespace urban
             do
             {
                 auto buff = circulator->opposite()->facet();
-                if(!circulator->is_border() && buff != NULL)
+                if(!circulator->is_border() && buff != nullptr)
                     adjacents.push_back(buff);
             }while(++circulator != facet.facet_begin());
             return adjacents;

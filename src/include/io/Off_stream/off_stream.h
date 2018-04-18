@@ -213,7 +213,7 @@ namespace urban
                     std::begin(buffer_lines),
                     std::end(buffer_lines),
                     std::begin(points),
-                    [&points, &sline, &coordinates](std::string const& line)
+                    [&sline, &coordinates](std::string const& line)
                     {
                         coordinates.clear();
                         sline.clear();
@@ -242,7 +242,7 @@ namespace urban
                     std::begin(buffer_lines),
                     std::end(buffer_lines),
                     std::begin(faces),
-                    [&indexes, &sline, &faces](std::string line)
+                    [&indexes, &sline](std::string line)
                     {
                         indexes.clear();
 
