@@ -15,20 +15,14 @@ namespace urban
 {
     namespace io
     {
-        template<>
-        class FileHandler<std::fstream>
+        class OFFHandler
         {
         public:
-            FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
-            ~FileHandler(void);
+            OFFHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            ~OFFHandler(void);
             
             shadow::Mesh read(void);
             void write(shadow::Mesh const& mesh);
-
-        private:
-            std::fstream file;
-            boost::filesystem::path filepath;
-            std::map<std::string, bool> modes;
         };
     }
 }

@@ -1,6 +1,10 @@
 #pragma once
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+
 #include <vector>
+#include <map>
 #include <string>
 
 namespace urban
@@ -20,10 +24,23 @@ namespace urban
         /**
          * @ingroup io
          * @brief FileHandler class representing a file handler.
-         * @ tparam structure data structure representing 3D scene or a georeferenced projection
          */
-        template<class structure>
-        class FileHandler;
+        class FileHandler
+        {
+        public:
+            FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            virtual ~FileHandler(void) = 0;
+        private:
+            boost::filesystem::path filepath;
+            std::map<std::string, bool> modes;
+        };
+        
+        inline FileHandler::FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
+            : filepath(_filepath), modes(_modes)
+        {}
+        inline FileHandler::~FileHandler(void)
+        {}
+
 
         extern const std::vector<std::string> supported_scene_formats;
 
