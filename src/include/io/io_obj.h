@@ -3,11 +3,7 @@
 #include <io/io.h>
 
 #include <shadow/mesh.h>
-#include <io/Obj_stream/obj_stream.h>
 
-#include <boost/filesystem/path.hpp>
-
-#include <vector>
 
 namespace urban
 {

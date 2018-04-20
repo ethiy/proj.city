@@ -34,13 +34,6 @@ namespace urban
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
         };
-        
-        inline FileHandler::FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : filepath(_filepath), modes(_modes)
-        {}
-        inline FileHandler::~FileHandler(void)
-        {}
-
 
         extern const std::vector<std::string> supported_scene_formats;
 

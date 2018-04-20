@@ -10,11 +10,11 @@ namespace urban
 {
     namespace io
     {
-        class CityTreeHandler: FileHandler
+        class SceneTreeHandler: FileHandler
         {
         public:
-            CityTreeHandler(boost::filesystem::path const& _filepath);
-            ~CityTreeHandler(void);
+            SceneTreeHandler(boost::filesystem::path const& _filepath);
+            ~SceneTreeHandler(void);
             
 
             shadow::Point pivot(void) const;
