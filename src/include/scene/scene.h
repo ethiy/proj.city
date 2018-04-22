@@ -24,16 +24,10 @@ namespace urban
              */
             Scene(void);
             Scene(
-                io::FileHandler<Lib3dsFile> const& mesh_file,
+                std::vector<shadow::Mesh> const& building_meshes,
+                shadow::Mesh const& terrain_mesh,
                 urban::shadow::Point const& _pivot = shadow::Point(),
-                unsigned short _epsg_index=2154
-            );
-            Scene(
-                io::FileHandler<Lib3dsFile> const& mesh_file,
-                urban::shadow::Point const& _pivot,
-                unsigned short _epsg_index,
-                std::vector<std::string> const& building_ids,
-                std::string const& terrain_id
+                unsigned short _epsg_index = 2154
             );
             /**
              * Copy Constructor.

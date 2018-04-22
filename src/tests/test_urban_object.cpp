@@ -12,7 +12,7 @@ SCENARIO("Urban Node manipulation:")
 {
     GIVEN("A 3ds file")
     {
-        urban::io::FileHandler<Lib3dsFile> test_file(
+        urban::io::T3DSHandler test_file(
             boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
             std::map<std::string,bool>{{"read", true}}
         );

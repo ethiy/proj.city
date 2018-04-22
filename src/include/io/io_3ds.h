@@ -1,8 +1,10 @@
 #pragma once
 
 #include <io/io.h>
+#include <io/io_scene_tree.h>
 
 #include <shadow/mesh.h>
+#include <scene/scene.h>
 
 #include <lib3ds/file.h>
 
@@ -15,15 +17,19 @@ namespace urban
 {
     namespace io
     {
-        class T3DSHandler: FileHandler
+        class T3DSHandler: protected FileHandler
         {
         public:
             T3DSHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~T3DSHandler(void);
 
+            ::urban::scene::Scene get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml = true) const;
+            scene::Scene get_scene(void) const;
+
             std::vector<shadow::Mesh> get_meshes(void) const;
 
             std::vector<shadow::Mesh> level_meshes(std::size_t const level, std::set<char> const& facet_types) const;
+            shadow::Mesh level_terrain(std::size_t const level) const;
             std::vector<std::vector<shadow::Mesh> > raw_level_meshes(std::size_t const level, std::set<char> const& facet_types) const;
 
             std::vector<shadow::Mesh> node_meshes(std::string const& node_name, std::set<char> const& facet_types) const;
@@ -37,7 +43,7 @@ namespace urban
         private:
             Lib3dsFile* file = nullptr;
 
-            void node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types) const;
+            void node_meshes(Lib3dsNode* node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types) const;
         };
     }
 }

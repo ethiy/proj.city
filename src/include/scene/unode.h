@@ -3,8 +3,7 @@
 #include <geometry_definitions.h>
 
 #include <shadow/point.h>
-
-#include <io/io_3ds.h>
+#include <shadow/mesh.h>
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 
@@ -25,10 +24,9 @@ namespace urban
             UNode(void);
             UNode(UNode const& other);
             UNode(UNode && other);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::set<char> const& types, io::FileHandler<Lib3dsFile> const& mesh_file);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<shadow::Mesh> const& meshes);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons);
+            UNode(std::string const& node_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh);
+            UNode(std::string const& node_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<shadow::Mesh> const& meshes);
+            UNode(std::string const& node_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons);
             ~UNode(void);
 
             void swap(UNode & other);

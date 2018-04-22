@@ -1,4 +1,5 @@
-#include <io/io_gdal.h>
+#include <io/io_vector.h>
+#include <io/io_raster.h>
 #include <scene/unode.h>
 
 #include <boost/filesystem.hpp>
@@ -50,7 +51,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
         WHEN("the projection is written to a shapefile")
         {
             file_name << boost::uuids::random_generator()() << ".gml";
-            urban::io::FileHandler<GDALDriver> handler(
+            urban::io::VectorHandler handler(
                  urban::io::GdalFormat::gml,
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
@@ -65,7 +66,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
         WHEN("the projection is rasterized and written to a GeoTIFF")
         {
             file_name << boost::uuids::random_generator()() << ".geotiff";
-            urban::io::FileHandler<GDALDriver> handler(
+            urban::io::VectorHandler handler(
                 urban::io::GdalFormat::geotiff,
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}

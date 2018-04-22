@@ -6,7 +6,6 @@
 #include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 #include <CGAL/Polygon_mesh_processing/bbox.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
-
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
 
@@ -39,9 +38,6 @@ namespace urban
              epsg_index(std::move(other.epsg_index)),
              surface(std::move(other.surface)),
              bounding_box(std::move(other.bounding_box))
-        {}
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::set<char> const& types, io::FileHandler<Lib3dsFile> const& mesh_file)
-            :UNode(building_id, _reference_point, _epsg_index, mesh_file.read(building_id, types))
         {}
         UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<shadow::Mesh> const& meshes)
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)

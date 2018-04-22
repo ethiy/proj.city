@@ -213,7 +213,7 @@ namespace urban
             /**
              * Name the mesh
              */
-            void set_name(std::string const& _name) noexcept;
+            Mesh set_name(std::string const& _name) noexcept;
 
             /**
              * Access Mesh name

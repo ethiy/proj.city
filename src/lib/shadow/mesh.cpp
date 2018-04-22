@@ -171,9 +171,10 @@ namespace urban
         }
 
 
-        void Mesh::set_name(std::string const& _name) noexcept
+        Mesh Mesh::set_name(std::string const& _name) noexcept
         {
             name = _name;
+            return *this;
         }
 
         std::string Mesh::get_name(void) const noexcept

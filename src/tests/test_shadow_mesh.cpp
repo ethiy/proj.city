@@ -92,54 +92,54 @@ SCENARIO("shadow::Mesh manipulation:")
     {
         WHEN("they are stitched")
         {
-             auto mesh = urban::io::FileHandler<std::fstream>(
+             auto mesh = urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29051.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29054.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29057.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29060.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29063.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29066.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29069.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/T11107.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            urban::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/T11108.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read();
  
             THEN("The output checks:")
             {
-                auto test_mesh = urban::io::FileHandler<std::fstream>(
+                auto test_mesh = urban::io::OFFHandler(
                     boost::filesystem::path("../../ressources/tests/building_sum_mesh.off"),
                     std::map<std::string, bool>{{"read", true}}
                 ).read();

@@ -2,7 +2,7 @@
 
 #include <io/io.h>
 
-#include <projection/raster_projection.h>
+#include <projection/scene_projection.h>
 
 #include <ogrsf_frmts.h>
 
@@ -14,15 +14,15 @@ namespace urban
 {
     namespace io
     {
-        class VectorHandle: FileHandler
+        class VectorHandler: protected FileHandler
         {
         public:
-            VectorHandle(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
-            ~VectorHandle(void);
+            VectorHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            ~VectorHandler(void);
 
-            projection::RasterPrint read(void) const;
+            projection::FootPrint read(void) const;
 
-            void write(projection::RasterPrint const& raster_image) const;
+            void write(projection::FootPrint const& vectorimage, bool const label = true) const;
         };
     }
 }

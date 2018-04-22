@@ -12,22 +12,23 @@ namespace urban
     {
         enum SceneFormat : std::size_t
         {
-            3ds,
+            t3ds_xml,
+            t3ds,
             off,
             obj
         };
 
-        class SceneHandler: FileHandler
+        class SceneHandler: protected FileHandler
         {
         public:
             SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format = SceneFormat::off);
             ~SceneHandler(void);
 
-            scene::Scene read(void);
+            scene::Scene read(void) const;
 
-            void write(scene::Scene const& scene);
+            void write(scene::Scene const& scene) const;
             
-            static SceneFormat format(std::string const& output_format);
+            static SceneFormat scene_format(std::string const& output_format);
             static std::string extension(SceneFormat const format);
         private:
             SceneFormat format;

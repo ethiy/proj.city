@@ -24,10 +24,10 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("reading in text mode")
         {
-            std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<urban::io::Obj_stream>(filepath, std::map<std::string, bool>{{"read", true}}).read();
+            std::vector<urban::shadow::Mesh> meshes = urban::io::OBJHandler(filepath, std::map<std::string, bool>{{"read", true}}).read();
             for(auto mesh: meshes)
             {
-                urban::io::FileHandler<std::fstream> hihi(boost::filesystem::path(mesh.get_name() + ".off"), std::map<std::string, bool>{{"write", true}});
+                urban::io::OFFHandler hihi(boost::filesystem::path(mesh.get_name() + ".off"), std::map<std::string, bool>{{"write", true}});
                 hihi.write(mesh);
             }
 
@@ -57,7 +57,7 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("the reading mode is not chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler(filepath, std::map<std::string, bool>{{}});
+            urban::io::OBJHandler handler(filepath, std::map<std::string, bool>{{}});
 
             THEN("the reader throws")
             {
@@ -72,7 +72,7 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("the reading mode is chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler(filepath, std::map<std::string, bool>{{"read", true}});
+            urban::io::OBJHandler handler(filepath, std::map<std::string, bool>{{"read", true}});
 
             THEN("the reader throws")
             {
@@ -82,7 +82,7 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("the reading mode is not chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler(filepath, std::map<std::string, bool>{{}});
+            urban::io::OBJHandler handler(filepath, std::map<std::string, bool>{{}});
 
             THEN("the reader throws")
             {
@@ -93,7 +93,7 @@ SCENARIO("Input/Output from obj file:")
 
     GIVEN("An existing set of objects")
     {
-        std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<urban::io::Obj_stream>(
+        std::vector<urban::shadow::Mesh> meshes = urban::io::OBJHandler(
             boost::filesystem::path("../../ressources/3dModels/OBJ/scene.obj"),
             std::map<std::string, bool>{{"read", true}}
         ).read();
@@ -103,7 +103,7 @@ SCENARIO("Input/Output from obj file:")
             std::ostringstream file_name;
             file_name << boost::uuids::random_generator()() << ".obj";
 
-            urban::io::FileHandler<urban::io::Obj_stream> handler(
+            urban::io::OBJHandler handler(
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string, bool>{{"write", true}}
             );
@@ -111,7 +111,7 @@ SCENARIO("Input/Output from obj file:")
 
             THEN("the input should check")
             {
-                std::vector<urban::shadow::Mesh> written_meshes = urban::io::FileHandler<urban::io::Obj_stream>(
+                std::vector<urban::shadow::Mesh> written_meshes = urban::io::OBJHandler(
                     boost::filesystem::path(file_name.str()),
                     std::map<std::string, bool>{{"read", true}}
                 ).read();
@@ -136,7 +136,7 @@ SCENARIO("Input/Output from obj file:")
         
         WHEN("the writing mode is not chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler("./hammerhead.off", std::map<std::string, bool>{{"write", false}});
+            urban::io::OBJHandler handler("./hammerhead.off", std::map<std::string, bool>{{"write", false}});
 
             THEN("the writter throws")
             {

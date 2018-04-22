@@ -9,24 +9,24 @@ namespace urban
 {
     namespace io
     {
-        FileHandler<Lib3dsFile>::FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : filepath(_filepath), modes(_modes) 
+        T3DSHandler::T3DSHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
+            : FileHandler(_filepath, _modes)
         {
             std::ostringstream error_message;
 
-            if(modes["read"] && modes["write"])
+            if(modes.at("read") && modes.at("write"))
             {
                 boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
                 throw boost::filesystem::filesystem_error("Simultaneous reading and writing access is forbidden", ec);
             }
 
-            if(!modes["read"] && !modes["write"])
+            if(!modes.at("read") && !modes.at("write"))
             {
                 boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
                 throw boost::filesystem::filesystem_error("You have to specify access type", ec);
             }
 
-            if(modes["read"])
+            if(modes.at("read"))
             {
                 if(boost::filesystem::is_regular_file(filepath))
                     file = lib3ds_file_load(filepath.string().c_str());
@@ -37,19 +37,60 @@ namespace urban
                     throw boost::filesystem::filesystem_error(error_message.str(), ec);
                 }
             }
-            if(modes["write"])
+            if(modes.at("write"))
             {
                 file = lib3ds_file_new();
             }
         }
 
-        FileHandler<Lib3dsFile>::~FileHandler(void)
+        T3DSHandler::~T3DSHandler(void)
         {
            lib3ds_file_free(file);
         }
 
+        scene::Scene T3DSHandler::get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml) const
+        {
+            if(from_xml)
+            {
+                auto building_ids = scene_tree_file.building_ids();
+                std::vector<shadow::Mesh> building_meshes(building_ids.size());
+                std::transform(
+                    std::begin(building_ids),
+                    std::end(building_ids),
+                    std::begin(building_meshes),
+                    [this](std::string const& building_id)
+                    {
+                        return mesh(building_id, std::set<char>{{'T', 'F'}});
+                    }
+                );
+                return scene::Scene(
+                    building_meshes,
+                    mesh(
+                        scene_tree_file.terrain_id(),
+                        std::set<char>{'M'}
+                    ),
+                    scene_tree_file.pivot(),
+                    scene_tree_file.epsg_index()
+                );
+            }
+            else
+                return scene::Scene(
+                    level_meshes(1, std::set<char>{{'T', 'F'}}),
+                    level_terrain(1),
+                    scene_tree_file.pivot(),
+                    scene_tree_file.epsg_index()
+                );
+        }
+        scene::Scene T3DSHandler::get_scene(void) const
+        {
+            return scene::Scene(
+                level_meshes(1, std::set<char>{{'T', 'F'}}),
+                level_terrain(1)
+            );
+        }
 
-        std::vector<urban::shadow::Mesh> FileHandler<Lib3dsFile>::read(void) const
+
+        std::vector<urban::shadow::Mesh> T3DSHandler::get_meshes(void) const
         {
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
@@ -71,21 +112,8 @@ namespace urban
             }
             return meshes;
         }
-        shadow::Mesh FileHandler<Lib3dsFile>::read(std::string const& node_name, std::set<char> const& facet_types) const
-        {
-            auto mesh_by_type = get_mesh_by_type(node_name, facet_types);
 
-            return std::accumulate(
-                std::begin(mesh_by_type),
-                std::end(mesh_by_type),
-                shadow::Mesh(),
-                [](shadow::Mesh const& lhs, std::pair<char, shadow::Mesh> const& rhs)
-                {
-                    return lhs + rhs.second;
-                }
-            );
-        }
-        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read(std::size_t const level, std::set<char> const& facet_types) const
+        std::vector<shadow::Mesh> T3DSHandler::level_meshes(std::size_t const level, std::set<char> const& facet_types) const
         {
             std::vector<std::string> nodes = get_nodes(level);
             std::vector<shadow::Mesh> meshes(nodes.size());
@@ -95,12 +123,55 @@ namespace urban
                 std::begin(meshes),
                 [this, facet_types](std::string const& node)
                 {
-                    return read(node, facet_types);
+                    return mesh(node, facet_types);
                 }
             );
             return meshes;
         }
-        std::map<char, std::deque<shadow::Mesh> > FileHandler<Lib3dsFile>::get_meshes(std::string const& node_name, std::set<char> const& facet_types) const
+        shadow::Mesh T3DSHandler::level_terrain(std::size_t const level) const
+        {
+            auto terrain_meshes = level_meshes(level, std::set<char>{'M'});
+            return std::accumulate(
+                std::begin(terrain_meshes),
+                std::end(terrain_meshes),
+                shadow::Mesh(),
+                std::plus<shadow::Mesh>()
+            ).set_name("terrain");
+        }
+        std::vector<std::vector<shadow::Mesh> > T3DSHandler::raw_level_meshes(std::size_t const level, std::set<char> const& facet_types) const
+        {
+            std::vector<std::string> nodes = get_nodes(level);
+            std::vector<std::vector<shadow::Mesh> > meshes(nodes.size());
+            std::transform(
+                std::begin(nodes),
+                std::end(nodes),
+                std::begin(meshes),
+                [this, facet_types](std::string const& node)
+                {
+                    return node_meshes(node, facet_types);
+                }
+            );
+            return meshes;
+        }
+        std::vector<shadow::Mesh> T3DSHandler::node_meshes(std::string const& node_name, std::set<char> const& facet_types) const
+        {
+            auto meshes_by_type = node_meshes_by_type(node_name, facet_types);
+            std::vector<shadow::Mesh> meshes(
+                std::accumulate(
+                    std::begin(meshes_by_type),
+                    std::end(meshes_by_type),
+                    std::size_t(0),
+                    [](std::size_t const total, std::pair<char, std::deque<shadow::Mesh> > const& type_meshes)
+                    {
+                        return total + type_meshes.second.size();
+                    }
+                )
+            );
+            for(auto type_meshes : meshes_by_type)
+                meshes.insert(std::end(meshes), std::begin(type_meshes.second), std::end(type_meshes.second));
+            return meshes;
+        }
+        std::map<char, std::deque<shadow::Mesh> > T3DSHandler::node_meshes_by_type(std::string const& node_name, std::set<char> const& facet_types) const
         {
             std::ostringstream error_message;
             std::map<char, std::deque<shadow::Mesh> > meshes;
@@ -118,9 +189,23 @@ namespace urban
             }
             return meshes;
         }
-        std::map<char, shadow::Mesh> FileHandler<Lib3dsFile>::get_mesh_by_type(std::string const& node_name, std::set<char> const& facet_types) const
+        shadow::Mesh T3DSHandler::mesh(std::string const& node_name, std::set<char> const& facet_types) const
         {
-            auto meshes = get_meshes(node_name, facet_types);
+            auto meshes = mesh_by_type(node_name, facet_types);
+
+            return std::accumulate(
+                std::begin(meshes),
+                std::end(meshes),
+                shadow::Mesh(),
+                [](shadow::Mesh const& lhs, std::pair<char, shadow::Mesh> const& rhs)
+                {
+                    return lhs + rhs.second;
+                }
+            );
+        }
+        std::map<char, shadow::Mesh> T3DSHandler::mesh_by_type(std::string const& node_name, std::set<char> const& facet_types) const
+        {
+            auto meshes = node_meshes_by_type(node_name, facet_types);
 
             std::map<char, shadow::Mesh> mesh_by_type;
 
@@ -132,9 +217,10 @@ namespace urban
                 );
             return mesh_by_type;
         }
-        std::vector<std::string> FileHandler<Lib3dsFile>::get_nodes(std::size_t const level) const
+
+        std::vector<std::string> T3DSHandler::get_nodes(std::size_t const level) const
         {
-            std::deque<Lib3dsNode*> p_nodes{{file->nodes}};
+            std::deque<Lib3dsNode*> p_nodes{file->nodes};
             std::deque<Lib3dsNode*> childs;
             Lib3dsNode* q_buffer;
             std::size_t l(0);
@@ -161,47 +247,11 @@ namespace urban
             return nodes;
         }
 
-
-        std::vector<shadow::Mesh> FileHandler<Lib3dsFile>::read_tmps(std::string const& node_name, std::set<char> const& facet_types) const
-        {
-            auto meshes_by_type = get_meshes(node_name, facet_types);
-            std::vector<shadow::Mesh> meshes(
-                std::accumulate(
-                    std::begin(meshes_by_type),
-                    std::end(meshes_by_type),
-                    std::size_t(0),
-                    [](std::size_t const total, std::pair<char, std::deque<shadow::Mesh> > const& type_meshes)
-                    {
-                        return total + type_meshes.second.size();
-                    }
-                )
-            );
-            for(auto type_meshes : meshes_by_type)
-                meshes.insert(std::end(meshes), std::begin(type_meshes.second), std::end(type_meshes.second));
-            return meshes;
-        }
-        std::vector<std::vector<shadow::Mesh> > FileHandler<Lib3dsFile>::read_tmps(std::size_t const level, std::set<char> const& facet_types) const
-        {
-            std::vector<std::string> nodes = get_nodes(level);
-            std::vector<std::vector<shadow::Mesh> > meshes(nodes.size());
-            std::transform(
-                std::begin(nodes),
-                std::end(nodes),
-                std::begin(meshes),
-                [this, facet_types](std::string const& node)
-                {
-                    return read_tmps(node, facet_types);
-                }
-            );
-            return meshes;
-        }
-
-
-        void FileHandler<Lib3dsFile>::write(std::vector<urban::shadow::Mesh> meshes)
+        void T3DSHandler::write_meshes(std::vector<urban::shadow::Mesh> const& meshes)
         {
             std::ostringstream error_message;
 
-            if (modes["write"])
+            if (modes.at("write"))
             {
                 file->meshes = meshes[0].to_3ds();
                 Lib3dsMesh *current = file->meshes;
@@ -217,13 +267,13 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The write mode is set to:" << modes.at("write") << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
         }
 
-        void FileHandler<Lib3dsFile>::node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types) const
+        void T3DSHandler::node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types) const
         {
             Lib3dsNode * p_node;
 

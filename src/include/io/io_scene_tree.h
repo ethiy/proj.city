@@ -2,7 +2,8 @@
 
 #include <io/io.h>
 
-#include <scene/scene.h>
+#include <shadow/point.h>
+#include <shadow/bbox.h>
 
 #include <tinyxml2.h>
 
@@ -10,12 +11,11 @@ namespace urban
 {
     namespace io
     {
-        class SceneTreeHandler: FileHandler
+        class SceneTreeHandler: protected FileHandler
         {
         public:
             SceneTreeHandler(boost::filesystem::path const& _filepath);
             ~SceneTreeHandler(void);
-            
 
             shadow::Point pivot(void) const;
             shadow::Bbox bbox(void) const;

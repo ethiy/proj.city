@@ -14,11 +14,11 @@ namespace urban
 {
     namespace io
     {
-        class RasterHandle: FileHandler
+        class RasterHandler: protected FileHandler
         {
         public:
-            RasterHandle(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
-            ~RasterHandle(void);
+            RasterHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            ~RasterHandler(void);
 
             projection::RasterPrint read(void) const;
 

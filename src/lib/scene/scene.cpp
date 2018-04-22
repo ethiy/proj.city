@@ -10,66 +10,30 @@ namespace urban
         Scene::Scene(void)
         {}
         Scene::Scene(
-            io::FileHandler<Lib3dsFile> const& mesh_file,
+            std::vector<shadow::Mesh> const& building_meshes,
+            shadow::Mesh const& terrain_mesh,
             urban::shadow::Point const& _pivot,
-            unsigned short _epsg_index,
-            std::vector<std::string> const& building_ids,
-            std::string const& terrain_id
+            unsigned short _epsg_index
         )
-            :pivot(_pivot), epsg_index(_epsg_index), buildings(building_ids.size())
+            : pivot(_pivot), epsg_index(_epsg_index), buildings(building_meshes.size())
         {
             std::transform(
-                std::begin(building_ids),
-                std::end(building_ids),
+                std::begin(building_meshes),
+                std::end(building_meshes),
                 std::begin(buildings),
-                [&mesh_file, this](std::string const& building_id)
+                [this](shadow::Mesh const& building_mesh)
                 {
-                    return UNode(building_id, pivot, epsg_index, std::set<char>{'T', 'F'}, mesh_file);
+                    return UNode(building_mesh.get_name(), pivot, epsg_index, building_mesh);
                 }
             );
 
-            terrain = UNode(terrain_id, pivot, epsg_index, std::set<char>{'M'}, mesh_file);
-        }
-        Scene::Scene(io::FileHandler<Lib3dsFile> const& mesh_file, urban::shadow::Point const& _pivot, unsigned short _epsg_index)
-            :pivot(_pivot), epsg_index(_epsg_index)
-        {
-            auto nodes = mesh_file.get_nodes(1);
-            buildings.reserve(nodes.size());
-            for(auto const& node : nodes)
-                buildings.push_back(
-                    UNode(
-                        node,
-                        pivot,
-                        epsg_index,
-                        mesh_file.read_tmps(node, std::set<char>{'T', 'F'})
-                    )
-                );
-            // shadow::Mesh _terrain;
-            // std::string terrain_id("");
-            // for(auto const& node: nodes)
-            // {
-            //     auto meshes = mesh_file.get_mesh_by_type(node, std::set<char>{'T', 'F', 'M'});
-            //     auto mesh = meshes['T'] + meshes['F'];
-            //     if(mesh != shadow::Mesh())
-            //         buildings.push_back(
-            //             UNode(
-            //                 node,
-            //                 pivot,
-            //                 epsg_index,
-            //                 mesh
-            //             )
-            //         );
-            //     _terrain += meshes['M'];
-            //     if(meshes['M'] != shadow::Mesh())
-            //         terrain_id += node;
-            // }
-            // terrain = UNode(terrain_id, pivot, epsg_index, _terrain);
+            terrain = UNode(terrain_mesh.get_name(), pivot, epsg_index, terrain_mesh);
         }
         Scene::Scene(Scene const& other)
-            :pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
+            : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}
         Scene::Scene(Scene && other)
-            :pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(other.terrain))
+            : pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(other.terrain))
         {}
         Scene::~Scene(void)
         {}

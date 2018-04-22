@@ -26,11 +26,14 @@ set(Scene_SRC
     "${proj.city_SOURCE_DIR}/src/lib/scene/scene.cpp"
 )
 set(IO_SRC
+    "${proj.city_SOURCE_DIR}/src/lib/io/io.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_3ds.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_scene.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_scene_tree.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_off.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_obj.cpp"
-    "${proj.city_SOURCE_DIR}/src/lib/io/io_gdal.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_raster.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_vector.cpp"
 )
 set(URBAN_SRC
     "${proj.city_SOURCE_DIR}/src/lib/urban.cpp"

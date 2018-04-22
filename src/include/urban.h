@@ -6,8 +6,10 @@
 
 #include <io/io.h>
 #include <io/io_off.h>
-#include <io/io_gdal.h>
+#include <io/io_obj.h>
 #include <io/io_3ds.h>
+#include <io/io_vector.h>
+#include <io/io_raster.h>
 #include <io/io_scene.h>
 
 #include <scene/scene.h>

@@ -30,7 +30,7 @@ namespace urban
         public:
             FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             virtual ~FileHandler(void) = 0;
-        private:
+        protected:
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
         };
