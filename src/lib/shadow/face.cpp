@@ -41,7 +41,7 @@ namespace urban
                 std::next(facet.facet_begin(), 1),
                 std::next(facet.facet_begin(), static_cast<long>(points.size())),
                 std::next(std::begin(points), 1),
-                [this, &map_points](Polyhedron::Halfedge const& halfedge)
+                [&map_points](Polyhedron::Halfedge const& halfedge)
                 {
                     return get_index(halfedge, map_points);
                 }
