@@ -50,24 +50,22 @@ SCENARIO("Input/Output from Shadow Mesh:")
 
         WHEN("the projection is written to a shapefile")
         {
-            file_name << boost::uuids::random_generator()() << ".gml";
+            file_name << boost::uuids::random_generator()() << ".shp";
             urban::io::VectorHandler handler(
-                 urban::io::GdalFormat::gml,
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
             );
             handler.write(test_footprint);
             THEN("The output checks:")
             {
-                urban::projection::FootPrint read_proj = handler.read<urban::projection::FootPrint>();
+                urban::projection::FootPrint read_proj = handler.read();
                 REQUIRE(read_proj.data() == test_footprint.data());
             }
         }
         WHEN("the projection is rasterized and written to a GeoTIFF")
         {
             file_name << boost::uuids::random_generator()() << ".geotiff";
-            urban::io::VectorHandler handler(
-                urban::io::GdalFormat::geotiff,
+            urban::io::RasterHandler handler(
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}, {"read", true}}
             );
@@ -75,7 +73,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
             handler.write(rasta);
             THEN("The output checks:")
             {
-                urban::projection::RasterPrint read_proj = handler.read<urban::projection::RasterPrint>();
+                urban::projection::RasterPrint read_proj = handler.read();
                 REQUIRE(read_proj == rasta);
             }
         }

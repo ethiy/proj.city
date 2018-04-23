@@ -110,7 +110,7 @@ namespace urban
         );
 
         urban::io::VectorHandler(
-            boost::filesystem::path(root_path / (filename + ".gml")),
+            boost::filesystem::path(root_path / (filename + ".shp")),
             std::map<std::string,bool>{{"write", true}}
         ).write(scene_projection);
 

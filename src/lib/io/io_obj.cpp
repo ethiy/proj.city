@@ -14,11 +14,14 @@ namespace urban
         {}
         WaveObjHandler::~WaveObjHandler(void) {}
 
-        std::vector<shadow::Mesh> WaveObjHandler::read(void) const
+        std::vector<shadow::Mesh> const& WaveObjHandler::data(void) const
+        {
+            return meshes;
+        }
+
+        WaveObjHandler& WaveObjHandler::read(void)
         {
             std::ostringstream error_message;
-
-            std::vector<shadow::Mesh> objects;
 
             if (modes.at("read"))
             {
@@ -26,7 +29,7 @@ namespace urban
                 {
                     std::fstream obj_file(filepath.string(), std::ios::in);
                     Obj_stream object_stream(obj_file);
-                    object_stream >> objects;
+                    object_stream >> meshes;
                 }
                 else
                 {
@@ -41,11 +44,10 @@ namespace urban
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
-
-            return objects;
+            return *this;
         }
 
-        void WaveObjHandler::write(std::vector<shadow::Mesh> const& meshes) const
+        void WaveObjHandler::write(void) const
         {
             if (modes.at("write"))
             {
@@ -62,10 +64,36 @@ namespace urban
             }
         }
 
-
-        scene::Scene WaveObjHandler::get_scene(void) const
+        shadow::Mesh WaveObjHandler::exclude_mesh(std::string const& excluded)
         {
-            return scene::Scene();
+            std::list<shadow::Mesh> excluded_meshes;
+            std::remove_copy_if(
+                std::begin(meshes),
+                std::end(meshes),
+                std::begin(excluded_meshes),
+                [excluded](shadow::Mesh const& mesh)
+                {
+                    return mesh.get_name() == excluded;
+                }
+            );
+            return std::accumulate(
+                std::begin(excluded_meshes),
+                std::end(excluded_meshes),
+                shadow::Mesh()
+            ).set_name(excluded);
+        }
+        void WaveObjHandler::add_mesh(shadow::Mesh const& mesh)
+        {
+            meshes.push_back(mesh);
+        }
+
+        scene::Scene WaveObjHandler::get_scene(void)
+        {
+            auto terrain = read().exclude_mesh("terrain");
+            return scene::Scene(
+                meshes,
+                terrain
+            );
         }
     }
 }
