@@ -14,7 +14,7 @@ namespace urban
         {}
         WaveObjHandler::~WaveObjHandler(void) {}
 
-        std::vector<shadow::Mesh> const& WaveObjHandler::data(void) const
+        std::vector<shadow::Mesh> const& WaveObjHandler::data(void) const noexcept
         {
             return meshes;
         }
@@ -94,6 +94,20 @@ namespace urban
                 meshes,
                 terrain
             );
+        }
+        WaveObjHandler& WaveObjHandler::from_scene(scene::Scene const& scene)
+        {
+            meshes = std::vector<shadow::Mesh>(scene.size() + 1);
+            std::transform(
+                std::begin(scene),
+                std::end(scene),
+                std::begin(meshes),
+                [](scene::UNode const& unode)
+                {
+                    return shadow::Mesh(unode.get_surface());
+                }
+            );
+            meshes[meshes.size()] = shadow::Mesh(scene.get_terrain().get_surface());
         }
     }
 }

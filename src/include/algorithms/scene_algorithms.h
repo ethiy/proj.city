@@ -8,9 +8,6 @@
 
 namespace urban
 {
-
-    scene::Scene load_3ds_scene(boost::filesystem::path const& input_path, bool const with_xml);
-
     void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene);
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene);
     void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, std::string const& output_format, bool const labels);

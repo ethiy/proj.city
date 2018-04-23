@@ -142,24 +142,29 @@ namespace urban
             return *this;
         }
 
-        Bbox_3 UNode::bbox(void) const
+        Bbox_3 const& UNode::bbox(void) const noexcept
         {
             return bounding_box;
         }
 
-        std::string UNode::get_name(void) const
+        std::string const& UNode::get_name(void) const noexcept
         {
             return name;
         }
 
-        unsigned short UNode::get_epsg(void) const noexcept
+        unsigned short const& UNode::get_epsg(void) const noexcept
         {
             return epsg_index;
         }
 
-        shadow::Point UNode::get_reference_point(void) const noexcept
+        shadow::Point const& UNode::get_reference_point(void) const noexcept
         {
             return reference_point;
+        }
+
+        Polyhedron const& UNode::get_surface(void) const noexcept
+        {
+            return surface;
         }
 
         std::size_t UNode::vertices_size(void) const

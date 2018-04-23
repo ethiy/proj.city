@@ -37,19 +37,24 @@ namespace urban
              * Computes the Building bounding box.
              * @return this bounding box
              */
-            Bbox_3 bbox(void) const;
+            Bbox_3 const& bbox(void) const noexcept;
 
-            std::string get_name(void) const;
+            std::string const& get_name(void) const noexcept;
             /**
             * Access urban node epsg.
             * @return urban node epsg
             */
-            unsigned short get_epsg(void) const noexcept;
+            unsigned short const& get_epsg(void) const noexcept;
             /**
             * Access urban node reference point.
             * @return urban node reference point
             */
-            shadow::Point get_reference_point(void) const noexcept;
+            shadow::Point const& get_reference_point(void) const noexcept;
+            /**
+            * Access urban node surface.
+            * @return urban node surface
+            */
+            Polyhedron const& get_surface(void) const noexcept;
             /**
             * Get the number of vertices
             * @return number of vertices

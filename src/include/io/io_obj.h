@@ -16,7 +16,7 @@ namespace urban
             WaveObjHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~WaveObjHandler(void);
 
-            std::vector<shadow::Mesh> const& data(void) const;
+            std::vector<shadow::Mesh> const& data(void) const noexcept;
             
             WaveObjHandler& read(void);
 
@@ -26,6 +26,7 @@ namespace urban
             void write(void) const;
 
             scene::Scene get_scene(void);
+            WaveObjHandler& from_scene(scene::Scene const& scene);
         private:
             std::vector<shadow::Mesh> meshes;
         };

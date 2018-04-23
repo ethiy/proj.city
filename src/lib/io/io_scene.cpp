@@ -72,6 +72,36 @@ namespace urban
             return scene;
         }
 
+        void SceneHandler::write(scene::Scene const& scene) const
+        {
+            switch(format)
+            {
+                case off:
+                    for(auto const& building : scene)
+                    {
+                        OFFHandler(
+                            boost::filesystem::path(filepath / (building.get_name() + ".off")),
+                            std::map<std::string, bool>{{"write", true}}
+                        ).write(
+                            shadow::Mesh(building.get_surface())
+                        );
+                    }
+                    OFFHandler(
+                        boost::filesystem::path(filepath / (scene.get_terrain().get_name() + ".off")),
+                        std::map<std::string, bool>{{"write", true}}
+                    ).write(
+                        shadow::Mesh(scene.get_terrain().get_surface())
+                    );
+                    break;
+                case obj:
+                    WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).from_scene(scene).write();
+                    break;
+                case t3ds_xml:
+                    throw std::logic_error("Not yet implemented");
+                case t3ds:
+                    throw std::logic_error("Not yet implemented");
+            }
+        }
 
         SceneFormat SceneHandler::scene_format(std::string const& output_format)
         {
