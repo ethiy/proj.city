@@ -77,17 +77,18 @@ namespace urban
             switch(format)
             {
                 case off:
+                    boost::filesystem::create_directory(filepath);
                     for(auto const& building : scene)
                     {
                         OFFHandler(
-                            boost::filesystem::path(filepath / (building.get_name() + ".off")),
+                            boost::filesystem::path(filepath / (building.get_name() + supported_extentions.at(SceneFormat::off))),
                             std::map<std::string, bool>{{"write", true}}
                         ).write(
                             shadow::Mesh(building.get_surface())
                         );
                     }
                     OFFHandler(
-                        boost::filesystem::path(filepath / (scene.get_terrain().get_name() + ".off")),
+                        boost::filesystem::path(filepath / (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off))),
                         std::map<std::string, bool>{{"write", true}}
                     ).write(
                         shadow::Mesh(scene.get_terrain().get_surface())

@@ -8,7 +8,6 @@
 
 namespace urban
 {
-    void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene);
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene);
     void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, std::string const& output_format, bool const labels);
     void save_building_rasters(boost::filesystem::path const& root_path, std::vector<projection::RasterPrint> const& raster_projections);

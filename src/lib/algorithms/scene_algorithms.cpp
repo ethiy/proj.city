@@ -5,30 +5,10 @@
 #include <io/io_raster.h>
 #include <io/io_vector.h>
 
-#include <io/io_3ds.h>
-#include <io/io_scene_tree.h>
+#include <io/io_scene.h>
 
 namespace urban
 {
-    void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene)
-    {
-        boost::filesystem::path buildings_dir(root_path / "buildings");
-        boost::filesystem::create_directory(buildings_dir);
-        for(auto const& building : scene)
-        {
-            std::fstream _file(
-                boost::filesystem::path(buildings_dir / (building.get_name() + ".off")).string(),
-                std::ios::out
-            );
-            _file << building;
-        }
-
-        std::fstream _file(
-            boost::filesystem::path(buildings_dir /"terrain.off").string(),
-            std::ios::out        
-        );
-        _file << scene.get_terrain();
-    }
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
         std::cout << "Saving brick duals... " << std::flush;
