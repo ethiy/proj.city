@@ -1,3 +1,6 @@
 set(orthoproject_SRC "${proj.city_SOURCE_DIR}/src/bin/orthoproject.cpp")
 add_executable(orthoproject ${orthoproject_SRC})
-target_link_libraries(orthoproject urban)
+target_link_libraries(orthoproject proj.city)
+set(cityformat_SRC "${proj.city_SOURCE_DIR}/src/bin/cityformat.cpp")
+add_executable(cityformat ${cityformat_SRC})
+target_link_libraries(cityformat proj.city)
