@@ -5,6 +5,8 @@
 #include <io/io_off.h>
 #include <io/io_obj.h>
 
+#include <boost/algorithm/string.hpp>
+
 #include <algorithm>
 #include <iterator>
 
@@ -13,26 +15,49 @@ namespace urban
     namespace io
     {
         const std::vector<std::string> SceneHandler::supported_formats{{"3DS XML", "3DS", "OFF", "OBJ"}};
-        const std::vector<std::string> SceneHandler::supported_extentions{{".3DS", ".3DS", ".off", ".obj"}};
+        const std::vector<std::string> SceneHandler::supported_extentions{{".3ds", ".3ds", ".off", ".obj"}};
 
+
+        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format)
+            : SceneHandler(_filepath, _modes, SceneHandler::scene_format(_format))
+        {}
         SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format)
             : FileHandler(_filepath, _modes), format(_format)
-        {}
+        {
+            switch(format)
+            {
+                case off:
+                    if(boost::filesystem::exists(filepath))
+                    {
+                        if(! boost::filesystem::is_directory(filepath))
+                            throw std::runtime_error("Path must be a directory");
+                    }
+                    else
+                        boost::filesystem::create_directory(filepath);
+                    break;
+                case obj:
+                    check_extension();
+                    break;
+                case t3ds_xml:
+                    check_extension();
+                    break;
+                case t3ds:
+                    check_extension();
+            }
+        }
         SceneHandler::~SceneHandler(void)
         {}
 
         scene::Scene SceneHandler::read(void) const
         {
-            scene::Scene scene;
             switch(format)
             {
                 case off:
-                    break;
+                    return scene::Scene();
                 case obj:
-                    scene = WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_scene();
-                    break;
+                    return WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_scene();
                 case t3ds_xml:
-                    scene = T3DSHandler(
+                    return T3DSHandler(
                         filepath,
                         std::map<std::string,bool>{{"read", true}}
                     ).get_scene(
@@ -45,11 +70,10 @@ namespace urban
                         ),
                         true
                     );
-                    break;
                 case t3ds:
                     try
                     {
-                        scene = T3DSHandler(
+                        return T3DSHandler(
                             filepath,
                             std::map<std::string,bool>{{"read", true}}
                         ).get_scene(
@@ -63,13 +87,13 @@ namespace urban
                     }
                     catch(std::runtime_error const& err)
                     {
-                        scene = T3DSHandler(
+                        std::cerr << err.what() << std::endl;
+                        return T3DSHandler(
                             filepath,
                             std::map<std::string,bool>{{"read", true}}
                         ).get_scene();
                     }
             }
-            return scene;
         }
 
         void SceneHandler::write(scene::Scene const& scene) const
@@ -77,7 +101,6 @@ namespace urban
             switch(format)
             {
                 case off:
-                    boost::filesystem::create_directory(filepath);
                     for(auto const& building : scene)
                     {
                         OFFHandler(
@@ -119,6 +142,17 @@ namespace urban
         std::string SceneHandler::extension(SceneFormat const format)
         {
             return supported_extentions.at(format);
+        }
+
+        void SceneHandler::check_extension(void) const
+        {
+            if(
+                boost::iequals(
+                    filepath.extension().string(),
+                    SceneHandler::extension(format)
+                )
+            )
+                throw std::runtime_error("The file path does not have the right extension");
         }
     }
 }
