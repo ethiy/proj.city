@@ -6,6 +6,7 @@
 #include <io/io_obj.h>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/range/iterator_range.hpp>
 
 #include <algorithm>
 #include <iterator>
@@ -27,13 +28,6 @@ namespace urban
             switch(format)
             {
                 case off:
-                    if(boost::filesystem::exists(filepath))
-                    {
-                        if(! boost::filesystem::is_directory(filepath))
-                            throw std::runtime_error("Path must be a directory");
-                    }
-                    else
-                        boost::filesystem::create_directory(filepath);
                     break;
                 case obj:
                     check_extension();
@@ -50,14 +44,49 @@ namespace urban
 
         scene::Scene SceneHandler::read(void) const
         {
+            scene::Scene scene;
             switch(format)
             {
                 case off:
-                    return scene::Scene();
+                    if(! boost::filesystem::is_directory(filepath))
+                        throw std::runtime_error("Path is not a directory");
+                    {
+                        std::vector<shadow::Mesh> buildings;
+                        buildings.reserve(
+                            std::distance(
+                                boost::filesystem::directory_iterator(filepath),
+                                boost::filesystem::directory_iterator()
+                            )
+                        );
+                        for(auto& file : boost::make_iterator_range(boost::filesystem::directory_iterator(filepath), {}))
+                            if(
+                                boost::filesystem::is_regular_file(file)
+                                &&
+                                boost::iequals(
+                                    file.path().extension().string(),
+                                    SceneHandler::extension(format)
+                                )
+                            )
+                                buildings.push_back(
+                                    OFFHandler(
+                                        boost::filesystem::path(filepath / file),
+                                        std::map<std::string, bool>{{"read", true}}
+                                    ).read()
+                                );
+                        scene = scene::Scene(
+                            buildings,
+                            OFFHandler(
+                                boost::filesystem::path(filepath / "terrain.off"),
+                                std::map<std::string, bool>{{"read", true}}
+                            ).read()
+                        );
+                    }
+                    break;
                 case obj:
-                    return WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_scene();
+                    scene = WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_scene();
+                    break;
                 case t3ds_xml:
-                    return T3DSHandler(
+                    scene = T3DSHandler(
                         filepath,
                         std::map<std::string,bool>{{"read", true}}
                     ).get_scene(
@@ -70,10 +99,11 @@ namespace urban
                         ),
                         true
                     );
+                    break;
                 case t3ds:
                     try
                     {
-                        return T3DSHandler(
+                        scene = T3DSHandler(
                             filepath,
                             std::map<std::string,bool>{{"read", true}}
                         ).get_scene(
@@ -88,12 +118,13 @@ namespace urban
                     catch(std::runtime_error const& err)
                     {
                         std::cerr << err.what() << std::endl;
-                        return T3DSHandler(
+                        scene = T3DSHandler(
                             filepath,
                             std::map<std::string,bool>{{"read", true}}
                         ).get_scene();
                     }
             }
+            return scene;
         }
 
         void SceneHandler::write(scene::Scene const& scene) const
@@ -102,14 +133,12 @@ namespace urban
             {
                 case off:
                     for(auto const& building : scene)
-                    {
                         OFFHandler(
                             boost::filesystem::path(filepath / (building.get_name() + supported_extentions.at(SceneFormat::off))),
                             std::map<std::string, bool>{{"write", true}}
                         ).write(
                             shadow::Mesh(building.get_surface())
                         );
-                    }
                     OFFHandler(
                         boost::filesystem::path(filepath / (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off))),
                         std::map<std::string, bool>{{"write", true}}
