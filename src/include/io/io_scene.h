@@ -31,11 +31,11 @@ namespace urban
             
             static SceneFormat scene_format(std::string const& output_format);
             static std::string extension(SceneFormat const format);
-        private:
-            SceneFormat format;
 
             static const std::vector<std::string> supported_formats;
             static const std::vector<std::string> supported_extentions;
+        private:
+            SceneFormat format;
 
             void check_extension(void) const;
         };

@@ -11,6 +11,7 @@ R"(cityformat.
 
     Usage:
       cityformat <scene> --input-format=<input_frmt> [--prune --graphs --terrain] [output <path> --output-format=<output_format>]
+      cityformat --formats
       cityformat (-h | --help)
       cityformat --version
     Options:
@@ -20,7 +21,8 @@ R"(cityformat.
       --input-format=<input_frmt>           Specify input format.
       --graphs                              Save the building facets dual graph.
       --terrain                             Taking care of terrain.
-      --output-format=<output_frmt>           Specify output format.
+      --output-format=<output_frmt>         Specify output format.
+      --formats                             Give all possible formats.
 )";
 
 struct Arguments
@@ -40,36 +42,47 @@ struct Arguments
     };
 
     Arguments(std::map<std::string, docopt::value> const& docopt_args)
+        : formats(docopt_args.at("--formats").asBool())
     {
         std::cout << "Parsing arguments... " << std::flush;
         
-        scene_args.input_path = docopt_args.at("<scene>").asString();
-        scene_args.input_format = docopt_args.at("--input-format").asString();
-        scene_args.prune = docopt_args.at("--prune").asBool();
-        scene_args.graphs = docopt_args.at("--graphs").asBool();
-        scene_args.terrain = docopt_args.at("--terrain").asBool();
-        
-        save_args.output_path = docopt_args.at("<path>").asString();
-        save_args.output_format = docopt_args.at("--output-format").asString();
+        if(! formats)
+        {
+            scene_args.input_path = docopt_args.at("<scene>").asString();
+            scene_args.input_format = docopt_args.at("--input-format").asString();
+            scene_args.prune = docopt_args.at("--prune").asBool();
+            scene_args.graphs = docopt_args.at("--graphs").asBool();
+            scene_args.terrain = docopt_args.at("--terrain").asBool();
+            
+            save_args.output_path = docopt_args.at("<path>").asString();
+            save_args.output_format = docopt_args.at("--output-format").asString();
+        }
+
         std::cout << "Done." << std::flush << std::endl;
     }
     ~Arguments(void)
     {}
 
+    bool formats;
     SceneArguments scene_args;
     SaveArguments save_args;
 };
 
 inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
 {
-    os << "Arguments:" << std::endl
-       << "  Input path: " << arguments.scene_args.input_path << std::endl
-       << "  Input format: " << arguments.scene_args.input_format << std::endl
-       << "  Pruning faces: " << arguments.scene_args.prune << std::endl
-       << "  Taking care of terrain: " << arguments.scene_args.terrain << std::endl
-       << "  Saving dual graphs: " << arguments.scene_args.graphs << std::endl
-       << "  Output path: " << arguments.save_args.output_path << std::endl
-       << "  Output format: " << arguments.save_args.output_format << std::endl;
+    if(arguments.formats)
+        os << "Arguments:" << std::endl
+           << "  Possible formats: " << arguments.formats << std::endl;
+    else
+        os << "Arguments:" << std::endl
+           << "  Input path: " << arguments.scene_args.input_path << std::endl
+           << "  Input format: " << arguments.scene_args.input_format << std::endl
+           << "  Pruning faces: " << arguments.scene_args.prune << std::endl
+           << "  Taking care of terrain: " << arguments.scene_args.terrain << std::endl
+           << "  Saving dual graphs: " << arguments.scene_args.graphs << std::endl
+           << "  Output path: " << arguments.save_args.output_path << std::endl
+           << "  Output format: " << arguments.save_args.output_format << std::endl;
+
     return os;
 }
 
@@ -86,6 +99,36 @@ int main(int argc, const char** argv)
             )
         );
         std::cout << std::boolalpha << arguments << std::endl;
+
+        if(arguments.formats)
+        {
+            std::cout << "Possible formats are: ";
+            std::copy(
+                std::begin(urban::io::SceneHandler::supported_formats),
+                std::prev(std::end(urban::io::SceneHandler::supported_formats)),
+                std::ostream_iterator<std::string>(std::cout, ", ")
+            );
+            std::cout << urban::io::SceneHandler::supported_formats.back() << std::endl;
+        }
+        else
+        {
+            auto scene = urban::io::SceneHandler(
+                boost::filesystem::path(
+                    arguments.scene_args.input_path
+                ),
+                std::map<std::string, bool>{{"read", true}},
+                arguments.scene_args.input_format
+            ).read();
+
+            if(arguments.scene_args.prune)
+                scene = scene.prune(arguments.scene_args.terrain);
+            
+            if(arguments.scene_args.graphs)
+                urban::save_building_duals(
+                    arguments.scene_args.input_path.parent_path(),
+                    scene
+                );
+        }
     }
     catch(std::exception const& except)
     {

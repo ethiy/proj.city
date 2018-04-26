@@ -27,15 +27,15 @@ namespace urban
         {
             switch(format)
             {
-                case off:
-                    break;
-                case obj:
-                    check_extension();
-                    break;
                 case t3ds_xml:
                     check_extension();
                     break;
                 case t3ds:
+                    check_extension();
+                    break;
+                case off:
+                    break;
+                case obj:
                     check_extension();
             }
         }
@@ -178,7 +178,7 @@ namespace urban
         void SceneHandler::check_extension(void) const
         {
             if(
-                boost::iequals(
+                ! boost::iequals(
                     filepath.extension().string(),
                     SceneHandler::extension(format)
                 )
