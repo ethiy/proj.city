@@ -53,9 +53,11 @@ namespace urban
                     {
                         std::vector<shadow::Mesh> buildings;
                         buildings.reserve(
-                            std::distance(
-                                boost::filesystem::directory_iterator(filepath),
-                                boost::filesystem::directory_iterator()
+                            static_cast<long>(
+                                std::distance(
+                                    boost::filesystem::directory_iterator(filepath),
+                                    boost::filesystem::directory_iterator()
+                                )
                             )
                         );
                         for(auto& file : boost::make_iterator_range(boost::filesystem::directory_iterator(filepath), {}))
