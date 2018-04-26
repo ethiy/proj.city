@@ -17,13 +17,13 @@ namespace urban
         OFFHandler::~OFFHandler(void)
         {}
 
-        shadow::Mesh OFFHandler::read(void) const
+        shadow::Mesh OFFHandler::read(void)
         {
             std::ostringstream error_message;
 
             shadow::Mesh mesh;
 
-            if (modes.at("read"))
+            if (modes["read"])
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
@@ -40,7 +40,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
@@ -48,9 +48,9 @@ namespace urban
             return mesh;
         }
 
-        void OFFHandler::write(shadow::Mesh const& mesh) const
+        void OFFHandler::write(shadow::Mesh const& mesh)
         {
-            if (modes.at("write"))
+            if (modes["write"])
             {
                     std::fstream off_file(filepath.string(), std::ios::out);
                     Off_stream off_stream(off_file);
@@ -59,7 +59,7 @@ namespace urban
             else
             {
                 std::ostringstream error_message;
-                error_message << std::boolalpha << "The write mode is set to:" << modes.at("write") << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }

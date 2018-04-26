@@ -20,9 +20,9 @@ namespace urban
             RasterHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~RasterHandler(void);
 
-            projection::RasterPrint read(void) const;
+            projection::RasterPrint read(void);
 
-            void write(projection::RasterPrint const& raster_image) const;
+            void write(projection::RasterPrint const& raster_image);
         };
     }
 }

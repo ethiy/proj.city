@@ -13,12 +13,12 @@ namespace urban
         RasterHandler::~RasterHandler(void)
         {}
 
-        projection::RasterPrint RasterHandler::read(void) const
+        projection::RasterPrint RasterHandler::read(void)
         {
             projection::RasterPrint raster_projection;
             std::ostringstream error_message;
             
-            if (modes.at("read"))
+            if (modes["read"])
             {
                 if (boost::filesystem::is_regular_file(filepath))
                 {
@@ -41,18 +41,19 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
 
             return raster_projection;
         }
-        void RasterHandler::write(const projection::RasterPrint & raster_image) const
+        
+        void RasterHandler::write(const projection::RasterPrint & raster_image)
         {
             std::ostringstream error_message;
 
-            if (modes.at("write"))
+            if (modes["write"])
             {
                 GDALAllRegister();
                 GDALDriver* driver = GetGDALDriverManager()->GetDriverByName("GeoTiff");
@@ -76,7 +77,7 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The write mode is set to:" << modes.at("write") << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }

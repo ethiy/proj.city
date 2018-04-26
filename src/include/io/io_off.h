@@ -14,8 +14,8 @@ namespace urban
             OFFHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~OFFHandler(void);
             
-            shadow::Mesh read(void) const;
-            void write(shadow::Mesh const& mesh) const;
+            shadow::Mesh read(void);
+            void write(shadow::Mesh const& mesh);
         };
     }
 }

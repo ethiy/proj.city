@@ -23,7 +23,7 @@ namespace urban
             shadow::Mesh exclude_mesh(std::string const& excluded);
             void add_mesh(shadow::Mesh const& mesh);
 
-            void write(void) const;
+            void write(void);
 
             scene::Scene get_scene(void);
             WaveObjHandler& from_scene(scene::Scene const& scene);

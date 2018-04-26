@@ -14,19 +14,19 @@ namespace urban
         {
             std::ostringstream error_message;
 
-            if(modes.at("read") && modes.at("write"))
+            if(modes["read"] && modes["write"])
             {
                 boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
                 throw boost::filesystem::filesystem_error("Simultaneous reading and writing access is forbidden", ec);
             }
 
-            if(!modes.at("read") && !modes.at("write"))
+            if(!modes["read"] && !modes["write"])
             {
                 boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
                 throw boost::filesystem::filesystem_error("You have to specify access type", ec);
             }
 
-            if(modes.at("read"))
+            if(modes["read"])
             {
                 if(boost::filesystem::is_regular_file(filepath))
                     file = lib3ds_file_load(filepath.string().c_str());
@@ -37,7 +37,7 @@ namespace urban
                     throw boost::filesystem::filesystem_error(error_message.str(), ec);
                 }
             }
-            if(modes.at("write"))
+            if(modes["write"])
             {
                 file = lib3ds_file_new();
             }
@@ -48,7 +48,7 @@ namespace urban
            lib3ds_file_free(file);
         }
 
-        scene::Scene T3DSHandler::get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml) const
+        scene::Scene T3DSHandler::get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml)
         {
             if(from_xml)
             {
@@ -81,7 +81,7 @@ namespace urban
                     scene_tree_file.epsg_index()
                 );
         }
-        scene::Scene T3DSHandler::get_scene(void) const
+        scene::Scene T3DSHandler::get_scene(void)
         {
             return scene::Scene(
                 level_meshes(1, std::set<char>{{'T', 'F'}}),
@@ -90,12 +90,12 @@ namespace urban
         }
 
 
-        std::vector<urban::shadow::Mesh> T3DSHandler::get_meshes(void) const
+        std::vector<urban::shadow::Mesh> T3DSHandler::get_meshes(void)
         {
             std::ostringstream error_message;
             std::vector<urban::shadow::Mesh> meshes;
             
-            if (modes.at("read"))
+            if (modes["read"])
             {
                 Lib3dsMesh *p_meshes = file->meshes;
                 while(p_meshes)
@@ -106,14 +106,14 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
             return meshes;
         }
 
-        std::vector<shadow::Mesh> T3DSHandler::level_meshes(std::size_t const level, std::set<char> const& facet_types) const
+        std::vector<shadow::Mesh> T3DSHandler::level_meshes(std::size_t const level, std::set<char> const& facet_types)
         {
             std::vector<std::string> nodes = get_nodes(level);
             std::vector<shadow::Mesh> meshes(nodes.size());
@@ -128,7 +128,7 @@ namespace urban
             );
             return meshes;
         }
-        shadow::Mesh T3DSHandler::level_terrain(std::size_t const level) const
+        shadow::Mesh T3DSHandler::level_terrain(std::size_t const level)
         {
             auto terrain_meshes = level_meshes(level, std::set<char>{'M'});
             return std::accumulate(
@@ -138,7 +138,7 @@ namespace urban
                 std::plus<shadow::Mesh>()
             ).set_name("terrain");
         }
-        std::vector<std::vector<shadow::Mesh> > T3DSHandler::raw_level_meshes(std::size_t const level, std::set<char> const& facet_types) const
+        std::vector<std::vector<shadow::Mesh> > T3DSHandler::raw_level_meshes(std::size_t const level, std::set<char> const& facet_types)
         {
             std::vector<std::string> nodes = get_nodes(level);
             std::vector<std::vector<shadow::Mesh> > meshes(nodes.size());
@@ -153,7 +153,7 @@ namespace urban
             );
             return meshes;
         }
-        std::vector<shadow::Mesh> T3DSHandler::node_meshes(std::string const& node_name, std::set<char> const& facet_types) const
+        std::vector<shadow::Mesh> T3DSHandler::node_meshes(std::string const& node_name, std::set<char> const& facet_types)
         {
             auto meshes_by_type = node_meshes_by_type(node_name, facet_types);
             std::vector<shadow::Mesh> meshes(
@@ -171,25 +171,25 @@ namespace urban
                 meshes.insert(std::end(meshes), std::begin(type_meshes.second), std::end(type_meshes.second));
             return meshes;
         }
-        std::map<char, std::deque<shadow::Mesh> > T3DSHandler::node_meshes_by_type(std::string const& node_name, std::set<char> const& facet_types) const
+        std::map<char, std::deque<shadow::Mesh> > T3DSHandler::node_meshes_by_type(std::string const& node_name, std::set<char> const& facet_types)
         {
             std::ostringstream error_message;
             std::map<char, std::deque<shadow::Mesh> > meshes;
             
-            if (modes.at("read"))
+            if (modes["read"])
             {
                 Lib3dsNode *p_node = lib3ds_node_by_name(file->nodes, node_name.c_str(), LIB3DS_OBJECT_NODE);
                 node_meshes(p_node, meshes, facet_types);
             }
             else
             {
-                error_message << std::boolalpha << "The read mode is set to:" << modes.at("read") << "! You should set it as follows: \'modes[\"read\"] = true\'";
+                error_message << std::boolalpha << "The read mode is set to:" << modes["read"] << "! You should set it as follows: \'modes[\"read\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
             return meshes;
         }
-        shadow::Mesh T3DSHandler::mesh(std::string const& node_name, std::set<char> const& facet_types) const
+        shadow::Mesh T3DSHandler::mesh(std::string const& node_name, std::set<char> const& facet_types)
         {
             auto meshes = mesh_by_type(node_name, facet_types);
 
@@ -203,7 +203,7 @@ namespace urban
                 }
             );
         }
-        std::map<char, shadow::Mesh> T3DSHandler::mesh_by_type(std::string const& node_name, std::set<char> const& facet_types) const
+        std::map<char, shadow::Mesh> T3DSHandler::mesh_by_type(std::string const& node_name, std::set<char> const& facet_types)
         {
             auto meshes = node_meshes_by_type(node_name, facet_types);
 
@@ -218,7 +218,7 @@ namespace urban
             return mesh_by_type;
         }
 
-        std::vector<std::string> T3DSHandler::get_nodes(std::size_t const level) const
+        std::vector<std::string> T3DSHandler::get_nodes(std::size_t const level)
         {
             std::deque<Lib3dsNode*> p_nodes{file->nodes};
             std::deque<Lib3dsNode*> childs;
@@ -251,7 +251,7 @@ namespace urban
         {
             std::ostringstream error_message;
 
-            if (modes.at("write"))
+            if (modes["write"])
             {
                 file->meshes = meshes[0].to_3ds();
                 Lib3dsMesh *current = file->meshes;
@@ -267,13 +267,13 @@ namespace urban
             }
             else
             {
-                error_message << std::boolalpha << "The write mode is set to:" << modes.at("write") << "! You should set it as follows: \'modes[\"write\"] = true\'";
+                error_message << std::boolalpha << "The write mode is set to:" << modes["write"] << "! You should set it as follows: \'modes[\"write\"] = true\'";
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
         }
 
-        void T3DSHandler::node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types) const
+        void T3DSHandler::node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types)
         {
             Lib3dsNode * p_node;
 

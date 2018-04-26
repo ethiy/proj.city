@@ -20,9 +20,9 @@ namespace urban
             VectorHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~VectorHandler(void);
 
-            projection::FootPrint read(void) const;
+            projection::FootPrint read(void);
 
-            void write(projection::FootPrint const& vectorimage, bool const label = true) const;
+            void write(projection::FootPrint const& vectorimage, bool const label = true);
         };
     }
 }

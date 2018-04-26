@@ -72,26 +72,23 @@ namespace urban
                                 buildings.push_back(
                                     OFFHandler(
                                         boost::filesystem::path(filepath / file),
-                                        std::map<std::string, bool>{{"read", true}}
+                                        modes
                                     ).read()
                                 );
                         scene = scene::Scene(
                             buildings,
                             OFFHandler(
                                 boost::filesystem::path(filepath / "terrain.off"),
-                                std::map<std::string, bool>{{"read", true}}
+                                modes
                             ).read()
                         );
                     }
                     break;
                 case obj:
-                    scene = WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_scene();
+                    scene = WaveObjHandler(filepath, modes).get_scene();
                     break;
                 case t3ds_xml:
-                    scene = T3DSHandler(
-                        filepath,
-                        std::map<std::string,bool>{{"read", true}}
-                    ).get_scene(
+                    scene = T3DSHandler(filepath, modes).get_scene(
                         SceneTreeHandler(
                             boost::filesystem::path(
                                 boost::filesystem::path(filepath.parent_path())
@@ -105,10 +102,7 @@ namespace urban
                 case t3ds:
                     try
                     {
-                        scene = T3DSHandler(
-                            filepath,
-                            std::map<std::string,bool>{{"read", true}}
-                        ).get_scene(
+                        scene = T3DSHandler(filepath, modes).get_scene(
                             SceneTreeHandler(
                                 boost::filesystem::path(filepath.parent_path())
                                 /
@@ -120,10 +114,7 @@ namespace urban
                     catch(std::runtime_error const& err)
                     {
                         std::cerr << err.what() << std::endl;
-                        scene = T3DSHandler(
-                            filepath,
-                            std::map<std::string,bool>{{"read", true}}
-                        ).get_scene();
+                        scene = T3DSHandler(filepath, modes).get_scene();
                     }
             }
             return scene;
@@ -137,19 +128,19 @@ namespace urban
                     for(auto const& building : scene)
                         OFFHandler(
                             boost::filesystem::path(filepath / (building.get_name() + supported_extentions.at(SceneFormat::off))),
-                            std::map<std::string, bool>{{"write", true}}
+                            modes
                         ).write(
                             shadow::Mesh(building.get_surface())
                         );
                     OFFHandler(
                         boost::filesystem::path(filepath / (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off))),
-                        std::map<std::string, bool>{{"write", true}}
+                        modes
                     ).write(
                         shadow::Mesh(scene.get_terrain().get_surface())
                     );
                     break;
                 case obj:
-                    WaveObjHandler(filepath, std::map<std::string,bool>{{"read", true}}).from_scene(scene).write();
+                    WaveObjHandler(filepath, modes).from_scene(scene).write();
                     break;
                 case t3ds_xml:
                     throw std::logic_error("Not yet implemented");
