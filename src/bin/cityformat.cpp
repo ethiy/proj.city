@@ -113,9 +113,7 @@ int main(int argc, const char** argv)
         else
         {
             auto scene = urban::io::SceneHandler(
-                boost::filesystem::path(
-                    arguments.scene_args.input_path
-                ),
+                arguments.scene_args.input_path,
                 std::map<std::string, bool>{{"read", true}},
                 arguments.scene_args.input_format
             ).read();
@@ -128,6 +126,13 @@ int main(int argc, const char** argv)
                     arguments.scene_args.input_path.parent_path(),
                     scene
                 );
+
+            urban::io::SceneHandler scene_writer(
+                arguments.save_args.output_path,
+                std::map<std::string, bool>{{"write", true}},
+                arguments.save_args.output_format
+            );
+            scene_writer.write(scene);
         }
     }
     catch(std::exception const& except)

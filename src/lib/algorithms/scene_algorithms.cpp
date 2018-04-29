@@ -35,7 +35,7 @@ namespace urban
             io::VectorHandler(
                 boost::filesystem::path(vector_dir / (projection.get_name() + ".shp")),
                 std::map<std::string,bool>{{"write", true}}
-            ).write(projection);
+            ).write(projection, labels);
 
             std::fstream attributes_file(
                 boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(),
@@ -50,18 +50,6 @@ namespace urban
             std::copy(std::begin(edges), std::end(edges), std::ostream_iterator<double>(attributes_file, " "));
             attributes_file << std::endl;
             attributes_file.close();
-        }
-        if(labels)
-        {
-            boost::filesystem::path label_dir(root_path / "labels");
-            boost::filesystem::create_directory(label_dir);
-            for(auto const& projection : projections)
-            {
-                io::VectorHandler(
-                    boost::filesystem::path(label_dir / (projection.get_name() + ".shp")),
-                    std::map<std::string,bool>{{"write", true}}
-                ).write(projection, true);
-            }
         }
         std::cout << "Done." << std::flush << std::endl;
     }
