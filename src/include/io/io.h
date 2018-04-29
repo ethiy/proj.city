@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 
-namespace urban
+namespace city
 {
     /** @defgroup io Input/Output Structures
     *  This is a general declaration of file handler classes

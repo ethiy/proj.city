@@ -2,7 +2,7 @@
 
 #include <algorithms/util_algorithms.h>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

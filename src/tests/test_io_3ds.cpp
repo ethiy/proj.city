@@ -19,12 +19,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
         
         WHEN("the reading mode is chosen")
         {
-            std::vector<urban::shadow::Mesh> meshes = urban::io::T3DSHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_meshes();
+            std::vector<city::shadow::Mesh> meshes = city::io::T3DSHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_meshes();
 
             THEN("the output checks")
             {
                 std::ostringstream auxilary;
-                std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<urban::shadow::Mesh>(auxilary, "\n"));
+                std::copy(std::begin(meshes), std::end(meshes), std::ostream_iterator<city::shadow::Mesh>(auxilary, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/santa_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
@@ -34,7 +34,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         
         WHEN("the reading mode is not chosen")
         {
-            urban::io::T3DSHandler handler(filepath, std::map<std::string,bool>{{"write", true}});
+            city::io::T3DSHandler handler(filepath, std::map<std::string,bool>{{"write", true}});
 
             THEN("the reader throws")
             {
@@ -51,7 +51,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( urban::io::T3DSHandler(filepath, std::map<std::string,bool>{{"read", true}}) );
+                REQUIRE_THROWS( city::io::T3DSHandler(filepath, std::map<std::string,bool>{{"read", true}}) );
             }
         }
 
@@ -59,14 +59,14 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( urban::io::T3DSHandler(filepath, std::map<std::string,bool>{{}}) );
+                REQUIRE_THROWS( city::io::T3DSHandler(filepath, std::map<std::string,bool>{{}}) );
             }
         }
     }
 
-    GIVEN("existing vector of urban::shadow::Mesh")
+    GIVEN("existing vector of city::shadow::Mesh")
     {
-        std::vector<urban::shadow::Mesh> meshes = urban::io::T3DSHandler(
+        std::vector<city::shadow::Mesh> meshes = city::io::T3DSHandler(
             boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
             std::map<std::string,bool>{{"read", true}}
         ).get_meshes();
@@ -76,20 +76,20 @@ SCENARIO("Input/Output from 3dsMAX file:")
             std::ostringstream file_name;
             file_name << boost::uuids::random_generator()() << ".3ds";
 
-            urban::io::T3DSHandler(
+            city::io::T3DSHandler(
                 boost::filesystem::path(file_name.str()),
                 std::map<std::string,bool>{{"write", true}}
             ).write_meshes(meshes);
 
             THEN("the output checks")
             {
-                std::vector<urban::shadow::Mesh> written_meshes = urban::io::T3DSHandler(
+                std::vector<city::shadow::Mesh> written_meshes = city::io::T3DSHandler(
                     boost::filesystem::path(file_name.str()),
                     std::map<std::string,bool>{{"read", true}}
                 ).get_meshes();
 
                 std::ostringstream auxilary;
-                std::copy(std::begin(written_meshes), std::end(written_meshes), std::ostream_iterator<urban::shadow::Mesh>(auxilary, "\n"));
+                std::copy(std::begin(written_meshes), std::end(written_meshes), std::ostream_iterator<city::shadow::Mesh>(auxilary, "\n"));
 
                 std::ifstream tmp("../../ressources/tests/santa_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
@@ -99,7 +99,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         
         WHEN("the writing mode is not chosen")
         {
-            urban::io::T3DSHandler handler(
+            city::io::T3DSHandler handler(
                 boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
                 std::map<std::string,bool>{{"read", true}}
             );

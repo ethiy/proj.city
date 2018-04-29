@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <numeric>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

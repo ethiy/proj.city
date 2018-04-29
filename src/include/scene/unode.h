@@ -14,7 +14,7 @@
 #include <string>
 #include <ostream>
 
-namespace urban
+namespace city
 {
     namespace scene
     {

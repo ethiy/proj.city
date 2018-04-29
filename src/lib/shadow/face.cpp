@@ -11,7 +11,7 @@
 
 #include <cmath>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {

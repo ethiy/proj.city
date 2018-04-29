@@ -8,7 +8,7 @@
 
 #include <limits>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {

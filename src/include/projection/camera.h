@@ -4,7 +4,7 @@
 
 #include <map>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

@@ -9,7 +9,7 @@
 #include <scene/unode.h>
 #include <projection/face_projection.h>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

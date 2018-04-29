@@ -6,7 +6,7 @@
 
 #include <gdal_priv.h>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

@@ -5,7 +5,7 @@
 
 #include <sstream>
 
-namespace urban
+namespace city
 {
     namespace io
     {
@@ -90,17 +90,17 @@ namespace urban
         }
 
 
-        std::vector<urban::shadow::Mesh> T3DSHandler::get_meshes(void)
+        std::vector<city::shadow::Mesh> T3DSHandler::get_meshes(void)
         {
             std::ostringstream error_message;
-            std::vector<urban::shadow::Mesh> meshes;
+            std::vector<city::shadow::Mesh> meshes;
             
             if (modes["read"])
             {
                 Lib3dsMesh *p_meshes = file->meshes;
                 while(p_meshes)
                 {
-                    meshes.push_back(urban::shadow::Mesh(p_meshes));
+                    meshes.push_back(city::shadow::Mesh(p_meshes));
                     p_meshes = p_meshes->next;
                 }
             }
@@ -247,7 +247,7 @@ namespace urban
             return nodes;
         }
 
-        void T3DSHandler::write_meshes(std::vector<urban::shadow::Mesh> const& meshes)
+        void T3DSHandler::write_meshes(std::vector<city::shadow::Mesh> const& meshes)
         {
             std::ostringstream error_message;
 
@@ -258,7 +258,7 @@ namespace urban
                 std::for_each(
                     std::next(std::begin(meshes), 1),
                     std::end(meshes),
-                    [&current](urban::shadow::Mesh const& mesh) {
+                    [&current](city::shadow::Mesh const& mesh) {
                         current->next = mesh.to_3ds();
                         current = current->next;
                     });
@@ -285,7 +285,7 @@ namespace urban
             if(!mesh || type == std::end(facet_types) ) 
                 return ;
 
-            meshes[*type].push_back(urban::shadow::Mesh(mesh));
+            meshes[*type].push_back(city::shadow::Mesh(mesh));
         }
     }
 }

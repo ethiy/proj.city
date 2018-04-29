@@ -11,7 +11,7 @@
 
 #include <ostream>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

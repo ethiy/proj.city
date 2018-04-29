@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 
-namespace urban
+namespace city
 {
     shadow::Point line2pt(std::string const& line)
     {

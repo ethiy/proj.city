@@ -4,7 +4,7 @@
 
 #include <boost/filesystem/operations.hpp>
 
-namespace urban
+namespace city
 {
     namespace io
     {
@@ -70,7 +70,7 @@ namespace urban
                 z_offset = (_bbox.zmax() + _bbox.zmin()) / 2.;
             }
             
-            return urban::shadow::Point(x_offset, y_offset, z_offset);
+            return city::shadow::Point(x_offset, y_offset, z_offset);
         }
         unsigned short SceneTreeHandler::epsg_index(void) const
         {

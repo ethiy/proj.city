@@ -6,7 +6,7 @@
 #include <vector>
 
 
-namespace urban
+namespace city
 {
     /*! Computes border length*/
     double border_length(scene::UNode const& unode);

@@ -10,7 +10,7 @@
 #include <utility>
 #include <map>
 
-namespace urban
+namespace city
 {
     /** Get the rotation transformation from a set of axis and angle couples*/
     Affine_transformation_3 rotation_transform(std::map<double, Vector_3> const& _rotations);

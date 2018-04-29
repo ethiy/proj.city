@@ -3,7 +3,7 @@
 #include <geometry_definitions.h>
 #include <shadow/point.h>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {

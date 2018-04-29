@@ -17,7 +17,7 @@
 
 #include <CGAL/intersections.h>
 
-namespace urban
+namespace city
 {
     using InexactKernel = CGAL::Simple_cartesian<double>;
     using Kernel = CGAL::Exact_predicates_exact_constructions_kernel;

@@ -7,7 +7,7 @@
 
 #include <tinyxml2.h>
 
-namespace urban
+namespace city
 {
     namespace io
     {

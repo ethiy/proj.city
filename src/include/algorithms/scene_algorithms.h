@@ -6,7 +6,7 @@
 
 #include <boost/filesystem/path.hpp>
 
-namespace urban
+namespace city
 {
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene);
     void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, bool const labels);

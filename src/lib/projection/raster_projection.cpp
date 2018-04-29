@@ -10,7 +10,7 @@
 
 #include <cmath>
 
-namespace urban
+namespace city
 {
     namespace projection
     {

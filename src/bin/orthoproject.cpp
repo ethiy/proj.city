@@ -113,9 +113,9 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
 }
 
 
-urban::scene::Scene input_scene(Arguments::SceneArguments const& scene_args)
+city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args)
 {
-    auto scene = urban::io::SceneHandler(
+    auto scene = city::io::SceneHandler(
         scene_args.input_path,
         std::map<std::string, bool>{{"read", true}},
         scene_args.input_format
@@ -125,7 +125,7 @@ urban::scene::Scene input_scene(Arguments::SceneArguments const& scene_args)
         scene = scene.prune(scene_args.terrain);
     
     if(scene_args.graphs)
-        urban::save_building_duals(
+        city::save_building_duals(
             scene_args.input_path.parent_path(),
             scene
         );
@@ -153,12 +153,12 @@ int main(int argc, const char** argv)
 
         if(arguments.save_args.saving())
         {
-            auto projections = urban::orthoproject(scene, arguments.scene_args.terrain);
+            auto projections = city::orthoproject(scene, arguments.scene_args.terrain);
 
-            urban::save_building_prints(data_directory, projections, arguments.save_args.labels);
+            city::save_building_prints(data_directory, projections, arguments.save_args.labels);
 
             if(arguments.save_args.scene)
-                urban::save_scene_prints(
+                city::save_scene_prints(
                     data_directory,
                     arguments.scene_args.input_path.stem().string(),
                     projections,
@@ -168,8 +168,8 @@ int main(int argc, const char** argv)
                     
             if(arguments.raster_args.rasterizing())
             {
-                auto raster_projections = urban::rasterize_scene(projections, arguments.raster_args.pixel_size);
-                urban::save_building_rasters(data_directory, raster_projections);
+                auto raster_projections = city::rasterize_scene(projections, arguments.raster_args.pixel_size);
+                city::save_building_rasters(data_directory, raster_projections);
             }
         }
     }

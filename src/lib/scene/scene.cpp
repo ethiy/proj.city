@@ -3,7 +3,7 @@
 #include <algorithms/util_algorithms.h>
 #include <algorithms/unode_algorithms.h>
 
-namespace urban
+namespace city
 {
     namespace scene
     {
@@ -12,7 +12,7 @@ namespace urban
         Scene::Scene(
             std::vector<shadow::Mesh> const& building_meshes,
             shadow::Mesh const& terrain_mesh,
-            urban::shadow::Point const& _pivot,
+            city::shadow::Point const& _pivot,
             unsigned short _epsg_index
         )
             : pivot(_pivot), epsg_index(_epsg_index), buildings(building_meshes.size())
@@ -137,11 +137,11 @@ namespace urban
                 std::begin(buildings),
                 [](scene::UNode & building)
                 {
-                    return ::urban::prune(building);
+                    return ::city::prune(building);
                 }
             );
             if(_terrain)
-                terrain = ::urban::prune(terrain);
+                terrain = ::city::prune(terrain);
 
             return *this;
         }

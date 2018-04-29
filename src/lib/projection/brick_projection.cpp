@@ -12,7 +12,7 @@
 
 #include <stdexcept>
 
-namespace urban
+namespace city
 {
     namespace projection
     {
@@ -258,7 +258,7 @@ namespace urban
             result.reserve(size);
             for(auto const& footprint : footprint_polygons)
             {
-                auto buffer = ::urban::edge_lengths(footprint.outer_boundary());
+                auto buffer = ::city::edge_lengths(footprint.outer_boundary());
                 result.insert(std::end(result), std::begin(buffer), std::end(buffer));
             }
             return result;

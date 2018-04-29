@@ -104,15 +104,15 @@ int main(int argc, const char** argv)
         {
             std::cout << "Possible formats are: ";
             std::copy(
-                std::begin(urban::io::SceneHandler::supported_formats),
-                std::prev(std::end(urban::io::SceneHandler::supported_formats)),
+                std::begin(city::io::SceneHandler::supported_formats),
+                std::prev(std::end(city::io::SceneHandler::supported_formats)),
                 std::ostream_iterator<std::string>(std::cout, ", ")
             );
-            std::cout << urban::io::SceneHandler::supported_formats.back() << std::endl;
+            std::cout << city::io::SceneHandler::supported_formats.back() << std::endl;
         }
         else
         {
-            auto scene = urban::io::SceneHandler(
+            auto scene = city::io::SceneHandler(
                 arguments.scene_args.input_path,
                 std::map<std::string, bool>{{"read", true}},
                 arguments.scene_args.input_format
@@ -122,12 +122,12 @@ int main(int argc, const char** argv)
                 scene = scene.prune(arguments.scene_args.terrain);
             
             if(arguments.scene_args.graphs)
-                urban::save_building_duals(
+                city::save_building_duals(
                     arguments.scene_args.input_path.parent_path(),
                     scene
                 );
 
-            urban::io::SceneHandler scene_writer(
+            city::io::SceneHandler scene_writer(
                 arguments.save_args.output_path,
                 std::map<std::string, bool>{{"write", true}},
                 arguments.save_args.output_format

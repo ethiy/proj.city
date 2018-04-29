@@ -21,7 +21,7 @@
 #include <string>
 #include <ostream>
 
-namespace urban
+namespace city
 {
     /** @defgroup shadow_group Shadow Structures
     *  This is an interface to external structures

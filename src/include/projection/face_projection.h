@@ -11,7 +11,7 @@
 
 #include <ostream>
 
-namespace urban
+namespace city
 {
     namespace projection
     {
@@ -21,7 +21,7 @@ namespace urban
         {
         public:
             FacePrint(void);
-            FacePrint(::urban::scene::UNode::Facet const& facet);
+            FacePrint(::city::scene::UNode::Facet const& facet);
             FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane);
             FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition);
             FacePrint(FacePrint const& other);

@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 
-namespace urban
+namespace city
 {
     namespace scene
     {
@@ -17,7 +17,7 @@ namespace urban
         public:
             /**
              * Empty Constructor.
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(city::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see Scene(Scene && other);
              * @see ~Scene(void);
@@ -26,14 +26,14 @@ namespace urban
             Scene(
                 std::vector<shadow::Mesh> const& building_meshes,
                 shadow::Mesh const& terrain_mesh,
-                urban::shadow::Point const& _pivot = shadow::Point(),
+                city::shadow::Point const& _pivot = shadow::Point(),
                 unsigned short _epsg_index = 2154
             );
             /**
              * Copy Constructor.
              * @param other Scene to copy
              * @see Scene(void);
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(city::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
@@ -42,7 +42,7 @@ namespace urban
              * Move Constructor.
              * @param other Scene to move
              * @see Scene(void);
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(city::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see ~Scene(void);
              */
@@ -50,7 +50,7 @@ namespace urban
             /**
              * Destructor.
              * @see Scene(void);
-             * @see Scene(urban::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(city::shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see Scene(Scene && other);
              */
@@ -110,7 +110,7 @@ namespace urban
             Scene & prune(bool const terrain);
         private:
             /** Pivot */
-            urban::shadow::Point pivot;
+            city::shadow::Point pivot;
             /** EPSG projection system code */
             unsigned short epsg_index = 2154;
             /** Scene Buildings */

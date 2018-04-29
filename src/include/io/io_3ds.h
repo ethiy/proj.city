@@ -13,7 +13,7 @@
 #include <deque>
 #include <set>
 
-namespace urban
+namespace city
 {
     namespace io
     {
@@ -23,7 +23,7 @@ namespace urban
             T3DSHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~T3DSHandler(void);
 
-            ::urban::scene::Scene get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml = true);
+            ::city::scene::Scene get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml = true);
             scene::Scene get_scene(void);
 
             std::vector<shadow::Mesh> get_meshes(void);

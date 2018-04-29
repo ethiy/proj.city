@@ -7,7 +7,7 @@
 
 #include <io/io_scene.h>
 
-namespace urban
+namespace city
 {
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
@@ -42,8 +42,8 @@ namespace urban
                 std::ios::out
             );
 
-            auto areas = urban::areas(projection);
-            auto edges = urban::edge_lengths(projection);
+            auto areas = city::areas(projection);
+            auto edges = city::edge_lengths(projection);
 
             std::copy(std::begin(areas), std::end(areas), std::ostream_iterator<double>(attributes_file, " "));
             attributes_file << std::endl;
@@ -60,7 +60,7 @@ namespace urban
         boost::filesystem::create_directory(raster_dir);
         for(auto const& rasta : raster_projections)
         {
-            urban::io::RasterHandler(
+            city::io::RasterHandler(
                 boost::filesystem::path(raster_dir / (rasta.get_name() + ".tiff")),
                 std::map<std::string,bool>{{"write", true}}
             ).write(rasta);
@@ -74,19 +74,19 @@ namespace urban
         auto scene_projection = std::accumulate(
             std::begin(projections),
             std::end(projections),
-            urban::projection::FootPrint()
+            city::projection::FootPrint()
         );
 
-        urban::io::VectorHandler(
+        city::io::VectorHandler(
             boost::filesystem::path(root_path / (filename + ".shp")),
             std::map<std::string,bool>{{"write", true}}
         ).write(scene_projection);
 
         if(rasterize)
         {
-            urban::projection::RasterPrint global_rasta(scene_projection, pixel_size);
+            city::projection::RasterPrint global_rasta(scene_projection, pixel_size);
 
-            urban::io::RasterHandler(
+            city::io::RasterHandler(
                 boost::filesystem::path(root_path / (filename + ".tiff")),
                 std::map<std::string,bool>{{"write", true}}
             ).write(global_rasta);

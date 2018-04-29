@@ -19,7 +19,7 @@
 #include <ios>
 
 
-namespace urban
+namespace city
 {
     namespace io
     {
@@ -214,7 +214,7 @@ namespace urban
 
                 for(; cursor != std::end(lines) && cursor->front() == 'v'; ++cursor)
                     points.push_back(
-                        ::urban::line2pt(cursor->substr(1))
+                        ::city::line2pt(cursor->substr(1))
                     );
 
                 return points;
@@ -244,7 +244,7 @@ namespace urban
                 std::map<std::size_t, std::size_t> index_map;
                 std::vector<shadow::Face> facets = read_facets(lines, index, number_of_facets, index_map);
 
-                return shadow::Mesh(name, ::urban::select(points, index_map), facets);
+                return shadow::Mesh(name, ::city::select(points, index_map), facets);
             }
 
             std::vector<shadow::Face> read_facets(std::deque<std::string> const& lines, std::size_t const index, std::size_t const number_of_facets, std::map<std::size_t, std::size_t> & index_map)
