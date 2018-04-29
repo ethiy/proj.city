@@ -39,8 +39,13 @@ namespace urban
              surface(std::move(other.surface)),
              bounding_box(std::move(other.bounding_box))
         {}
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<shadow::Mesh> const& meshes)
-            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        UNode::UNode(
+            std::string const& node_id,
+            std::vector<shadow::Mesh> const& meshes,
+            shadow::Point const& _reference_point,
+            unsigned short const _epsg_index
+        )
+            :name(node_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<Polyhedron> polyhedrons(meshes.size());
             std::transform(
@@ -85,8 +90,12 @@ namespace urban
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
-            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        UNode::UNode(
+            shadow::Mesh const& mesh,
+            shadow::Point const& _reference_point,
+            unsigned short const _epsg_index
+        )
+            : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<Point_3> points = mesh.get_cgal_points();
             std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
@@ -98,7 +107,13 @@ namespace urban
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons)
+        UNode::UNode(
+            std::string const& building_id,
+            std::vector<Point_3> & points,
+            std::vector< std::vector<std::size_t> > & polygons,
+            shadow::Point const& _reference_point,
+            unsigned short const _epsg_index
+        )
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);

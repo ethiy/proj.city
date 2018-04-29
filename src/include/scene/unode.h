@@ -24,9 +24,24 @@ namespace urban
             UNode(void);
             UNode(UNode const& other);
             UNode(UNode && other);
-            UNode(std::string const& node_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh);
-            UNode(std::string const& node_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<shadow::Mesh> const& meshes);
-            UNode(std::string const& node_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons);
+            UNode(
+                shadow::Mesh const& mesh,
+                shadow::Point const& _reference_point=shadow::Point(),
+                unsigned short const _epsg_index=2154
+            );
+            UNode(
+                std::string const& node_id,
+                std::vector<shadow::Mesh> const& meshes,
+                shadow::Point const& _reference_point=shadow::Point(),
+                unsigned short const _epsg_index=2154
+            );
+            UNode(
+                std::string const& node_id,
+                std::vector<Point_3> & points,
+                std::vector< std::vector<std::size_t> > & polygons,
+                shadow::Point const& _reference_point=shadow::Point(),
+                unsigned short const _epsg_index=2154
+            );
             ~UNode(void);
 
             void swap(UNode & other);

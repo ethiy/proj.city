@@ -69,7 +69,8 @@
         "numeric": "cpp",
         "map": "cpp",
         "__locale": "cpp",
-        "cmakeccompilerid.c": "cpp"
+        "cmakeccompilerid.c": "cpp",
+        "__nullptr": "cpp"
     },
     "vsicons.presets.angular": true,
     "cmake.buildDirectory": "${workspaceRoot}/build/vscode",

@@ -12,14 +12,14 @@ SCENARIO("Urban Node manipulation:")
 {
     GIVEN("A 3ds file")
     {
-        urban::io::T3DSHandler test_file(
+        auto staff_mesh = urban::io::T3DSHandler(
             boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
             std::map<std::string,bool>{{"read", true}}
-        );
+        ).mesh("Staff", std::set<char>{'S'});
 
         WHEN("the \"buildings\" are read into unodes")
         {
-            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0, std::set<char>{'S'}, test_file);
+            urban::scene::UNode staff(staff_mesh, urban::shadow::Point(), 0);
 
             THEN("the output checks")
             {
@@ -33,7 +33,7 @@ SCENARIO("Urban Node manipulation:")
         }
         WHEN("the \"buildings\" are read into unodes and stitched")
         {
-            urban::scene::UNode staff("Staff", urban::shadow::Point(), 0, std::set<char>{'S'}, test_file);
+            urban::scene::UNode staff(staff_mesh, urban::shadow::Point(), 0);
 
             THEN("the output checks")
             {

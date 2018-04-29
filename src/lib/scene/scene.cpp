@@ -23,11 +23,11 @@ namespace urban
                 std::begin(buildings),
                 [this](shadow::Mesh const& building_mesh)
                 {
-                    return UNode(building_mesh.get_name(), pivot, epsg_index, building_mesh);
+                    return UNode(building_mesh, pivot, epsg_index);
                 }
             );
 
-            terrain = UNode(terrain_mesh.get_name(), pivot, epsg_index, terrain_mesh);
+            terrain = UNode(terrain_mesh, pivot, epsg_index);
         }
         Scene::Scene(Scene const& other)
             : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)

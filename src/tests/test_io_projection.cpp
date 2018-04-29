@@ -39,10 +39,10 @@ SCENARIO("Input/Output from Shadow Mesh:")
         urban::projection::FootPrint test_footprint(
             urban::scene::UNode(
                 "test_mesh",
-                urban::shadow::Point(),
-                2154,
                 points,
-                polygons
+                polygons,
+                urban::shadow::Point(),
+                2154
             )
         );
 
