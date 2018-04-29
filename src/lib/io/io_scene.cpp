@@ -53,7 +53,7 @@ namespace city
                     {
                         std::vector<shadow::Mesh> buildings;
                         buildings.reserve(
-                            static_cast<long>(
+                            static_cast<std::size_t>(
                                 std::distance(
                                     boost::filesystem::directory_iterator(filepath),
                                     boost::filesystem::directory_iterator()
@@ -70,17 +70,11 @@ namespace city
                                 )
                             )
                                 buildings.push_back(
-                                    OFFHandler(
-                                        boost::filesystem::path(filepath / file),
-                                        modes
-                                    ).read()
+                                    OFFHandler(file, modes).read()
                                 );
                         scene = scene::Scene(
                             buildings,
-                            OFFHandler(
-                                boost::filesystem::path(filepath / "terrain.off"),
-                                modes
-                            ).read()
+                            OFFHandler(filepath / "terrain.off", modes).read()
                         );
                     }
                     break;
@@ -90,11 +84,9 @@ namespace city
                 case t3ds_xml:
                     scene = T3DSHandler(filepath, modes).get_scene(
                         SceneTreeHandler(
-                            boost::filesystem::path(
-                                boost::filesystem::path(filepath.parent_path())
-                                /
-                                (filepath.stem().string() + ".XML")
-                            )
+                            filepath.parent_path()
+                            /
+                            (filepath.stem().string() + ".XML")
                         ),
                         true
                     );
@@ -104,7 +96,7 @@ namespace city
                     {
                         scene = T3DSHandler(filepath, modes).get_scene(
                             SceneTreeHandler(
-                                boost::filesystem::path(filepath.parent_path())
+                                filepath.parent_path()
                                 /
                                 (filepath.stem().string() + ".XML")
                             ),
@@ -127,13 +119,15 @@ namespace city
                 case off:
                     for(auto const& building : scene)
                         OFFHandler(
-                            boost::filesystem::path(filepath / (building.get_name() + supported_extentions.at(SceneFormat::off))),
+                            filepath / (building.get_name() + supported_extentions.at(SceneFormat::off)),
                             modes
                         ).write(
                             shadow::Mesh(building.get_surface())
                         );
                     OFFHandler(
-                        boost::filesystem::path(filepath / (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off))),
+                        filepath
+                        /
+                        (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off)),
                         modes
                     ).write(
                         shadow::Mesh(scene.get_terrain().get_surface())
