@@ -1,4 +1,4 @@
-version: '0.0.0_{build}'
+version: '0.4.1_{build}'
 
 branches:
   only:
@@ -27,13 +27,15 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S libtool make"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-{boost,cmake}"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-eigen3"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-gmp"
+  - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-mpfr"
   - C:\msys64\usr\bin\bash.exe -lc "pacman --noconfirm -S mingw-w64-x86_64-tinyxml2"
   - ps: |
         New-Item -ItemType Directory -Path .\3rParty
         Set-Location 3rParty
-  - appveyor DownloadFile https://github.com/CGAL/cgal/archive/releases/CGAL-4.10.tar.gz
-  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/; mkdir CGAL-4.10 && tar xf CGAL-4.10.tar.gz -C CGAL-4.10 --strip-components 1"
-  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/CGAL-4.10/; mkdir build; cd build; cmake ..; make -j4 install; make install_FindCGAL"
+  - appveyor DownloadFile https://github.com/CGAL/cgal/archive/releases/CGAL-4.11.1.tar.gz
+  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/; mkdir CGAL-4.10 && tar xf CGAL-4.11.1.tar.gz -C CGAL-4.11.1 --strip-components 1"
+  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/CGAL-4.11.1/; mkdir build; cd build; cmake ..; make -j4 install; make install_FindCGAL"
   - appveyor DownloadFile ​http://download.osgeo.org/gdal/2.1.3/gdal213.zip
   - 7z x gdal213.zip
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/gdal-2.1.3; ./configure; make -j4; make install"
