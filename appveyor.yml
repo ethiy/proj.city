@@ -40,4 +40,4 @@ install:
   - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/3rParty/lib3ds-1.3.0/; ./configure; make -j4; make install"
 build_script:
   - ps: New-Item -ItemType Directory -Path ..\build\MSYS2
-  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; /mingw64/bin/cmake -G'Unix Makefiles' -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../.. ; make -j4"
+  - C:\msys64\usr\bin\bash.exe -lc "MSYSTEM=MINGW64 . /etc/profile; cd /C/projects/3dscenemodel/build/MSYS2; /mingw64/bin/cmake -G'Unix Makefiles' -DCGAL_DONT_OVERRIDE_CMAKE_FLAGS=ON ../.. ; make libcatch libdocopt; make proj.city; make all"
