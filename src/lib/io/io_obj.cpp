@@ -73,7 +73,7 @@ namespace city
                 std::begin(excluded_meshes),
                 [excluded](shadow::Mesh const& mesh)
                 {
-                    return mesh.get_name() == excluded;
+                    return mesh.get_name() != excluded;
                 }
             );
             return std::accumulate(
