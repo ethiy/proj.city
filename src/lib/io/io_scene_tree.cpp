@@ -10,7 +10,11 @@ namespace city
     {
         SceneTreeHandler::SceneTreeHandler(boost::filesystem::path const& _filepath)
             : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}})
-        {}
+        {
+            auto error = scene_tree.LoadFile(filepath.string().c_str());
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read Scene Tree description!");
+        }
         SceneTreeHandler::~SceneTreeHandler(void)
         {}
 
