@@ -104,10 +104,10 @@ namespace city
                 std::begin(meshes),
                 [](scene::UNode const& unode)
                 {
-                    return shadow::Mesh(unode.get_surface());
+                    return shadow::Mesh(unode);
                 }
             );
-            meshes[meshes.size()] = shadow::Mesh(scene.get_terrain().get_surface());
+            meshes[meshes.size()] = shadow::Mesh(scene.get_terrain());
             return *this;
         }
     }
