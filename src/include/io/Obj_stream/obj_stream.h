@@ -169,7 +169,7 @@ namespace city
                     {
                         ios << "f ";
                         for(auto const index: facet)
-                            ios << index + shift << " ";
+                            ios << index + shift + 1 << " ";
                         ios << std::endl;
                     }
                 );
