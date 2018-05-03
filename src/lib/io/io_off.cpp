@@ -30,6 +30,7 @@ namespace city
                     std::fstream off_file(filepath.string(), std::ios::in);
                     Off_stream off_stream(off_file);
                     off_stream >> mesh;
+                    mesh.set_name(filepath.stem().string());
                 }
                 else
                 {
