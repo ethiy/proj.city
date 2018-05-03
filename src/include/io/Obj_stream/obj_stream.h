@@ -90,7 +90,7 @@ namespace city
              */
             Obj_stream & operator <<(std::vector<shadow::Mesh> const& meshes)
             {
-                std::vector<std::size_t> shifts(meshes.size(), 0);
+                std::vector<std::size_t> shifts(meshes.size());
                 std::transform(
                     std::begin(meshes),
                     std::prev(std::end(meshes)),
@@ -151,21 +151,15 @@ namespace city
                         ios << "v " << points << std::endl;
                     }
                 );
-                ios << std::endl;
             }
             void print_faces(std::vector<shadow::Mesh> const& meshes, std::vector<std::size_t> const& shifts)
             {
-                for(auto const& tuple : boost::combine(meshes, shifts))
-                {
-                    shadow::Mesh mesh;
-                    std::size_t shift;
-                    boost::tie(mesh, shift) = tuple;
-
-                    print_mesh_faces(mesh, shift);
-                }
+                for(auto const& mesh_shift : boost::combine(meshes, shifts))
+                    print_mesh_faces(mesh_shift.get<0>(), mesh_shift.get<1>());
             }
             void print_mesh_faces(shadow::Mesh const& mesh, std::size_t const shift)
             {
+                ios << std::endl;
                 ios << "o " << mesh.get_name() << std::endl;
 
                 std::for_each(
@@ -338,22 +332,16 @@ namespace city
                 sizes.pop_back();
                 indexes.pop_back();
 
-                for(auto const& tpl : boost::combine(names, sizes, indexes))
-                {
-                    std::size_t size, index;
-                    std::string name;
-                    boost::tie(name, size, index) = tpl;
-                    
+                for(auto const& name_size_index : boost::combine(names, sizes, indexes))
                     objects.emplace( 
                         std::make_pair(
-                            name,
+                            name_size_index.get<0>(),
                             std::make_pair(
-                                index,
-                                size
+                                name_size_index.get<2>(),
+                                name_size_index.get<1>()
                             )
                         )
                     );
-                }
                     
                 return objects;
             }
