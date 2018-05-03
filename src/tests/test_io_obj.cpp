@@ -24,7 +24,7 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("reading in text mode")
         {
-            std::vector<city::shadow::Mesh> meshes = city::io::WaveObjHandler(filepath, std::map<std::string, bool>{{"read", true}}).read().data();
+            auto meshes = city::io::WaveObjHandler(filepath, std::map<std::string, bool>{{"read", true}}).read().data();
             for(auto mesh: meshes)
             {
                 city::io::OFFHandler hihi(boost::filesystem::path(mesh.get_name() + ".off"), std::map<std::string, bool>{{"write", true}});
@@ -93,7 +93,7 @@ SCENARIO("Input/Output from obj file:")
 
     GIVEN("An existing set of objects")
     {
-        std::vector<city::shadow::Mesh> meshes = city::io::WaveObjHandler(
+        auto meshes = city::io::WaveObjHandler(
             boost::filesystem::path("../../ressources/3dModels/OBJ/scene.obj"),
             std::map<std::string, bool>{{"read", true}}
         ).read().data();
@@ -105,13 +105,13 @@ SCENARIO("Input/Output from obj file:")
 
             city::io::WaveObjHandler handler(
                 boost::filesystem::path(file_name.str()),
-                std::map<std::string, bool>{{"write", true}}
+                meshes
             );
             handler.write();
 
             THEN("the input should check")
             {
-                std::vector<city::shadow::Mesh> written_meshes = city::io::WaveObjHandler(
+                auto written_meshes = city::io::WaveObjHandler(
                     boost::filesystem::path(file_name.str()),
                     std::map<std::string, bool>{{"read", true}}
                 ).read().data();

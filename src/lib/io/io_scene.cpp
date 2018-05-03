@@ -139,7 +139,7 @@ namespace city
                     );
                     break;
                 case obj:
-                    WaveObjHandler(filepath, modes).from_scene(scene).write();
+                    WaveObjHandler(filepath, scene, modes).write();
                     break;
                 case t3ds_xml:
                     throw std::logic_error("Not yet implemented");

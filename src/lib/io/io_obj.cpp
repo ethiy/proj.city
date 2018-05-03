@@ -12,6 +12,23 @@ namespace city
         WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
             : FileHandler(_filepath, _modes)
         {}
+        WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& _meshes, std::map<std::string, bool> const& _modes)
+            : FileHandler(_filepath, _modes), meshes(_meshes)
+        {}
+        WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene, std::map<std::string, bool> const& _modes)
+            : WaveObjHandler(_filepath, std::vector<shadow::Mesh>(scene.size() + 1), _modes)
+        {
+            std::transform(
+                std::begin(scene),
+                std::end(scene),
+                std::begin(meshes),
+                [](scene::UNode const& unode)
+                {
+                    return shadow::Mesh(unode);
+                }
+            );
+            meshes[meshes.size()] = shadow::Mesh(scene.get_terrain());
+        }
         WaveObjHandler::~WaveObjHandler(void) {}
 
         std::vector<shadow::Mesh> const& WaveObjHandler::data(void) const noexcept
@@ -94,21 +111,6 @@ namespace city
                 meshes,
                 terrain
             );
-        }
-        WaveObjHandler& WaveObjHandler::from_scene(scene::Scene const& scene)
-        {
-            meshes = std::vector<shadow::Mesh>(scene.size() + 1);
-            std::transform(
-                std::begin(scene),
-                std::end(scene),
-                std::begin(meshes),
-                [](scene::UNode const& unode)
-                {
-                    return shadow::Mesh(unode);
-                }
-            );
-            meshes[meshes.size()] = shadow::Mesh(scene.get_terrain());
-            return *this;
         }
     }
 }
