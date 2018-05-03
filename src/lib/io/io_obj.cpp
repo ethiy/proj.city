@@ -27,7 +27,7 @@ namespace city
                     return shadow::Mesh(unode);
                 }
             );
-            meshes[meshes.size()] = shadow::Mesh(scene.get_terrain());
+            meshes.back() = shadow::Mesh(scene.get_terrain());
         }
         WaveObjHandler::~WaveObjHandler(void) {}
 
