@@ -201,7 +201,7 @@ namespace city
                 {
                     return lhs + rhs.second;
                 }
-            );
+            ).set_name(node_name);
         }
         std::map<char, shadow::Mesh> T3DSHandler::mesh_by_type(std::string const& node_name, std::set<char> const& facet_types)
         {
