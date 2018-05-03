@@ -155,7 +155,7 @@ namespace city
             }
             void print_faces(std::vector<shadow::Mesh> const& meshes, std::vector<std::size_t> const& shifts)
             {
-                for(auto const tuple : boost::combine(meshes, shifts))
+                for(auto const& tuple : boost::combine(meshes, shifts))
                 {
                     shadow::Mesh mesh;
                     std::size_t shift;
@@ -338,7 +338,7 @@ namespace city
                 sizes.pop_back();
                 indexes.pop_back();
 
-                for(auto const tpl : boost::combine(names, sizes, indexes))
+                for(auto const& tpl : boost::combine(names, sizes, indexes))
                 {
                     std::size_t size, index;
                     std::string name;

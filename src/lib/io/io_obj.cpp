@@ -108,6 +108,7 @@ namespace city
                 }
             );
             meshes[meshes.size()] = shadow::Mesh(scene.get_terrain().get_surface());
+            return *this;
         }
     }
 }
