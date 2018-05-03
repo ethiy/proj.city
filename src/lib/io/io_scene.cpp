@@ -68,6 +68,8 @@ namespace city
                                     file.path().extension().string(),
                                     SceneHandler::extension(format)
                                 )
+                                &&
+                                file.path().stem().string() != "terrain"
                             )
                                 buildings.push_back(
                                     OFFHandler(file, modes).read()
