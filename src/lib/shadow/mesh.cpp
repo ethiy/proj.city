@@ -1,5 +1,7 @@
 #include <shadow/mesh.h>
 
+#include<scene/unode.h>
+
 #include <stdexcept>
 
 #include <iterator>
@@ -58,8 +60,8 @@ namespace city
             compute_bbox();
         }
 
-        Mesh::Mesh(Polyhedron const& polyhedron)
-            : points(polyhedron.size_of_vertices()), faces(polyhedron.size_of_facets())
+        Mesh::Mesh(std::string const& _name, Polyhedron const& polyhedron)
+            : name(_name), points(polyhedron.size_of_vertices()), faces(polyhedron.size_of_facets())
         {
             std::transform(
                 polyhedron.points_begin(),
@@ -83,7 +85,12 @@ namespace city
             compute_bbox();
         }
 
-        Mesh::Mesh(std::string _name, std::vector<Point> const& _points, std::vector<Face> const& _faces)
+        Mesh::Mesh(scene::UNode const& unode)
+            : Mesh(unode.get_name(), unode.get_surface())
+        {}
+
+
+        Mesh::Mesh(std::string const& _name, std::vector<Point> const& _points, std::vector<Face> const& _faces)
             : name(_name), points(_points), faces(_faces)
         {
             compute_bbox();

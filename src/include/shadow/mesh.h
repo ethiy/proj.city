@@ -23,6 +23,10 @@
 
 namespace city
 {
+    namespace scene
+    {
+        class UNode;
+    }
     /** @defgroup shadow_group Shadow Structures
     *  This is an interface to external structures
     *  @{
@@ -97,7 +101,8 @@ namespace city
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
-            Mesh(Polyhedron const& polyhedron);
+            Mesh(std::string const& _name, Polyhedron const& polyhedron);
+            Mesh(scene::UNode const& unode);
             /**
              * General constructor. 
              * @param _name mesh name
@@ -111,7 +116,7 @@ namespace city
              * @see Mesh(std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
-            Mesh(std::string _name, std::vector<Point> const& _points, std::vector<Face> const& _faces);
+            Mesh(std::string const& _name, std::vector<Point> const& _points, std::vector<Face> const& _faces);
             /**
              * General constructor. 
              * @param _points points coordinates
