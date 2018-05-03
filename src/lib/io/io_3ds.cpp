@@ -68,7 +68,7 @@ namespace city
                     mesh(
                         scene_tree_file.terrain_id(),
                         std::set<char>{'M'}
-                    ),
+                    ).set_name("terrain"),
                     scene_tree_file.pivot(),
                     scene_tree_file.epsg_index()
                 );
