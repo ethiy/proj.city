@@ -20,16 +20,11 @@ SCENARIO("Input/Output from obj file:")
 {
     GIVEN("An existing obj file")
     {
-        boost::filesystem::path filepath("../../ressources/3dModels/OBJ/scene.obj");
+        boost::filesystem::path filepath("../../ressources/3dModels/OBJ/minimal.obj");
 
         WHEN("reading in text mode")
         {
             auto meshes = city::io::WaveObjHandler(filepath, std::map<std::string, bool>{{"read", true}}).read().data();
-            for(auto mesh: meshes)
-            {
-                city::io::OFFHandler hihi(boost::filesystem::path(mesh.get_name() + ".off"), std::map<std::string, bool>{{"write", true}});
-                hihi.write(mesh);
-            }
 
             THEN("the output checks")
             {
@@ -49,7 +44,7 @@ SCENARIO("Input/Output from obj file:")
                     std::ostream_iterator<std::string>(out, "\n")
                 );
 
-                std::ifstream tmp("../../ressources/tests/obj_scene.txt");
+                std::ifstream tmp("../../ressources/tests/obj_minimal.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
                 REQUIRE(out.str() == tmp_str);
             }
@@ -68,7 +63,7 @@ SCENARIO("Input/Output from obj file:")
 
     GIVEN("A wrong file path")
     {
-        boost::filesystem::path filepath("../ressources/3dModels/OBJ/scene.obj");
+        boost::filesystem::path filepath("../ressources/3dModels/OBJ/minimal.obj");
 
         WHEN("the reading mode is chosen")
         {
@@ -94,7 +89,7 @@ SCENARIO("Input/Output from obj file:")
     GIVEN("An existing set of objects")
     {
         auto meshes = city::io::WaveObjHandler(
-            boost::filesystem::path("../../ressources/3dModels/OBJ/scene.obj"),
+            boost::filesystem::path("../../ressources/3dModels/OBJ/minimal.obj"),
             std::map<std::string, bool>{{"read", true}}
         ).read().data();
 
@@ -128,7 +123,7 @@ SCENARIO("Input/Output from obj file:")
                 city::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(std::begin(lines), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
-                std::ifstream tmp("../../ressources/tests/obj_scene.txt");
+                std::ifstream tmp("../../ressources/tests/obj_minimal.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
                 REQUIRE(out.str() == tmp_str);
             }
