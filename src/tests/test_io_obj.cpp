@@ -18,7 +18,7 @@
 
 SCENARIO("Input/Output from obj file:")
 {
-    GIVEN("An existing obj file")
+    GIVEN("A minimal obj file")
     {
         boost::filesystem::path filepath("../../ressources/3dModels/OBJ/minimal.obj");
 
@@ -136,6 +136,40 @@ SCENARIO("Input/Output from obj file:")
             THEN("the writter throws")
             {
                 REQUIRE_THROWS(handler.write());
+            }
+        }
+    }
+    GIVEN("two objects obj file")
+    {
+
+        WHEN("reading in text mode")
+        {
+            auto meshes = city::io::WaveObjHandler(
+                boost::filesystem::path("../../ressources/3dModels/OBJ/two.obj"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read().data();
+
+            THEN("the output checks")
+            {
+                std::ostringstream auxilary, out;
+                std::copy(
+                    std::begin(meshes),
+                    std::end(meshes),
+                    std::ostream_iterator<city::shadow::Mesh>(auxilary, "\n")
+                );
+
+                std::istringstream _auxilary(auxilary.str());
+                std::list<std::string> lines;
+                city::io::readlines(_auxilary, std::back_inserter(lines));
+                std::copy(
+                    std::begin(lines),
+                    std::end(lines),
+                    std::ostream_iterator<std::string>(out, "\n")
+                );
+
+                std::ifstream tmp("../../ressources/tests/obj_two.txt");
+                std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
+                REQUIRE(out.str() == tmp_str);
             }
         }
     }
