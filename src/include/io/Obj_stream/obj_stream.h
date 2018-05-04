@@ -315,7 +315,7 @@ namespace city
                         buffer.clear();
                     }
                 }
-                indexes.push_back(lines.size());
+                indexes.push_back(lines.size() + 1);
 
                 std::vector< std::size_t > sizes(indexes.size());
 
@@ -325,7 +325,7 @@ namespace city
                     sizes.rbegin(),
                     [](std::size_t const lhs, std::size_t const rhs)
                     {
-                        return rhs - lhs;
+                        return rhs - lhs -1;
                     }
                 );
 
