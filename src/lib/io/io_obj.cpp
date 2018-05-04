@@ -87,7 +87,7 @@ namespace city
             std::remove_copy_if(
                 std::begin(meshes),
                 std::end(meshes),
-                std::begin(excluded_meshes),
+                std::back_inserter(excluded_meshes),
                 [excluded](shadow::Mesh const& mesh)
                 {
                     return mesh.get_name() != excluded;
