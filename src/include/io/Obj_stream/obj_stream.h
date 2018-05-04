@@ -325,7 +325,7 @@ namespace city
                     sizes.rbegin(),
                     [](std::size_t const lhs, std::size_t const rhs)
                     {
-                        return rhs - lhs - 1;
+                        return rhs - lhs;
                     }
                 );
 
