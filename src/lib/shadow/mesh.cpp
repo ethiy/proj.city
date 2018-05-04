@@ -2,6 +2,8 @@
 
 #include<scene/unode.h>
 
+#include <CGAL/Inverse_index.h>
+
 #include <stdexcept>
 
 #include <iterator>
@@ -73,13 +75,15 @@ namespace city
                 }
             );
 
+            CGAL::Inverse_index<Polyhedron::Vertex_const_iterator> points_index(polyhedron.vertices_begin(), polyhedron.vertices_end());
+
             std::transform(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
                 std::begin(faces),
-                [this](Polyhedron::Facet const& facet)
+                [this, &points_index](Polyhedron::Facet const& facet)
                 {
-                    return Face(facet, points);
+                    return Face(facet, points_index);
                 }
             );
             compute_bbox();

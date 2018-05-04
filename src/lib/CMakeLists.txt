@@ -1,6 +1,5 @@
 set(Shadow_SRC
     "${proj.city_SOURCE_DIR}/src/lib/shadow/bbox.cpp"
-    "${proj.city_SOURCE_DIR}/src/lib/shadow/utilities.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/shadow/face.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/shadow/point.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/shadow/vector.cpp"
