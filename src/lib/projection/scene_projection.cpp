@@ -28,7 +28,10 @@ namespace city
         }
         FootPrint::FootPrint(std::string const& _name, OGRLayer* projection_layer)
             : name(_name), projection(projection_layer)
-        {}
+        {
+            auto code = projection_layer->GetSpatialRef()->GetEPSGGeogCS();
+            code == -1 ? epsg_index = 2154 : epsg_index = code;
+        }
         FootPrint::FootPrint(FootPrint const& other)
             : name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), projection(other.projection)
         {}
@@ -166,9 +169,7 @@ namespace city
         }
         bool operator ==(FootPrint const& lhs, FootPrint const& rhs)
         {
-            return  lhs.name == rhs.name
-                    &&
-                    lhs.reference_point == rhs.reference_point
+            return  lhs.reference_point == rhs.reference_point
                     &&
                     lhs.epsg_index == rhs.epsg_index
                     &&
