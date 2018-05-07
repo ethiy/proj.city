@@ -29,8 +29,8 @@ namespace city
         FootPrint::FootPrint(std::string const& _name, OGRLayer* projection_layer)
             : name(_name), projection(projection_layer)
         {
-            auto code = projection_layer->GetSpatialRef()->GetEPSGGeogCS();
-            code == -1 ? epsg_index = 2154 : epsg_index = code;
+            auto epsg_buffer = projection_layer->GetSpatialRef()->GetEPSGGeogCS();
+            epsg_buffer > 0 ? epsg_index =  static_cast<unsigned short>(epsg_buffer) : epsg_index = 2154;
         }
         FootPrint::FootPrint(FootPrint const& other)
             : name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), projection(other.projection)
