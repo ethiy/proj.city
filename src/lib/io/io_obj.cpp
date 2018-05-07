@@ -83,16 +83,19 @@ namespace city
 
         shadow::Mesh WaveObjHandler::exclude_mesh(std::string const& excluded)
         {
-            std::list<shadow::Mesh> excluded_meshes;
-            std::remove_copy_if(
+            auto part = std::stable_partition(
                 std::begin(meshes),
                 std::end(meshes),
-                std::back_inserter(excluded_meshes),
                 [excluded](shadow::Mesh const& mesh)
                 {
                     return mesh.get_name() != excluded;
                 }
             );
+            std::vector<shadow::Mesh> excluded_meshes(
+                std::make_move_iterator(part),
+                std::make_move_iterator(std::end(meshes))
+            );
+            meshes.erase(part, std::end(meshes));
             return std::accumulate(
                 std::begin(excluded_meshes),
                 std::end(excluded_meshes),
