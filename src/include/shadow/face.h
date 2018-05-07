@@ -12,12 +12,14 @@
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
 
+#include <CGAL/Inverse_index.h>
+
 #include <vector>
 #include <map>
 #include <initializer_list>
 #include <iostream>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {
@@ -88,7 +90,7 @@ namespace urban
              * @see ~Face(void);
              */
             Face(std::vector<std::size_t> const& indices);
-            Face(Polyhedron::Facet const& facet, std::vector<Point> const& points);
+            Face(Polyhedron::Facet const& facet, CGAL::Inverse_index<Polyhedron::Vertex_const_iterator> & points_index);
             /**
              * Triangular face constructor. 
              * @param first point index

@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 
-namespace urban
+namespace city
 {
     template<typename T>
     std::vector<T> select(std::vector<T> const& container, std::map<std::size_t, std::size_t> & index_map)

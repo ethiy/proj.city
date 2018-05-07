@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 
-namespace urban
+namespace city
 {
     namespace projection
     {
@@ -26,7 +26,7 @@ namespace urban
         FacePrint::FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane)
             : id(_id), border(_border), supporting_plane(_supporting_plane)
         {}
-        FacePrint::FacePrint(::urban::scene::UNode::Facet const& facet)
+        FacePrint::FacePrint(::city::scene::UNode::Facet const& facet)
             : id(facet.id())
         {
             Polygon facet_proj = trace(facet, supporting_plane);
@@ -52,7 +52,7 @@ namespace urban
             );
 
             OGRGeometry* feature_polygon = ogr_facet->GetGeometryRef();
-            if(feature_polygon != NULL && feature_polygon->getGeometryType() == wkbPolygon)
+            if(feature_polygon != nullptr && feature_polygon->getGeometryType() == wkbPolygon)
                 border = get_ogr_polygon(dynamic_cast<OGRPolygon*>(feature_polygon));
             else
                 throw std::runtime_error("GDAL could not read a polygon from the feature");
@@ -172,7 +172,7 @@ namespace urban
                     std::plus<double>(),
                     [this](Polygon_with_holes const& part, double const parts)
                     {
-                        return get_plane_height(urban::centroid(part)) / parts;
+                        return get_plane_height(city::centroid(part)) / parts;
                     }
                 );
             }
@@ -181,7 +181,7 @@ namespace urban
 
         InexactPoint_2 FacePrint::centroid(void) const
         {
-            return urban::centroid(border.outer_boundary());
+            return city::centroid(border.outer_boundary());
         }
         double FacePrint::area(void) const
         {
@@ -197,7 +197,7 @@ namespace urban
         }
         double FacePrint::circumference(void) const
         {
-            return ::urban::circumference(border.outer_boundary());
+            return ::city::circumference(border.outer_boundary());
         }
         
         bool FacePrint::equal_border(FacePrint const& other) const
@@ -273,7 +273,7 @@ namespace urban
 
             feature->SetField("Id", static_cast<GIntBig>(id));
 
-            feature->SetGeometry(::urban::projection::to_ogr(border, reference_point));
+            feature->SetGeometry(::city::projection::to_ogr(border, reference_point));
 
             ExactToInexact to_inexact;
             feature->SetField("coeff_a", to_inexact(supporting_plane.a()));

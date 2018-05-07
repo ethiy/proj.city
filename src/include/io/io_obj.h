@@ -3,29 +3,33 @@
 #include <io/io.h>
 
 #include <shadow/mesh.h>
-#include <io/Obj_stream/obj_stream.h>
+#include <scene/scene.h>
 
-#include <boost/filesystem/path.hpp>
 
-#include <vector>
-
-namespace urban
+namespace city
 {
     namespace io
     {
-        template<>
-        class FileHandler<Obj_stream>
+        class WaveObjHandler: protected FileHandler
         {
         public:
-            FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
-            ~FileHandler(void);
-            
-            std::vector<shadow::Mesh> read(void);
-            void write(std::vector<shadow::Mesh> const& mesh);
+            WaveObjHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            WaveObjHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& _meshes, std::map<std::string, bool> const& _modes = std::map<std::string, bool>{{"write", true}});
+            WaveObjHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene, std::map<std::string, bool> const& _modes = std::map<std::string, bool>{{"write", true}});
+            ~WaveObjHandler(void);
 
+            std::vector<shadow::Mesh> const& data(void) const noexcept;
+            
+            WaveObjHandler& read(void);
+
+            shadow::Mesh exclude_mesh(std::string const& excluded);
+            void add_mesh(shadow::Mesh const& mesh);
+
+            void write(void);
+
+            scene::Scene get_scene(void);
         private:
-            boost::filesystem::path filepath;
-            std::map<std::string, bool> modes;
+            std::vector<shadow::Mesh> meshes;
         };
     }
 }

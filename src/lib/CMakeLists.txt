@@ -1,6 +1,5 @@
 set(Shadow_SRC
     "${proj.city_SOURCE_DIR}/src/lib/shadow/bbox.cpp"
-    "${proj.city_SOURCE_DIR}/src/lib/shadow/utilities.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/shadow/face.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/shadow/point.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/shadow/vector.cpp"
@@ -26,37 +25,40 @@ set(Scene_SRC
     "${proj.city_SOURCE_DIR}/src/lib/scene/scene.cpp"
 )
 set(IO_SRC
+    "${proj.city_SOURCE_DIR}/src/lib/io/io.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_3ds.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_scene.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_scene_tree.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_off.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/io/io_obj.cpp"
-    "${proj.city_SOURCE_DIR}/src/lib/io/io_gdal.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_raster.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/io/io_vector.cpp"
 )
-set(URBAN_SRC
+set(CITY_SRC
     "${proj.city_SOURCE_DIR}/src/lib/urban.cpp"
 )
 
 # Shadow
-add_library(urban_shadow ${Shadow_SRC})
-target_link_libraries(urban_shadow ${LIBS})
+add_library(city_shadow ${Shadow_SRC})
+target_link_libraries(city_shadow ${LIBS})
 
 # Scene
-add_library(urban_scene ${Scene_SRC})
-target_link_libraries(urban_scene urban_shadow urban_projection ${LIBS})
+add_library(city_scene ${Scene_SRC})
+target_link_libraries(city_scene city_shadow city_projection ${LIBS})
 
 # Algorithms
-add_library(urban_algorithms ${Algorithms_SRC})
-target_link_libraries(urban_algorithms urban_scene urban_shadow urban_io ${LIBS})
+add_library(city_algorithms ${Algorithms_SRC})
+target_link_libraries(city_algorithms city_scene city_shadow city_io ${LIBS})
 
 # Projections
-add_library(urban_projection ${Projection_SRC})
-target_link_libraries(urban_projection urban_algorithms ${LIBS})
+add_library(city_projection ${Projection_SRC})
+target_link_libraries(city_projection city_algorithms ${LIBS})
  
 # Input/Output
-add_library(urban_io ${IO_SRC})
-target_link_libraries(urban_io urban_shadow urban_projection ${LIBS})
+add_library(city_io ${IO_SRC})
+target_link_libraries(city_io city_shadow city_projection ${LIBS})
 
-# urban
-add_library(urban SHARED ${URBAN_SRC})
-link_directories(urban ${LIBS_DIRS})
-target_link_libraries(urban urban_shadow urban_io urban_scene urban_projection urban_algorithms ${LIBS})
+# city
+add_library(proj.city SHARED ${CITY_SRC})
+link_directories(proj.city ${LIBS_DIRS})
+target_link_libraries(proj.city city_shadow city_io city_scene city_projection city_algorithms ${LIBS})

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <numeric>
 
-namespace urban
+namespace city
 {
     namespace projection
     {
@@ -28,7 +28,10 @@ namespace urban
         }
         FootPrint::FootPrint(std::string const& _name, OGRLayer* projection_layer)
             : name(_name), projection(projection_layer)
-        {}
+        {
+            auto epsg_buffer = projection_layer->GetSpatialRef()->GetEPSGGeogCS();
+            epsg_buffer > 0 ? epsg_index =  static_cast<unsigned short>(epsg_buffer) : epsg_index = 2154;
+        }
         FootPrint::FootPrint(FootPrint const& other)
             : name(other.name), reference_point(other.reference_point), epsg_index(other.epsg_index), projection(other.projection)
         {}
@@ -148,9 +151,9 @@ namespace urban
             OGRSpatialReference spatial_reference_system;
             spatial_reference_system.importFromEPSG(epsg_index);
 
-            OGRLayer* projection_layer = file->CreateLayer(name.c_str(), &spatial_reference_system, wkbPolygon, NULL);
+            OGRLayer* projection_layer = file->CreateLayer(name.c_str(), &spatial_reference_system, wkbPolygon, nullptr);
 
-            if(projection_layer == NULL)
+            if(projection_layer == nullptr)
                 throw std::runtime_error("GDAL could not create a projection layer!");
             projection.to_ogr(projection_layer, reference_point, labels);            
         }
@@ -166,9 +169,7 @@ namespace urban
         }
         bool operator ==(FootPrint const& lhs, FootPrint const& rhs)
         {
-            return  lhs.name == rhs.name
-                    &&
-                    lhs.reference_point == rhs.reference_point
+            return  lhs.reference_point == rhs.reference_point
                     &&
                     lhs.epsg_index == rhs.epsg_index
                     &&

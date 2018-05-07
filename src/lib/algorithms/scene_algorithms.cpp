@@ -1,76 +1,14 @@
 #include <algorithms/scene_algorithms.h>
 
 #include <io/Adjacency_stream/adjacency_stream.h>
-#include <io/io_gdal.h>
-#include <io/io_3ds.h>
+
+#include <io/io_raster.h>
+#include <io/io_vector.h>
+
 #include <io/io_scene.h>
 
-namespace urban
+namespace city
 {
-    scene::Scene load_3ds_scene(boost::filesystem::path const& input_path, bool const with_xml)
-    {
-        scene::Scene scene;
-        boost::filesystem::path data_directory(input_path.parent_path());
-        urban::io::FileHandler<tinyxml2::XMLDocument> auxilary_file(
-            boost::filesystem::path(
-                data_directory / (input_path.stem().string() + ".XML")
-            )
-        );
-        if(with_xml)
-            scene = auxilary_file.read(
-                urban::io::FileHandler<Lib3dsFile>(
-                    input_path,
-                    std::map<std::string,bool>{{"read", true}}
-                )
-            );
-        else
-        {
-            try
-            {
-                bool centered = false;
-                scene = urban::scene::Scene(
-                    urban::io::FileHandler<Lib3dsFile>(
-                        input_path,
-                        std::map<std::string,bool>{{"read", true}}
-                    ),
-                    auxilary_file.pivot(centered),
-                    centered,
-                    auxilary_file.epsg_index()
-                );
-            }
-            catch(std::runtime_error const& err)
-            {
-                scene = urban::scene::Scene(
-                    urban::io::FileHandler<Lib3dsFile>(
-                        input_path,
-                        std::map<std::string,bool>{{"read", true}}
-                    )
-                );
-            }
-
-        }
-        return scene;
-    }
-
-    void save_scene(boost::filesystem::path const& root_path, scene::Scene const& scene)
-    {
-        boost::filesystem::path buildings_dir(root_path / "buildings");
-        boost::filesystem::create_directory(buildings_dir);
-        for(auto const& building : scene)
-        {
-            std::fstream _file(
-                boost::filesystem::path(buildings_dir / (building.get_name() + ".off")).string(),
-                std::ios::out
-            );
-            _file << building;
-        }
-
-        std::fstream _file(
-            boost::filesystem::path(buildings_dir /"terrain.off").string(),
-            std::ios::out        
-        );
-        _file << scene.get_terrain();
-    }
     void save_building_duals(boost::filesystem::path const& root_path, scene::Scene const& scene)
     {
         std::cout << "Saving brick duals... " << std::flush;
@@ -87,46 +25,31 @@ namespace urban
         }
         std::cout << " Done." << std::flush << std::endl;
     }
-    void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, std::string const& output_format, bool const labels)
+    void save_building_prints(boost::filesystem::path const& root_path, std::vector<projection::FootPrint> const& projections, bool const labels)
     {
         std::cout << "Saving vector projections... " << std::flush;
         boost::filesystem::path vector_dir(root_path / "vectors");
         boost::filesystem::create_directory(vector_dir);
-        auto format = io::FileHandler<GDALDriver>::format(output_format);
         for(auto const& projection : projections)
         {
-            io::FileHandler<GDALDriver>(
-                format,
-                boost::filesystem::path(vector_dir / (projection.get_name() + io::FileHandler<GDALDriver>::extension(format))),
+            io::VectorHandler(
+                boost::filesystem::path(vector_dir / (projection.get_name() + ".shp")),
                 std::map<std::string,bool>{{"write", true}}
-            ).write(projection);
+            ).write(projection, labels);
 
             std::fstream attributes_file(
                 boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(),
                 std::ios::out
             );
 
-            auto areas = urban::areas(projection);
-            auto edges = urban::edge_lengths(projection);
+            auto areas = city::areas(projection);
+            auto edges = city::edge_lengths(projection);
 
             std::copy(std::begin(areas), std::end(areas), std::ostream_iterator<double>(attributes_file, " "));
             attributes_file << std::endl;
             std::copy(std::begin(edges), std::end(edges), std::ostream_iterator<double>(attributes_file, " "));
             attributes_file << std::endl;
             attributes_file.close();
-        }
-        if(labels)
-        {
-            boost::filesystem::path label_dir(root_path / "labels");
-            boost::filesystem::create_directory(label_dir);
-            for(auto const& projection : projections)
-            {
-                io::FileHandler<GDALDriver>(
-                    io::GdalFormat::shapefile,
-                    boost::filesystem::path(label_dir / (projection.get_name() + ".shp")),
-                    std::map<std::string,bool>{{"write", true}}
-                ).write(projection, true);
-            }
         }
         std::cout << "Done." << std::flush << std::endl;
     }
@@ -137,8 +60,7 @@ namespace urban
         boost::filesystem::create_directory(raster_dir);
         for(auto const& rasta : raster_projections)
         {
-            urban::io::FileHandler<GDALDriver>(
-                urban::io::GdalFormat::geotiff,
+            city::io::RasterHandler(
                 boost::filesystem::path(raster_dir / (rasta.get_name() + ".tiff")),
                 std::map<std::string,bool>{{"write", true}}
             ).write(rasta);
@@ -152,21 +74,19 @@ namespace urban
         auto scene_projection = std::accumulate(
             std::begin(projections),
             std::end(projections),
-            urban::projection::FootPrint()
+            city::projection::FootPrint()
         );
 
-        urban::io::FileHandler<GDALDriver>(
-            urban::io::GdalFormat::gml,
-            boost::filesystem::path(root_path / (filename + ".gml")),
+        city::io::VectorHandler(
+            boost::filesystem::path(root_path / (filename + ".shp")),
             std::map<std::string,bool>{{"write", true}}
         ).write(scene_projection);
 
         if(rasterize)
         {
-            urban::projection::RasterPrint global_rasta(scene_projection, pixel_size);
+            city::projection::RasterPrint global_rasta(scene_projection, pixel_size);
 
-            urban::io::FileHandler<GDALDriver>(
-                urban::io::GdalFormat::geotiff,
+            city::io::RasterHandler(
                 boost::filesystem::path(root_path / (filename + ".tiff")),
                 std::map<std::string,bool>{{"write", true}}
             ).write(global_rasta);

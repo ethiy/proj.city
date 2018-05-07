@@ -18,18 +18,14 @@
 
 SCENARIO("Input/Output from obj file:")
 {
-    GIVEN("An existing obj file")
+    GIVEN("A minimal obj file")
     {
-        boost::filesystem::path filepath("../../ressources/3dModels/OBJ/scene.obj");
-
         WHEN("reading in text mode")
         {
-            std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<urban::io::Obj_stream>(filepath, std::map<std::string, bool>{{"read", true}}).read();
-            for(auto mesh: meshes)
-            {
-                urban::io::FileHandler<std::fstream> hihi(boost::filesystem::path(mesh.get_name() + ".off"), std::map<std::string, bool>{{"write", true}});
-                hihi.write(mesh);
-            }
+            auto meshes = city::io::WaveObjHandler(
+                boost::filesystem::path("../../ressources/3dModels/OBJ/minimal.obj"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read().data();
 
             THEN("the output checks")
             {
@@ -37,19 +33,19 @@ SCENARIO("Input/Output from obj file:")
                 std::copy(
                     std::begin(meshes),
                     std::end(meshes),
-                    std::ostream_iterator<urban::shadow::Mesh>(auxilary, "\n")
+                    std::ostream_iterator<city::shadow::Mesh>(auxilary, "\n")
                 );
 
                 std::istringstream _auxilary(auxilary.str());
                 std::list<std::string> lines;
-                urban::io::readlines(_auxilary, std::back_inserter(lines));
+                city::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(
                     std::begin(lines),
                     std::end(lines),
                     std::ostream_iterator<std::string>(out, "\n")
                 );
 
-                std::ifstream tmp("../../ressources/tests/obj_scene.txt");
+                std::ifstream tmp("../../ressources/tests/obj_minimal.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
                 REQUIRE(out.str() == tmp_str);
             }
@@ -57,78 +53,72 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("the reading mode is not chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler(filepath, std::map<std::string, bool>{{}});
+            city::io::WaveObjHandler handler(
+                boost::filesystem::path("../../ressources/3dModels/OBJ/minimal.obj"),
+                std::map<std::string, bool>{{}}
+            );
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS(handler.read());
+                REQUIRE_THROWS(handler.read().data());
             }
         }
     }
 
     GIVEN("A wrong file path")
     {
-        boost::filesystem::path filepath("../ressources/3dModels/OBJ/scene.obj");
-
         WHEN("the reading mode is chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler(filepath, std::map<std::string, bool>{{"read", true}});
+            city::io::WaveObjHandler handler(
+                boost::filesystem::path("../ressources/3dModels/OBJ/minimal.obj"),
+                std::map<std::string, bool>{{"read", true}}
+            );
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS(handler.read());
-            }
-        }
-
-        WHEN("the reading mode is not chosen")
-        {
-            urban::io::FileHandler<urban::io::Obj_stream> handler(filepath, std::map<std::string, bool>{{}});
-
-            THEN("the reader throws")
-            {
-                REQUIRE_THROWS(handler.read());
+                REQUIRE_THROWS(handler.read().data());
             }
         }
     }
 
     GIVEN("An existing set of objects")
     {
-        std::vector<urban::shadow::Mesh> meshes = urban::io::FileHandler<urban::io::Obj_stream>(
-            boost::filesystem::path("../../ressources/3dModels/OBJ/scene.obj"),
+        auto meshes = city::io::WaveObjHandler(
+            boost::filesystem::path("../../ressources/3dModels/OBJ/minimal.obj"),
             std::map<std::string, bool>{{"read", true}}
-        ).read();
+        ).read().data();
 
         WHEN("the writing mode is chosen")
         {
             std::ostringstream file_name;
             file_name << boost::uuids::random_generator()() << ".obj";
 
-            urban::io::FileHandler<urban::io::Obj_stream> handler(
+            city::io::WaveObjHandler handler(
                 boost::filesystem::path(file_name.str()),
-                std::map<std::string, bool>{{"write", true}}
+                meshes
             );
-            handler.write(meshes);
+            handler.write();
 
             THEN("the input should check")
             {
-                std::vector<urban::shadow::Mesh> written_meshes = urban::io::FileHandler<urban::io::Obj_stream>(
+                auto written_meshes = city::io::WaveObjHandler(
                     boost::filesystem::path(file_name.str()),
                     std::map<std::string, bool>{{"read", true}}
-                ).read();
+                ).read().data();
 
                 std::ostringstream auxilary, out;
                 std::copy(
                     std::begin(written_meshes),
                     std::end(written_meshes),
-                    std::ostream_iterator<urban::shadow::Mesh>(auxilary, "\n")
+                    std::ostream_iterator<city::shadow::Mesh>(auxilary, "\n")
                 );
 
                 std::istringstream _auxilary(auxilary.str());
                 std::vector<std::string> lines;
-                urban::io::readlines(_auxilary, std::back_inserter(lines));
+                city::io::readlines(_auxilary, std::back_inserter(lines));
                 std::copy(std::begin(lines), std::end(lines), std::ostream_iterator<std::string>(out, "\n"));
 
-                std::ifstream tmp("../../ressources/tests/obj_scene.txt");
+                std::ifstream tmp("../../ressources/tests/obj_minimal.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
                 REQUIRE(out.str() == tmp_str);
             }
@@ -136,11 +126,45 @@ SCENARIO("Input/Output from obj file:")
         
         WHEN("the writing mode is not chosen")
         {
-            urban::io::FileHandler<urban::io::Obj_stream> handler("./hammerhead.off", std::map<std::string, bool>{{"write", false}});
+            city::io::WaveObjHandler handler("./hammerhead.off", std::map<std::string, bool>{{"write", false}});
 
             THEN("the writter throws")
             {
-                REQUIRE_THROWS(handler.write(meshes));
+                REQUIRE_THROWS(handler.write());
+            }
+        }
+    }
+    GIVEN("two objects obj file")
+    {
+
+        WHEN("reading in text mode")
+        {
+            auto meshes = city::io::WaveObjHandler(
+                boost::filesystem::path("../../ressources/3dModels/OBJ/two.obj"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read().data();
+
+            THEN("the output checks")
+            {
+                std::ostringstream auxilary, out;
+                std::copy(
+                    std::begin(meshes),
+                    std::end(meshes),
+                    std::ostream_iterator<city::shadow::Mesh>(auxilary, "\n")
+                );
+
+                std::istringstream _auxilary(auxilary.str());
+                std::list<std::string> lines;
+                city::io::readlines(_auxilary, std::back_inserter(lines));
+                std::copy(
+                    std::begin(lines),
+                    std::end(lines),
+                    std::ostream_iterator<std::string>(out, "\n")
+                );
+
+                std::ifstream tmp("../../ressources/tests/obj_two.txt");
+                std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
+                REQUIRE(out.str() == tmp_str);
             }
         }
     }

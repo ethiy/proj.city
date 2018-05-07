@@ -11,7 +11,7 @@
 
 #include <ostream>
 
-namespace urban
+namespace city
 {
     namespace projection
     {
@@ -21,7 +21,7 @@ namespace urban
         {
         public:
             FacePrint(void);
-            FacePrint(::urban::scene::UNode::Facet const& facet);
+            FacePrint(::city::scene::UNode::Facet const& facet);
             FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane);
             FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition);
             FacePrint(FacePrint const& other);
@@ -63,7 +63,7 @@ namespace urban
             * Checks if the face projection is degenerate
             * In our case, two edges are coinciding means that all edges are so,
             * Due to the fact that all edges are supported by the same plane:
-            *  - This means that we should just check if the area is null to assert
+            *  - This means that we should just check if the area is nullptr to assert
             *      that the projection is degenerate.
             * @return boolean: true if degenerate and false if not
             */

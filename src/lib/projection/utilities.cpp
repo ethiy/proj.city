@@ -1,6 +1,6 @@
 #include <projection/utilities.h>
 
-namespace urban
+namespace city
 {
     namespace projection
     {
@@ -107,7 +107,7 @@ namespace urban
         Point_2 get_ogr_point(OGRPoint* ogr_point)
         {
             InexactToExact to_exact;
-            return urban::Point_2(to_exact(ogr_point->getX()), to_exact(ogr_point->getY()));
+            return city::Point_2(to_exact(ogr_point->getX()), to_exact(ogr_point->getY()));
         }
         Polygon get_ogr_ring(OGRLinearRing* ogr_ring)
         {

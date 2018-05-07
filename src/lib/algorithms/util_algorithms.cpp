@@ -4,7 +4,7 @@
 
 #include <iterator>
 
-namespace urban
+namespace city
 {
     Affine_transformation_3 rotation_transform(const std::map<double, Vector_3> & _rotations)
     {

@@ -13,7 +13,7 @@
 #include <iterator>
 
 
-namespace urban
+namespace city
 {
     namespace io
     {
@@ -206,19 +206,20 @@ namespace urban
                 );
 
                 std::vector<shadow::Point> points(buffer_lines.size());
-                std::vector<double> coordinates;
-                coordinates.reserve(3);
-                std::istringstream sline;
                 std::transform(
                     std::begin(buffer_lines),
                     std::end(buffer_lines),
                     std::begin(points),
-                    [&points, &sline, &coordinates](std::string const& line)
+                    [](std::string const& line)
                     {
-                        coordinates.clear();
-                        sline.clear();
-                        sline.str(line);
-                        std::copy(std::istream_iterator<double>(sline), std::istream_iterator<double>(), std::back_inserter(coordinates));
+                        std::vector<double> coordinates;
+                        coordinates.reserve(3);
+                        std::istringstream sline(line);
+                        std::copy(
+                            std::istream_iterator<double>(sline),
+                            std::istream_iterator<double>(),
+                            std::back_inserter(coordinates)
+                        );
                         return shadow::Point(coordinates[0], coordinates[1], coordinates[2]);
                     }
                 );
@@ -236,18 +237,14 @@ namespace urban
 
                 std::vector<shadow::Face> faces(buffer_lines.size());
 
-                std::vector<std::size_t> indexes;
-                std::istringstream sline;
                 std::transform(
                     std::begin(buffer_lines),
                     std::end(buffer_lines),
                     std::begin(faces),
-                    [&indexes, &sline, &faces](std::string line)
+                    [](std::string const& line)
                     {
-                        indexes.clear();
-
-                        sline.clear();
-                        sline.str(line);
+                        std::vector<std::size_t> indexes;
+                        std::istringstream sline(line);
                         std::size_t n(0);
                         sline >> n;
                         indexes.resize(n);

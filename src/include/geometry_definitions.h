@@ -6,6 +6,9 @@
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Polyhedron_items_with_id_3.h>
 
+#include <CGAL/Nef_polyhedron_3.h>
+
+
 #include <CGAL/Aff_transformation_3.h>
 
 #include <CGAL/Polygon_2.h>
@@ -14,7 +17,7 @@
 
 #include <CGAL/intersections.h>
 
-namespace urban
+namespace city
 {
     using InexactKernel = CGAL::Simple_cartesian<double>;
     using Kernel = CGAL::Exact_predicates_exact_constructions_kernel;
@@ -25,6 +28,7 @@ namespace urban
     using Vector_3 = Kernel::Vector_3;
     using Plane_3 = Kernel::Plane_3;
     using Polyhedron = CGAL::Polyhedron_3<Kernel, CGAL::Polyhedron_items_with_id_3>;
+    using Nef_Polyhedron =  CGAL::Nef_polyhedron_3<Kernel>;
     using Color = CGAL::Color;
     using Affine_transformation_3 = CGAL::Aff_transformation_3<Kernel>;
     using Bbox_3 = CGAL::Bbox_3;

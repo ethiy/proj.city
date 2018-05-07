@@ -1,36 +1,43 @@
 #pragma once
 
 #include <io/io.h>
-#include <io/io_3ds.h>
 
 #include <scene/scene.h>
 
 #include <tinyxml2.h>
 
-#include <boost/filesystem/path.hpp>
-
-namespace urban
+namespace city
 {
     namespace io
     {
-        template<>
-        class FileHandler<tinyxml2::XMLDocument>
+        enum SceneFormat : std::size_t
+        {
+            t3ds_xml,
+            t3ds,
+            off,
+            obj
+        };
+
+        class SceneHandler: protected FileHandler
         {
         public:
-            FileHandler(boost::filesystem::path const& _filepath);
-            ~FileHandler(void);
-            
+            SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format="OFF");
+            SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format=SceneFormat::off);
+            ~SceneHandler(void);
 
-            shadow::Point pivot(bool & centered) const;
-            shadow::Bbox bbox(void) const;
-            unsigned short epsg_index(void) const;
-            std::vector<std::string> building_ids(void) const;
-            std::string terrain_id(void) const;
+            scene::Scene read(void) const;
+
+            void write(scene::Scene const& scene) const;
             
-            scene::Scene read(FileHandler<Lib3dsFile> const& mesh_file) const;
+            static SceneFormat scene_format(std::string const& output_format);
+            static std::string extension(SceneFormat const format);
+
+            static const std::vector<std::string> supported_formats;
+            static const std::vector<std::string> supported_extentions;
         private:
-            tinyxml2::XMLDocument scene_tree;
-            boost::filesystem::path filepath;
+            SceneFormat format;
+
+            void check_extension(void) const;
         };
     }
 }

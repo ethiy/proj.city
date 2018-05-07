@@ -15,10 +15,10 @@ SCENARIO("Face Projection manipulation:")
 {
     GIVEN("A perpendicular face")
     {
-        urban::InexactToExact to_exact;
-        urban::Point_3  A(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
-                        B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 0.))),
-                        C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
+        city::InexactToExact to_exact;
+        city::Point_3  A(to_exact(city::InexactKernel::Point_3(1.25, 98.64, 5.))),
+                        B(to_exact(city::InexactKernel::Point_3(1.25, 98.64, 0.))),
+                        C(to_exact(city::InexactKernel::Point_3(87.3, .029, 3.615)));
 
         auto perpendicular = test_facet_projection(0, A, B, C);
 
@@ -46,7 +46,7 @@ SCENARIO("Face Projection manipulation:")
         }
         WHEN("A point on the border is tested")
         {
-            urban::Point_2 P(urban::Point_2(C.x(), C.y()) + .2 * (urban::Point_2(A.x(), A.y()) - urban::Point_2(C.x(), C.y())));
+            city::Point_2 P(city::Point_2(C.x(), C.y()) + .2 * (city::Point_2(A.x(), A.y()) - city::Point_2(C.x(), C.y())));
             THEN("the test checks:")
             {
                 REQUIRE(perpendicular.contains(P));
@@ -56,38 +56,38 @@ SCENARIO("Face Projection manipulation:")
         {
             THEN("An exception is thrown:")
             {
-                REQUIRE_THROWS_AS(perpendicular.get_height(urban::Point_2(0, 0)), std::overflow_error);
+                REQUIRE_THROWS_AS(perpendicular.get_height(city::Point_2(0, 0)), std::overflow_error);
             }
         }
         WHEN("A point on the exterior is tested")
         {
             THEN("the test checks:")
             {
-                REQUIRE(!perpendicular.contains(urban::Point_2(0, 0)));
+                REQUIRE(!perpendicular.contains(city::Point_2(0, 0)));
             }
         }
     }
 
     GIVEN("A degenerate face")
     {
-        urban::InexactToExact to_exact;
-        urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(64.25, 50., 0.))),
-                       B(to_exact(urban::InexactKernel::Point_3(1.25, 98.64, 5.))),
-                       C(to_exact(urban::InexactKernel::Point_3(87.3, .029, 3.615)));
+        city::InexactToExact to_exact;
+        city::Point_3 A(to_exact(city::InexactKernel::Point_3(64.25, 50., 0.))),
+                       B(to_exact(city::InexactKernel::Point_3(1.25, 98.64, 5.))),
+                       C(to_exact(city::InexactKernel::Point_3(87.3, .029, 3.615)));
 
         auto degenerate = test_facet_projection(
             0,
-            std::vector<urban::Point_2>{{
-                urban::Point_2(A.x(), A.y()),
-                urban::Point_2(B.x(), B.y()),
-                urban::Point_2(C.x(), C.y())
+            std::vector<city::Point_2>{{
+                city::Point_2(A.x(), A.y()),
+                city::Point_2(B.x(), B.y()),
+                city::Point_2(C.x(), C.y())
             }},
-            std::vector<urban::Point_2>{{
-                urban::Point_2(A.x(), A.y()),
-                urban::Point_2(B.x(), B.y()),
-                urban::Point_2(C.x(), C.y())
+            std::vector<city::Point_2>{{
+                city::Point_2(A.x(), A.y()),
+                city::Point_2(B.x(), B.y()),
+                city::Point_2(C.x(), C.y())
             }},
-            urban::Plane_3(A, B, C)
+            city::Plane_3(A, B, C)
         );
 
         WHEN("the perpendicularity is tested")
@@ -114,7 +114,7 @@ SCENARIO("Face Projection manipulation:")
         }
         WHEN("A point on the border is tested")
         {
-            urban::Point_2 P(urban::Point_2(C.x(), C.y()) + .2 * (urban::Point_2(A.x(), A.y()) - urban::Point_2(C.x(), C.y())));
+            city::Point_2 P(city::Point_2(C.x(), C.y()) + .2 * (city::Point_2(A.x(), A.y()) - city::Point_2(C.x(), C.y())));
             THEN("the test checks:")
             {
                 REQUIRE(degenerate.contains(P));
@@ -124,47 +124,47 @@ SCENARIO("Face Projection manipulation:")
         {
             THEN("An exception is thrown:")
             {
-                REQUIRE(std::abs(degenerate.get_height(urban::Point_2(0, 0))) < std::numeric_limits<double>::epsilon());
+                REQUIRE(std::abs(degenerate.get_height(city::Point_2(0, 0))) < std::numeric_limits<double>::epsilon());
             }
         }
         WHEN("the plane height of a point outside the surface is computed")
         {
             THEN("An exception is thrown:")
             {
-                REQUIRE(std::abs(degenerate.get_plane_height(urban::Point_2(0, 0)) - 21.9535182665) < std::numeric_limits<float>::epsilon());
+                REQUIRE(std::abs(degenerate.get_plane_height(city::Point_2(0, 0)) - 21.9535182665) < std::numeric_limits<float>::epsilon());
             }
         }
         WHEN("A point on the exterior is tested")
         {
             THEN("the test checks:")
             {
-                REQUIRE(!degenerate.contains(urban::Point_2(0, 0)));
+                REQUIRE(!degenerate.contains(city::Point_2(0, 0)));
             }
         }
     }
     GIVEN("A triangular face with a triangular hole")
     {
-        urban::InexactToExact to_exact;
-        urban::Point_3 A(to_exact(urban::InexactKernel::Point_3(-3, -5, 5.))),
-                       B(to_exact(urban::InexactKernel::Point_3(3, -5, 5.))),
-                       C(to_exact(urban::InexactKernel::Point_3(3, 5, 0.))),
-                       D(to_exact(urban::InexactKernel::Point_3(-3, 5, .0)));
+        city::InexactToExact to_exact;
+        city::Point_3 A(to_exact(city::InexactKernel::Point_3(-3, -5, 5.))),
+                       B(to_exact(city::InexactKernel::Point_3(3, -5, 5.))),
+                       C(to_exact(city::InexactKernel::Point_3(3, 5, 0.))),
+                       D(to_exact(city::InexactKernel::Point_3(-3, 5, .0)));
 
         auto example = test_facet_projection(
             0,
-            std::vector<urban::Point_2>{{
-                urban::Point_2(A.x(), A.y()),
-                urban::Point_2(B.x(), B.y()),
-                urban::Point_2(C.x(), C.y()),
-                urban::Point_2(D.x(), D.y())
+            std::vector<city::Point_2>{{
+                city::Point_2(A.x(), A.y()),
+                city::Point_2(B.x(), B.y()),
+                city::Point_2(C.x(), C.y()),
+                city::Point_2(D.x(), D.y())
             }},
-            std::vector<urban::Point_2>{{
-                urban::Point_2(-1, -3),
-                urban::Point_2(-1, 3),
-                urban::Point_2(1, 3),
-                urban::Point_2(1, -3)
+            std::vector<city::Point_2>{{
+                city::Point_2(-1, -3),
+                city::Point_2(-1, 3),
+                city::Point_2(1, 3),
+                city::Point_2(1, -3)
             }},
-            urban::Plane_3(A, B, C)            
+            city::Plane_3(A, B, C)            
         );
 
         WHEN("the perpendicularity is tested")
@@ -191,7 +191,7 @@ SCENARIO("Face Projection manipulation:")
         }
         WHEN("A point on the border is tested")
         {
-            urban::Point_2 P(urban::Point_2(C.x(), C.y()) + .2 * (urban::Point_2(A.x(), A.y()) - urban::Point_2(C.x(), C.y())));
+            city::Point_2 P(city::Point_2(C.x(), C.y()) + .2 * (city::Point_2(A.x(), A.y()) - city::Point_2(C.x(), C.y())));
             THEN("the test checks:")
             {
                 REQUIRE(example.contains(P));
@@ -201,21 +201,21 @@ SCENARIO("Face Projection manipulation:")
         {
             THEN("An exception is thrown:")
             {
-                REQUIRE(std::abs(example.get_height(urban::Point_2(0, 0))) < std::numeric_limits<double>::epsilon());
+                REQUIRE(std::abs(example.get_height(city::Point_2(0, 0))) < std::numeric_limits<double>::epsilon());
             }
         }
         WHEN("the plane height of a point outside the surface is computed")
         {
             THEN("An exception is thrown:")
             {
-                REQUIRE(std::abs(example.get_plane_height(urban::Point_2(0, 0)) - 2.5) < std::numeric_limits<float>::epsilon());
+                REQUIRE(std::abs(example.get_plane_height(city::Point_2(0, 0)) - 2.5) < std::numeric_limits<float>::epsilon());
             }
         }
         WHEN("A point on the exterior is tested")
         {
             THEN("the test checks:")
             {
-                REQUIRE(!example.contains(urban::Point_2(0, 0)));
+                REQUIRE(!example.contains(city::Point_2(0, 0)));
             }
         }
     }

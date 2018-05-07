@@ -1,115 +1,181 @@
 #include <io/io_scene.h>
 
-#include <shadow/bbox.h>
+#include <io/io_scene_tree.h>
+#include <io/io_3ds.h>
+#include <io/io_off.h>
+#include <io/io_obj.h>
 
-#include <boost/filesystem/operations.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/range/iterator_range.hpp>
 
-namespace urban
+#include <algorithm>
+#include <iterator>
+
+namespace city
 {
     namespace io
     {
-        FileHandler<tinyxml2::XMLDocument>::FileHandler(boost::filesystem::path const& _filepath)
-            : filepath(_filepath)
+        const std::vector<std::string> SceneHandler::supported_formats{{"3DS XML", "3DS", "OFF", "OBJ"}};
+        const std::vector<std::string> SceneHandler::supported_extentions{{".3ds", ".3ds", ".off", ".obj"}};
+
+
+        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format)
+            : SceneHandler(_filepath, _modes, SceneHandler::scene_format(_format))
+        {}
+        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format)
+            : FileHandler(_filepath, _modes), format(_format)
         {
-            auto error = scene_tree.LoadFile(filepath.string().c_str());
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read Scene Tree description!");
+            switch(format)
+            {
+                case t3ds_xml:
+                    check_extension();
+                    break;
+                case t3ds:
+                    check_extension();
+                    break;
+                case off:
+                    break;
+                case obj:
+                    check_extension();
+            }
         }
-        FileHandler<tinyxml2::XMLDocument>::~FileHandler(void)
+        SceneHandler::~SceneHandler(void)
         {}
 
-        scene::Scene FileHandler<tinyxml2::XMLDocument>::read(FileHandler<Lib3dsFile> const& mesh_file) const
+        scene::Scene SceneHandler::read(void) const
         {
-            bool centered = true;
-            shadow::Point reference = pivot(centered);
-            return scene::Scene(reference, centered, epsg_index(), building_ids(), terrain_id(), mesh_file);
+            scene::Scene scene;
+            switch(format)
+            {
+                case off:
+                    if(! boost::filesystem::is_directory(filepath))
+                        throw std::runtime_error("Path is not a directory");
+                    {
+                        std::vector<shadow::Mesh> buildings;
+                        buildings.reserve(
+                            static_cast<std::size_t>(
+                                std::distance(
+                                    boost::filesystem::directory_iterator(filepath),
+                                    boost::filesystem::directory_iterator()
+                                )
+                            )
+                        );
+                        for(auto& file : boost::make_iterator_range(boost::filesystem::directory_iterator(filepath), {}))
+                            if(
+                                boost::filesystem::is_regular_file(file)
+                                &&
+                                boost::iequals(
+                                    file.path().extension().string(),
+                                    SceneHandler::extension(format)
+                                )
+                                &&
+                                file.path().stem().string() != "terrain"
+                            )
+                                buildings.push_back(
+                                    OFFHandler(file, modes).read()
+                                );
+                        scene = scene::Scene(
+                            buildings,
+                            OFFHandler(filepath / "terrain.off", modes).read()
+                        );
+                    }
+                    break;
+                case obj:
+                    scene = WaveObjHandler(filepath, modes).get_scene();
+                    break;
+                case t3ds_xml:
+                    scene = T3DSHandler(filepath, modes).get_scene(
+                        SceneTreeHandler(
+                            filepath.parent_path()
+                            /
+                            (filepath.stem().string() + ".XML")
+                        ),
+                        true
+                    );
+                    break;
+                case t3ds:
+                    try
+                    {
+                        scene = T3DSHandler(filepath, modes).get_scene(
+                            SceneTreeHandler(
+                                filepath.parent_path()
+                                /
+                                (filepath.stem().string() + ".XML")
+                            ),
+                            false
+                        );
+                    }
+                    catch(std::runtime_error const& err)
+                    {
+                        std::cerr << err.what() << std::endl;
+                        scene = T3DSHandler(filepath, modes).get_scene();
+                    }
+            }
+            return scene;
         }
 
-        shadow::Bbox FileHandler<tinyxml2::XMLDocument>::bbox(void) const
+        void SceneHandler::write(scene::Scene const& scene) const
         {
-            double  x_min(0),
-                    x_max(0),
-                    y_min(0),
-                    y_max(0),
-                    z_min(0),
-                    z_max(0);
-            
-            auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Xmin")->QueryDoubleText(&x_min);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read the bounding box");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Xmax")->QueryDoubleText(&x_max);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read the bounding box");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Ymin")->QueryDoubleText(&y_min);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read the bounding box");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Ymax")->QueryDoubleText(&y_max);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read the bounding box");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Zmin")->QueryDoubleText(&z_min);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read the bounding box");
-            error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Bbox")->FirstChildElement("Zmax")->QueryDoubleText(&z_max);
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read the bounding box");
-            
-            return shadow::Bbox(x_min, x_max, y_min, y_max, z_min, z_max);
-        }
-        shadow::Point FileHandler<tinyxml2::XMLDocument>::pivot(bool & centered) const
-        {
-            centered = true;
-            double  x_offset(0),
-                    y_offset(0),
-                    z_offset(0);
-            
-            if(scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot") != NULL)
+            switch(format)
             {
-                auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_x")->QueryDoubleText(&x_offset);
-                if(error != tinyxml2::XML_SUCCESS)
-                    throw std::runtime_error("Could not read Pivot Point");
-                error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_y")->QueryDoubleText(&y_offset);
-                if(error != tinyxml2::XML_SUCCESS)
-                    throw std::runtime_error("Could not read Pivot Point");
-                error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Pivot")->FirstChildElement("offset_z")->QueryDoubleText(&z_offset);
-                if(error != tinyxml2::XML_SUCCESS)
-                    throw std::runtime_error("Could not read Pivot Point");
+                case off:
+                    if(!boost::filesystem::exists(filepath))
+                        boost::filesystem::create_directory(filepath);
+                    else
+                        if(!boost::filesystem::is_directory(filepath))
+                            throw std::runtime_error("Path exists and does not correpond to a directory!");
+                    for(auto const& building : scene)
+                        OFFHandler(
+                            filepath / (building.get_name() + supported_extentions.at(SceneFormat::off)),
+                            modes
+                        ).write(
+                            shadow::Mesh(building)
+                        );
+                    OFFHandler(
+                        filepath
+                        /
+                        (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off)),
+                        modes
+                    ).write(
+                        shadow::Mesh(scene.get_terrain())
+                    );
+                    break;
+                case obj:
+                    WaveObjHandler(filepath, scene, modes).write();
+                    break;
+                case t3ds_xml:
+                    throw std::logic_error("Not yet implemented");
+                case t3ds:
+                    throw std::logic_error("Not yet implemented");
             }
-            else
-            {
-                centered = false;
-                shadow::Bbox _bbox = bbox();
-                x_offset = (_bbox.xmax() + _bbox.xmin()) / 2.;
-                y_offset = (_bbox.ymax() + _bbox.ymin()) / 2.;
-            }
-            
-            return urban::shadow::Point(x_offset, y_offset, z_offset);
         }
-        unsigned short FileHandler<tinyxml2::XMLDocument>::epsg_index(void) const
-        {
-            unsigned int epsg_code = 2154;
-            auto error = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("Code_ESPG_horizontal")->QueryUnsignedText(&epsg_code);
-            if(error != tinyxml2::XML_SUCCESS)
-                std::cout << "Warning: projection system EPSG code not found! It was set to 2154 - i.e. LAMBERT 93 - by default." << std::endl;
-            return static_cast<unsigned short>(epsg_code);
-        }
-        std::vector<std::string> FileHandler<tinyxml2::XMLDocument>::building_ids(void) const
-        {
-            std::vector<std::string> ids;
 
-            tinyxml2::XMLElement const* p_building = scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("Building");
-            while(p_building != NULL)
-            {
-                ids.push_back(std::string(p_building->Attribute("Id")));
-                p_building = p_building->NextSiblingElement("Building");
-            }
-
-            return ids;
-        }
-        std::string FileHandler<tinyxml2::XMLDocument>::terrain_id(void) const
+        SceneFormat SceneHandler::scene_format(std::string const& output_format)
         {
-            return std::string(
-                scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("TINRelief")->Attribute("Id")
+            auto found = std::find(
+                std::begin(supported_formats),
+                std::end(supported_formats),
+                output_format
             );
-        }        
+            if(found == std::end(supported_formats))
+                throw std::runtime_error("Input format not supported!");
+            else
+                return static_cast<SceneFormat>(std::distance(std::begin(supported_formats), found));
+        }
+        std::string SceneHandler::extension(SceneFormat const format)
+        {
+            return supported_extentions.at(format);
+        }
+
+        void SceneHandler::check_extension(void) const
+        {
+            if(
+                ! boost::iequals(
+                    filepath.extension().string(),
+                    SceneHandler::extension(format)
+                )
+            )
+                throw std::runtime_error("The file path does not have the right extension");
+        }
     }
 }

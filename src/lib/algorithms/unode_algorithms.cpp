@@ -12,7 +12,7 @@
 
 #include <cmath>
 
-namespace urban
+namespace city
 {
     double border_length(scene::UNode const& unode)
     {

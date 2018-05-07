@@ -5,10 +5,12 @@
 #include <CGAL/Polygon_mesh_processing/orientation.h>
 #include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 #include <CGAL/Polygon_mesh_processing/bbox.h>
-#include <CGAL/IO/Polyhedron_iostream.h>
-
+#include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
+
+#include <CGAL/IO/Polyhedron_iostream.h>
+#include <CGAL/IO/Nef_polyhedron_iostream_3.h>
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Polyhedron_geomview_ostream.h>
@@ -17,7 +19,7 @@
 #include <vector>
 
 
-namespace urban
+namespace city
 {
     namespace scene
     {
@@ -37,11 +39,63 @@ namespace urban
              surface(std::move(other.surface)),
              bounding_box(std::move(other.bounding_box))
         {}
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::set<char> const& types, io::FileHandler<Lib3dsFile> const& mesh_file)
-            :UNode(building_id, _reference_point, _epsg_index, mesh_file.read(building_id, types))
-        {}
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh)
-            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        UNode::UNode(
+            std::string const& node_id,
+            std::vector<shadow::Mesh> const& meshes,
+            shadow::Point const& _reference_point,
+            unsigned short const _epsg_index
+        )
+            :name(node_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        {
+            std::vector<Polyhedron> polyhedrons(meshes.size());
+            std::transform(
+                std::begin(meshes),
+                std::end(meshes),
+                std::begin(polyhedrons),
+                [](shadow::Mesh const& mesh)
+                {
+                    std::vector<Point_3> points = mesh.get_cgal_points();
+                    std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
+
+                    Polyhedron polyhedron;
+
+                    CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+                    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, polyhedron);
+                    CGAL::Polygon_mesh_processing::stitch_borders(polyhedron);
+
+                    std::vector<Polyhedron::Facet_handle>  patch_facets;
+                    for(auto it = polyhedron.halfedges_begin(); it != polyhedron.halfedges_end(); ++it)
+                        if(it->is_border())
+                            CGAL::Polygon_mesh_processing::triangulate_hole(polyhedron, it, std::back_inserter(patch_facets));
+
+                    std::cout << patch_facets.size() << std::endl;
+
+                    if(CGAL::is_closed(polyhedron) && !CGAL::Polygon_mesh_processing::is_outward_oriented(polyhedron))
+                        CGAL::Polygon_mesh_processing::reverse_face_orientations(polyhedron);
+
+                    // std::cout << polyhedron << std::endl;
+
+                    return polyhedron;
+                }
+            );
+
+            Nef_Polyhedron N;
+            for(auto polyhedron : polyhedrons)
+                N += Nef_Polyhedron(polyhedron);
+            std::cout << N;
+            if(N.is_simple())
+                N.convert_to_polyhedron(surface);
+            std::cout << surface << std::endl;
+
+            if(!surface.empty())
+                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+        }
+        UNode::UNode(
+            shadow::Mesh const& mesh,
+            shadow::Point const& _reference_point,
+            unsigned short const _epsg_index
+        )
+            : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             std::vector<Point_3> points = mesh.get_cgal_points();
             std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
@@ -53,7 +107,13 @@ namespace urban
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
-        UNode::UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons)
+        UNode::UNode(
+            std::string const& building_id,
+            std::vector<Point_3> & points,
+            std::vector< std::vector<std::size_t> > & polygons,
+            shadow::Point const& _reference_point,
+            unsigned short const _epsg_index
+        )
             :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
         {
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
@@ -97,24 +157,29 @@ namespace urban
             return *this;
         }
 
-        Bbox_3 UNode::bbox(void) const
+        Bbox_3 const& UNode::bbox(void) const noexcept
         {
             return bounding_box;
         }
 
-        std::string UNode::get_name(void) const
+        std::string const& UNode::get_name(void) const noexcept
         {
             return name;
         }
 
-        unsigned short UNode::get_epsg(void) const noexcept
+        unsigned short const& UNode::get_epsg(void) const noexcept
         {
             return epsg_index;
         }
 
-        shadow::Point UNode::get_reference_point(void) const noexcept
+        shadow::Point const& UNode::get_reference_point(void) const noexcept
         {
             return reference_point;
+        }
+
+        Polyhedron const& UNode::get_surface(void) const noexcept
+        {
+            return surface;
         }
 
         std::size_t UNode::vertices_size(void) const
@@ -382,7 +447,7 @@ namespace urban
             do
             {
                 auto buff = circulator->opposite()->facet();
-                if(!circulator->is_border() && buff != NULL)
+                if(!circulator->is_border() && buff != nullptr)
                     adjacents.push_back(buff);
             }while(++circulator != facet.facet_begin());
             return adjacents;

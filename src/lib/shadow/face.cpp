@@ -1,5 +1,4 @@
 #include <shadow/face.h>
-#include <shadow/utilities.h>
 
 #include <shadow/vector.h>
 
@@ -11,7 +10,7 @@
 
 #include <cmath>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {
@@ -33,19 +32,16 @@ namespace urban
             if(points.size()<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
-        Face::Face(Polyhedron::Facet const& facet, std::vector<Point> const& map_points)
+        Face::Face(Polyhedron::Facet const& facet, CGAL::Inverse_index<Polyhedron::Vertex_const_iterator> & points_index)
             : points(facet.facet_degree())
         {
-            points[0] = get_index(*(facet.facet_begin()), map_points);
-            std::transform(
-                std::next(facet.facet_begin(), 1),
-                std::next(facet.facet_begin(), static_cast<long>(points.size())),
-                std::next(std::begin(points), 1),
-                [this, &map_points](Polyhedron::Halfedge const& halfedge)
-                {
-                    return get_index(halfedge, map_points);
-                }
-            );
+            auto facet_circulator = facet.facet_begin();
+            auto insertor_iter = std::begin(points);
+            do
+            {
+                *insertor_iter = points_index[Polyhedron::Vertex_const_iterator(facet_circulator->vertex())];
+                ++insertor_iter;
+            }while(++facet_circulator != facet.facet_begin());
         }
         Face::Face(std::size_t first, std::size_t second, std::size_t third, bool orientation)
         {

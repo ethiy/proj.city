@@ -3,8 +3,7 @@
 #include <geometry_definitions.h>
 
 #include <shadow/point.h>
-
-#include <io/io_3ds.h>
+#include <shadow/mesh.h>
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 
@@ -15,7 +14,7 @@
 #include <string>
 #include <ostream>
 
-namespace urban
+namespace city
 {
     namespace scene
     {
@@ -25,9 +24,24 @@ namespace urban
             UNode(void);
             UNode(UNode const& other);
             UNode(UNode && other);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::set<char> const& types, io::FileHandler<Lib3dsFile> const& mesh_file);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, shadow::Mesh const& mesh);
-            UNode(std::string const& building_id, shadow::Point const& _reference_point, unsigned short const _epsg_index, std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons);
+            UNode(
+                shadow::Mesh const& mesh,
+                shadow::Point const& _reference_point=shadow::Point(),
+                unsigned short const _epsg_index=2154
+            );
+            UNode(
+                std::string const& node_id,
+                std::vector<shadow::Mesh> const& meshes,
+                shadow::Point const& _reference_point=shadow::Point(),
+                unsigned short const _epsg_index=2154
+            );
+            UNode(
+                std::string const& node_id,
+                std::vector<Point_3> & points,
+                std::vector< std::vector<std::size_t> > & polygons,
+                shadow::Point const& _reference_point=shadow::Point(),
+                unsigned short const _epsg_index=2154
+            );
             ~UNode(void);
 
             void swap(UNode & other);
@@ -38,19 +52,24 @@ namespace urban
              * Computes the Building bounding box.
              * @return this bounding box
              */
-            Bbox_3 bbox(void) const;
+            Bbox_3 const& bbox(void) const noexcept;
 
-            std::string get_name(void) const;
+            std::string const& get_name(void) const noexcept;
             /**
             * Access urban node epsg.
             * @return urban node epsg
             */
-            unsigned short get_epsg(void) const noexcept;
+            unsigned short const& get_epsg(void) const noexcept;
             /**
             * Access urban node reference point.
             * @return urban node reference point
             */
-            shadow::Point get_reference_point(void) const noexcept;
+            shadow::Point const& get_reference_point(void) const noexcept;
+            /**
+            * Access urban node surface.
+            * @return urban node surface
+            */
+            Polyhedron const& get_surface(void) const noexcept;
             /**
             * Get the number of vertices
             * @return number of vertices

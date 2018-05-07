@@ -15,7 +15,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> --input-format=<input_frmt> [--prune --cache --graphs --terrain --with-xml] [save --projection-format=<projection_frmt> --scene --labels] [rasterize --pixel-size=<size>]
+      orthoproject <scene> --input-format=<input_frmt> [--prune --graphs --terrain] [save --scene --labels] [rasterize --pixel-size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -23,10 +23,8 @@ R"(orthoproject.
       --version                             Show version.
       --prune                               Prune building faces.
       --cache                               Save buildings.
-      --with-xml                            Read using the XML scene description.
       --input-format=<input_frmt>           Specify input format.
       --graphs                              Save the building facets dual graph.
-      --projection-format=<proj_frmt>       Projection format [default: ESRI Shapefile].
       --scene                               Sum and save the scene projection.
       --labels                              Save vector projections with error fields.
       --terrain                             Taking care of terrain.
@@ -43,12 +41,10 @@ struct Arguments
         bool cache = false;
         bool graphs = false;
         bool terrain = false;
-        bool with_xml = false;
     };
     struct SavingArguments
     {
         bool projections = false;
-        std::string projection_format;
         bool scene = false;
         bool labels = false;
 
@@ -77,12 +73,10 @@ struct Arguments
         scene_args.cache = docopt_args.at("--cache").asBool();
         scene_args.graphs = docopt_args.at("--graphs").asBool();
         scene_args.terrain = docopt_args.at("--terrain").asBool();
-        scene_args.with_xml = docopt_args.at("--with-xml").asBool();
         
         save_args.projections = docopt_args.at("save").asBool();
         if(save_args.projections)
         {
-            save_args.projection_format = docopt_args.at("--projection-format").asString();
             save_args.scene = docopt_args.at("--scene").asBool();
             save_args.labels = docopt_args.at("--labels").asBool();
         }
@@ -108,11 +102,9 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Pruning faces: " << arguments.scene_args.prune << std::endl
        << "  Caching buildings: " << arguments.scene_args.cache << std::endl
        << "  Taking care of terrain: " << arguments.scene_args.terrain << std::endl
-       << "  Reading scene from XML: " << arguments.scene_args.with_xml << std::endl
        << "  Saving dual graphs: " << arguments.scene_args.graphs << std::endl
        << "  Saving: " << arguments.save_args.saving() << std::endl
        << "     Saving projections: " << arguments.save_args.projections << std::endl
-       << "     Projection saving format: " << arguments.save_args.projection_format << std::endl
        << "     Summing over whole scene: " << arguments.save_args.scene << std::endl
        << "     Saving projection error fields: " << arguments.save_args.labels << std::endl
        << "  Rasterizing: " << arguments.raster_args.rasterizing() << std::endl
@@ -121,27 +113,22 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
 }
 
 
-urban::scene::Scene input(Arguments::SceneArguments const& scene_args)
+city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args)
 {
-    urban::scene::Scene scene;
-    boost::filesystem::path data_directory(scene_args.input_path.parent_path());
-    
-    std::cout << "Parsing scene tree... " << std::flush;
-    if(urban::io::format(scene_args.input_format) == "3DS")
-        scene = urban::load_3ds_scene(scene_args.input_path, scene_args.with_xml);
-    std::cout << "Done." << std::flush << std::endl;
+    auto scene = city::io::SceneHandler(
+        scene_args.input_path,
+        std::map<std::string, bool>{{"read", true}},
+        scene_args.input_format
+    ).read();
 
-    std::cout << "Processing scene... " << std::flush;
     if(scene_args.prune)
-        urban::prune(scene, scene_args.terrain);
+        scene = scene.prune(scene_args.terrain);
     
-    if(scene_args.cache)
-        urban::save_scene(data_directory, scene);
-
     if(scene_args.graphs)
-        urban::save_building_duals(data_directory, scene);
-    std::cout << "Done." << std::flush << std::endl;
-
+        city::save_building_duals(
+            scene_args.input_path.parent_path(),
+            scene
+        );
     return scene;
 }
 
@@ -160,18 +147,18 @@ int main(int argc, const char** argv)
         );
         std::cout << std::boolalpha << arguments << std::endl;
 
-        auto scene = input(arguments.scene_args);
+        auto scene = input_scene(arguments.scene_args);
         
         boost::filesystem::path data_directory(arguments.scene_args.input_path.parent_path());
 
         if(arguments.save_args.saving())
         {
-            auto projections = urban::orthoproject(scene, arguments.scene_args.terrain);
+            auto projections = city::orthoproject(scene, arguments.scene_args.terrain);
 
-            urban::save_building_prints(data_directory, projections, arguments.save_args.projection_format, arguments.save_args.labels);
+            city::save_building_prints(data_directory, projections, arguments.save_args.labels);
 
             if(arguments.save_args.scene)
-                urban::save_scene_prints(
+                city::save_scene_prints(
                     data_directory,
                     arguments.scene_args.input_path.stem().string(),
                     projections,
@@ -181,8 +168,8 @@ int main(int argc, const char** argv)
                     
             if(arguments.raster_args.rasterizing())
             {
-                auto raster_projections = urban::rasterize_scene(projections, arguments.raster_args.pixel_size);
-                urban::save_building_rasters(data_directory, raster_projections);
+                auto raster_projections = city::rasterize_scene(projections, arguments.raster_args.pixel_size);
+                city::save_building_rasters(data_directory, raster_projections);
             }
         }
     }

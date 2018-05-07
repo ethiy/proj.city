@@ -5,7 +5,7 @@
 
 #include <CGAL/number_utils.h>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {

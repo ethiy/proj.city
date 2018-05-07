@@ -32,19 +32,19 @@ SCENARIO("shadow::Mesh manipulation:")
         init1 = std::initializer_list<float>({15.7204f, -13.188f, 61.1764f});
         std::copy(std::begin(init1), std::end(init1), (test_mesh->pointL + 2)->pos);
 
-        urban::shadow::Mesh _u_mesh(
+        city::shadow::Mesh _u_mesh(
             "",
-            std::vector<urban::shadow::Point>{{
-                urban::shadow::Point(15.5343f, -13.4504f, 60.8789f),
-                urban::shadow::Point(15.7204f, -13.188f, 60.8789f),
-                urban::shadow::Point(15.7204f, -13.188f, 61.1764f)
+            std::vector<city::shadow::Point>{{
+                city::shadow::Point(15.5343f, -13.4504f, 60.8789f),
+                city::shadow::Point(15.7204f, -13.188f, 60.8789f),
+                city::shadow::Point(15.7204f, -13.188f, 61.1764f)
             }},
-            std::vector<urban::shadow::Face>{{urban::shadow::Face{{0, 2, 1}}}}
+            std::vector<city::shadow::Face>{{city::shadow::Face{{0, 2, 1}}}}
         );
 
         WHEN( "the mesh is created:")
         {
-            urban::shadow::Mesh u_mesh(test_mesh);
+            city::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
                 REQUIRE( u_mesh == _u_mesh );
@@ -52,9 +52,9 @@ SCENARIO("shadow::Mesh manipulation:")
         }
         WHEN( "mesh points and faces are accessed:")
         {
-            urban::shadow::Mesh u_mesh(test_mesh);
-            std::vector<urban::shadow::Point> points = u_mesh.get_points();
-            std::vector<urban::shadow::Face> faces = u_mesh.get_faces();
+            city::shadow::Mesh u_mesh(test_mesh);
+            std::vector<city::shadow::Point> points = u_mesh.get_points();
+            std::vector<city::shadow::Face> faces = u_mesh.get_faces();
             THEN("the output checks:")
             {
                 std::ostringstream auxilary, _auxilary;
@@ -74,13 +74,13 @@ SCENARIO("shadow::Mesh manipulation:")
             }
         }
 
-        WHEN( "shadow::Mesh is converted back to lib3ds format and to \'urban::shadow::Mesh\' again: ")
+        WHEN( "shadow::Mesh is converted back to lib3ds format and to \'city::shadow::Mesh\' again: ")
         {
-            urban::shadow::Mesh u_mesh(test_mesh);
+            city::shadow::Mesh u_mesh(test_mesh);
             THEN("the output checks:")
             {
                 Lib3dsMesh* _mesh = u_mesh.to_3ds();
-                urban::shadow::Mesh _u_mesh(_mesh);
+                city::shadow::Mesh _u_mesh(_mesh);
                 lib3ds_mesh_free(_mesh);
                 REQUIRE( u_mesh == _u_mesh );
             }
@@ -92,54 +92,54 @@ SCENARIO("shadow::Mesh manipulation:")
     {
         WHEN("they are stitched")
         {
-             auto mesh = urban::io::FileHandler<std::fstream>(
+             auto mesh = city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29051.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29054.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29057.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29060.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29063.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29066.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/F29069.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/T11107.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read()
             +
-            urban::io::FileHandler<std::fstream>(
+            city::io::OFFHandler(
                 boost::filesystem::path("../../ressources/3dModels/OFF/T11108.off"),
                 std::map<std::string, bool>{{"read", true}}
             ).read();
  
             THEN("The output checks:")
             {
-                auto test_mesh = urban::io::FileHandler<std::fstream>(
+                auto test_mesh = city::io::OFFHandler(
                     boost::filesystem::path("../../ressources/tests/building_sum_mesh.off"),
                     std::map<std::string, bool>{{"read", true}}
                 ).read();

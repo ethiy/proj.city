@@ -1,5 +1,9 @@
 #include <shadow/mesh.h>
 
+#include<scene/unode.h>
+
+#include <CGAL/Inverse_index.h>
+
 #include <stdexcept>
 
 #include <iterator>
@@ -8,7 +12,7 @@
 
 #include <limits>
 
-namespace urban
+namespace city
 {
     namespace shadow
     {
@@ -25,7 +29,7 @@ namespace urban
                 lib3ds_mesh->pointL,
                 lib3ds_mesh->pointL + lib3ds_mesh->points,
                 std::begin(points),
-                [this](Lib3dsPoint const& lib3ds_point)
+                [](Lib3dsPoint const& lib3ds_point)
                 {
                     return Point(lib3ds_point);
                 }
@@ -58,32 +62,39 @@ namespace urban
             compute_bbox();
         }
 
-        Mesh::Mesh(Polyhedron const& polyhedron)
-            : points(polyhedron.size_of_vertices()), faces(polyhedron.size_of_facets())
+        Mesh::Mesh(std::string const& _name, Polyhedron const& polyhedron)
+            : name(_name), points(polyhedron.size_of_vertices()), faces(polyhedron.size_of_facets())
         {
             std::transform(
                 polyhedron.points_begin(),
                 polyhedron.points_end(),
                 std::begin(points),
-                [this](Point_3 const& point)
+                [](Point_3 const& point)
                 {
                     return Point(point);
                 }
             );
 
+            CGAL::Inverse_index<Polyhedron::Vertex_const_iterator> points_index(polyhedron.vertices_begin(), polyhedron.vertices_end());
+
             std::transform(
                 polyhedron.facets_begin(),
                 polyhedron.facets_end(),
                 std::begin(faces),
-                [this](Polyhedron::Facet const& facet)
+                [this, &points_index](Polyhedron::Facet const& facet)
                 {
-                    return Face(facet, points);
+                    return Face(facet, points_index);
                 }
             );
             compute_bbox();
         }
 
-        Mesh::Mesh(std::string _name, std::vector<Point> const& _points, std::vector<Face> const& _faces)
+        Mesh::Mesh(scene::UNode const& unode)
+            : Mesh(unode.get_name(), unode.get_surface())
+        {}
+
+
+        Mesh::Mesh(std::string const& _name, std::vector<Point> const& _points, std::vector<Face> const& _faces)
             : name(_name), points(_points), faces(_faces)
         {
             compute_bbox();
@@ -171,9 +182,10 @@ namespace urban
         }
 
 
-        void Mesh::set_name(std::string const& _name) noexcept
+        Mesh Mesh::set_name(std::string const& _name) noexcept
         {
             name = _name;
+            return *this;
         }
 
         std::string Mesh::get_name(void) const noexcept
@@ -312,7 +324,7 @@ namespace urban
                 }
             );
 
-            mesh->next = NULL;
+            mesh->next = nullptr;
 
             return mesh;
         }

@@ -15,20 +15,20 @@ SCENARIO("Occlusion management")
 {
     GIVEN("two triangular faces")
     {
-        urban::InexactToExact to_exact;
-        urban::projection::BrickPrint lhs(
+        city::InexactToExact to_exact;
+        city::projection::BrickPrint lhs(
             test_facet_projection(
                 0,
-                to_exact(urban::InexactKernel::Point_3(-1., 0, 5.)),
-                to_exact(urban::InexactKernel::Point_3(1., 0., 2.)),
-                to_exact(urban::InexactKernel::Point_3(0, 1., 3.615))
+                to_exact(city::InexactKernel::Point_3(-1., 0, 5.)),
+                to_exact(city::InexactKernel::Point_3(1., 0., 2.)),
+                to_exact(city::InexactKernel::Point_3(0, 1., 3.615))
             )
         );
         auto rhs = test_facet_projection(
             1,
-            to_exact(urban::InexactKernel::Point_3(-.5, .33, 5.)),
-            to_exact(urban::InexactKernel::Point_3(.5, .33, 5.)),
-            to_exact(urban::InexactKernel::Point_3(0, .67, 8.2))
+            to_exact(city::InexactKernel::Point_3(-.5, .33, 5.)),
+            to_exact(city::InexactKernel::Point_3(.5, .33, 5.)),
+            to_exact(city::InexactKernel::Point_3(0, .67, 8.2))
         );
 
         WHEN("Occlusion is computed")
@@ -52,45 +52,45 @@ SCENARIO("Occlusion management")
 
     GIVEN("two non convex faces with holes")
     {
-        urban::projection::BrickPrint lhs( 
+        city::projection::BrickPrint lhs( 
             test_facet_projection(
                 0,
-                std::vector<urban::Point_2>{{
-                    urban::Point_2(-10, 6),
-                    urban::Point_2(-12, 0),
-                    urban::Point_2(0, 0),
-                    urban::Point_2(-6, -12),
-                    urban::Point_2(2, -12),
-                    urban::Point_2(2, 8),
-                    urban::Point_2(-2, 4)
+                std::vector<city::Point_2>{{
+                    city::Point_2(-10, 6),
+                    city::Point_2(-12, 0),
+                    city::Point_2(0, 0),
+                    city::Point_2(-6, -12),
+                    city::Point_2(2, -12),
+                    city::Point_2(2, 8),
+                    city::Point_2(-2, 4)
                 }},
-                urban::Plane_3(
-                    urban::Point_3(-10, 6, 0),
-                    urban::Point_3(-12, 0, 0),
-                    urban::Point_3(0, 0, 0)                
+                city::Plane_3(
+                    city::Point_3(-10, 6, 0),
+                    city::Point_3(-12, 0, 0),
+                    city::Point_3(0, 0, 0)                
                 )
             )
         );
 
         auto rhs = test_facet_projection(
             1,
-            std::vector<urban::Point_2>{{
-                urban::Point_2(-6, 8),
-                urban::Point_2(-10, -10),
-                urban::Point_2(2, -10),
-                urban::Point_2(-2, -2),
-                urban::Point_2(-4, 6),
-                urban::Point_2(4, 4)
+            std::vector<city::Point_2>{{
+                city::Point_2(-6, 8),
+                city::Point_2(-10, -10),
+                city::Point_2(2, -10),
+                city::Point_2(-2, -2),
+                city::Point_2(-4, 6),
+                city::Point_2(4, 4)
             }},
-            std::vector<urban::Point_2>{{
-                urban::Point_2(-6, 4),
-                urban::Point_2(-4, 2),
-                urban::Point_2(-6, 2)
+            std::vector<city::Point_2>{{
+                city::Point_2(-6, 4),
+                city::Point_2(-4, 2),
+                city::Point_2(-6, 2)
             }},
-            urban::Plane_3(
-                urban::Point_3(-6, 8, 10),
-                urban::Point_3(-10, 10, 10),
-                urban::Point_3(2, -10, 10)
+            city::Plane_3(
+                city::Point_3(-6, 8, 10),
+                city::Point_3(-10, 10, 10),
+                city::Point_3(2, -10, 10)
             )
         );
         WHEN("Occlusion is computed")
@@ -99,104 +99,104 @@ SCENARIO("Occlusion management")
 
             THEN("the output checks:")
             {
-                urban::projection::BrickPrint _rhs(
+                city::projection::BrickPrint _rhs(
                     test_facet_projection(
                         2,
-                        std::vector<urban::Point_2>{{
-                            urban::Point_2(-10, -10),
-                            urban::Point_2(2, -10),
-                            urban::Point_2(-2, -2),
-                            urban::Point_2(-4, 6),
-                            urban::Point_2(4, 4),
-                            urban::Point_2(-6, 8)
+                        std::vector<city::Point_2>{{
+                            city::Point_2(-10, -10),
+                            city::Point_2(2, -10),
+                            city::Point_2(-2, -2),
+                            city::Point_2(-4, 6),
+                            city::Point_2(4, 4),
+                            city::Point_2(-6, 8)
                         }},
-                        std::vector<urban::Point_2>{{
-                            urban::Point_2(-4, 2),
-                            urban::Point_2(-6, 2),
-                            urban::Point_2(-6, 4)
+                        std::vector<city::Point_2>{{
+                            city::Point_2(-4, 2),
+                            city::Point_2(-6, 2),
+                            city::Point_2(-6, 4)
                         }},
-                        urban::Plane_3(
-                            urban::Point_3(-6, 8, 10),
-                            urban::Point_3(-10, 10, 10),
-                            urban::Point_3(2, -10, 10)                
+                        city::Plane_3(
+                            city::Point_3(-6, 8, 10),
+                            city::Point_3(-10, 10, 10),
+                            city::Point_3(2, -10, 10)                
                         )
                     )
                 );
 
-                auto _lhs = urban::projection::BrickPrint(
+                auto _lhs = city::projection::BrickPrint(
                         test_facet_projection(
                             3,
-                            std::vector<urban::Point_2>{{
-                                urban::Point_2(-6, 2),
-                                urban::Point_2(-4, 2),
-                                urban::Point_2(-6, 4)
+                            std::vector<city::Point_2>{{
+                                city::Point_2(-6, 2),
+                                city::Point_2(-4, 2),
+                                city::Point_2(-6, 4)
                             }},
-                            urban::Plane_3(
-                                urban::Point_3(-10, 6, 0),
-                                urban::Point_3(-12, 0, 0),
-                                urban::Point_3(0, 0, 0)                
+                            city::Plane_3(
+                                city::Point_3(-10, 6, 0),
+                                city::Point_3(-12, 0, 0),
+                                city::Point_3(0, 0, 0)                
                             )
                         )
                     )
                     +
-                    urban::projection::BrickPrint(
+                    city::projection::BrickPrint(
                         test_facet_projection(
                             4,
-                            std::vector<urban::Point_2>{{
-                                urban::Point_2(-0.8, 5.2),
-                                urban::Point_2(-2, 4),
-                                urban::Point_2(-3.6, 4.4),
-                                urban::Point_2(-2.5, 0),
-                                urban::Point_2(0, -1.5),
-                                urban::Point_2(-3, 2),
-                                urban::Point_2(-10, -5),
-                                urban::Point_2(-10, -6),
-                                urban::Point_2(-6, -12),
-                                urban::Point_2(-12, 2),
-                                urban::Point_2(2, 4.5)
+                            std::vector<city::Point_2>{{
+                                city::Point_2(-0.8, 5.2),
+                                city::Point_2(-2, 4),
+                                city::Point_2(-3.6, 4.4),
+                                city::Point_2(-2.5, 0),
+                                city::Point_2(0, -1.5),
+                                city::Point_2(-3, 2),
+                                city::Point_2(-10, -5),
+                                city::Point_2(-10, -6),
+                                city::Point_2(-6, -12),
+                                city::Point_2(-12, 2),
+                                city::Point_2(2, 4.5)
                             }},
-                            urban::Plane_3(
-                                urban::Point_3(-10, 6, 0),
-                                urban::Point_3(-12, 0, 0),
-                                urban::Point_3(0, 0, 0)                
+                            city::Plane_3(
+                                city::Point_3(-10, 6, 0),
+                                city::Point_3(-12, 0, 0),
+                                city::Point_3(0, 0, 0)                
                             )
                         )
                     )
                     +
-                    urban::projection::BrickPrint(
+                    city::projection::BrickPrint(
                         test_facet_projection(
                             5,
-                            std::vector<urban::Point_2>{{
-                                urban::Point_2(2, 8),
-                                urban::Point_2(-2/7, 40/7),
-                                urban::Point_2(2, 4.8)
+                            std::vector<city::Point_2>{{
+                                city::Point_2(2, 8),
+                                city::Point_2(-2/7, 40/7),
+                                city::Point_2(2, 4.8)
                             }},
-                            std::vector<urban::Point_2>{{
-                                urban::Point_2(-4, 2),
-                                urban::Point_2(-6, 2),
-                                urban::Point_2(-6, 4)
+                            std::vector<city::Point_2>{{
+                                city::Point_2(-4, 2),
+                                city::Point_2(-6, 2),
+                                city::Point_2(-6, 4)
                             }},
-                            urban::Plane_3(
-                                urban::Point_3(-10, 6, 0),
-                                urban::Point_3(-12, 0, 0),
-                                urban::Point_3(0, 0, 0)                
+                            city::Plane_3(
+                                city::Point_3(-10, 6, 0),
+                                city::Point_3(-12, 0, 0),
+                                city::Point_3(0, 0, 0)                
                             )
                         )
                     )
                     +
-                    urban::projection::BrickPrint(
+                    city::projection::BrickPrint(
                         test_facet_projection(
                             6,
-                            std::vector<urban::Point_2>{{
-                                urban::Point_2(-6.63158, 5.15789),
-                                urban::Point_2(-10, 6),
-                                urban::Point_2(-12, 0),
-                                urban::Point_2(-70/9, 0)
+                            std::vector<city::Point_2>{{
+                                city::Point_2(-6.63158, 5.15789),
+                                city::Point_2(-10, 6),
+                                city::Point_2(-12, 0),
+                                city::Point_2(-70/9, 0)
                             }},
-                            urban::Plane_3(
-                                urban::Point_3(-10, 6, 0),
-                                urban::Point_3(-12, 0, 0),
-                                urban::Point_3(0, 0, 0)                
+                            city::Plane_3(
+                                city::Point_3(-10, 6, 0),
+                                city::Point_3(-12, 0, 0),
+                                city::Point_3(0, 0, 0)                
                             )
                         )
                     );
@@ -207,13 +207,13 @@ SCENARIO("Occlusion management")
     }
     GIVEN("A closed shadow Mesh")
     {
-        std::vector<urban::Point_3> points{{
-            urban::Point_3(-10, 6, 8),
-            urban::Point_3(-18, -14, 5),
-            urban::Point_3(-2, -13, 6),
-            urban::Point_3(-10, -10, -15),
-            urban::Point_3(-2, 10, 0),
-            urban::Point_3(-18, 9, 1)
+        std::vector<city::Point_3> points{{
+            city::Point_3(-10, 6, 8),
+            city::Point_3(-18, -14, 5),
+            city::Point_3(-2, -13, 6),
+            city::Point_3(-10, -10, -15),
+            city::Point_3(-2, 10, 0),
+            city::Point_3(-18, 9, 1)
         }};
         std::vector< std::vector<std::size_t> > polygons{{
             std::vector<std::size_t>{{0, 1, 2}},
@@ -226,62 +226,62 @@ SCENARIO("Occlusion management")
             std::vector<std::size_t>{{1, 3, 2}}
         }};
 
-        urban::projection::FootPrint test_footprint(
-            urban::scene::UNode(
+        city::projection::FootPrint test_footprint(
+            city::scene::UNode(
                 "test_mesh",
-                urban::shadow::Point(),
-                2154,
                 points,
-                polygons
+                polygons,
+                city::shadow::Point(),
+                2154
             )
         );
         THEN("The output checks:")
         {
-            auto _test_brickprint = urban::projection::BrickPrint(
+            auto _test_brickprint = city::projection::BrickPrint(
                     test_facet_projection(
                         0,
-                        std::vector<urban::Point_2>{{
-                            urban::Point_2(-10, 6),
-                            urban::Point_2(-18, -14),
-                            urban::Point_2(-2, -13)
+                        std::vector<city::Point_2>{{
+                            city::Point_2(-10, 6),
+                            city::Point_2(-18, -14),
+                            city::Point_2(-2, -13)
                         }},
-                        urban::Plane_3(-17, -40, 312, -2426)
+                        city::Plane_3(-17, -40, 312, -2426)
                     )
                 )
                 +
-                urban::projection::BrickPrint(
+                city::projection::BrickPrint(
                     test_facet_projection(
                         1,
-                        std::vector<urban::Point_2>{{
-                            urban::Point_2(-18, 9),
-                            urban::Point_2(-18, -14),
-                            urban::Point_2(-10, 6)
+                        std::vector<city::Point_2>{{
+                            city::Point_2(-18, 9),
+                            city::Point_2(-18, -14),
+                            city::Point_2(-10, 6)
                         }},
-                        urban::Plane_3(-149, 32, 184, -3154)
+                        city::Plane_3(-149, 32, 184, -3154)
                     )
                 )
                 +
-                urban::projection::BrickPrint(
+                city::projection::BrickPrint(
                     test_facet_projection(
                         2,
-                        std::vector<urban::Point_2>{{
-                            urban::Point_2(-10, 6),
-                            urban::Point_2(-2, -13),
-                            urban::Point_2(-2, 10)
+                        std::vector<city::Point_2>{{
+                            city::Point_2(-10, 6),
+                            city::Point_2(-2, -13),
+                            city::Point_2(-2, 10)
                         }},
-                        urban::Plane_3(160, 48, 184, -160)
+                        city::Plane_3(160, 48, 184, -160)
                     )
                 )
                 +
-                urban::projection::BrickPrint(
+                city::projection::BrickPrint(
                     test_facet_projection(
                         3,
-                        std::vector<urban::Point_2>{{
-                            urban::Point_2(-18, 9),
-                            urban::Point_2(-10, 6),
-                            urban::Point_2(-2, 10)
+                        std::vector<city::Point_2>{{
+                            city::Point_2(-18, 9),
+                            city::Point_2(-10, 6),
+                            city::Point_2(-2, 10)
                         }},
-                        urban::Plane_3(-4, 120, 56, -1208)
+                        city::Plane_3(-4, 120, 56, -1208)
                     )
                 );
 
