@@ -8,12 +8,29 @@ namespace city
 {
     namespace io
     {
-        SceneTreeHandler::SceneTreeHandler(boost::filesystem::path const& _filepath)
-            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}})
+        SceneTreeHandler::SceneTreeHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
+            : FileHandler(_filepath, _modes)
         {
-            auto error = scene_tree.LoadFile(filepath.string().c_str());
-            if(error != tinyxml2::XML_SUCCESS)
-                throw std::runtime_error("Could not read Scene Tree description!");
+            std::ostringstream error_message;
+
+            if(modes["read"] && modes["write"])
+            {
+                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                throw boost::filesystem::filesystem_error("Simultaneous reading and writing access is forbidden", ec);
+            }
+
+            if(!modes["read"] && !modes["write"])
+            {
+                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
+                throw boost::filesystem::filesystem_error("You have to specify access type", ec);
+            }
+
+            if(modes["read"])
+            {
+                auto error = scene_tree.LoadFile(filepath.string().c_str());
+                if(error != tinyxml2::XML_SUCCESS)
+                    throw std::runtime_error("Could not read Scene Tree description!");
+            }
         }
         SceneTreeHandler::~SceneTreeHandler(void)
         {}
@@ -102,6 +119,84 @@ namespace city
             return std::string(
                 scene_tree.FirstChildElement("Chantier_Bati3D")->FirstChildElement("CityModel")->FirstChildElement("TINRelief")->Attribute("Id")
             );
+        }
+
+        void SceneTreeHandler::write(shadow::Point const& pivot, shadow::Bbox const& bbox, unsigned short const epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id)
+        {
+            auto p_root = scene_tree.NewElement("Chantier_Bati3D");
+            scene_tree.InsertFirstChild(p_root);
+
+            auto p_bbox = scene_tree.NewElement("Bbox");
+            p_root->InsertEndChild(p_bbox);
+            set_bbox(p_bbox, bbox);
+
+            auto p_pivot = scene_tree.NewElement("Pivot");
+            p_root->InsertEndChild(p_pivot);
+            set_pivot(p_pivot, pivot);
+
+            set_epsg_index(p_root, epsg_index);
+
+            auto p_citymodel = scene_tree.NewElement("CityModel");
+            p_root->InsertEndChild(p_citymodel);
+            set_building_ids(p_citymodel, building_ids);
+            set_terrain_id(p_citymodel, terrain_id);
+
+            scene_tree.SaveFile(filepath.string().c_str());
+        }
+
+        void SceneTreeHandler::set_bbox(tinyxml2::XMLNode* root, shadow::Bbox const& bbox)
+        {
+            auto p_xmin = scene_tree.NewElement("Xmin");
+            p_xmin->SetText(bbox.xmin());
+            root->InsertEndChild(p_xmin);
+            auto p_xmax = scene_tree.NewElement("Xmax");
+            p_xmax->SetText(bbox.xmax());
+            root->InsertEndChild(p_xmax);
+            auto p_ymin = scene_tree.NewElement("Ymin");
+            p_ymin->SetText(bbox.ymin());
+            root->InsertEndChild(p_ymin);
+            auto p_ymax = scene_tree.NewElement("Ymax");
+            p_ymax->SetText(bbox.ymax());
+            root->InsertEndChild(p_ymax);
+            auto p_zmin = scene_tree.NewElement("Zmin");
+            p_zmin->SetText(bbox.zmin());
+            root->InsertEndChild(p_zmin);
+            auto p_zmax = scene_tree.NewElement("Zmax");
+            p_zmax->SetText(bbox.zmax());
+            root->InsertEndChild(p_zmax);
+        }
+        void SceneTreeHandler::set_pivot(tinyxml2::XMLNode* root, shadow::Point const& pivot)
+        {
+            auto p_x = scene_tree.NewElement("offset_x");
+            p_x->SetText(pivot.x());
+            root->InsertEndChild(p_x);
+            auto p_y = scene_tree.NewElement("offset_y");
+            p_y->SetText(pivot.y());
+            root->InsertEndChild(p_y);
+            auto p_z = scene_tree.NewElement("offset_z");
+            p_z->SetText(pivot.z());
+            root->InsertEndChild(p_z);
+        }
+        void SceneTreeHandler::set_epsg_index(tinyxml2::XMLNode* root, unsigned short const epsg_index)
+        {
+            auto p_epsg = scene_tree.NewElement("Code_ESPG_horizontal");
+            p_epsg->SetText(epsg_index);
+            root->InsertEndChild(p_epsg);
+        }
+        void SceneTreeHandler::set_building_ids(tinyxml2::XMLNode* root, std::vector<std::string> const& building_ids)
+        {
+            for(auto const& building_id : building_ids)
+            {
+                auto p_building = scene_tree.NewElement("Building");
+                p_building->SetAttribute("Id", building_id.c_str());
+                root->InsertEndChild(p_building);
+            }
+        }
+        void SceneTreeHandler::set_terrain_id(tinyxml2::XMLNode* root, std::string const& terrain_id)
+        {
+            auto p_terrain = scene_tree.NewElement("TINRelief");
+            p_terrain->SetAttribute("Id", terrain_id.c_str());
+            root->InsertEndChild(p_terrain);
         }
     }
 }

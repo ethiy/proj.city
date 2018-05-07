@@ -86,9 +86,8 @@ namespace city
                 case t3ds_xml:
                     scene = T3DSHandler(filepath, modes).get_scene(
                         SceneTreeHandler(
-                            filepath.parent_path()
-                            /
-                            (filepath.stem().string() + ".XML")
+                            filepath.parent_path() / (filepath.stem().string() + ".XML"),
+                            std::map<std::string, bool>{{"read", true}}
                         ),
                         true
                     );
@@ -98,9 +97,8 @@ namespace city
                     {
                         scene = T3DSHandler(filepath, modes).get_scene(
                             SceneTreeHandler(
-                                filepath.parent_path()
-                                /
-                                (filepath.stem().string() + ".XML")
+                                filepath.parent_path() / (filepath.stem().string() + ".XML"),
+                                std::map<std::string, bool>{{"read", true}}
                             ),
                             false
                         );
