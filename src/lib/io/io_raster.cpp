@@ -56,7 +56,7 @@ namespace city
             if (modes["write"])
             {
                 GDALAllRegister();
-                GDALDriver* driver = GetGDALDriverManager()->GetDriverByName("GeoTiff");
+                GDALDriver* driver = GetGDALDriverManager()->GetDriverByName("GTiff");
                 if(driver == nullptr)
                 {
                     error_message << "GDAL could not find a driver for: GeoTiff";
