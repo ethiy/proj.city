@@ -20,11 +20,12 @@ SCENARIO("Input/Output from obj file:")
 {
     GIVEN("A minimal obj file")
     {
-        boost::filesystem::path filepath("../../ressources/3dModels/OBJ/minimal.obj");
-
         WHEN("reading in text mode")
         {
-            auto meshes = city::io::WaveObjHandler(filepath, std::map<std::string, bool>{{"read", true}}).read().data();
+            auto meshes = city::io::WaveObjHandler(
+                boost::filesystem::path("../../ressources/3dModels/OBJ/minimal.obj"),
+                std::map<std::string, bool>{{"read", true}}
+            ).read().data();
 
             THEN("the output checks")
             {
@@ -52,7 +53,10 @@ SCENARIO("Input/Output from obj file:")
 
         WHEN("the reading mode is not chosen")
         {
-            city::io::WaveObjHandler handler(filepath, std::map<std::string, bool>{{}});
+            city::io::WaveObjHandler handler(
+                boost::filesystem::path("../../ressources/3dModels/OBJ/minimal.obj"),
+                std::map<std::string, bool>{{}}
+            );
 
             THEN("the reader throws")
             {
@@ -63,21 +67,12 @@ SCENARIO("Input/Output from obj file:")
 
     GIVEN("A wrong file path")
     {
-        boost::filesystem::path filepath("../ressources/3dModels/OBJ/minimal.obj");
-
         WHEN("the reading mode is chosen")
         {
-            city::io::WaveObjHandler handler(filepath, std::map<std::string, bool>{{"read", true}});
-
-            THEN("the reader throws")
-            {
-                REQUIRE_THROWS(handler.read().data());
-            }
-        }
-
-        WHEN("the reading mode is not chosen")
-        {
-            city::io::WaveObjHandler handler(filepath, std::map<std::string, bool>{{}});
+            city::io::WaveObjHandler handler(
+                boost::filesystem::path("../ressources/3dModels/OBJ/minimal.obj"),
+                std::map<std::string, bool>{{"read", true}}
+            );
 
             THEN("the reader throws")
             {
