@@ -1,7 +1,10 @@
 #include <io/io_3ds.h>
 
+#include <io/io_scene_tree.h>
+
 #include <lib3ds/node.h>
 #include <lib3ds/types.h>
+
 
 #include <sstream>
 
@@ -42,53 +45,10 @@ namespace city
                 file = lib3ds_file_new();
             }
         }
-
         T3DSHandler::~T3DSHandler(void)
         {
            lib3ds_file_free(file);
         }
-
-        scene::Scene T3DSHandler::get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml)
-        {
-            if(from_xml)
-            {
-                auto building_ids = scene_tree_file.building_ids();
-                std::vector<shadow::Mesh> building_meshes(building_ids.size());
-                std::transform(
-                    std::begin(building_ids),
-                    std::end(building_ids),
-                    std::begin(building_meshes),
-                    [this](std::string const& building_id)
-                    {
-                        return mesh(building_id, std::set<char>{{'T', 'F'}});
-                    }
-                );
-                return scene::Scene(
-                    building_meshes,
-                    mesh(
-                        scene_tree_file.terrain_id(),
-                        std::set<char>{'M'}
-                    ).set_name("terrain"),
-                    scene_tree_file.pivot(),
-                    scene_tree_file.epsg_index()
-                );
-            }
-            else
-                return scene::Scene(
-                    level_meshes(1, std::set<char>{{'T', 'F'}}),
-                    level_terrain(1),
-                    scene_tree_file.pivot(),
-                    scene_tree_file.epsg_index()
-                );
-        }
-        scene::Scene T3DSHandler::get_scene(void)
-        {
-            return scene::Scene(
-                level_meshes(1, std::set<char>{{'T', 'F'}}),
-                level_terrain(1)
-            );
-        }
-
 
         std::vector<city::shadow::Mesh> T3DSHandler::get_meshes(void)
         {
@@ -286,6 +246,64 @@ namespace city
                 return ;
 
             meshes[*type].push_back(city::shadow::Mesh(mesh));
+        }
+
+
+        T3DSSceneHandler::T3DSSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
+            : T3DSHandler(_filepath, _modes), scene_tree_path(filepath.parent_path() / (filepath.stem().string() + ".XML"))
+        {
+            if(!boost::filesystem::is_regular_file(scene_tree_path.get()))
+                scene_tree_path = boost::none;
+        }
+        T3DSSceneHandler::~T3DSSceneHandler()
+        {}
+
+        scene::Scene T3DSSceneHandler::read(bool const using_xml)
+        {
+            if(scene_tree_path == boost::none)
+            {
+                if(using_xml)
+                    throw std::logic_error("Cannot extract from a file: it does not exist!");
+                else
+                    return scene::Scene(
+                        level_meshes(1, std::set<char>{{'T', 'F'}}),
+                        level_terrain(1)
+                    );
+            }
+            else
+            {
+                SceneTreeHandler scene_tree(scene_tree_path.get(), modes);
+                if(using_xml)
+                {
+                    auto building_ids = scene_tree.building_ids();
+                    std::vector<shadow::Mesh> building_meshes(building_ids.size());
+                    std::transform(
+                        std::begin(building_ids),
+                        std::end(building_ids),
+                        std::begin(building_meshes),
+                        [this](std::string const& building_id)
+                        {
+                            return mesh(building_id, std::set<char>{{'T', 'F'}});
+                        }
+                    );
+                    return scene::Scene(
+                        building_meshes,
+                        mesh(
+                            scene_tree.terrain_id(),
+                            std::set<char>{'M'}
+                        ).set_name("terrain"),
+                        scene_tree.pivot(),
+                        scene_tree.epsg_index()
+                    );
+                }
+                else
+                    return scene::Scene(
+                        level_meshes(1, std::set<char>{{'T', 'F'}}),
+                        level_terrain(1),
+                        scene_tree.pivot(),
+                        scene_tree.epsg_index()
+                    );
+                }
         }
     }
 }

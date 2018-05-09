@@ -1,7 +1,6 @@
 #pragma once
 
 #include <io/io.h>
-#include <io/io_scene_tree.h>
 
 #include <shadow/mesh.h>
 #include <scene/scene.h>
@@ -9,6 +8,8 @@
 #include <lib3ds/file.h>
 
 #include <boost/filesystem/operations.hpp>
+
+#include <boost/optional.hpp>
 
 #include <deque>
 #include <set>
@@ -22,9 +23,6 @@ namespace city
         public:
             T3DSHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
             ~T3DSHandler(void);
-
-            ::city::scene::Scene get_scene(SceneTreeHandler const& scene_tree_file, bool from_xml = true);
-            scene::Scene get_scene(void);
 
             std::vector<shadow::Mesh> get_meshes(void);
 
@@ -44,6 +42,17 @@ namespace city
             Lib3dsFile* file = nullptr;
 
             void node_meshes(Lib3dsNode* node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types);
+        };
+
+        class T3DSSceneHandler: protected T3DSHandler
+        {
+        public:
+            T3DSSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _mode);
+            ~T3DSSceneHandler(void);
+
+            scene::Scene read(bool const using_xml = true);
+        private:
+            boost::optional<boost::filesystem::path> scene_tree_path;
         };
     }
 }
