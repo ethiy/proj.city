@@ -15,21 +15,18 @@ namespace city
 {
     namespace io
     {
-        const std::vector<std::string> SceneHandler::supported_formats{{"3DS XML", "3DS", "OFF", "OBJ"}};
-        const std::vector<std::string> SceneHandler::supported_extentions{{".3ds", ".3ds", ".off", ".obj"}};
+        const std::vector<std::string> SceneHandler::supported_formats{{"3DS", "OFF", "OBJ"}};
+        const std::vector<std::string> SceneHandler::supported_extentions{{".3ds", ".off", ".obj"}};
 
 
-        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format)
-            : SceneHandler(_filepath, _modes, SceneHandler::scene_format(_format))
+        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format, bool const _using_xml)
+            : SceneHandler(_filepath, _modes, SceneHandler::scene_format(_format), _using_xml)
         {}
-        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format)
-            : FileHandler(_filepath, _modes), format(_format)
+        SceneHandler::SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format, bool const _using_xml)
+            : FileHandler(_filepath, _modes), format(_format), using_xml(_using_xml)
         {
             switch(format)
             {
-                case t3ds_xml:
-                    check_extension();
-                    break;
                 case t3ds:
                     check_extension();
                     break;
@@ -81,33 +78,10 @@ namespace city
                     }
                     break;
                 case obj:
-                    scene = WaveObjHandler(filepath, modes).get_scene();
-                    break;
-                case t3ds_xml:
-                    scene = T3DSHandler(filepath, modes).get_scene(
-                        SceneTreeHandler(
-                            filepath.parent_path() / (filepath.stem().string() + ".XML"),
-                            std::map<std::string, bool>{{"read", true}}
-                        ),
-                        true
-                    );
+                    scene = WaveObjSceneHandler(filepath, modes).read(using_xml);
                     break;
                 case t3ds:
-                    try
-                    {
-                        scene = T3DSHandler(filepath, modes).get_scene(
-                            SceneTreeHandler(
-                                filepath.parent_path() / (filepath.stem().string() + ".XML"),
-                                std::map<std::string, bool>{{"read", true}}
-                            ),
-                            false
-                        );
-                    }
-                    catch(std::runtime_error const& err)
-                    {
-                        std::cerr << err.what() << std::endl;
-                        scene = T3DSHandler(filepath, modes).get_scene();
-                    }
+                    scene = T3DSSceneHandler(filepath, modes).read(using_xml);
             }
             return scene;
         }
@@ -139,10 +113,8 @@ namespace city
                     );
                     break;
                 case obj:
-                    WaveObjHandler(filepath, scene, modes).write();
+                    WaveObjSceneHandler(filepath, scene).write(using_xml);
                     break;
-                case t3ds_xml:
-                    throw std::logic_error("Not yet implemented");
                 case t3ds:
                     throw std::logic_error("Not yet implemented");
             }

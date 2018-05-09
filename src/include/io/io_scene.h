@@ -12,7 +12,6 @@ namespace city
     {
         enum SceneFormat : std::size_t
         {
-            t3ds_xml,
             t3ds,
             off,
             obj
@@ -21,8 +20,8 @@ namespace city
         class SceneHandler: protected FileHandler
         {
         public:
-            SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format="OFF");
-            SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format=SceneFormat::off);
+            SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, std::string const& _format="OFF", bool const _using_xml = true);
+            SceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes, SceneFormat const _format=SceneFormat::off, bool const _using_xml = true);
             ~SceneHandler(void);
 
             scene::Scene read(void) const;
@@ -36,6 +35,7 @@ namespace city
             static const std::vector<std::string> supported_extentions;
         private:
             SceneFormat format;
+            bool using_xml;
 
             void check_extension(void) const;
         };

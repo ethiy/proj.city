@@ -29,8 +29,6 @@ namespace city
             void add_mesh(shadow::Mesh const& mesh);
 
             void write(void);
-
-            scene::Scene get_scene(void);
         private:
             std::vector<shadow::Mesh> meshes;
         };

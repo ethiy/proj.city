@@ -87,8 +87,8 @@ namespace city
         Bbox_3 Scene::bbox(void) const
         {
             return std::accumulate(
-                std::begin(scene),
-                std::end(scene),
+                std::begin(buildings),
+                std::end(buildings),
                 terrain.bbox(),
                 [](Bbox_3 const& bb, scene::UNode const& building)
                 {
