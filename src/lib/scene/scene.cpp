@@ -78,7 +78,24 @@ namespace city
         {
             return terrain;
         }
-        
+        std::vector<UNode> Scene::all_nodes(void) const noexcept
+        {
+            std::vector<UNode> all(buildings);
+            all.push_back(terrain);
+            return all;
+        }
+        Bbox_3 Scene::bbox(void) const
+        {
+            return std::accumulate(
+                std::begin(scene),
+                std::end(scene),
+                terrain.bbox(),
+                [](Bbox_3 const& bb, scene::UNode const& building)
+                {
+                    return bb + building.bbox();
+                }
+            );
+        }
         std::vector<std::string> Scene::identifiers(void) const
         {
             std::vector<std::string> ids(buildings.size());
@@ -93,6 +110,7 @@ namespace city
             );
             return ids;
         }
+
 
         Scene::iterator Scene::begin(void) noexcept
         {

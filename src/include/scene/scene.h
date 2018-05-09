@@ -92,6 +92,16 @@ namespace city
              * @return a const reference to the terrain surface
              */
             UNode const& get_terrain(void) const noexcept;
+            /**
+             * Access all stored urban nodes
+             * @return a copy of all urban nodes.
+             */
+            std::vector<UNode> all_nodes(void) const noexcept;
+            /**
+             * Access the scene bounding box
+             * @return the scene bounding box.
+             */
+            Bbox_3 bbox(void) const;
             
             std::vector<std::string> identifiers(void) const;
 
