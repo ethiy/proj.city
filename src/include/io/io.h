@@ -28,8 +28,12 @@ namespace city
         class FileHandler
         {
         public:
+            FileHandler(void) = delete;
             FileHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            FileHandler(FileHandler && other);
             virtual ~FileHandler(void) = 0;
+
+            FileHandler& operator=(FileHandler && other);
         protected:
             boost::filesystem::path filepath;
             std::map<std::string, bool> modes;
