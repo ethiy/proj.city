@@ -251,16 +251,13 @@ namespace city
 
         T3DSSceneHandler::T3DSSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
             : T3DSHandler(_filepath, _modes), scene_tree_path(filepath.parent_path() / (filepath.stem().string() + ".XML"))
-        {
-            if(!boost::filesystem::is_regular_file(scene_tree_path.get()))
-                scene_tree_path = boost::none;
-        }
+        {}
         T3DSSceneHandler::~T3DSSceneHandler()
         {}
 
         scene::Scene T3DSSceneHandler::read(bool const using_xml)
         {
-            if(scene_tree_path == boost::none)
+            if(!boost::filesystem::is_regular_file(scene_tree_path))
             {
                 if(using_xml)
                     throw std::logic_error("Cannot extract from a file: it does not exist!");
@@ -272,10 +269,13 @@ namespace city
             }
             else
             {
-                SceneTreeHandler scene_tree(scene_tree_path.get(), modes);
+                SceneTreeHandler scene_tree(scene_tree_path, modes);
+                pivot = scene_tree.pivot();
+                epsg_index = scene_tree.epsg_index();
                 if(using_xml)
                 {
-                    auto building_ids = scene_tree.building_ids();
+                    building_ids = scene_tree.building_ids();
+                    terrain_id = scene_tree.terrain_id();
                     std::vector<shadow::Mesh> building_meshes(building_ids.size());
                     std::transform(
                         std::begin(building_ids),
@@ -289,19 +289,19 @@ namespace city
                     return scene::Scene(
                         building_meshes,
                         mesh(
-                            scene_tree.terrain_id(),
+                            terrain_id,
                             std::set<char>{'M'}
                         ).set_name("terrain"),
-                        scene_tree.pivot(),
-                        scene_tree.epsg_index()
+                        pivot,
+                        epsg_index
                     );
                 }
                 else
                     return scene::Scene(
                         level_meshes(1, std::set<char>{{'T', 'F'}}),
                         level_terrain(1),
-                        scene_tree.pivot(),
-                        scene_tree.epsg_index()
+                        pivot,
+                        epsg_index
                     );
                 }
         }

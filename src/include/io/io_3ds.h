@@ -52,7 +52,13 @@ namespace city
 
             scene::Scene read(bool const using_xml = true);
         private:
-            boost::optional<boost::filesystem::path> scene_tree_path;
+            boost::filesystem::path scene_tree_path;
+            
+            shadow::Point pivot;
+            shadow::Bbox bbox;
+            unsigned short epsg_index;
+            std::vector<std::string> building_ids;
+            std::string terrain_id;
         };
     }
 }

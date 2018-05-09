@@ -154,9 +154,12 @@ namespace city
             else
             {
                 SceneTreeHandler scene_tree(scene_tree_path, modes);
+                pivot = scene_tree.pivot();
+                epsg_index = scene_tree.epsg_index();
                 if(using_xml)
                 {
-                    auto _building_ids = scene_tree.building_ids();
+                    building_ids = scene_tree.building_ids();
+                    terrain_id = scene_tree.terrain_id();
                     std::vector<shadow::Mesh> building_meshes(building_ids.size());
                     std::transform(
                         std::begin(building_ids),
@@ -170,8 +173,8 @@ namespace city
                     return scene::Scene(
                         building_meshes,
                         mesh(terrain_id).value_or(shadow::Mesh()),
-                        scene_tree.pivot(),
-                        scene_tree.epsg_index()
+                        pivot,
+                        epsg_index
                     );
                 }
                 else
@@ -180,10 +183,9 @@ namespace city
                     return scene::Scene(
                         data(),
                         terrain,
-                        scene_tree.pivot(),
-                        scene_tree.epsg_index()
+                        pivot,
+                        epsg_index
                     );
-
                 }
             }
         }
