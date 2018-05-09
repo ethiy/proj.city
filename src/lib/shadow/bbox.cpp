@@ -45,11 +45,24 @@ namespace city
         Bbox::Bbox(Point const& point)
             : Bbox::Bbox(point.data())
         {}
+        Bbox::Bbox(CGAL::Bbox_3 const& other)
+            : extremes{{
+                  other.xmin(),
+                  other.xmax(),
+                  other.ymin(),
+                  other.ymax(),
+                  other.zmin(),
+                  other.zmax()
+              }}
+        {}
         Bbox::Bbox(const Bbox & other)
-            : extremes(other.extremes) {}
+            : extremes(other.extremes)
+        {}
         Bbox::Bbox(Bbox && other)
-            : extremes(std::move(other.extremes)) {}
-        Bbox::~Bbox(void) {}
+            : extremes(std::move(other.extremes))
+        {}
+        Bbox::~Bbox(void)
+        {}
 
         double & Bbox::xmin(void) noexcept
         {

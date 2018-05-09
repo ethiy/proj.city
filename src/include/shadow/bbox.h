@@ -67,6 +67,7 @@ namespace city
              * @see Bbox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
              * @see ~Bbox(void)
              */
+            Bbox(CGAL::Bbox_3 const& other);
             Bbox(Bbox const& other);
             /**
              * Bbox move constructor.
