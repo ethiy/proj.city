@@ -17,7 +17,7 @@ namespace city
             : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}), meshes(_meshes)
         {}
         WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath, std::vector<scene::UNode> const& unodes)
-            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}), meshes(unodes.size())
+            : WaveObjHandler(_filepath, std::vector<shadow::Mesh>(unodes.size()))
         {
             std::transform(
                 std::begin(unodes),
@@ -124,7 +124,7 @@ namespace city
 
 
         WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : WaveObjHandler(_filepath, _modes)
+            : WaveObjHandler(_filepath, _modes), scene_tree_path(filepath.parent_path() / (filepath.stem().string() + ".XML"))
         {}
         WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene)
             : WaveObjHandler(_filepath, scene.all_nodes()),

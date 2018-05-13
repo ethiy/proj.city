@@ -91,26 +91,7 @@ namespace city
             switch(format)
             {
                 case off:
-                    if(!boost::filesystem::exists(filepath))
-                        boost::filesystem::create_directory(filepath);
-                    else
-                        if(!boost::filesystem::is_directory(filepath))
-                            throw std::runtime_error("Path exists and does not correpond to a directory!");
-                    for(auto const& building : scene)
-                        OFFHandler(
-                            filepath / (building.get_name() + supported_extentions.at(SceneFormat::off)),
-                            modes
-                        ).write(
-                            shadow::Mesh(building)
-                        );
-                    OFFHandler(
-                        filepath
-                        /
-                        (scene.get_terrain().get_name() + supported_extentions.at(SceneFormat::off)),
-                        modes
-                    ).write(
-                        shadow::Mesh(scene.get_terrain())
-                    );
+                    OFFSceneHandler(filepath, scene, using_xml).write();
                     break;
                 case obj:
                     WaveObjSceneHandler(filepath, scene).write(using_xml);

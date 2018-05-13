@@ -71,7 +71,8 @@
         "__locale": "cpp",
         "cmakeccompilerid.c": "cpp",
         "__nullptr": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "string_view": "cpp"
     },
     "vsicons.presets.angular": true,
     "cmake.buildDirectory": "${workspaceRoot}/build/vscode",
