@@ -93,56 +93,46 @@ SCENARIO("shadow::Mesh manipulation:")
         WHEN("they are stitched")
         {
              auto mesh = city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29051.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29051.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29054.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29054.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29057.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29057.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29060.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29060.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29063.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29063.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29066.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29066.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/F29069.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/F29069.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/T11107.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read()
+                boost::filesystem::path("../../ressources/3dModels/OFF/T11107.off")
+            ).read().data()
             +
             city::io::OFFHandler(
-                boost::filesystem::path("../../ressources/3dModels/OFF/T11108.off"),
-                std::map<std::string, bool>{{"read", true}}
-            ).read();
+                boost::filesystem::path("../../ressources/3dModels/OFF/T11108.off")
+            ).read().data();
  
             THEN("The output checks:")
             {
                 auto test_mesh = city::io::OFFHandler(
-                    boost::filesystem::path("../../ressources/tests/building_sum_mesh.off"),
-                    std::map<std::string, bool>{{"read", true}}
-                ).read();
+                    boost::filesystem::path("../../ressources/tests/building_sum_mesh.off")
+                ).read().data();
                 
                 REQUIRE(mesh == test_mesh);
             }
