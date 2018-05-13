@@ -4,6 +4,8 @@
 
 #include <io/Off_stream/off_stream.h>
 
+#include <boost/algorithm/string.hpp>
+
 #include <stdexcept>
 
 #include <fstream>
@@ -80,42 +82,44 @@ namespace city
         OFFSceneHandler::OFFSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml)
             : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}}), using_xml(_using_xml)
         {}
-        OFFSceneHandler::OFFSceneHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& _meshes, bool const _using_xml)
-            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}), meshes(_meshes), using_xml(_using_xml)
-        {}
-        OFFSceneHandler::OFFSceneHandler(boost::filesystem::path const& _filepath, std::vector<scene::UNode> const& unodes, bool const _using_xml)
-            : OFFSceneHandler(_filepath, std::vector<shadow::Mesh>(unodes.size()), _using_xml)
-        {
-            std::transform(
-                std::begin(unodes),
-                std::end(unodes),
-                std::begin(meshes),
-                [](scene::UNode const& unode)
-                {
-                    return shadow::Mesh(unode);
-                }
-            );
-        }
         OFFSceneHandler::OFFSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene, bool const _using_xml)
-            : OFFSceneHandler(_filepath, scene.all_nodes(), _using_xml),
+            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}),
+              building_meshes(scene.size()),
+              terrain_mesh(scene.get_terrain()),
+              using_xml(_using_xml),
               pivot(scene.get_pivot()),
               bbox(scene.bbox()),
               building_ids(scene.identifiers()),
               terrain_id(scene.get_terrain().get_name())
-        {}
+        {
+            std::transform(
+                std::begin(scene),
+                std::end(scene),
+                std::begin(building_meshes),
+                [](scene::UNode const& building)
+                {
+                    return shadow::Mesh(building);
+                }
+            );
+        }
         OFFSceneHandler::~OFFSceneHandler(void)
         {}
 
-        std::vector<shadow::Mesh> const& OFFSceneHandler::data(void) const noexcept
+        scene::Scene OFFSceneHandler::get_scene(void) const
         {
-            return meshes;
+            return scene::Scene(
+                building_meshes,
+                terrain_mesh,
+                pivot,
+                epsg_index
+            );
         }
 
         OFFSceneHandler& OFFSceneHandler::read(void)
         {
             if(! boost::filesystem::is_directory(filepath))
                 throw std::runtime_error("Path is not a directory");
-            meshes.reserve(
+            building_meshes.reserve(
                 static_cast<std::size_t>(
                     std::distance(
                         boost::filesystem::directory_iterator(filepath),
@@ -123,6 +127,28 @@ namespace city
                     )
                 )
             );
+            if(using_xml)
+            {
+                return *this;
+            }
+            else
+            {
+                for(auto& file : boost::make_iterator_range(boost::filesystem::directory_iterator(filepath), {}))
+                    if(
+                        boost::filesystem::is_regular_file(file)
+                        &&
+                        boost::iequals(
+                            file.path().extension().string(),
+                            ".off"
+                        )
+                        &&
+                        file.path().stem().string() != "terrain"
+                    )
+                        building_meshes.push_back(
+                            OFFHandler(file).read().data()
+                        );
+                terrain_mesh = OFFHandler(filepath / "terrain.off").read().data();
+            }
             return *this;
         }
         void OFFSceneHandler::write(void)
@@ -132,11 +158,15 @@ namespace city
             else
                 if(!boost::filesystem::is_directory(filepath))
                     throw std::runtime_error("Path exists and does not correpond to a directory!");
-            for(auto const& mesh : meshes)
+            for(auto const& mesh : building_meshes)
                 OFFHandler(
                     filepath / (mesh.get_name() + ".off"),
                     mesh
                 ).write();
+            OFFHandler(
+                filepath / (terrain_id + ".off"),
+                terrain_mesh
+            ).write();
             if(using_xml)
                 SceneTreeHandler(
                     filepath.parent_path() / (filepath.stem().string() + ".XML"),

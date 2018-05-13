@@ -45,37 +45,7 @@ namespace city
             switch(format)
             {
                 case off:
-                    if(! boost::filesystem::is_directory(filepath))
-                        throw std::runtime_error("Path is not a directory");
-                    {
-                        std::vector<shadow::Mesh> buildings;
-                        buildings.reserve(
-                            static_cast<std::size_t>(
-                                std::distance(
-                                    boost::filesystem::directory_iterator(filepath),
-                                    boost::filesystem::directory_iterator()
-                                )
-                            )
-                        );
-                        for(auto& file : boost::make_iterator_range(boost::filesystem::directory_iterator(filepath), {}))
-                            if(
-                                boost::filesystem::is_regular_file(file)
-                                &&
-                                boost::iequals(
-                                    file.path().extension().string(),
-                                    SceneHandler::extension(format)
-                                )
-                                &&
-                                file.path().stem().string() != "terrain"
-                            )
-                                buildings.push_back(
-                                    OFFHandler(file, modes).read()
-                                );
-                        scene = scene::Scene(
-                            buildings,
-                            OFFHandler(filepath / "terrain.off", modes).read()
-                        );
-                    }
+                    scene = OFFSceneHandler(filepath, using_xml).read().get_scene();
                     break;
                 case obj:
                     scene = WaveObjSceneHandler(filepath, modes).read(using_xml);

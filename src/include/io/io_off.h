@@ -29,18 +29,17 @@ namespace city
         {
         public:
             OFFSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml=true);
-            OFFSceneHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& _meshes, bool const _using_xml=true);
-            OFFSceneHandler(boost::filesystem::path const& _filepath, std::vector<scene::UNode> const& unodes, bool const _using_xml=true);
             OFFSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene, bool const _using_xml=true);
             ~OFFSceneHandler(void);
 
-            std::vector<shadow::Mesh> const& data(void) const noexcept;
+            scene::Scene get_scene(void) const;
             
             OFFSceneHandler& read(void);
             void write(void);
 
         private:
-            std::vector<shadow::Mesh> meshes;
+            std::vector<shadow::Mesh> building_meshes;
+            shadow::Mesh terrain_mesh;
             bool using_xml;
 
             shadow::Point pivot;
