@@ -195,7 +195,7 @@ namespace city
             }
         }
 
-        void WaveObjSceneHandler::write(void)
+        void WaveObjSceneHandler::write(void) const
         {
             auto meshes = scene.all_buildings();
             meshes.push_back(scene.get_terrain());

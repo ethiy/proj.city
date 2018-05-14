@@ -44,7 +44,7 @@ namespace city
 
             WaveObjSceneHandler& read(void);
 
-            void write(void);
+            void write(void) const;
         private:
             scene::Scene scene;
             bool using_xml;
