@@ -20,7 +20,7 @@ namespace city
             shadow::Mesh const& data(void) const noexcept;
             
             OFFHandler& read(void);
-            void write(void);
+            OFFHandler& write(void);
         private:
             shadow::Mesh mesh;
         };
@@ -35,7 +35,7 @@ namespace city
             scene::Scene const& get_scene(void) const;
             
             OFFSceneHandler& read(void);
-            void write(void) const;
+            OFFSceneHandler const& write(void) const;
 
         private:
             scene::Scene scene;

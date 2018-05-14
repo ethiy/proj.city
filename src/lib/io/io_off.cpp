@@ -58,11 +58,10 @@ namespace city
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
-
             return *this;
         }
 
-        void OFFHandler::write(void)
+        OFFHandler& OFFHandler::write(void)
         {
             if (modes["write"])
             {
@@ -77,6 +76,7 @@ namespace city
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+            return *this;
         }
 
         OFFSceneHandler::OFFSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml)
@@ -189,7 +189,7 @@ namespace city
             }
             return *this;
         }
-        void OFFSceneHandler::write(void) const
+        OFFSceneHandler const& OFFSceneHandler::write(void) const
         {
             if(!boost::filesystem::exists(filepath))
                 boost::filesystem::create_directory(filepath);
@@ -217,6 +217,7 @@ namespace city
                     scene.get_identifiers(),
                     scene.get_terrain().get_name()
                 );
+            return *this;
         }
     }
 }
