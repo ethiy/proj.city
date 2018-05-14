@@ -96,14 +96,14 @@ namespace city
              * Access all stored urban nodes
              * @return a copy of all urban nodes.
              */
-            std::vector<UNode> all_nodes(void) const noexcept;
+            std::vector<UNode> const& all_buildings(void) const noexcept;
             /**
              * Access the scene bounding box
              * @return the scene bounding box.
              */
             Bbox_3 bbox(void) const;
             
-            std::vector<std::string> identifiers(void) const;
+            std::vector<std::string> get_identifiers(void) const;
 
             using iterator = std::vector<UNode>::iterator;
             using const_iterator = std::vector<UNode>::const_iterator;
