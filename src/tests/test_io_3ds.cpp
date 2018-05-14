@@ -19,7 +19,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         
         WHEN("the reading mode is chosen")
         {
-            std::vector<city::shadow::Mesh> meshes = city::io::T3DSHandler(filepath, std::map<std::string,bool>{{"read", true}}).get_meshes();
+            std::vector<city::shadow::Mesh> meshes = city::io::T3DSHandler(filepath).get_meshes();
 
             THEN("the output checks")
             {
@@ -29,16 +29,6 @@ SCENARIO("Input/Output from 3dsMAX file:")
                 std::ifstream tmp("../../ressources/tests/santa_shadow_mesh.txt");
                 std::string tmp_str((std::istreambuf_iterator<char>(tmp)), std::istreambuf_iterator<char>());
                 REQUIRE( auxilary.str() == tmp_str );
-            }
-        }
-        
-        WHEN("the reading mode is not chosen")
-        {
-            city::io::T3DSHandler handler(filepath, std::map<std::string,bool>{{"write", true}});
-
-            THEN("the reader throws")
-            {
-                REQUIRE_THROWS( handler.get_meshes() );
             }
         }
     }
@@ -51,15 +41,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
         {
             THEN("the reader throws")
             {
-                REQUIRE_THROWS( city::io::T3DSHandler(filepath, std::map<std::string,bool>{{"read", true}}) );
-            }
-        }
-
-        WHEN("No mode is chosen")
-        {
-            THEN("the reader throws")
-            {
-                REQUIRE_THROWS( city::io::T3DSHandler(filepath, std::map<std::string,bool>{{}}) );
+                REQUIRE_THROWS( city::io::T3DSHandler(filepath) );
             }
         }
     }
@@ -67,8 +49,7 @@ SCENARIO("Input/Output from 3dsMAX file:")
     GIVEN("existing vector of city::shadow::Mesh")
     {
         std::vector<city::shadow::Mesh> meshes = city::io::T3DSHandler(
-            boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
-            std::map<std::string,bool>{{"read", true}}
+            boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS")
         ).get_meshes();
 
         WHEN("the writing mode is chosen")
@@ -78,14 +59,13 @@ SCENARIO("Input/Output from 3dsMAX file:")
 
             city::io::T3DSHandler(
                 boost::filesystem::path(file_name.str()),
-                std::map<std::string,bool>{{"write", true}}
-            ).write_meshes(meshes);
+                meshes
+            ).write_meshes();
 
             THEN("the output checks")
             {
                 std::vector<city::shadow::Mesh> written_meshes = city::io::T3DSHandler(
-                    boost::filesystem::path(file_name.str()),
-                    std::map<std::string,bool>{{"read", true}}
+                    boost::filesystem::path(file_name.str())
                 ).get_meshes();
 
                 std::ostringstream auxilary;
@@ -100,13 +80,12 @@ SCENARIO("Input/Output from 3dsMAX file:")
         WHEN("the writing mode is not chosen")
         {
             city::io::T3DSHandler handler(
-                boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
-                std::map<std::string,bool>{{"read", true}}
+                boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS")
             );
 
             THEN("the reader throws")
             {
-                REQUIRE_THROWS(handler.write_meshes(meshes));
+                REQUIRE_THROWS(handler.write_meshes());
             }
         }
     }

@@ -51,7 +51,7 @@ namespace city
                     scene = WaveObjSceneHandler(filepath, using_xml).read().get_scene();
                     break;
                 case t3ds:
-                    scene = T3DSSceneHandler(filepath, modes).read(using_xml);
+                    scene = T3DSSceneHandler(filepath, using_xml).read().get_scene();
             }
             return scene;
         }

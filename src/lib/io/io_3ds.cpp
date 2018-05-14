@@ -12,38 +12,33 @@ namespace city
 {
     namespace io
     {
-        T3DSHandler::T3DSHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : FileHandler(_filepath, _modes)
+        T3DSHandler::T3DSHandler(boost::filesystem::path const& _filepath)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}})
         {
             std::ostringstream error_message;
-
-            if(modes["read"] && modes["write"])
+            if(boost::filesystem::is_regular_file(filepath))
+                file = lib3ds_file_load(filepath.string().c_str());
+            else
             {
+                error_message << "This file \"" << filepath.string() << "\" cannot be found! You should check the file path";
                 boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                throw boost::filesystem::filesystem_error("Simultaneous reading and writing access is forbidden", ec);
+                throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
-
-            if(!modes["read"] && !modes["write"])
-            {
-                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                throw boost::filesystem::filesystem_error("You have to specify access type", ec);
-            }
-
-            if(modes["read"])
-            {
-                if(boost::filesystem::is_regular_file(filepath))
-                    file = lib3ds_file_load(filepath.string().c_str());
-                else
-                {
-                    error_message << "This file \"" << filepath.string() << "\" cannot be found! You should check the file path";
-                    boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                    throw boost::filesystem::filesystem_error(error_message.str(), ec);
-                }
-            }
-            if(modes["write"])
-            {
-                file = lib3ds_file_new();
-            }
+        }
+        T3DSHandler::T3DSHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& meshes)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}})
+        {
+            file = lib3ds_file_new();
+            file->meshes = meshes[0].to_3ds();
+            Lib3dsMesh *current = file->meshes;
+            std::for_each(
+                std::next(std::begin(meshes), 1),
+                std::end(meshes),
+                [&current](city::shadow::Mesh const& mesh) {
+                    current->next = mesh.to_3ds();
+                    current = current->next;
+                });
+            current = nullptr;
         }
         T3DSHandler::~T3DSHandler(void)
         {
@@ -52,17 +47,17 @@ namespace city
 
         std::vector<city::shadow::Mesh> T3DSHandler::get_meshes(void)
         {
-            std::ostringstream error_message;
-            std::vector<city::shadow::Mesh> meshes;
-            
+            std::ostringstream error_message;            
             if (modes["read"])
             {
+                std::vector<city::shadow::Mesh> meshes;
                 Lib3dsMesh *p_meshes = file->meshes;
                 while(p_meshes)
                 {
                     meshes.push_back(city::shadow::Mesh(p_meshes));
                     p_meshes = p_meshes->next;
                 }
+                return meshes;
             }
             else
             {
@@ -70,7 +65,6 @@ namespace city
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
-            return meshes;
         }
 
         std::vector<shadow::Mesh> T3DSHandler::level_meshes(std::size_t const level, std::set<char> const& facet_types)
@@ -88,15 +82,15 @@ namespace city
             );
             return meshes;
         }
-        shadow::Mesh T3DSHandler::level_terrain(std::size_t const level)
+        shadow::Mesh T3DSHandler::level_mesh(std::size_t const level, std::set<char> const& facet_types)
         {
-            auto terrain_meshes = level_meshes(level, std::set<char>{'M'});
+            auto terrain_meshes = level_meshes(level, facet_types);
             return std::accumulate(
                 std::begin(terrain_meshes),
                 std::end(terrain_meshes),
                 shadow::Mesh(),
                 std::plus<shadow::Mesh>()
-            ).set_name("terrain");
+            );
         }
         std::vector<std::vector<shadow::Mesh> > T3DSHandler::raw_level_meshes(std::size_t const level, std::set<char> const& facet_types)
         {
@@ -207,22 +201,11 @@ namespace city
             return nodes;
         }
 
-        void T3DSHandler::write_meshes(std::vector<city::shadow::Mesh> const& meshes)
+        T3DSHandler& T3DSHandler::write_meshes()
         {
             std::ostringstream error_message;
-
             if (modes["write"])
             {
-                file->meshes = meshes[0].to_3ds();
-                Lib3dsMesh *current = file->meshes;
-                std::for_each(
-                    std::next(std::begin(meshes), 1),
-                    std::end(meshes),
-                    [&current](city::shadow::Mesh const& mesh) {
-                        current->next = mesh.to_3ds();
-                        current = current->next;
-                    });
-                current = nullptr;
                 lib3ds_file_save(file, filepath.string().c_str());
             }
             else
@@ -231,6 +214,7 @@ namespace city
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+            return *this;
         }
 
         void T3DSHandler::node_meshes(Lib3dsNode * node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types)
@@ -249,61 +233,72 @@ namespace city
         }
 
 
-        T3DSSceneHandler::T3DSSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : T3DSHandler(_filepath, _modes), scene_tree_path(filepath.parent_path() / (filepath.stem().string() + ".XML"))
+        T3DSSceneHandler::T3DSSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}}), using_xml(_using_xml)
+        {}
+        T3DSSceneHandler::T3DSSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& _scene, bool const _using_xml)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}), scene(_scene), using_xml(_using_xml)
         {}
         T3DSSceneHandler::~T3DSSceneHandler()
         {}
 
-        scene::Scene T3DSSceneHandler::read(bool const using_xml)
+        scene::Scene const& T3DSSceneHandler::get_scene(void) const noexcept
         {
-            if(!boost::filesystem::is_regular_file(scene_tree_path))
+            return scene;
+        }
+
+        T3DSSceneHandler& T3DSSceneHandler::read(void)
+        {
+            T3DSHandler t3ds_file(filepath);
+            if(!boost::filesystem::is_regular_file(filepath.parent_path() / (filepath.stem().string() + ".XML")))
             {
                 if(using_xml)
                     throw std::logic_error("Cannot extract from a file: it does not exist!");
                 else
-                    return scene::Scene(
-                        level_meshes(1, std::set<char>{{'T', 'F'}}),
-                        level_terrain(1)
+                    scene = scene::Scene(
+                        t3ds_file.level_meshes(1, std::set<char>{{'T', 'F'}}),
+                        t3ds_file.level_mesh(1, std::set<char>{'M'}).set_name("terrain")
                     );
             }
             else
             {
-                SceneTreeHandler scene_tree(scene_tree_path, modes);
-                pivot = scene_tree.pivot();
-                epsg_index = scene_tree.epsg_index();
+                SceneTreeHandler scene_tree(
+                    filepath.parent_path() / (filepath.stem().string() + ".XML"),
+                    modes
+                );
                 if(using_xml)
                 {
-                    building_ids = scene_tree.building_ids();
-                    terrain_id = scene_tree.terrain_id();
+                    auto building_ids = scene_tree.building_ids();
+                    auto terrain_id = scene_tree.terrain_id();
                     std::vector<shadow::Mesh> building_meshes(building_ids.size());
                     std::transform(
                         std::begin(building_ids),
                         std::end(building_ids),
                         std::begin(building_meshes),
-                        [this](std::string const& building_id)
+                        [&t3ds_file](std::string const& building_id)
                         {
-                            return mesh(building_id, std::set<char>{{'T', 'F'}});
+                            return t3ds_file.mesh(building_id, std::set<char>{{'T', 'F'}});
                         }
                     );
-                    return scene::Scene(
+                    scene = scene::Scene(
                         building_meshes,
-                        mesh(
+                        t3ds_file.mesh(
                             terrain_id,
                             std::set<char>{'M'}
                         ).set_name("terrain"),
-                        pivot,
-                        epsg_index
+                        scene_tree.pivot(),
+                        scene_tree.epsg_index()
                     );
                 }
                 else
-                    return scene::Scene(
-                        level_meshes(1, std::set<char>{{'T', 'F'}}),
-                        level_terrain(1),
-                        pivot,
-                        epsg_index
+                    scene = scene::Scene(
+                        t3ds_file.level_meshes(1, std::set<char>{{'T', 'F'}}),
+                        t3ds_file.level_mesh(1, std::set<char>{'M'}).set_name("terrain"),
+                        scene_tree.pivot(),
+                        scene_tree.epsg_index()
                     );
                 }
+            return *this;
         }
     }
 }

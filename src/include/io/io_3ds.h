@@ -21,13 +21,14 @@ namespace city
         class T3DSHandler: protected FileHandler
         {
         public:
-            T3DSHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            T3DSHandler(boost::filesystem::path const& _filepath);
+            T3DSHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& meshes);
             ~T3DSHandler(void);
 
             std::vector<shadow::Mesh> get_meshes(void);
 
             std::vector<shadow::Mesh> level_meshes(std::size_t const level, std::set<char> const& facet_types);
-            shadow::Mesh level_terrain(std::size_t const level);
+            shadow::Mesh level_mesh(std::size_t const level, std::set<char> const& facet_types);
             std::vector<std::vector<shadow::Mesh> > raw_level_meshes(std::size_t const level, std::set<char> const& facet_types);
 
             std::vector<shadow::Mesh> node_meshes(std::string const& node_name, std::set<char> const& facet_types);
@@ -37,28 +38,26 @@ namespace city
 
             std::vector<std::string> get_nodes(std::size_t const level);
 
-            void write_meshes(std::vector<shadow::Mesh> const& meshes);
+            T3DSHandler& write_meshes(void);
         private:
             Lib3dsFile* file = nullptr;
 
             void node_meshes(Lib3dsNode* node, std::map<char, std::deque<shadow::Mesh> > & meshes, std::set<char> const& facet_types);
         };
 
-        class T3DSSceneHandler: protected T3DSHandler
+        class T3DSSceneHandler: protected FileHandler
         {
         public:
-            T3DSSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _mode);
+            T3DSSceneHandler(boost::filesystem::path const& _filepath, bool const using_xml = true);
+            T3DSSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& _scene, bool const using_xml = true);
             ~T3DSSceneHandler(void);
 
-            scene::Scene read(bool const using_xml = true);
+            scene::Scene const& get_scene(void) const noexcept;
+
+            T3DSSceneHandler& read(void);
         private:
-            boost::filesystem::path scene_tree_path;
-            
-            shadow::Point pivot;
-            shadow::Bbox bbox;
-            unsigned short epsg_index;
-            std::vector<std::string> building_ids;
-            std::string terrain_id;
+            scene::Scene scene;
+            bool using_xml;
         };
     }
 }

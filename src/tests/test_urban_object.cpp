@@ -13,8 +13,7 @@ SCENARIO("Urban Node manipulation:")
     GIVEN("A 3ds file")
     {
         auto staff_mesh = city::io::T3DSHandler(
-            boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS"),
-            std::map<std::string,bool>{{"read", true}}
+            boost::filesystem::path("../../ressources/3dModels/3DS/Toy/Toy Santa Claus N180816.3DS")
         ).mesh("Staff", std::set<char>{'S'});
 
         WHEN("the \"buildings\" are read into unodes")
