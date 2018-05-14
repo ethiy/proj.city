@@ -108,7 +108,7 @@ namespace city
                     )
                 )
             );
-            if(!boost::filesystem::is_regular_file(filepath.parent_path() / (filepath.stem().string() + ".XML")))
+            if(!boost::filesystem::is_regular_file(filepath / "scene_tree.XML"))
             {
                 if(using_xml)
                     throw std::logic_error("Cannot extract from a file: it does not exist!");
@@ -136,9 +136,7 @@ namespace city
             }
             else
             {
-                SceneTreeHandler scene_tree(
-                    filepath.parent_path() / (filepath.stem().string() + ".XML")
-                );
+                SceneTreeHandler scene_tree(filepath / "scene_tree.XML");
                 if(using_xml)
                 {
                     auto building_ids = scene_tree.building_ids();
@@ -207,7 +205,7 @@ namespace city
             ).write();
             if(using_xml)
                 SceneTreeHandler(
-                    filepath.parent_path() / (filepath.stem().string() + ".XML"),
+                    filepath / "scene_tree.XML",
                     scene
                 ).write();
             return *this;
