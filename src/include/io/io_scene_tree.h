@@ -5,6 +5,8 @@
 #include <shadow/point.h>
 #include <shadow/bbox.h>
 
+#include <scene/scene.h>
+
 #include <tinyxml2.h>
 
 namespace city
@@ -14,7 +16,8 @@ namespace city
         class SceneTreeHandler: protected FileHandler
         {
         public:
-            SceneTreeHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            SceneTreeHandler(boost::filesystem::path const& _filepath);
+            SceneTreeHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene);
             ~SceneTreeHandler(void);
 
             shadow::Point pivot(void) const;
@@ -23,7 +26,7 @@ namespace city
             std::vector<std::string> building_ids(void) const;
             std::string terrain_id(void) const;
 
-            void write(shadow::Point const& pivot, shadow::Bbox const& bbox, unsigned short const epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id);
+            SceneTreeHandler& write(void);
         private:
             tinyxml2::XMLDocument scene_tree;
 

@@ -8,29 +8,33 @@ namespace city
 {
     namespace io
     {
-        SceneTreeHandler::SceneTreeHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : FileHandler(_filepath, _modes)
+        SceneTreeHandler::SceneTreeHandler(boost::filesystem::path const& _filepath)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}})
         {
-            std::ostringstream error_message;
+            auto error = scene_tree.LoadFile(filepath.string().c_str());
+            if(error != tinyxml2::XML_SUCCESS)
+                throw std::runtime_error("Could not read Scene Tree description!");
+        }
+        SceneTreeHandler::SceneTreeHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}})
+        {
+            auto p_root = scene_tree.NewElement("Chantier_Bati3D");
+            scene_tree.InsertFirstChild(p_root);
 
-            if(modes["read"] && modes["write"])
-            {
-                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                throw boost::filesystem::filesystem_error("Simultaneous reading and writing access is forbidden", ec);
-            }
+            auto p_bbox = scene_tree.NewElement("Bbox");
+            p_root->InsertEndChild(p_bbox);
+            set_bbox(p_bbox, scene.bbox());
 
-            if(!modes["read"] && !modes["write"])
-            {
-                boost::system::error_code ec(boost::system::errc::no_such_file_or_directory, boost::system::system_category());
-                throw boost::filesystem::filesystem_error("You have to specify access type", ec);
-            }
+            auto p_pivot = scene_tree.NewElement("Pivot");
+            p_root->InsertEndChild(p_pivot);
+            set_pivot(p_pivot, scene.get_pivot());
 
-            if(modes["read"])
-            {
-                auto error = scene_tree.LoadFile(filepath.string().c_str());
-                if(error != tinyxml2::XML_SUCCESS)
-                    throw std::runtime_error("Could not read Scene Tree description!");
-            }
+            set_epsg_index(p_root, scene.get_epsg());
+
+            auto p_citymodel = scene_tree.NewElement("CityModel");
+            p_root->InsertEndChild(p_citymodel);
+            set_building_ids(p_citymodel, scene.get_identifiers());
+            set_terrain_id(p_citymodel, scene.get_terrain().get_name());
         }
         SceneTreeHandler::~SceneTreeHandler(void)
         {}
@@ -121,27 +125,10 @@ namespace city
             );
         }
 
-        void SceneTreeHandler::write(shadow::Point const& pivot, shadow::Bbox const& bbox, unsigned short const epsg_index, std::vector<std::string> const& building_ids, std::string const& terrain_id)
+        SceneTreeHandler& SceneTreeHandler::write(void)
         {
-            auto p_root = scene_tree.NewElement("Chantier_Bati3D");
-            scene_tree.InsertFirstChild(p_root);
-
-            auto p_bbox = scene_tree.NewElement("Bbox");
-            p_root->InsertEndChild(p_bbox);
-            set_bbox(p_bbox, bbox);
-
-            auto p_pivot = scene_tree.NewElement("Pivot");
-            p_root->InsertEndChild(p_pivot);
-            set_pivot(p_pivot, pivot);
-
-            set_epsg_index(p_root, epsg_index);
-
-            auto p_citymodel = scene_tree.NewElement("CityModel");
-            p_root->InsertEndChild(p_citymodel);
-            set_building_ids(p_citymodel, building_ids);
-            set_terrain_id(p_citymodel, terrain_id);
-
             scene_tree.SaveFile(filepath.string().c_str());
+            return *this;
         }
 
         void SceneTreeHandler::set_bbox(tinyxml2::XMLNode* root, shadow::Bbox const& bbox)

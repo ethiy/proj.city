@@ -137,8 +137,7 @@ namespace city
             else
             {
                 SceneTreeHandler scene_tree(
-                    filepath.parent_path() / (filepath.stem().string() + ".XML"),
-                    modes
+                    filepath.parent_path() / (filepath.stem().string() + ".XML")
                 );
                 if(using_xml)
                 {
@@ -209,14 +208,8 @@ namespace city
             if(using_xml)
                 SceneTreeHandler(
                     filepath.parent_path() / (filepath.stem().string() + ".XML"),
-                    modes
-                ).write(
-                    scene.get_pivot(),
-                    scene.bbox(),
-                    scene.get_epsg(),
-                    scene.get_identifiers(),
-                    scene.get_terrain().get_name()
-                );
+                    scene
+                ).write();
             return *this;
         }
     }

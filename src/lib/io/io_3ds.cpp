@@ -263,8 +263,7 @@ namespace city
             else
             {
                 SceneTreeHandler scene_tree(
-                    filepath.parent_path() / (filepath.stem().string() + ".XML"),
-                    modes
+                    filepath.parent_path() / (filepath.stem().string() + ".XML")
                 );
                 if(using_xml)
                 {
