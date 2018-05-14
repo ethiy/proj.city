@@ -15,17 +15,17 @@ namespace city
         class WaveObjHandler: protected FileHandler
         {
         public:
-            WaveObjHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
+            WaveObjHandler(boost::filesystem::path const& _filepath);
             WaveObjHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& _meshes);
             WaveObjHandler(boost::filesystem::path const& _filepath, std::vector<scene::UNode> const& unodes);
             ~WaveObjHandler(void);
 
-            std::vector<shadow::Mesh> const& data(void) const noexcept;
+            std::vector<shadow::Mesh> const& get_meshes(void) const noexcept;
             
             WaveObjHandler& read(void);
 
             shadow::Mesh exclude_mesh(std::string const& excluded);
-            boost::optional<shadow::Mesh> mesh(std::string const& id);
+            boost::optional<shadow::Mesh> mesh(std::string const& id) const;
             void add_mesh(shadow::Mesh const& mesh);
 
             void write(void);
@@ -33,24 +33,21 @@ namespace city
             std::vector<shadow::Mesh> meshes;
         };
 
-        class WaveObjSceneHandler: protected WaveObjHandler
+        class WaveObjSceneHandler: protected FileHandler
         {
         public:
-            WaveObjSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes);
-            WaveObjSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene);
-            ~WaveObjSceneHandler();
+            WaveObjSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml = true);
+            WaveObjSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene, bool const _using_xml = true);
+            ~WaveObjSceneHandler(void);
 
-            scene::Scene read(bool const using_xml = true);
+            scene::Scene const& get_scene() const;
 
-            void write(bool const with_xml = true);
+            WaveObjSceneHandler& read(void);
+
+            void write(void);
         private:
-            boost::filesystem::path scene_tree_path;
-
-            shadow::Point pivot;
-            shadow::Bbox bbox;
-            unsigned short epsg_index;
-            std::vector<std::string> building_ids;
-            std::string terrain_id;
+            scene::Scene scene;
+            bool using_xml;
         };
     }
 }

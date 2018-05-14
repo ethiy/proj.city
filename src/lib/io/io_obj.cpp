@@ -10,8 +10,8 @@ namespace city
 {
     namespace io
     {
-        WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : FileHandler(_filepath, _modes)
+        WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}})
         {}
         WaveObjHandler::WaveObjHandler(boost::filesystem::path const& _filepath, std::vector<shadow::Mesh> const& _meshes)
             : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}), meshes(_meshes)
@@ -29,9 +29,10 @@ namespace city
                 }
             );
         }
-        WaveObjHandler::~WaveObjHandler(void) {}
+        WaveObjHandler::~WaveObjHandler(void)
+        {}
 
-        std::vector<shadow::Mesh> const& WaveObjHandler::data(void) const noexcept
+        std::vector<shadow::Mesh> const& WaveObjHandler::get_meshes(void) const noexcept
         {
             return meshes;
         }
@@ -102,7 +103,7 @@ namespace city
                 shadow::Mesh()
             ).set_name(excluded);
         }
-        boost::optional<shadow::Mesh> WaveObjHandler::mesh(std::string const& id)
+        boost::optional<shadow::Mesh> WaveObjHandler::mesh(std::string const& id) const
         {
             auto found = std::find_if(
                 std::begin(meshes),
@@ -123,78 +124,93 @@ namespace city
         }
 
 
-        WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, std::map<std::string, bool> const& _modes)
-            : WaveObjHandler(_filepath, _modes), scene_tree_path(filepath.parent_path() / (filepath.stem().string() + ".XML"))
+        WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}}), using_xml(_using_xml)
         {}
-        WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& scene)
-            : WaveObjHandler(_filepath, scene.all_nodes()),
-              pivot(scene.get_pivot()),
-              bbox(scene.bbox()),
-              building_ids(scene.identifiers()),
-              terrain_id(scene.get_terrain().get_name())
+        WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, scene::Scene const& _scene, bool const _using_xml)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}),
+              scene(_scene),
+              using_xml(_using_xml)
         {}
         WaveObjSceneHandler::~WaveObjSceneHandler()
         {}
 
-        scene::Scene WaveObjSceneHandler::read(bool const using_xml)
+        scene::Scene const& WaveObjSceneHandler::get_scene() const
         {
-            if(!boost::filesystem::is_regular_file(scene_tree_path))
+            return scene;
+        }
+
+        WaveObjSceneHandler& WaveObjSceneHandler::read(void)
+        {
+            WaveObjHandler obj_file(filepath);
+            if(!boost::filesystem::is_regular_file(filepath.parent_path() / (filepath.stem().string() + ".XML")))
             {
                 if(using_xml)
                     throw std::logic_error("Cannot extract from a file: it does not exist!");
                 else
                 {
-                    auto terrain = WaveObjHandler::read().exclude_mesh("terrain");
-                    return scene::Scene(
-                        data(),
+                    auto terrain = obj_file.read().exclude_mesh("terrain");
+                    scene = scene::Scene(
+                        obj_file.get_meshes(),
                         terrain
                     );
-                }
+                }                    
             }
             else
             {
-                SceneTreeHandler scene_tree(scene_tree_path, modes);
-                pivot = scene_tree.pivot();
-                epsg_index = scene_tree.epsg_index();
+                SceneTreeHandler scene_tree(
+                    filepath.parent_path() / (filepath.stem().string() + ".XML"),
+                    modes
+                );
                 if(using_xml)
                 {
-                    building_ids = scene_tree.building_ids();
-                    terrain_id = scene_tree.terrain_id();
+                    auto building_ids = scene_tree.building_ids();
                     std::vector<shadow::Mesh> building_meshes(building_ids.size());
                     std::transform(
                         std::begin(building_ids),
                         std::end(building_ids),
                         std::begin(building_meshes),
-                        [this](std::string const& building_id)
+                        [&obj_file](std::string const& building_id)
                         {
-                            return mesh(building_id).value_or(shadow::Mesh());
+                            return obj_file.mesh(building_id).value_or(shadow::Mesh());
                         }
                     );
-                    return scene::Scene(
+                    scene = scene::Scene(
                         building_meshes,
-                        mesh(terrain_id).value_or(shadow::Mesh()),
-                        pivot,
-                        epsg_index
+                        obj_file.mesh(scene_tree.terrain_id()).value_or(shadow::Mesh()),
+                        scene_tree.pivot(),
+                        scene_tree.epsg_index()
                     );
                 }
                 else
                 {
-                    auto terrain = WaveObjHandler::read().exclude_mesh("terrain");
-                    return scene::Scene(
-                        data(),
+                    auto terrain = obj_file.read().exclude_mesh("terrain");
+                    scene = scene::Scene(
+                        obj_file.get_meshes(),
                         terrain,
-                        pivot,
-                        epsg_index
+                        scene_tree.pivot(),
+                        scene_tree.epsg_index()
                     );
                 }
             }
         }
 
-        void WaveObjSceneHandler::write(bool const with_xml)
+        void WaveObjSceneHandler::write(void)
         {
-            WaveObjHandler::write();
-            if(with_xml)
-                SceneTreeHandler(scene_tree_path, modes).write(pivot, bbox, epsg_index, building_ids, terrain_id);
+            auto meshes = scene.all_buildings();
+            meshes.push_back(scene.get_terrain());
+            WaveObjHandler(filepath, meshes).write();
+            if(using_xml)
+                SceneTreeHandler(
+                    filepath.parent_path() / (filepath.stem().string() + ".XML"),
+                    modes
+                ).write(
+                    scene.get_pivot(),
+                    scene.bbox(),
+                    scene.get_epsg(),
+                    scene.get_identifiers(),
+                    scene.get_terrain().get_name()
+                );
         }
     }
 }

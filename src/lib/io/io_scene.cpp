@@ -48,7 +48,7 @@ namespace city
                     scene = OFFSceneHandler(filepath, using_xml).read().get_scene();
                     break;
                 case obj:
-                    scene = WaveObjSceneHandler(filepath, modes).read(using_xml);
+                    scene = WaveObjSceneHandler(filepath, using_xml).read().get_scene();
                     break;
                 case t3ds:
                     scene = T3DSSceneHandler(filepath, modes).read(using_xml);
@@ -64,7 +64,7 @@ namespace city
                     OFFSceneHandler(filepath, scene, using_xml).write();
                     break;
                 case obj:
-                    WaveObjSceneHandler(filepath, scene).write(using_xml);
+                    WaveObjSceneHandler(filepath, scene, using_xml).write();
                     break;
                 case t3ds:
                     throw std::logic_error("Not yet implemented");

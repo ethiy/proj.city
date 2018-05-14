@@ -89,7 +89,7 @@ namespace city
               using_xml(_using_xml),
               pivot(scene.get_pivot()),
               bbox(scene.bbox()),
-              building_ids(scene.identifiers()),
+              building_ids(scene.get_identifiers()),
               terrain_id(scene.get_terrain().get_name())
         {
             std::transform(
