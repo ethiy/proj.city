@@ -65,7 +65,7 @@ namespace city
             return *this;
         }
 
-        void WaveObjHandler::write(void)
+        WaveObjHandler& WaveObjHandler::write(void)
         {
             if (modes["write"])
             {
@@ -80,6 +80,7 @@ namespace city
                 boost::system::error_code ec(boost::system::errc::io_error, boost::system::system_category());
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
+            return *this;
         }
 
         shadow::Mesh WaveObjHandler::exclude_mesh(std::string const& excluded)
@@ -118,11 +119,6 @@ namespace city
             else
                 return *found;
         }
-        void WaveObjHandler::add_mesh(shadow::Mesh const& mesh)
-        {
-            meshes.push_back(mesh);
-        }
-
 
         WaveObjSceneHandler::WaveObjSceneHandler(boost::filesystem::path const& _filepath, bool const _using_xml)
             : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}}), using_xml(_using_xml)
@@ -193,9 +189,10 @@ namespace city
                     );
                 }
             }
+            return *this;
         }
 
-        void WaveObjSceneHandler::write(void) const
+        WaveObjSceneHandler const& WaveObjSceneHandler::write(void) const
         {
             auto meshes = scene.all_buildings();
             meshes.push_back(scene.get_terrain());
@@ -211,6 +208,7 @@ namespace city
                     scene.get_identifiers(),
                     scene.get_terrain().get_name()
                 );
+            return *this;
         }
     }
 }

@@ -26,9 +26,8 @@ namespace city
 
             shadow::Mesh exclude_mesh(std::string const& excluded);
             boost::optional<shadow::Mesh> mesh(std::string const& id) const;
-            void add_mesh(shadow::Mesh const& mesh);
 
-            void write(void);
+            WaveObjHandler& write(void);
         private:
             std::vector<shadow::Mesh> meshes;
         };
@@ -44,7 +43,7 @@ namespace city
 
             WaveObjSceneHandler& read(void);
 
-            void write(void) const;
+            WaveObjSceneHandler const& write(void) const;
         private:
             scene::Scene scene;
             bool using_xml;
