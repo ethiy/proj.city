@@ -16,23 +16,26 @@ namespace city
 {
     double border_length(scene::UNode const& unode)
     {
-        return std::accumulate(
-            unode.border_halfedges_begin(),
-            unode.halfedges_end(),
-            .0,
-            [](double & length, const Polyhedron::Halfedge & halfedge)
-            {
-                return length + std::sqrt(to_double(Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
-            }
-        );
+        double length(0);
+        for(auto const& halfedge : unode.halfedges())
+            if(unode.is_border(halfedge))
+                length += std::sqrt(
+                    to_double(
+                        CGAL::squared_distance(
+                            unode.point(unode.target(halfedge)),
+                            unode.point(unode.source(halfedge))
+                        )
+                    )
+                );
+        return length;
     }
 
-    scene::UNode & affine_transform(scene::UNode & unode, const Affine_transformation_3 & affine_transformation)
+    scene::UNode& affine_transform(scene::UNode & unode, const Affine_transformation_3 & affine_transformation)
     {
         std::transform(
-            unode.points_begin(),
-            unode.points_end(),
-            unode.points_begin(),
+            std::begin(unode.points()),
+            std::end(unode.points()),
+            std::begin(unode.points()),
             [& affine_transformation](Point_3 & point)
             {
                 return affine_transformation.transform(point);
@@ -66,30 +69,29 @@ namespace city
         return affine_transform(unode, rotation);
     }
 
-    scene::UNode & prune(scene::UNode & unode)
+    scene::UNode& prune(scene::UNode & unode)
     {
-        auto halfedge_handle = unode.prunable();
+        auto halfedge = unode.prunable();
 
-        while(halfedge_handle != unode.halfedges_end())
+        while(halfedge != unode.null_halfedge())
         {
-            unode = unode.join_facet(halfedge_handle);
-            halfedge_handle = unode.prunable();
+            unode = unode.join_facet(halfedge);
+            halfedge = unode.prunable();
         }
 
-        unode.stitch_borders().set_face_ids();
-        
+        unode.stitch_borders();
         return unode;
     }
 
     double area(scene::UNode const& unode)
     {
         return std::accumulate(
-            unode.facets_begin(),
-            unode.facets_end(),
+            std::begin(unode.faces()),
+            std::end(unode.faces()),
             .0,
-            [&unode](double area, scene::UNode::Facet const& facet)
+            [&unode](double area, scene::UNode::Face_index const& facet)
             {
-                return area + unode.area(facet.halfedge()->facet());
+                return area + unode.area(facet);
             }
         );
     }
@@ -97,18 +99,18 @@ namespace city
     double total_edge_length(scene::UNode const& unode)
     {
         return std::accumulate(
-            unode.halfedges_begin(),
-            unode.halfedges_end(),
+            std::begin(unode.halfedges()),
+            std::end(unode.halfedges()),
             .0,
-            [](double total_length, Polyhedron::Halfedge const& halfedge)
+            [&unode](double const total_length, Mesh::Halfedge_index const& halfedge)
             {
                 return  total_length
                         +
                         std::sqrt(
                             to_double(
                                 CGAL::squared_distance(
-                                    halfedge.vertex()->point(),
-                                    halfedge.opposite()->vertex()->point()
+                                    unode.point(unode.target(halfedge)),
+                                    unode.point(unode.source(halfedge))
                                 )
                             )
                         );

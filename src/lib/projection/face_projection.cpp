@@ -26,16 +26,6 @@ namespace city
         FacePrint::FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane)
             : id(_id), border(_border), supporting_plane(_supporting_plane)
         {}
-        FacePrint::FacePrint(::city::scene::UNode::Facet const& facet)
-            : id(facet.id())
-        {
-            Polygon facet_proj = trace(facet, supporting_plane);
-
-            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
-                facet_proj.reverse_orientation();
-
-            border = Polygon_with_holes(facet_proj);
-        }
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
             if(facet_definition->GetFieldCount() < 5)

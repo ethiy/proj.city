@@ -14,7 +14,7 @@ namespace city
         FootPrint::FootPrint(scene::UNode const& unode)
             : name(unode.get_name()), reference_point(unode.get_reference_point()), epsg_index(unode.get_epsg())
         {
-            std::vector<FacePrint> prints = orthoprint(unode);
+            std::vector<FacePrint> prints = unode.orthoprojections();
 
             projection = std::accumulate(
                 std::begin(prints),

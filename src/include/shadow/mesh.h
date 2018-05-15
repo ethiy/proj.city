@@ -53,7 +53,7 @@ namespace city
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
@@ -64,7 +64,7 @@ namespace city
              * @see Mesh(void);
              * @see Mesh(Mesh && other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
@@ -76,7 +76,7 @@ namespace city
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
@@ -87,21 +87,21 @@ namespace city
              * @see Mesh(void);
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
             Mesh(Lib3dsMesh* lib3ds_mesh);
             /**
              * General constructor. 
-             * @param polyhedron Polyhedron_3 structure
+             * @param polyhedron Mesh_3 structure
              * @see Mesh(void);
              * @see Mesh(Mesh && other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
-            Mesh(std::string const& _name, Polyhedron const& polyhedron);
+            // Mesh(std::string const& _name, Mesh const& polyhedron);
             Mesh(scene::UNode const& unode);
             /**
              * General constructor. 
@@ -112,7 +112,7 @@ namespace city
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
@@ -125,7 +125,7 @@ namespace city
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
@@ -136,7 +136,7 @@ namespace city
              * @see Mesh(Mesh && other);
              * @see Mesh(Mesh const& other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
-             * @see Mesh(Polyhedron const& polyhedron);
+             * @see Mesh(Mesh const& polyhedron);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */

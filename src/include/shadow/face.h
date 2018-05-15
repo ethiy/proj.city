@@ -90,7 +90,7 @@ namespace city
              * @see ~Face(void);
              */
             Face(std::vector<std::size_t> const& indices);
-            Face(Polyhedron::Facet const& facet, CGAL::Inverse_index<Polyhedron::Vertex_const_iterator> & points_index);
+            // Face(Mesh::Facet const& facet, CGAL::Inverse_index<Mesh::Vertex_const_iterator> & points_index);
             /**
              * Triangular face constructor. 
              * @param first point index

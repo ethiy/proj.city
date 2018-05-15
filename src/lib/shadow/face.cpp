@@ -32,17 +32,17 @@ namespace city
             if(points.size()<3)
                 throw std::logic_error("You must have at least three vertices to define a face!");
         }
-        Face::Face(Polyhedron::Facet const& facet, CGAL::Inverse_index<Polyhedron::Vertex_const_iterator> & points_index)
-            : points(facet.facet_degree())
-        {
-            auto facet_circulator = facet.facet_begin();
-            auto insertor_iter = std::begin(points);
-            do
-            {
-                *insertor_iter = points_index[Polyhedron::Vertex_const_iterator(facet_circulator->vertex())];
-                ++insertor_iter;
-            }while(++facet_circulator != facet.facet_begin());
-        }
+        // Face::Face(Mesh::Facet const& facet, CGAL::Inverse_index<Mesh::Vertex_const_iterator> & points_index)
+        //     : points(facet.facet_degree())
+        // {
+        //     auto facet_circulator = facet.facet_begin();
+        //     auto insertor_iter = std::begin(points);
+        //     do
+        //     {
+        //         *insertor_iter = points_index[Mesh::Vertex_const_iterator(facet_circulator->vertex())];
+        //         ++insertor_iter;
+        //     }while(++facet_circulator != facet.facet_begin());
+        // }
         Face::Face(std::size_t first, std::size_t second, std::size_t third, bool orientation)
         {
             if(orientation)

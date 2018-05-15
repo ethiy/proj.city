@@ -7,15 +7,16 @@
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 
-#ifdef CGAL_USE_GEOMVIEW
-#include <CGAL/IO/Geomview_stream.h>
-#endif // CGAL_USE_GEOMVIEW
-
 #include <string>
 #include <ostream>
 
 namespace city
 {
+    namespace projection
+    {
+        class FacePrint;
+    }
+
     namespace scene
     {
         class UNode
@@ -69,7 +70,7 @@ namespace city
             * Access urban node surface.
             * @return urban node surface
             */
-            Polyhedron const& get_surface(void) const noexcept;
+            Mesh const& get_surface(void) const noexcept;
             /**
             * Get the number of vertices
             * @return number of vertices
@@ -81,195 +82,125 @@ namespace city
             */
             std::size_t facets_size(void) const;
 
-            /** Halfedge handle */
-            using Halfedge_handle = Polyhedron::Halfedge_handle;
-            /** Halfedge constant handle */
-            using Halfedge_const_handle = Polyhedron::Halfedge_const_handle;
-            /** Halfedge iterator*/
-            using Halfedge_iterator = Polyhedron::Halfedge_iterator;
-            /** Halfedge constant iterator*/
-            using Halfedge_const_iterator = Polyhedron::Halfedge_const_iterator;
+            using Halfedge_index = Mesh::Halfedge_index;
+            using Halfedge_range = Mesh::Halfedge_range;
 
-            /** Facet */
-            using Facet = Polyhedron::Facet;
-            /** Facet handle */
-            using Facet_handle = Polyhedron::Facet_handle;
-            /** Facet constant handle */
-            using Facet_const_handle = Polyhedron::Facet_const_handle;
-            /** Facet iterator */
-            using Facet_iterator = Polyhedron::Facet_iterator;
-            /** Facet constant iterator */
-            using Facet_const_iterator = Polyhedron::Facet_const_iterator;
+            using Face_index = Mesh::Face_index;
+            using Face_range = Mesh::Face_range;
 
-            /** Points iterator */
-            using Point_iterator = Polyhedron::Point_iterator;
-            /** Points constant iterator */
-            using Point_const_iterator = Polyhedron::Point_const_iterator;
+            using Vertex_index = Mesh::Vertex_index;
+            using Vertex_range = Mesh::Vertex_range;
 
-            /** Plane iterator */
-            using Plane_iterator = Polyhedron::Plane_iterator;
-            /** Plane constant iterator */
-            using Plane_const_iterator = Polyhedron::Plane_const_iterator;
+            using Edge_index = Mesh::Edge_index;
+            using Edge_range = Mesh::Edge_range;
 
-            /**
-            * Returns facets begin iterator
-            * @return facets begin iterator
-            */
-            Facet_iterator facets_begin(void) noexcept;
-            /**
-            * Returns facets end iterator
-            * @return facets end iterator
-            */
-            Facet_iterator facets_end(void) noexcept;
-            /**
-            * Returns facets constant begin iterator
-            * @return facets constant begin iterator
-            */
-            Facet_const_iterator facets_begin(void) const noexcept;
-            /**
-            * Returns facets constant end iterator
-            * @return facets constant end iterator
-            */
-            Facet_const_iterator facets_end(void) const noexcept;
-            /**
-            * Returns facets constant begin iterator
-            * @return facets constant begin iterator
-            */
-            Facet_const_iterator facets_cbegin(void) const noexcept;
-            /**
-            * Returns facets constant end iterator
-            * @return facets constant end iterator
-            */
-            Facet_const_iterator facets_cend(void) const noexcept;
+            inline Face_range faces(void) noexcept
+            {
+                return surface.faces();
+            }
+            inline Face_range faces(void) const noexcept
+            {
+                return surface.faces();
+            }
+            inline Halfedge_range halfedges(void) noexcept
+            {
+                return surface.halfedges();
+            }
+            inline Halfedge_range halfedges(void) const noexcept
+            {
+                return surface.halfedges();
+            }
+            inline Vertex_range vertices(void) noexcept
+            {
+                return surface.vertices();
+            }
+            inline Edge_range edges(void) noexcept
+            {
+                return surface.edges();
+            }
 
-            /**
-            * Returns halfedges begin iterator
-            * @return halfedges begin iterator
-            */
-            Halfedge_iterator halfedges_begin(void) noexcept;
-            /**
-            * Returns halfedges end iterator
-            * @return halfedges end iterator
-            */
-            Halfedge_iterator halfedges_end(void) noexcept;
-            /**
-            * Returns halfedges constant begin iterator
-            * @return halfedges constant begin iterator
-            */
-            Halfedge_const_iterator halfedges_begin(void) const noexcept;
-            /**
-            * Returns halfedges constant end iterator
-            * @return halfedges constant end iterator
-            */
-            Halfedge_const_iterator halfedges_end(void) const noexcept;
-            /**
-            * Returns halfedges constant begin iterator
-            * @return halfedges constant begin iterator
-            */
-            Halfedge_const_iterator halfedges_cbegin(void) const noexcept;
-            /**
-            * Returns halfedges constant end iterator
-            * @return halfedges constant end iterator
-            */
-            Halfedge_const_iterator halfedges_cend(void) const noexcept;
-            /**
-            * Returns border halfedges begin iterator
-            * @return border halfedges begin iterator
-            */
-            Halfedge_iterator border_halfedges_begin(void) noexcept;
-            /**
-            * Returns border halfedges constant begin iterator
-            * @return border halfedges constant begin iterator
-            */
-            Halfedge_const_iterator border_halfedges_begin(void) const noexcept;
+            inline Halfedge_index null_halfedge() const noexcept
+            {
+                return surface.null_halfedge();
+            }
+            inline Face_index null_face() const noexcept
+            {
+                return surface.null_face();
+            }
+            inline Edge_index null_edge() const noexcept
+            {
+                return surface.null_edge();
+            }
+            inline Vertex_index null_vertex() const noexcept
+            {
+                return surface.null_vertex();
+            }
 
-            /**
-            * Returns points begin iterator
-            * @return points begin iterator
-            */
-            Point_iterator points_begin(void) noexcept;
-            /**
-            * Returns points end iterator
-            * @return points end iterator
-            */
-            Point_iterator points_end(void) noexcept;
-            /**
-            * Returns points constant begin iterator
-            * @return points constant begin iterator
-            */
-            Point_const_iterator points_cbegin(void) const noexcept;
-            /**
-            * Returns points constant end iterator
-            * @return points constant end iterator
-            */
-            Point_const_iterator points_cend(void) const noexcept;
+            inline bool is_border(Halfedge_index const& halfedge) const
+            {
+                return surface.is_border(halfedge);
+            }
+            inline Vertex_index target(Halfedge_index const& halfedge) const
+            {
+                return surface.target(halfedge);
+            }
+            inline Vertex_index source(Halfedge_index const& halfedge) const
+            {
+                return surface.source(halfedge);
+            }
 
-            /**
-            * Returns planes begin iterator
-            * @return planes begin iterator
-            */
-            Plane_iterator planes_begin(void) noexcept;
-            /**
-            * Returns planes end iterator
-            * @return planes end iterator
-            */
-            Plane_iterator planes_end(void) noexcept;
-            /**
-            * Returns planes constant begin iterator
-            * @return planes constant begin iterator
-            */
-            Plane_const_iterator planes_cbegin(void) const noexcept;
-            /**
-            * Returns planes constant end iterator
-            * @return planes constant end iterator
-            */
-            Plane_const_iterator planes_cend(void) const noexcept;
+            inline Point_3 point(Vertex_index const& vertex) const
+            {
+                return surface.point(vertex);
+            }
+            inline Mesh::Property_map<Vertex_index, Point_3> points(void) const
+            {
+                return surface.points();
+            }
+            inline Mesh::Property_map<Vertex_index, Point_3> & points(void)
+            {
+                return surface.points();
+            }
 
             /**
             * Compute the centroid of a urban node facet
             * @param facet a urban node facet
             * @return centroid of the facet
             */
-            Point_3 centroid(UNode::Facet_const_handle facet) const;
+            Point_3 centroid(Face_index const& facet) const;
             /**
             * Compute the normal of a urban node facet
             * @param facet a urban node facet
             * @return the normal of the facet
             */
-            Vector_3 normal(UNode::Facet_const_handle facet) const;
+            Vector_3 normal(Face_index const& facet) const;
             /**
             * Compute the area of a urban node facet
             * @param facet a urban node facet
             * @return area of the facet
             */
-            double area(UNode::Facet_const_handle facet) const;
+            double area(Face_index const& facet) const;
             /**
             * Compute the circumference of a urban node facet
             * @param facet a urban node facet
             * @return circumference of the facet
             */
-            double circumference(UNode::Facet_const_handle facet) const;
-            
-            UNode & set_face_ids(void);
+            double circumference(Face_index const& facet) const;
 
-            /** 
-            * Finds a joinable halfedge.
-            * @return a halfedge handle of joinable facets
-            */
-            UNode::Halfedge_iterator prunable(void);
+            Halfedge_index prunable(void) const;
 
             /** 
             * Finds all joinable halfedges.
             * @param facet a urban node facet
             * @return a vector of pruning halfedge handles for the facet
             */
-            std::vector<UNode::Halfedge_handle> combinable(Facet & facet) const;
+            std::vector<Halfedge_index> combinable(Face_index const& facet) const;
 
             /** 
             * Clusters all facets into prunable facet bags.
             * @return a vector of all pruning halfedges
             */
-            std::vector<UNode::Halfedge_handle> pruning_halfedges(void);
+            std::vector<Halfedge_index> pruning_halfedges(void);
 
             /** 
             * Join prunable halfedge
@@ -277,7 +208,7 @@ namespace city
             * @param h halfedge handle to join its incidents facets
             * @return `this` urban node modified
             */
-            UNode & join_facet(Halfedge_handle & h);
+            UNode & join_facet(Halfedge_index & h);
 
             UNode & stitch_borders(void);
 
@@ -286,13 +217,18 @@ namespace city
             * @param facet a urban node facet
             * @return handle to facets adjacent to facet
             */
-            std::vector<UNode::Facet_const_handle> facet_adjacents(UNode::Facet const& facet) const;
-            std::vector<UNode::Facet_const_handle> facet_handles(void) const;
+            std::vector<Face_index> facet_adjacents(Face_index const& facet) const;
             /** 
             * Write facet adjacency matrix to building matrix
             * @return the adjacency matrix of facets
             */
             std::vector<bool> facet_adjacency_matrix(void) const;
+
+            Polygon_with_holes facet_projection(Face_index const& facet) const;
+            projection::FacePrint orthoprojection(Face_index const& facet) const;
+            std::vector<projection::FacePrint> orthoprojections(void) const;
+
+            Plane_3 get_plane(Face_index const& facet) const;
         private:
             /** Node name */
             std::string name;
@@ -301,7 +237,7 @@ namespace city
             /** Projection system EPSG code*/
             unsigned short epsg_index = 2154;
             /** The 3D surface*/
-            Polyhedron surface;
+            Mesh surface;
             /** Bounding box*/
             Bbox_3 bounding_box;
 
@@ -319,15 +255,6 @@ namespace city
             * @return the output stream
             */
             friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, UNode const& unode);
-            #ifdef CGAL_USE_GEOMVIEW
-            /**
-            * Outstreaming urban node to GeomView
-            * @param gs the output stream
-            * @param unode the unode to stream
-            * @return the output stream
-            */
-            friend CGAL::Geomview_stream& operator<<(CGAL::Geomview_stream & gs, UNode const& unode);
-            #endif // CGAL_USE_GEOMVIEW
         };
 
         void swap(UNode & lhs, UNode & rhs);

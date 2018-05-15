@@ -1,5 +1,7 @@
 #include <scene/unode.h>
 
+#include <projection/face_projection.h>
+
 #include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
 #include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
 #include <CGAL/Polygon_mesh_processing/orientation.h>
@@ -9,12 +11,7 @@
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
 
-#include <CGAL/IO/Polyhedron_iostream.h>
-#include <CGAL/IO/Nef_polyhedron_iostream_3.h>
-
-#ifdef CGAL_USE_GEOMVIEW
-#include <CGAL/IO/Polyhedron_geomview_ostream.h>
-#endif // CGAL_USE_GEOMVIEW
+#include <CGAL/boost/graph/Euler_operations.h>
 
 #include <vector>
 
@@ -39,55 +36,55 @@ namespace city
              surface(std::move(other.surface)),
              bounding_box(std::move(other.bounding_box))
         {}
-        UNode::UNode(
-            std::string const& node_id,
-            std::vector<shadow::Mesh> const& meshes,
-            shadow::Point const& _reference_point,
-            unsigned short const _epsg_index
-        )
-            :name(node_id), reference_point(_reference_point), epsg_index(_epsg_index)
-        {
-            std::vector<Polyhedron> polyhedrons(meshes.size());
-            std::transform(
-                std::begin(meshes),
-                std::end(meshes),
-                std::begin(polyhedrons),
-                [](shadow::Mesh const& mesh)
-                {
-                    std::vector<Point_3> points = mesh.get_cgal_points();
-                    std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
+        // UNode::UNode(
+        //     std::string const& node_id,
+        //     std::vector<shadow::Mesh> const& meshes,
+        //     shadow::Point const& _reference_point,
+        //     unsigned short const _epsg_index
+        // )
+        //     :name(node_id), reference_point(_reference_point), epsg_index(_epsg_index)
+        // {
+        //     std::vector<Mesh> polyhedrons(meshes.size());
+        //     std::transform(
+        //         std::begin(meshes),
+        //         std::end(meshes),
+        //         std::begin(polyhedrons),
+        //         [](shadow::Mesh const& mesh)
+        //         {
+        //             std::vector<Point_3> points = mesh.get_cgal_points();
+        //             std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
 
-                    Polyhedron polyhedron;
+        //             Mesh polyhedron;
 
-                    CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
-                    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, polyhedron);
-                    CGAL::Polygon_mesh_processing::stitch_borders(polyhedron);
+        //             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+        //             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, polyhedron);
+        //             CGAL::Polygon_mesh_processing::stitch_borders(polyhedron);
 
-                    std::vector<Polyhedron::Facet_handle>  patch_facets;
-                    for(auto it = polyhedron.halfedges_begin(); it != polyhedron.halfedges_end(); ++it)
-                        if(it->is_border())
-                            CGAL::Polygon_mesh_processing::triangulate_hole(polyhedron, it, std::back_inserter(patch_facets));
+        //             std::vector<Mesh::Face_index>  patch_facets;
+        //             for(auto it = polyhedron.halfedges_begin(); it != polyhedron.halfedges_end(); ++it)
+        //                 if(it->is_border())
+        //                     CGAL::Polygon_mesh_processing::triangulate_hole(polyhedron, it, std::back_inserter(patch_facets));
 
-                    std::cout << patch_facets.size() << std::endl;
+        //             std::cout << patch_facets.size() << std::endl;
 
-                    if(CGAL::is_closed(polyhedron) && !CGAL::Polygon_mesh_processing::is_outward_oriented(polyhedron))
-                        CGAL::Polygon_mesh_processing::reverse_face_orientations(polyhedron);
+        //             if(CGAL::is_closed(polyhedron) && !CGAL::Polygon_mesh_processing::is_outward_oriented(polyhedron))
+        //                 CGAL::Polygon_mesh_processing::reverse_face_orientations(polyhedron);
 
-                    return polyhedron;
-                }
-            );
+        //             return polyhedron;
+        //         }
+        //     );
 
-            Nef_Polyhedron N;
-            for(auto polyhedron : polyhedrons)
-                N += Nef_Polyhedron(polyhedron);
-            std::cout << N;
-            if(N.is_simple())
-                N.convert_to_polyhedron(surface);
-            std::cout << surface << std::endl;
+        //     Nef_Mesh N;
+        //     for(auto polyhedron : polyhedrons)
+        //         N += Nef_Mesh(polyhedron);
+        //     std::cout << N;
+        //     if(N.is_simple())
+        //         N.convert_to_polyhedron(surface);
+        //     std::cout << surface << std::endl;
 
-            if(!surface.empty())
-                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
-        }
+        //     if(!surface.empty())
+        //         bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+        // }
         UNode::UNode(
             shadow::Mesh const& mesh,
             shadow::Point const& _reference_point,
@@ -102,8 +99,7 @@ namespace city
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            if(!surface.empty())
-                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
         UNode::UNode(
             std::string const& building_id,
@@ -118,8 +114,7 @@ namespace city
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            if(!surface.empty())
-                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+            bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
         UNode::~UNode(void)
         {}
@@ -175,195 +170,85 @@ namespace city
             return reference_point;
         }
 
-        Polyhedron const& UNode::get_surface(void) const noexcept
+        Mesh const& UNode::get_surface(void) const noexcept
         {
             return surface;
         }
 
-        std::size_t UNode::vertices_size(void) const
-        {
-            return surface.size_of_vertices();
-        }
 
-        std::size_t UNode::facets_size(void) const
+        UNode::Halfedge_index UNode::prunable(void) const
         {
-            return surface.size_of_facets();
-        }
-
-        UNode::Facet_iterator UNode::facets_begin(void) noexcept
-        {
-            return surface.facets_begin();
-        }
-        UNode::Facet_iterator UNode::facets_end(void) noexcept
-        {
-            return surface.facets_end();
-        }
-        UNode::Facet_const_iterator UNode::facets_begin(void) const noexcept
-        {
-            return surface.facets_begin();
-        }
-        UNode::Facet_const_iterator UNode::facets_end(void) const noexcept
-        {
-            return surface.facets_end();
-        }
-        UNode::Facet_const_iterator UNode::facets_cbegin(void) const noexcept
-        {
-            return surface.facets_begin();
-        }
-        UNode::Facet_const_iterator UNode::facets_cend(void) const noexcept
-        {
-            return surface.facets_end();
-        }
-
-        UNode::Halfedge_iterator UNode::halfedges_begin(void) noexcept
-        {
-            return surface.halfedges_begin();
-        }
-        UNode::Halfedge_iterator UNode::halfedges_end(void) noexcept
-        {
-            return surface.halfedges_end();
-        }
-        UNode::Halfedge_const_iterator UNode::halfedges_begin(void) const noexcept
-        {
-            return surface.halfedges_begin();
-        }
-        UNode::Halfedge_const_iterator UNode::halfedges_end(void) const noexcept
-        {
-            return surface.halfedges_end();
-        }
-        UNode::Halfedge_const_iterator UNode::halfedges_cbegin(void) const noexcept
-        {
-            return surface.halfedges_begin();
-        }
-        UNode::Halfedge_const_iterator UNode::halfedges_cend(void) const noexcept
-        {
-            return surface.halfedges_end();
-        }
-
-        UNode::Halfedge_iterator UNode::border_halfedges_begin(void) noexcept
-        {
-            return surface.border_halfedges_begin();
-        }
-
-        UNode::Halfedge_const_iterator UNode::border_halfedges_begin(void) const noexcept
-        {
-            return surface.border_halfedges_begin();
-        }
-
-
-        UNode::Point_iterator UNode::points_begin(void) noexcept
-        {
-            return surface.points_begin();
-        }
-        UNode::Point_iterator UNode::points_end(void) noexcept
-        {
-            return surface.points_end();
-        }
-        UNode::Point_const_iterator UNode::points_cbegin(void) const noexcept
-        {
-            return surface.points_begin();
-        }
-        UNode::Point_const_iterator UNode::points_cend(void) const noexcept
-        {
-            return surface.points_end();
-        }
-
-        UNode::Plane_iterator UNode::planes_begin(void) noexcept
-        {
-            return surface.planes_begin();
-        }
-        UNode::Plane_iterator UNode::planes_end(void) noexcept
-        {
-            return surface.planes_end();
-        }
-        UNode::Plane_const_iterator UNode::planes_cbegin(void) const noexcept
-        {
-            return surface.planes_begin();
-        }
-        UNode::Plane_const_iterator UNode::planes_cend(void) const noexcept
-        {
-            return surface.planes_end();
-        }
-
-        UNode::Halfedge_iterator UNode::prunable(void)
-        {
-            return std::find_if(
-                halfedges_begin(),
-                halfedges_end(),
-                [this](Polyhedron::Halfedge & halfedge)
+            return *std::find_if(
+                std::begin(halfedges()),
+                std::end(halfedges()),
+                [this](Halfedge_index const& halfedge)
                 {
-                    bool joinable = !halfedge.is_border_edge();
-                    if(joinable)
+                    return  !surface.is_border(surface.edge(halfedge))
+                            &&
+                            (
+                                CGAL::cross_product(
+                                    CGAL::Polygon_mesh_processing::compute_face_normal(surface.face(halfedge), surface),
+                                    CGAL::Polygon_mesh_processing::compute_face_normal(surface.face(surface.opposite(halfedge)), surface)
+                                )
+                                ==
+                                CGAL::NULL_VECTOR
+                            );
+                }
+            );
+        }
+
+        std::vector<UNode::Halfedge_index> UNode::combinable(Face_index const& facet) const
+        {
+            std::vector<UNode::Halfedge_index> combining_edges;
+            combining_edges.reserve(surface.degree(facet));
+            for(auto const& halfedge : CGAL::halfedges_around_face(surface.halfedge(facet), surface))
+            {
+                if(!surface.is_border(surface.edge(halfedge)))
+                {
+                    Point_3 A(surface.point(surface.target(halfedge))),
+                            B(surface.point(surface.target(surface.next(halfedge)))),
+                            C(surface.point(surface.target(surface.next(surface.next(halfedge))))),
+                            D(surface.point(surface.target(surface.next(surface.opposite(halfedge)))));
+                    if(CGAL::determinant(B - A, C - A, D - A) == Kernel::FT(0))
+                        combining_edges.push_back(halfedge);
+                }
+            }
+
+            return combining_edges;
+        }
+        std::vector<UNode::Halfedge_index> UNode::pruning_halfedges(void)
+        {
+            std::vector<Halfedge_index> combining_edges;
+
+            for(auto const& facet : faces())
+            {
+                auto buffer = combinable(facet);
+                std::copy_if(
+                    std::begin(buffer),
+                    std::end(buffer),
+                    std::back_inserter(combining_edges),
+                    [this, &combining_edges](Halfedge_index const& h)
                     {
-                        joinable = (
-                            CGAL::cross_product(
-                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.facet(), surface),
-                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.opposite()->facet(), surface)
-                            )
-                            ==
-                            CGAL::NULL_VECTOR
+                        return std::none_of(
+                            std::begin(combining_edges),
+                            std::end(combining_edges),
+                            [&h, this](Halfedge_index const& present)
+                            {
+                                return  (surface.point(surface.target(present)) == surface.point(surface.target(h)) && surface.point(surface.source(present)) == surface.point(surface.source(h)))
+                                        ||
+                                        (surface.point(surface.source(present)) == surface.point(surface.target(h))) && surface.point(surface.target(present)) == surface.point(surface.source(h));
+                            }
                         );
                     }
-                    return  joinable;
-                }
-            );
-        }
-        std::vector<UNode::Halfedge_handle> UNode::combinable(Facet & facet) const
-        {
-            std::vector<UNode::Halfedge_handle> combining_edges;
-            combining_edges.reserve(facet.facet_degree());
-
-            Polyhedron::Halfedge_around_facet_circulator facet_circulator = facet.facet_begin();
-            do
-            {
-                if(!facet_circulator->is_border_edge())
-                {
-                    Point_3 A(facet_circulator->vertex()->point()),
-                            B(facet_circulator->next()->vertex()->point()),
-                            C(facet_circulator->next()->next()->vertex()->point()),
-                            D(facet_circulator->opposite()->next()->vertex()->point());
-                    if(CGAL::determinant(B - A, C - A, D - A) == Kernel::FT(0))
-                        combining_edges.push_back(facet_circulator->opposite());
-                }
-            }while(++facet_circulator != facet.facet_begin());
+                );
+            }
 
             return combining_edges;
         }
-        std::vector<UNode::Halfedge_handle> UNode::pruning_halfedges(void)
+        UNode & UNode::join_facet(Halfedge_index & h)
         {
-            std::vector<UNode::Halfedge_handle> combining_edges;
-
-            std::for_each(
-                facets_begin(),
-                facets_end(),
-                [&combining_edges, this](Facet & facet)
-                {
-                    auto buffer = combinable(facet);
-                    std::copy_if(
-                        std::begin(buffer),
-                        std::end(buffer),
-                        std::back_inserter(combining_edges),
-                        [&combining_edges](UNode::Halfedge_handle const& h)
-                        {
-                            return std::none_of(
-                                std::begin(combining_edges),
-                                std::end(combining_edges),
-                                [&h](UNode::Halfedge_handle const& present)
-                                {
-                                    return  (present->vertex()->point() == h->vertex()->point() && present->opposite()->vertex()->point() == h->opposite()->vertex()->point())
-                                            ||
-                                            (present->opposite()->vertex()->point() == h->vertex()->point() && present->vertex()->point() == h->opposite()->vertex()->point());
-                                }
-                            );
-                        }
-                    );
-                }
-            );
-            return combining_edges;
-        }
-        UNode & UNode::join_facet(UNode::Halfedge_handle & h)
-        {
-            surface.join_facet(h);
+            CGAL::Euler::join_face(h, surface);
+            surface.collect_garbage();
             return *this;
         }
         UNode & UNode::stitch_borders(void)
@@ -372,97 +257,122 @@ namespace city
             if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             
-                return *this;
+            return *this;
         }
 
-        Point_3 UNode::centroid(UNode::Facet_const_handle facet) const
+        Point_3 UNode::centroid(Face_index const& facet) const
         {
-            auto circulator = facet->facet_begin();
             Vector_3 n = normal(facet);
 
             Vector_3 centroid = CGAL::NULL_VECTOR;
-            do
-            {
+            for(auto const& halfedge : CGAL::halfedges_around_face(surface.halfedge(facet), surface))
                 centroid =  centroid
                             +
-                            ((circulator->vertex()->point() - CGAL::ORIGIN) + (circulator->next()->vertex()->point() - CGAL::ORIGIN))
+                            ((surface.point(surface.target(halfedge)) - CGAL::ORIGIN) + (surface.point(surface.source(halfedge)) - CGAL::ORIGIN))
                                 *
-                            to_double(CGAL::cross_product(circulator->vertex()->point() - CGAL::ORIGIN, circulator->next()->vertex()->point() - CGAL::ORIGIN) * n)
+                            to_double(CGAL::cross_product(surface.point(surface.target(halfedge)) - CGAL::ORIGIN, surface.point(surface.source(halfedge)) - CGAL::ORIGIN) * n)
                                 /
                             6;
-            }while(++circulator != facet->facet_begin());
 
             return CGAL::ORIGIN + centroid / area(facet);
         }
-        Vector_3 UNode::normal(UNode::Facet_const_handle facet) const
+        Vector_3 UNode::normal(Face_index const& facet) const
         {
-            UNode::Facet _face = *facet;
-            return CGAL::Polygon_mesh_processing::compute_face_normal(&_face, surface);
+            return CGAL::Polygon_mesh_processing::compute_face_normal(facet, surface);
         }
-        double UNode::area(UNode::Facet_const_handle facet) const
+        double UNode::area(Face_index const& facet) const
         {
             ExactToInexact to_inexact;
-            UNode::Facet _face = *facet;
-            return to_inexact(CGAL::Polygon_mesh_processing::face_area(&_face, surface));
+            return to_inexact(CGAL::Polygon_mesh_processing::face_area(facet, surface));
         }
-        double UNode::circumference(UNode::Facet_const_handle facet) const
+        double UNode::circumference(Face_index const& facet) const
         {
-            auto circulator = facet->facet_begin();
             double result = 0;
-            
-            do
-            {
+            for(auto const& halfedge : CGAL::halfedges_around_face(surface.halfedge(facet), surface))
                 result += std::sqrt(
                     to_double(
                         CGAL::squared_distance(
-                            circulator->vertex()->point(),
-                            circulator->opposite()->vertex()->point()
+                            surface.point(surface.target(halfedge)),
+                            surface.point(surface.source(halfedge))
                         )
                     )
                 );
-            }while(++circulator != facet->facet_begin());
 
             return result;
         }
-        
-        UNode & UNode::set_face_ids(void)
-        {
-            size_t index(0);
-            auto iterator = surface.facets_begin();
 
-            for(; iterator != surface.facets_end(); ++iterator)
-                iterator->id() = index ++;
+        Polygon_with_holes UNode::facet_projection(Face_index const& facet) const
+        {
+            std::vector<Point_2> facet_trace(surface.degree(facet));
+
+            auto iter = std::begin(facet_trace);
+            for(auto const vertex : CGAL::vertices_around_face(surface.halfedge(facet), surface))
+                *iter++ = Point_2(surface.point(vertex).x(), surface.point(vertex).y());
             
-            return *this;
-        }
-        
-        std::vector<UNode::Facet_const_handle> UNode::facet_adjacents(UNode::Facet const& facet) const
-        {
-            std::vector<UNode::Facet_const_handle> adjacents;
-            adjacents.reserve(facet.facet_degree());
+            Polygon facet_proj(std::begin(facet_trace), std::end(facet_trace));
 
-            auto circulator = facet.facet_begin();
-            do
-            {
-                auto buff = circulator->opposite()->facet();
-                if(!circulator->is_border() && buff != nullptr)
-                    adjacents.push_back(buff);
-            }while(++circulator != facet.facet_begin());
-            return adjacents;
+            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
+                facet_proj.reverse_orientation();
+
+            return Polygon_with_holes(facet_proj);
         }
-        std::vector<UNode::Facet_const_handle> UNode::facet_handles(void) const
+
+        projection::FacePrint UNode::orthoprojection(Face_index const& facet) const
         {
-            std::vector<UNode::Facet_const_handle> facets(facets_size());
+            return projection::FacePrint(
+                static_cast<std::size_t>(facet),
+                facet_projection(facet),
+                get_plane(facet)
+            );
+        }
+
+        std::vector<projection::FacePrint> UNode::orthoprojections(void) const
+        {
+            std::vector<projection::FacePrint> prints(facets_size());
+
             std::transform(
-                facets_cbegin(),
-                facets_cend(),
-                std::begin(facets),
-                [](UNode::Facet const& facet)
+                std::begin(faces()),
+                std::end(faces()),
+                std::begin(prints),
+                [this](Face_index const& facet)
                 {
-                    return &facet;
+                    return orthoprojection(facet);
                 }
             );
-            return facets;
+
+            prints.erase(
+                std::remove_if(
+                    std::begin(prints),
+                    std::end(prints),
+                    [](projection::FacePrint const& facet)
+                    {
+                        return facet.is_empty() || facet.is_degenerate();
+                    }
+                ),
+                std::end(prints)
+            );
+
+            return prints;
+        }
+
+        Plane_3 UNode::get_plane(Face_index const& facet) const
+        {
+            return Plane_3(
+                surface.point(surface.source(surface.halfedge(facet))),
+                normal(facet)
+            );
+        }
+
+        std::vector<UNode::Face_index> UNode::facet_adjacents(Face_index const& facet) const
+        {
+            std::vector<Face_index> adjacents;
+            adjacents.reserve(surface.degree(facet));
+
+            for(auto const& halfedge : CGAL::halfedges_around_face(surface.halfedge(facet), surface))
+                if(!surface.is_border(surface.edge(halfedge)))
+                    adjacents.push_back(surface.face(surface.opposite(halfedge)));
+
+            return adjacents;
         }
         std::vector<bool> UNode::facet_adjacency_matrix(void) const
         {
@@ -471,26 +381,13 @@ namespace city
             for(std::size_t diag(0); diag != facets_size(); ++diag)
                 matrix.at(diag * facets_size() + diag) = true;
 
-            auto facets = facet_handles();
-
-            std::vector<UNode::Facet_const_handle> line_adjacents;
-            for(std::size_t line(0); line != facets_size(); ++line)
-            {
-                line_adjacents = facet_adjacents(*facets.at(line));
-
-                for(auto adjacent : line_adjacents)
-                {
-                    auto placeholder = std::find(std::begin(facets), std::end(facets), adjacent);
-                    if(placeholder != std::end(facets))
-                        matrix.at(
-                            line * facets_size()
-                            +
-                            static_cast<std::size_t>(std::distance(std::begin(facets), placeholder))
-                        )
-                        =
-                        true;
-                }
-            }   
+            for(auto const& face : faces())
+                for(auto const& adjacent : facet_adjacents(face))
+                    matrix.at(
+                        static_cast<std::size_t>(face) * facets_size()
+                        +
+                        static_cast<std::size_t>(adjacent)
+                    ) = true;
             return matrix;
         }
 
@@ -503,14 +400,8 @@ namespace city
 
         io::Adjacency_stream & operator <<(io::Adjacency_stream & as, UNode const& unode)
         {
-            std::for_each(
-                unode.facets_cbegin(),
-                unode.facets_cend(),
-                [&as, &unode](UNode::Facet const& facet)
-                {
-                    as << facet.id() << " " << facet.facet_degree() << " " << unode.area(facet.halfedge()->facet()) << " " << unode.circumference(facet.halfedge()->facet()) << " " << unode.centroid(facet.halfedge()->facet()) << " " << unode.normal(facet.halfedge()->facet()) << std::endl;
-                }
-            );
+            for(auto const& face: unode.faces())
+                as << static_cast<std::size_t>(face) << " " << unode.surface.degree(face) << " " << unode.area(face) << " " << unode.circumference(face) << " " << unode.centroid(face) << " " << unode.normal(face) << std::endl;
 
             std::vector<bool> matrix = unode.facet_adjacency_matrix();
 
@@ -518,14 +409,6 @@ namespace city
 
             return as;
         }
-
-        #ifdef CGAL_USE_GEOMVIEW
-        CGAL::Geomview_stream & operator <<(CGAL::Geomview_stream &gs, UNode const& unode)
-        {
-            gs << unode.surface;
-            return gs;
-        }
-        #endif // CGAL_USE_GEOMVIEW
 
         void swap(UNode & lhs, UNode & rhs)
         {
