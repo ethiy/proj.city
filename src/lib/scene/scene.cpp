@@ -29,6 +29,26 @@ namespace city
 
             terrain = UNode(terrain_mesh, pivot, epsg_index);
         }
+        Scene::Scene(
+            std::map<std::string, std::vector<shadow::Mesh> > const& building_meshes,
+            std::vector<shadow::Mesh> const& terrain_meshes,
+            city::shadow::Point const& _pivot,
+            unsigned short _epsg_index
+        )
+            : pivot(_pivot), epsg_index(_epsg_index), buildings(building_meshes.size())
+        {
+            std::transform(
+                std::begin(building_meshes),
+                std::end(building_meshes),
+                std::begin(buildings),
+                [this](std::pair<std::string, std::vector<shadow::Mesh> > const& name_meshes)
+                {
+                    return UNode(name_meshes.first, name_meshes.second, pivot, epsg_index);
+                }
+            );
+
+            terrain = UNode("terrain", terrain_meshes, pivot, epsg_index);
+        }
         Scene::Scene(Scene const& other)
             : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}

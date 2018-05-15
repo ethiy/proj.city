@@ -73,8 +73,6 @@ namespace city
                     if(CGAL::is_closed(polyhedron) && !CGAL::Polygon_mesh_processing::is_outward_oriented(polyhedron))
                         CGAL::Polygon_mesh_processing::reverse_face_orientations(polyhedron);
 
-                    // std::cout << polyhedron << std::endl;
-
                     return polyhedron;
                 }
             );
