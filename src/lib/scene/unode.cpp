@@ -8,6 +8,7 @@
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
+#include <CGAL/Polygon_mesh_processing/refine.h>
 
 #include <CGAL/IO/Polyhedron_iostream.h>
 #include <CGAL/IO/Nef_polyhedron_iostream_3.h>
@@ -100,6 +101,9 @@ namespace city
 
             CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+            std::vector<Polyhedron::Facet_handle>  new_facets;
+            std::vector<Polyhedron::Vertex_handle> new_vertices;
+            CGAL::Polygon_mesh_processing::refine(surface, CGAL::faces(surface), std::back_inserter(new_facets), std::back_inserter(new_vertices));
             if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             if(!surface.empty())
