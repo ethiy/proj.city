@@ -2,8 +2,6 @@
 
 #include<scene/unode.h>
 
-#include <CGAL/Inverse_index.h>
-
 #include <stdexcept>
 
 #include <iterator>
@@ -62,36 +60,34 @@ namespace city
             compute_bbox();
         }
 
-        // Mesh::Mesh(std::string const& _name, Mesh const& polyhedron)
-        //     : name(_name), points(polyhedron.size_of_vertices()), faces(polyhedron.size_of_facets())
-        // {
-        //     std::transform(
-        //         polyhedron.points_begin(),
-        //         polyhedron.points_end(),
-        //         std::begin(points),
-        //         [](Point_3 const& point)
-        //         {
-        //             return Point(point);
-        //         }
-        //     );
+        Mesh::Mesh(std::string const& _name, ::CGAL::Surface_mesh<Point_3> const& mesh)
+            : name(_name), points(mesh.number_of_vertices()), faces(mesh.number_of_faces())
+        {
+            std::transform(
+                std::begin(mesh.points()),
+                std::end(mesh.points()),
+                std::begin(points),
+                [](Point_3 const& point)
+                {
+                    return Point(point);
+                }
+            );
 
-        //     CGAL::Inverse_index<Mesh::Vertex_const_iterator> points_index(polyhedron.vertices_begin(), polyhedron.vertices_end());
+            std::transform(
+                std::begin(mesh.faces()),
+                std::end(mesh.faces()),
+                std::begin(faces),
+                [this, &mesh](::CGAL::Surface_mesh<Point_3>::Face_index const& facet)
+                {
+                    return Face(mesh, facet);
+                }
+            );
+            compute_bbox();
+        }
 
-        //     std::transform(
-        //         polyhedron.facets_begin(),
-        //         polyhedron.facets_end(),
-        //         std::begin(faces),
-        //         [this, &points_index](Mesh::Facet const& facet)
-        //         {
-        //             return Face(facet, points_index);
-        //         }
-        //     );
-        //     compute_bbox();
-        // }
-
-        // Mesh::Mesh(scene::UNode const& unode)
-        //     : Mesh(unode.get_name(), unode.get_surface())
-        // {}
+        Mesh::Mesh(scene::UNode const& unode)
+            : Mesh(unode.get_name(), unode.get_surface())
+        {}
 
 
         Mesh::Mesh(std::string const& _name, std::vector<Point> const& _points, std::vector<Face> const& _faces)

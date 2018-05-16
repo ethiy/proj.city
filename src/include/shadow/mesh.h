@@ -94,14 +94,14 @@ namespace city
             Mesh(Lib3dsMesh* lib3ds_mesh);
             /**
              * General constructor. 
-             * @param polyhedron Mesh_3 structure
+             * @param mesh Mesh_3 structure
              * @see Mesh(void);
              * @see Mesh(Mesh && other);
              * @see Mesh(Lib3dsMesh* lib3ds_mesh);
              * @see Mesh(std::string const& _name, std::map<std::size_t, Point> const& _points, std::map<std::size_t, Face> const & _faces);
              * @see ~Mesh(void);
              */
-            // Mesh(std::string const& _name, Mesh const& polyhedron);
+            Mesh(std::string const& _name, ::CGAL::Surface_mesh<Point_3> const& mesh);
             Mesh(scene::UNode const& unode);
             /**
              * General constructor. 

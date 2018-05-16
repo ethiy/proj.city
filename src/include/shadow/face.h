@@ -12,8 +12,6 @@
 #include <lib3ds/types.h>
 #include <lib3ds/mesh.h>
 
-#include <CGAL/Inverse_index.h>
-
 #include <vector>
 #include <map>
 #include <initializer_list>
@@ -90,7 +88,7 @@ namespace city
              * @see ~Face(void);
              */
             Face(std::vector<std::size_t> const& indices);
-            // Face(Mesh::Facet const& facet, CGAL::Inverse_index<Mesh::Vertex_const_iterator> & points_index);
+            Face( CGAL::Surface_mesh<Point_3> const& mesh, Mesh::Face_index const& facet);
             /**
              * Triangular face constructor. 
              * @param first point index
