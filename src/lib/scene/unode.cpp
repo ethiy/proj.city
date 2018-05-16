@@ -62,16 +62,6 @@ namespace city
                     CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface_mesh);
                     CGAL::Polygon_mesh_processing::stitch_borders(surface_mesh);
 
-                    // std::vector<Mesh::Face_index>  patch_facets;
-                    // for(auto it = surface_mesh.halfedges_begin(); it != surface_mesh.halfedges_end(); ++it)
-                    //     if(it->is_border())
-                    //         CGAL::Polygon_mesh_processing::triangulate_hole(surface_mesh, it, std::back_inserter(patch_facets));
-
-                    // std::cout << patch_facets.size() << std::endl;
-
-                    // if(CGAL::is_closed(surface_mesh) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface_mesh))
-                    //     CGAL::Polygon_mesh_processing::reverse_face_orientations(surface_mesh);
-
                     return surface_mesh;
                 }
             );
@@ -102,6 +92,11 @@ namespace city
             if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+
+            auto fccmap = surface.add_property_map<Mesh::Face_index, std::size_t>("f:CC").first;
+            auto cc =  CGAL::Polygon_mesh_processing::connected_components(surface, fccmap);
+            std::cout << name << " " << cc << std::endl;
         }
         UNode::UNode(
             std::string const& building_id,
