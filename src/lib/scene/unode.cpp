@@ -328,7 +328,7 @@ namespace city
 
         std::vector<projection::FacePrint> UNode::orthoprojections(void) const
         {
-            std::vector<projection::FacePrint> prints(facets_size());
+            std::vector<projection::FacePrint> prints(faces_size());
 
             std::transform(
                 std::begin(faces()),
@@ -376,15 +376,15 @@ namespace city
         }
         std::vector<bool> UNode::facet_adjacency_matrix(void) const
         {
-            std::vector<bool> matrix(facets_size() * facets_size(), false);
+            std::vector<bool> matrix(faces_size() * faces_size(), false);
 
-            for(std::size_t diag(0); diag != facets_size(); ++diag)
-                matrix.at(diag * facets_size() + diag) = true;
+            for(std::size_t diag(0); diag != faces_size(); ++diag)
+                matrix.at(diag * faces_size() + diag) = true;
 
             for(auto const& face : faces())
                 for(auto const& adjacent : facet_adjacents(face))
                     matrix.at(
-                        static_cast<std::size_t>(face) * facets_size()
+                        static_cast<std::size_t>(face) * faces_size()
                         +
                         static_cast<std::size_t>(adjacent)
                     ) = true;

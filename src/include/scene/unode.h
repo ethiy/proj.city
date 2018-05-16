@@ -75,12 +75,18 @@ namespace city
             * Get the number of vertices
             * @return number of vertices
             */
-            std::size_t vertices_size(void) const;
+            inline std::size_t vertices_size(void) const
+            {
+                return surface.number_of_vertices();
+            }
             /**
             * Get the number of facets
             * @return number of facets
             */
-            std::size_t facets_size(void) const;
+            inline std::size_t faces_size(void) const
+            {
+                return surface.number_of_faces();
+            }
 
             using Halfedge_index = Mesh::Halfedge_index;
             using Halfedge_range = Mesh::Halfedge_range;
