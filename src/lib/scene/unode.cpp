@@ -238,7 +238,7 @@ namespace city
                             {
                                 return  (surface.point(surface.target(present)) == surface.point(surface.target(h)) && surface.point(surface.source(present)) == surface.point(surface.source(h)))
                                         ||
-                                        (surface.point(surface.source(present)) == surface.point(surface.target(h))) && surface.point(surface.target(present)) == surface.point(surface.source(h));
+                                        (surface.point(surface.source(present)) == surface.point(surface.target(h)) && surface.point(surface.target(present)) == surface.point(surface.source(h)));
                             }
                         );
                     }
