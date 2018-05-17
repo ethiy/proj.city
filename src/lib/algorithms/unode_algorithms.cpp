@@ -4,6 +4,8 @@
 #include <CGAL/aff_transformation_tags.h>
 #include <CGAL/squared_distance_3.h>
 
+#include <boost/range/iterator_range.hpp>
+
 #include <stdexcept>
 
 #include <iterator>
@@ -71,15 +73,8 @@ namespace city
 
     scene::UNode& prune(scene::UNode & unode)
     {
-        auto halfedge = unode.prunable();
-
-        while(halfedge != unode.null_halfedge())
-        {
+        for(auto const& halfedge : boost::make_iterator_range(UNode::generator_t(&unode.prunable_halfedges_generator()), UNode::generator_t()))
             unode = unode.join_facet(halfedge);
-            halfedge = unode.prunable();
-        }
-
-        unode.stitch_borders();
         return unode;
     }
 

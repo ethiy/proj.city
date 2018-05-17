@@ -7,6 +7,8 @@
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 
+#include <boost/coroutine/all.hpp>
+
 #include <string>
 #include <ostream>
 
@@ -193,21 +195,8 @@ namespace city
             */
             double circumference(Face_index const& facet) const;
 
-            Halfedge_index prunable(void) const;
-
-            /** 
-            * Finds all joinable halfedges.
-            * @param facet a urban node facet
-            * @return a vector of pruning halfedge handles for the facet
-            */
-            std::vector<Halfedge_index> combinable(Face_index const& facet) const;
-
-            /** 
-            * Clusters all facets into prunable facet bags.
-            * @return a vector of all pruning halfedges
-            */
-            std::vector<Halfedge_index> pruning_halfedges(void);
-
+            using generator_t = boost::coroutines::generator<Halfedge_index>;
+            Halfedge_index prunable_halfedges_generator(generator_t & self) const;
             /** 
             * Join prunable halfedge
             * Wraps CGAL join_facet() for urban node.
