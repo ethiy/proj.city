@@ -53,24 +53,39 @@ namespace city
              * Computes the Building bounding box.
              * @return this bounding box
              */
-            Bbox_3 const& bbox(void) const noexcept;
+            inline Bbox_3 const& bbox(void) const noexcept
+            {
+                return bounding_box;
+            }
 
-            std::string const& get_name(void) const noexcept;
+            inline std::string const& get_name(void) const noexcept
+            {
+                return name;
+            }
             /**
             * Access urban node epsg.
             * @return urban node epsg
             */
-            unsigned short const& get_epsg(void) const noexcept;
+            inline unsigned short const& get_epsg(void) const noexcept
+            {
+                return epsg_index;
+            }
             /**
             * Access urban node reference point.
             * @return urban node reference point
             */
-            shadow::Point const& get_reference_point(void) const noexcept;
+            inline shadow::Point const& get_reference_point(void) const noexcept
+            {
+                return reference_point;
+            }
             /**
             * Access urban node surface.
             * @return urban node surface
             */
-            Mesh const& get_surface(void) const noexcept;
+            inline Mesh const& get_surface(void) const noexcept
+            {
+                return surface;
+            }
             /**
             * Get the number of vertices
             * @return number of vertices
@@ -194,20 +209,6 @@ namespace city
             double circumference(Face_index const& facet) const;
 
             Halfedge_index prunable(void) const;
-
-            /** 
-            * Finds all joinable halfedges.
-            * @param facet a urban node facet
-            * @return a vector of pruning halfedge handles for the facet
-            */
-            std::vector<Halfedge_index> combinable(Face_index const& facet) const;
-
-            /** 
-            * Clusters all facets into prunable facet bags.
-            * @return a vector of all pruning halfedges
-            */
-            std::vector<Halfedge_index> pruning_halfedges(void);
-
             /** 
             * Join prunable halfedge
             * Wraps CGAL join_facet() for urban node.

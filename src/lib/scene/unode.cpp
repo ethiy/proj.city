@@ -147,32 +147,6 @@ namespace city
             return *this;
         }
 
-        Bbox_3 const& UNode::bbox(void) const noexcept
-        {
-            return bounding_box;
-        }
-
-        std::string const& UNode::get_name(void) const noexcept
-        {
-            return name;
-        }
-
-        unsigned short const& UNode::get_epsg(void) const noexcept
-        {
-            return epsg_index;
-        }
-
-        shadow::Point const& UNode::get_reference_point(void) const noexcept
-        {
-            return reference_point;
-        }
-
-        Mesh const& UNode::get_surface(void) const noexcept
-        {
-            return surface;
-        }
-
-
         UNode::Halfedge_index UNode::prunable(void) const
         {
             return *std::find_if(
@@ -192,55 +166,6 @@ namespace city
                             );
                 }
             );
-        }
-
-        std::vector<UNode::Halfedge_index> UNode::combinable(Face_index const& facet) const
-        {
-            std::vector<UNode::Halfedge_index> combining_edges;
-            combining_edges.reserve(surface.degree(facet));
-            for(auto const& halfedge : CGAL::halfedges_around_face(surface.halfedge(facet), surface))
-            {
-                if(!surface.is_border(surface.edge(halfedge)))
-                {
-                    Point_3 A(surface.point(surface.target(halfedge))),
-                            B(surface.point(surface.target(surface.next(halfedge)))),
-                            C(surface.point(surface.target(surface.next(surface.next(halfedge))))),
-                            D(surface.point(surface.target(surface.next(surface.opposite(halfedge)))));
-                    if(CGAL::determinant(B - A, C - A, D - A) == Kernel::FT(0))
-                        combining_edges.push_back(halfedge);
-                }
-            }
-
-            return combining_edges;
-        }
-        std::vector<UNode::Halfedge_index> UNode::pruning_halfedges(void)
-        {
-            std::vector<Halfedge_index> combining_edges;
-
-            for(auto const& facet : faces())
-            {
-                auto buffer = combinable(facet);
-                std::copy_if(
-                    std::begin(buffer),
-                    std::end(buffer),
-                    std::back_inserter(combining_edges),
-                    [this, &combining_edges](Halfedge_index const& h)
-                    {
-                        return std::none_of(
-                            std::begin(combining_edges),
-                            std::end(combining_edges),
-                            [&h, this](Halfedge_index const& present)
-                            {
-                                return  (surface.point(surface.target(present)) == surface.point(surface.target(h)) && surface.point(surface.source(present)) == surface.point(surface.source(h)))
-                                        ||
-                                        (surface.point(surface.source(present)) == surface.point(surface.target(h)) && surface.point(surface.target(present)) == surface.point(surface.source(h)));
-                            }
-                        );
-                    }
-                );
-            }
-
-            return combining_edges;
         }
         UNode & UNode::join_facet(Halfedge_index & h)
         {
