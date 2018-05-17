@@ -15,6 +15,10 @@ namespace city
     /** Get the rotation transformation from a set of axis and angle couples*/
     Affine_transformation_3 rotation_transform(std::map<double, Vector_3> const& _rotations);
 
+    bool is_orthonormal_direct(std::array<Vector_3, 3> const& reference_system);
+    Affine_transformation_3 reference_transform(std::array<Vector_3, 3> const& reference_system);
+    Affine_transformation_3 reference_transform(Point_3 const& source, Point_3 const& target, Vector_3 const& k);
+
     /** Check points collinearity*/
     bool check_collinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last);
 

@@ -1,6 +1,7 @@
 #include <algorithms/util_algorithms.h>
 
 #include <CGAL/centroid.h>
+#include <CGAL/number_utils.h>
 
 #include <iterator>
 
@@ -9,16 +10,13 @@ namespace city
     Affine_transformation_3 rotation_transform(const std::map<double, Vector_3> & _rotations)
     {
         std::vector<Affine_transformation_3> rotations;
-        double norm(0);
-        Vector_3 u(CGAL::NULL_VECTOR);
         std::transform(
             std::begin(_rotations),
             std::end(_rotations),
             std::begin(rotations),
-            [norm, &u](const std::pair<double, Vector_3> & angle_axis) mutable
+            [](const std::pair<double, Vector_3> & angle_axis)
             {
-                norm = std::sqrt(to_double(angle_axis.second * angle_axis.second));
-                u = angle_axis.second / norm;
+                auto u = angle_axis.second / std::sqrt(to_double(angle_axis.second.squared_length()));
                 return Affine_transformation_3(
                         std::cos(angle_axis.first) + (1 - std::cos(angle_axis.first)) * std::pow(to_double(u.x()), 2.), 
                         (1 - std::cos(angle_axis.first)) * to_double(u.x()) * to_double(u.y()) - std::sin(angle_axis.first) * to_double(u.z()), 
@@ -37,11 +35,60 @@ namespace city
             std::begin(rotations),
             std::end(rotations),
             Affine_transformation_3(CGAL::IDENTITY),
-            [](Affine_transformation_3 & result, const Affine_transformation_3 & rotation)
+            [](Affine_transformation_3 const& result, Affine_transformation_3 const& rotation)
             {
                 return result * rotation;
             }
         );
+    }
+
+    bool is_orthonormal_direct(std::array<Vector_3, 3> const& reference_system)
+    {
+        return std::all_of(
+            std::begin(reference_system),
+            std::end(reference_system),
+            [](Vector_3 const& v)
+            {
+                return CGAL::is_one(v.squared_length());
+            }
+        )
+        &&
+        (
+            CGAL::cross_product(reference_system.at(0), reference_system.at(1)) == reference_system.at(2)
+        );
+    }
+    Affine_transformation_3 reference_transform(std::array<Vector_3, 3> const& reference_system)
+    {
+        if(is_orthonormal_direct(reference_system))
+            throw std::runtime_error("The new reference system is not orthonormal and direct!");
+
+        return Affine_transformation_3(
+            reference_system.at(0).x(),
+            reference_system.at(0).y(),
+            reference_system.at(0).z(),
+            reference_system.at(1).x(),
+            reference_system.at(1).y(),
+            reference_system.at(1).z(),
+            reference_system.at(2).x(),
+            reference_system.at(2).y(),
+            reference_system.at(2).z()
+        );
+    }
+
+    Affine_transformation_3 reference_transform(Point_3 const& source, Point_3 const& target, Vector_3 const& k)
+    {
+        auto i = target - source;
+        i = i / std::sqrt(to_double(i.squared_length()));
+        if(CGAL::is_zero(k * i))
+            throw std::runtime_error("the normal must be orthogonal to the line formed by both points!");
+
+        return reference_transform(
+            std::array<Vector_3, 3>{{
+                i,
+                CGAL::cross_product(k, i),
+                k
+            }}
+        ) * Affine_transformation_3(CGAL::TRANSLATION, source - CGAL::ORIGIN);
     }
 
     bool check_collinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last)
