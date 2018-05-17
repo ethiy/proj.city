@@ -1,6 +1,7 @@
 #include <scene/unode.h>
 
 #include <projection/face_projection.h>
+#include <algorithms/util_algorithms.h>
 
 #include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
 #include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
@@ -95,7 +96,10 @@ namespace city
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
 
             auto fccmap = surface.add_property_map<Mesh::Face_index, std::size_t>("f:CC").first;
-            auto cc =  CGAL::Polygon_mesh_processing::connected_components(surface, fccmap);
+            auto cc =  CGAL::Polygon_mesh_processing::connected_components(
+                surface,
+                fccmap
+            );
             std::cout << name << " " << cc << std::endl;
         }
         UNode::UNode(

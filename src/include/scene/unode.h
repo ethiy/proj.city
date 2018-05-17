@@ -7,6 +7,8 @@
 
 #include <io/Adjacency_stream/adjacency_stream.h>
 
+#include <boost/property_map/property_map.hpp>
+
 #include <string>
 #include <ostream>
 
@@ -262,6 +264,20 @@ namespace city
             * @return the output stream
             */
             friend io::Adjacency_stream& operator<<(io::Adjacency_stream & as, UNode const& unode);
+
+            struct EdgeConstraint: public boost::put_get_helper< bool, EdgeConstraint>
+            {
+                EdgeConstraint(Mesh & _mesh)
+                    : mesh(_mesh)
+                {}
+
+                bool operator[](Edge_index const& e) const
+                {
+                    return true;
+                }
+                
+                Mesh & mesh;
+            };
         };
 
         void swap(UNode & lhs, UNode & rhs);
