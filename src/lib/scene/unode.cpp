@@ -97,7 +97,8 @@ namespace city
             auto fccmap = surface.add_property_map<Mesh::Face_index, std::size_t>("f:CC").first;
             auto cc =  CGAL::Polygon_mesh_processing::connected_components(
                 surface,
-                fccmap
+                fccmap,
+                CGAL::Polygon_mesh_processing::parameters::edge_is_constrained_map(EdgeConstraint(surface))
             );
             std::cout << name << " " << cc << std::endl;
         }

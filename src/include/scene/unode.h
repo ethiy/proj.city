@@ -269,21 +269,24 @@ namespace city
 
             struct EdgeConstraint: public boost::put_get_helper< bool, EdgeConstraint>
             {
+                EdgeConstraint(void)
+                    : mesh(nullptr)
+                {}
                 EdgeConstraint(Mesh & _mesh)
-                    : mesh(_mesh)
+                    : mesh(&_mesh)
                 {}
 
                 bool operator[](Edge_index const& edge) const
                 {
-                    auto h = mesh.halfedge(edge);
-                    return  !mesh.is_border(edge)
+                    auto h = mesh->halfedge(edge);
+                    return  !mesh->is_border(edge)
                             &&
-                            coplanar(mesh, mesh.face(h), mesh.face(mesh.opposite(h)))
+                            coplanar(*mesh, mesh->face(h), mesh->face(mesh->opposite(h)))
                             &&
-                            !open_coplanar_intersection(mesh, mesh.face(h), mesh.face(mesh.opposite(h)));
+                            !open_coplanar_intersection(*mesh, mesh->face(h), mesh->face(mesh->opposite(h)));
                 }
                 
-                Mesh & mesh;
+                Mesh const* mesh;
             };
         };
 
