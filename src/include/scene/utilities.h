@@ -15,8 +15,10 @@ namespace city
         Affine_transformation_3 reference_transform(Mesh const& mesh, Mesh::Face_index const& facet);
         
         Polygon local_transform(Affine_transformation_3 const& mapping, Mesh const& mesh, Mesh::Face_index const& facet);
+        Polygon local_transform(Mesh const& mesh, Mesh::Face_index const& facet);
 
         bool coplanar(Mesh const& mesh, Mesh::Face_index const& lhs, Mesh::Face_index const& rhs);
+        bool opposite_coplanar(Mesh const& mesh, Mesh::Face_index const& lhs, Mesh::Face_index const& rhs);
         bool open_coplanar_intersection(Mesh const& mesh, Mesh::Face_index const& lhs, Mesh::Face_index const& rhs);
     }
 }

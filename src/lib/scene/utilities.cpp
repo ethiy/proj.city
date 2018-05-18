@@ -30,8 +30,8 @@ namespace city
         }
         Affine_transformation_3 reference_transform(std::array<Vector_3, 3> const& reference_system)
         {
-            if(is_orthonormal_direct(reference_system))
-                throw std::runtime_error("The new reference system is not orthonormal and direct!");
+//            if(is_orthonormal_direct(reference_system))
+//                throw std::runtime_error("The new reference system is not orthonormal and direct!");
 
             return Affine_transformation_3(
                 reference_system.at(0).x(),
@@ -49,9 +49,8 @@ namespace city
         {
             auto i = target - source;
             i = i / std::sqrt(to_double(i.squared_length()));
-            if(CGAL::is_zero(k * i))
+            if(!CGAL::is_zero(k * i))
                 throw std::runtime_error("the normal must be orthogonal to the line formed by both points!");
-
             return reference_transform(
                 std::array<Vector_3, 3>{{
                     i,
@@ -72,11 +71,12 @@ namespace city
         Polygon local_transform(Affine_transformation_3 const& mapping, Mesh const& mesh, Mesh::Face_index const& facet)
         {
             std::vector<Point_2> transformed_points(mesh.degree(facet));
+            // std::cout << mesh.degree(facet) << std::endl;
             auto inserter = std::begin(transformed_points);
             for(auto const vertex : CGAL::vertices_around_face(mesh.halfedge(facet), mesh))
             {
                 auto p = mapping.transform(mesh.point(vertex));
-                std::cout << p << std::endl;
+                // std::cout << p << std::endl;
                 *inserter++ = Point_2(p.x(), p.y());
             }
             return Polygon(
@@ -84,6 +84,15 @@ namespace city
                 std::end(transformed_points)
             );
         }
+        Polygon local_transform(Mesh const& mesh, Mesh::Face_index const& facet)
+        {
+            return local_transform(
+                reference_transform(mesh, facet),
+                mesh,
+                facet
+            );
+        }
+
 
         bool coplanar(Mesh const& mesh, Mesh::Face_index const& lhs, Mesh::Face_index const& rhs)
         {
@@ -92,17 +101,32 @@ namespace city
                 CGAL::Polygon_mesh_processing::compute_face_normal(rhs, mesh)
             ) == CGAL::NULL_VECTOR;
         }
+        bool opposite_coplanar(Mesh const& mesh, Mesh::Face_index const& lhs, Mesh::Face_index const& rhs)
+        {
+            return  coplanar(mesh, lhs, rhs)
+                    &&
+                    CGAL::is_negative(
+                        CGAL::Polygon_mesh_processing::compute_face_normal(lhs, mesh)
+                        *
+                        CGAL::Polygon_mesh_processing::compute_face_normal(rhs, mesh)
+                    );
+        }
         bool open_coplanar_intersection(Mesh const& mesh, Mesh::Face_index const& lhs, Mesh::Face_index const& rhs)
         {
             if(!coplanar(mesh, lhs, rhs))
                 throw std::runtime_error("Both faces are not coplanar!");
 
-            auto tr = reference_transform(mesh, lhs);
             std::vector<Polygon_with_holes> intersections;
             intersections.reserve(1);
             CGAL::intersection(
-                local_transform(tr, mesh, lhs),
-                local_transform(tr, mesh, rhs),
+                local_transform(
+                    mesh,
+                    lhs
+                ),
+                local_transform(
+                    mesh,
+                    rhs
+                ),
                 std::back_inserter(intersections)
             );
             return !CGAL::is_zero(
