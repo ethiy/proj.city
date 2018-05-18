@@ -160,7 +160,7 @@ namespace city
                 {
                     return  !surface.is_border(surface.edge(halfedge))
                             &&
-                            coplanar(surface, surface.face(halfedge), surface.face(surface.opposite(halfedge)));
+                            opposite_coplanar(surface, surface.face(halfedge), surface.face(surface.opposite(halfedge)));
                 }
             );
         }
