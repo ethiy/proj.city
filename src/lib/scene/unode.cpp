@@ -103,7 +103,6 @@ namespace city
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             std::vector<Polyhedron::Facet_handle>  new_facets;
             std::vector<Polyhedron::Vertex_handle> new_vertices;
-            CGAL::Polygon_mesh_processing::refine(surface, CGAL::faces(surface), std::back_inserter(new_facets), std::back_inserter(new_vertices));
             if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             if(!surface.empty())
@@ -296,19 +295,22 @@ namespace city
                 halfedges_end(),
                 [this](Polyhedron::Halfedge & halfedge)
                 {
-                    bool joinable = !halfedge.is_border_edge();
-                    if(joinable)
-                    {
-                        joinable = (
-                            CGAL::cross_product(
-                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.facet(), surface),
-                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.opposite()->facet(), surface)
+                    return  !halfedge.is_border_edge()
+                            &&
+                            (
+                                CGAL::cross_product(
+                                    CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.facet(), surface),
+                                    CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.opposite()->facet(), surface)
+                                )
+                                ==
+                                CGAL::NULL_VECTOR
                             )
-                            ==
-                            CGAL::NULL_VECTOR
-                        );
-                    }
-                    return  joinable;
+                            &&
+                            CGAL::is_positive(
+                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.facet(), surface)
+                                *
+                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.opposite()->facet(), surface)
+                            );
                 }
             );
         }
