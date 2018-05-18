@@ -23,6 +23,7 @@ set(Algorithms_SRC
 set(Scene_SRC
     "${proj.city_SOURCE_DIR}/src/lib/scene/unode.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/scene/scene.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/scene/utilities.cpp"
 )
 set(IO_SRC
     "${proj.city_SOURCE_DIR}/src/lib/io/io.cpp"

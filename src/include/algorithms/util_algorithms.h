@@ -2,7 +2,6 @@
 
 #include <geometry_definitions.h>
 #include <shadow/mesh.h>
-#include <projection/face_projection.h>
 
 #include <ogr_geometry.h>
 
@@ -14,10 +13,6 @@ namespace city
 {
     /** Get the rotation transformation from a set of axis and angle couples*/
     Affine_transformation_3 rotation_transform(std::map<double, Vector_3> const& _rotations);
-
-    bool is_orthonormal_direct(std::array<Vector_3, 3> const& reference_system);
-    Affine_transformation_3 reference_transform(std::array<Vector_3, 3> const& reference_system);
-    Affine_transformation_3 reference_transform(Point_3 const& source, Point_3 const& target, Vector_3 const& k);
 
     /** Check points collinearity*/
     bool check_collinearity(std::vector<Point_2>::iterator first, std::vector<Point_2>::iterator last);
@@ -52,4 +47,6 @@ namespace city
     
     std::vector<double> edge_lengths(Polygon const& polygon);
     double circumference(Polygon const& polygon);
+
+    double area(Polygon_with_holes const& pol);
 }
