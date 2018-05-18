@@ -9,7 +9,6 @@
 #include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 #include <CGAL/Polygon_mesh_processing/bbox.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
-#include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
 #include <CGAL/Polygon_mesh_processing/corefinement.h>
 
@@ -160,14 +159,7 @@ namespace city
                 {
                     return  !surface.is_border(surface.edge(halfedge))
                             &&
-                            (
-                                CGAL::cross_product(
-                                    CGAL::Polygon_mesh_processing::compute_face_normal(surface.face(halfedge), surface),
-                                    CGAL::Polygon_mesh_processing::compute_face_normal(surface.face(surface.opposite(halfedge)), surface)
-                                )
-                                ==
-                                CGAL::NULL_VECTOR
-                            );
+                            coplanar(surface, surface.face(halfedge), surface.face(surface.opposite(halfedge)));
                 }
             );
         }

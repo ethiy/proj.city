@@ -5,6 +5,8 @@
 #include <shadow/point.h>
 #include <shadow/mesh.h>
 
+#include <scene/utilities.h>
+
 #include <io/Adjacency_stream/adjacency_stream.h>
 
 #include <boost/property_map/property_map.hpp>
@@ -271,9 +273,14 @@ namespace city
                     : mesh(_mesh)
                 {}
 
-                bool operator[](Edge_index const& e) const
+                bool operator[](Edge_index const& edge) const
                 {
-                    return true;
+                    auto h = mesh.halfedge(edge);
+                    return  !mesh.is_border(edge)
+                            &&
+                            coplanar(mesh, mesh.face(h), mesh.face(mesh.opposite(h)))
+                            &&
+                            !open_coplanar_intersection(mesh, mesh.face(h), mesh.face(mesh.opposite(h)));
                 }
                 
                 Mesh & mesh;
