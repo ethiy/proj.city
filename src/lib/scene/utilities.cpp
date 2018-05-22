@@ -13,6 +13,7 @@
 #include <CGAL/Boolean_set_operations_2.h>
 #include <CGAL/boost/graph/iterator.h>
 
+#include <iterator>
 #include <stdexcept>
 
 namespace city
@@ -63,7 +64,7 @@ namespace city
                     CGAL::cross_product(k, i),
                     k
                 }}
-            ) * Affine_transformation_3(CGAL::TRANSLATION, source - CGAL::ORIGIN);
+            ) * Affine_transformation_3(CGAL::TRANSLATION, CGAL::ORIGIN - source);
         }
         Affine_transformation_3 reference_transform(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& facet)
         {
@@ -74,18 +75,21 @@ namespace city
             );
         }
 
-        Polygon local_transform(Affine_transformation_3 const& mapping, Polyhedron const& polyhedron, Polyhedron::Facet_handle const& facet)
+        Polygon local_transform(Affine_transformation_3 const& mapping, Polyhedron const& polyhedron, Polyhedron::Facet_handle const& facet, bool const invert)
         {
             std::vector<Point_2> transformed_points(facet->facet_degree());
-            // std::cout << polyhedron.degree(facet) << std::endl;
+            std::cout << facet->facet_degree() << std::endl;
             auto inserter = std::begin(transformed_points);
             for(auto const vertex : CGAL::vertices_around_face(facet->halfedge(), polyhedron))
             {
                 auto p = mapping.transform(vertex->point());
-                // std::cout << p << std::endl;
+                std::cout << p << std::endl;
                 *inserter++ = Point_2(p.x(), p.y());
             }
-            return Polygon(
+            return invert? Polygon(
+                transformed_points.rbegin(),
+                transformed_points.rend()
+            ) : Polygon(
                 std::begin(transformed_points),
                 std::end(transformed_points)
             );
@@ -113,27 +117,36 @@ namespace city
         {
             return  coplanar(polyhedron, lhs, rhs)
                     &&
-                    CGAL::is_negative(
-                        CGAL::Polygon_mesh_processing::compute_face_normal(lhs, polyhedron)
-                        *
-                        CGAL::Polygon_mesh_processing::compute_face_normal(rhs, polyhedron)
-                    );
+                    opposite_normals(polyhedron, lhs, rhs);
+        }
+        bool opposite_normals(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs)
+        {
+            return CGAL::is_negative(
+                CGAL::Polygon_mesh_processing::compute_face_normal(lhs, polyhedron)
+                *
+                CGAL::Polygon_mesh_processing::compute_face_normal(rhs, polyhedron)
+            );
         }
         bool open_coplanar_intersection(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs)
         {
+            std::cout << "Faces: " << lhs->id() << " " << rhs->id() << std::endl;
             if(!coplanar(polyhedron, lhs, rhs))
                 throw std::runtime_error("Both faces are not coplanar!");
 
             std::vector<Polygon_with_holes> intersections;
             intersections.reserve(1);
+            auto local_transformer = reference_transform(polyhedron, lhs);
             CGAL::intersection(
                 local_transform(
+                    local_transformer,
                     polyhedron,
                     lhs
                 ),
                 local_transform(
+                    local_transformer,
                     polyhedron,
-                    rhs
+                    rhs,
+                    opposite_normals(polyhedron, lhs, rhs)
                 ),
                 std::back_inserter(intersections)
             );
@@ -157,7 +170,7 @@ namespace city
             CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
             if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
                 CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            // CGAL::Polygon_mesh_processing::stitch_borders(surface);
             return surface;
         }
     }
