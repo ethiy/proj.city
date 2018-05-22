@@ -1,14 +1,12 @@
 #include <scene/unode.h>
 
-#include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
-#include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
-#include <CGAL/Polygon_mesh_processing/orientation.h>
-#include <CGAL/Polygon_mesh_processing/stitch_borders.h>
+#include <scene/utilities.h>
+
 #include <CGAL/Polygon_mesh_processing/bbox.h>
-#include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
 #include <CGAL/Polygon_mesh_processing/measure.h>
-#include <CGAL/Polygon_mesh_processing/refine.h>
+#include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
+#include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 
 #include <CGAL/IO/Polyhedron_iostream.h>
 #include <CGAL/IO/Nef_polyhedron_iostream_3.h>
@@ -58,11 +56,7 @@ namespace city
                     std::vector<Point_3> points = mesh.get_cgal_points();
                     std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
 
-                    Polyhedron polyhedron;
-
-                    CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
-                    CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, polyhedron);
-                    CGAL::Polygon_mesh_processing::stitch_borders(polyhedron);
+                    auto polyhedron = polyhedron_from_polygon_soup(points, polygons);
 
                     std::vector<Polyhedron::Facet_handle>  patch_facets;
                     for(auto it = polyhedron.halfedges_begin(); it != polyhedron.halfedges_end(); ++it)
@@ -70,9 +64,6 @@ namespace city
                             CGAL::Polygon_mesh_processing::triangulate_hole(polyhedron, it, std::back_inserter(patch_facets));
 
                     std::cout << patch_facets.size() << std::endl;
-
-                    if(CGAL::is_closed(polyhedron) && !CGAL::Polygon_mesh_processing::is_outward_oriented(polyhedron))
-                        CGAL::Polygon_mesh_processing::reverse_face_orientations(polyhedron);
 
                     return polyhedron;
                 }
@@ -94,33 +85,25 @@ namespace city
             shadow::Point const& _reference_point,
             unsigned short const _epsg_index
         )
-            : name(mesh.get_name()), reference_point(_reference_point), epsg_index(_epsg_index)
-        {
-            std::vector<Point_3> points = mesh.get_cgal_points();
-            std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
-
-            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
-            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
-            std::vector<Polyhedron::Facet_handle>  new_facets;
-            std::vector<Polyhedron::Vertex_handle> new_vertices;
-            if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
-                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            if(!surface.empty())
-                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
-        }
+            : UNode(mesh.get_name(), mesh.get_cgal_points(), mesh.get_cgal_faces(), _reference_point, _epsg_index)
+        {}
         UNode::UNode(
             std::string const& building_id,
-            std::vector<Point_3> & points,
-            std::vector< std::vector<std::size_t> > & polygons,
+            std::vector<Point_3> points,
+            std::vector< std::vector<std::size_t> > polygons,
             shadow::Point const& _reference_point,
             unsigned short const _epsg_index
         )
-            :name(building_id), reference_point(_reference_point), epsg_index(_epsg_index)
+            : name(building_id),
+              reference_point(_reference_point),
+              epsg_index(_epsg_index),
+              surface(
+                    polyhedron_from_polygon_soup(
+                        points,
+                        polygons
+                    )
+              )
         {
-            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
-            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
-            if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
-                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
         }
@@ -297,20 +280,9 @@ namespace city
                 {
                     return  !halfedge.is_border_edge()
                             &&
-                            (
-                                CGAL::cross_product(
-                                    CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.facet(), surface),
-                                    CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.opposite()->facet(), surface)
-                                )
-                                ==
-                                CGAL::NULL_VECTOR
-                            )
+                            coplanar(surface, halfedge.facet(), halfedge.opposite()->facet())
                             &&
-                            CGAL::is_positive(
-                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.facet(), surface)
-                                *
-                                CGAL::Polygon_mesh_processing::compute_face_normal(halfedge.opposite()->facet(), surface)
-                            );
+                            !open_coplanar_intersection(surface, halfedge.facet(), halfedge.opposite()->facet());
                 }
             );
         }
@@ -375,10 +347,7 @@ namespace city
         UNode & UNode::stitch_borders(void)
         {
             CGAL::Polygon_mesh_processing::stitch_borders(surface);
-            if (CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
-                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
-            
-                return *this;
+            return *this;
         }
 
         Point_3 UNode::centroid(UNode::Facet_const_handle facet) const

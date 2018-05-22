@@ -3,7 +3,13 @@
 #include <algorithms/util_algorithms.h>
 
 #include <CGAL/number_utils.h>
+
+#include <CGAL/Polygon_mesh_processing/orient_polygon_soup.h>
+#include <CGAL/Polygon_mesh_processing/polygon_soup_to_polygon_mesh.h>
+#include <CGAL/Polygon_mesh_processing/orientation.h>
+#include <CGAL/Polygon_mesh_processing/stitch_borders.h>
 #include <CGAL/Polygon_mesh_processing/compute_normal.h>
+
 #include <CGAL/Boolean_set_operations_2.h>
 #include <CGAL/boost/graph/iterator.h>
 
@@ -142,6 +148,17 @@ namespace city
                     }
                 )
             );
+        }
+
+        Polyhedron polyhedron_from_polygon_soup(std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons)
+        {
+            Polyhedron surface;
+            CGAL::Polygon_mesh_processing::orient_polygon_soup(points, polygons);
+            CGAL::Polygon_mesh_processing::polygon_soup_to_polygon_mesh(points, polygons, surface);
+            if(CGAL::is_closed(surface) && !CGAL::Polygon_mesh_processing::is_outward_oriented(surface))
+                CGAL::Polygon_mesh_processing::reverse_face_orientations(surface);
+            CGAL::Polygon_mesh_processing::stitch_borders(surface);
+            return surface;
         }
     }
 }

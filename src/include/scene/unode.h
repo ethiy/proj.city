@@ -37,8 +37,8 @@ namespace city
             );
             UNode(
                 std::string const& node_id,
-                std::vector<Point_3> & points,
-                std::vector< std::vector<std::size_t> > & polygons,
+                std::vector<Point_3> points,
+                std::vector< std::vector<std::size_t> > polygons,
                 shadow::Point const& _reference_point=shadow::Point(),
                 unsigned short const _epsg_index=2154
             );
