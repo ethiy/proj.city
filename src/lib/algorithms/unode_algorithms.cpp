@@ -75,9 +75,7 @@ namespace city
             unode = unode.join_facet(halfedge_handle);
             halfedge_handle = unode.prunable();
         }
-
-        unode.stitch_borders().set_face_ids();
-        
+        unode.stitch_borders();
         return unode;
     }
 
