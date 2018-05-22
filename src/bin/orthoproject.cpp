@@ -15,19 +15,19 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> --input-format=<input_frmt> [--prune --graphs --terrain] [save --scene --labels] [rasterize --pixel-size=<size>]
+      orthoproject <scene> --input-format=<input_frmt> [--prune --read-xml --graphs --terrain] [save --scene --labels] [rasterize --pixel-size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
       -h --help                             Show this screen.
       --version                             Show version.
-      --prune                               Prune building faces.
-      --cache                               Save buildings.
       --input-format=<input_frmt>           Specify input format.
+      --prune                               Prune building faces.
+      --read-xml                            Read using XML scene tree file.
       --graphs                              Save the building facets dual graph.
+      --terrain                             Taking care of terrain.
       --scene                               Sum and save the scene projection.
       --labels                              Save vector projections with error fields.
-      --terrain                             Taking care of terrain.
       --pixel-size=<size>                   Pixel size [default: 1].
 )";
 
@@ -38,7 +38,7 @@ struct Arguments
         boost::filesystem::path input_path;
         std::string input_format;
         bool prune = false;
-        bool cache = false;
+        bool xml = false;
         bool graphs = false;
         bool terrain = false;
     };
@@ -70,7 +70,7 @@ struct Arguments
         scene_args.input_path = docopt_args.at("<scene>").asString();
         scene_args.input_format = docopt_args.at("--input-format").asString();
         scene_args.prune = docopt_args.at("--prune").asBool();
-        scene_args.cache = docopt_args.at("--cache").asBool();
+        scene_args.xml = docopt_args.at("--read-xml").asBool();
         scene_args.graphs = docopt_args.at("--graphs").asBool();
         scene_args.terrain = docopt_args.at("--terrain").asBool();
         
@@ -100,7 +100,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
        << "  Input path: " << arguments.scene_args.input_path << std::endl
        << "  Input format: " << arguments.scene_args.input_format << std::endl
        << "  Pruning faces: " << arguments.scene_args.prune << std::endl
-       << "  Caching buildings: " << arguments.scene_args.cache << std::endl
+       << "  Read Scene tree: " << arguments.scene_args.xml << std::endl
        << "  Taking care of terrain: " << arguments.scene_args.terrain << std::endl
        << "  Saving dual graphs: " << arguments.scene_args.graphs << std::endl
        << "  Saving: " << arguments.save_args.saving() << std::endl
@@ -118,7 +118,8 @@ city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args)
     auto scene = city::io::SceneHandler(
         scene_args.input_path,
         std::map<std::string, bool>{{"read", true}},
-        scene_args.input_format
+        scene_args.input_format,
+        scene_args.xml
     ).read();
 
     if(scene_args.prune)
