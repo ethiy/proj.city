@@ -1,6 +1,7 @@
 #include <algorithms/util_algorithms.h>
 
 #include <CGAL/centroid.h>
+#include <CGAL/number_utils.h>
 
 #include <iterator>
 
@@ -9,16 +10,13 @@ namespace city
     Affine_transformation_3 rotation_transform(const std::map<double, Vector_3> & _rotations)
     {
         std::vector<Affine_transformation_3> rotations;
-        double norm(0);
-        Vector_3 u(CGAL::NULL_VECTOR);
         std::transform(
             std::begin(_rotations),
             std::end(_rotations),
             std::begin(rotations),
-            [norm, &u](const std::pair<double, Vector_3> & angle_axis) mutable
+            [](const std::pair<double, Vector_3> & angle_axis)
             {
-                norm = std::sqrt(to_double(angle_axis.second * angle_axis.second));
-                u = angle_axis.second / norm;
+                auto u = angle_axis.second / std::sqrt(to_double(angle_axis.second.squared_length()));
                 return Affine_transformation_3(
                         std::cos(angle_axis.first) + (1 - std::cos(angle_axis.first)) * std::pow(to_double(u.x()), 2.), 
                         (1 - std::cos(angle_axis.first)) * to_double(u.x()) * to_double(u.y()) - std::sin(angle_axis.first) * to_double(u.z()), 
@@ -37,7 +35,7 @@ namespace city
             std::begin(rotations),
             std::end(rotations),
             Affine_transformation_3(CGAL::IDENTITY),
-            [](Affine_transformation_3 & result, const Affine_transformation_3 & rotation)
+            [](Affine_transformation_3 const& result, Affine_transformation_3 const& rotation)
             {
                 return result * rotation;
             }
@@ -148,6 +146,18 @@ namespace city
                                 edge.squared_length()
                             )
                         );
+            }
+        );
+    }
+    double area(Polygon_with_holes const& pol)
+    {
+        return  std::accumulate(
+            pol.holes_begin(),
+            pol.holes_end(),
+            to_double(pol.outer_boundary().area()),
+            [](double area, Polygon const& hole)
+            {
+                return area - to_double(hole.area());
             }
         );
     }

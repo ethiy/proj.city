@@ -2,7 +2,6 @@
 
 #include <geometry_definitions.h>
 #include <shadow/mesh.h>
-#include <projection/face_projection.h>
 
 #include <ogr_geometry.h>
 
@@ -48,4 +47,6 @@ namespace city
     
     std::vector<double> edge_lengths(Polygon const& polygon);
     double circumference(Polygon const& polygon);
+
+    double area(Polygon_with_holes const& pol);
 }

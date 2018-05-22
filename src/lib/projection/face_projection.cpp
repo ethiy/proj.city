@@ -185,15 +185,7 @@ namespace city
         }
         double FacePrint::area(void) const
         {
-            return std::accumulate(
-                        border.holes_begin(),
-                        border.holes_end(),
-                        to_double(border.outer_boundary().area()),
-                        [](double holes_area, Polygon const& hole)
-                        {
-                            return holes_area - to_double(hole.area());
-                        }
-                    );
+            return ::city::area(border);
         }
         double FacePrint::circumference(void) const
         {
