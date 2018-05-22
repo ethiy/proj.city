@@ -125,7 +125,7 @@ namespace city
                 CGAL::Polygon_mesh_processing::compute_face_normal(rhs, polyhedron)
             );
         }
-        bool open_coplanar_intersection(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs)
+        std::vector<Polygon_with_holes> open_coplanar_intersection(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs)
         {
             if(!coplanar(polyhedron, lhs, rhs))
                 throw std::runtime_error("Both faces are not coplanar!");
@@ -147,6 +147,11 @@ namespace city
                 ),
                 std::back_inserter(intersections)
             );
+            return intersections;
+        }
+        bool do_open_coplanar_intersect(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs)
+        {
+            auto intersections = open_coplanar_intersection(polyhedron, lhs, rhs);
             return !CGAL::is_zero(
                 std::accumulate(
                     std::begin(intersections),
