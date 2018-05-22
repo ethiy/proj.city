@@ -106,6 +106,7 @@ namespace city
         {
             if(!surface.empty())
                 bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
+            set_face_ids();
         }
         UNode::~UNode(void)
         {}
