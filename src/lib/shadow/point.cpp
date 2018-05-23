@@ -100,6 +100,11 @@ namespace city
             return Bbox(*this);
         }
 
+        Point_3 Point::to_cgal(void) const
+        {
+            return Point_3(x(), y(), z());
+        }
+
         Point operator +(Point const& lhs, Vector const& rhs)
         {
             return Point(lhs.coordinates + rhs.data());

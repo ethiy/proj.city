@@ -249,7 +249,7 @@ namespace city
         }
 
 
-        bool operator==(Face const& lhs, Face const& rhs)
+        bool operator ==(Face const& lhs, Face const& rhs)
         {
             bool result(lhs.degree() == rhs.degree());
             if(result)
@@ -279,7 +279,7 @@ namespace city
         }
         bool operator!=(Face const& lhs, Face const& rhs)
         {
-            return !operator==(rhs, lhs);
+            return !operator ==(rhs, lhs);
         }
 
         void swap(Face & lhs, Face &rhs)

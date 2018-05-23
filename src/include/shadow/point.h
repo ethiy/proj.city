@@ -51,6 +51,8 @@ namespace city
             Point & operator +=(Vector const& translation);
 
             Bbox bbox(void) const;
+
+            Point_3 to_cgal(void) const;
         private:
             std::valarray<double> coordinates;
 

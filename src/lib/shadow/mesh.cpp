@@ -213,7 +213,7 @@ namespace city
                 std::begin(cgal_points),
                 [](Point const& point)
                 {
-                    return Point_3(point.x(), point.y(), point.z());
+                    return point.to_cgal();
                 }
             );
             return cgal_points;
