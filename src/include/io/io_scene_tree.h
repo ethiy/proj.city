@@ -30,7 +30,7 @@ namespace city
         private:
             tinyxml2::XMLDocument scene_tree;
 
-            void set_bbox(tinyxml2::XMLNode* root, shadow::Bbox const& bbox);
+            void set_bbox(tinyxml2::XMLNode* root, shadow::Point const& pivot, shadow::Bbox const& bbox);
             void set_pivot(tinyxml2::XMLNode* root, shadow::Point const& pivot);
             void set_epsg_index(tinyxml2::XMLNode* root, unsigned short const epsg_index);
             void set_building_ids(tinyxml2::XMLNode* root, std::vector<std::string> const& building_ids);
