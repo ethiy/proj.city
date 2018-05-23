@@ -225,6 +225,8 @@ namespace city
             */
             Plane_const_iterator planes_cend(void) const noexcept;
 
+            bool empty(void) const;
+
             /**
             * Compute the centroid of a urban node facet
             * @param facet a urban node facet
@@ -250,7 +252,7 @@ namespace city
             */
             double circumference(UNode::Facet_const_handle facet) const;
             
-            UNode & set_face_ids(void);
+            UNode& set_face_ids(void);
 
             /** 
             * Finds a joinable halfedge.
@@ -258,18 +260,7 @@ namespace city
             */
             UNode::Halfedge_iterator prunable(void);
 
-            /** 
-            * Finds all joinable halfedges.
-            * @param facet a urban node facet
-            * @return a vector of pruning halfedge handles for the facet
-            */
-            std::vector<UNode::Halfedge_handle> combinable(Facet & facet) const;
-
-            /** 
-            * Clusters all facets into prunable facet bags.
-            * @return a vector of all pruning halfedges
-            */
-            std::vector<UNode::Halfedge_handle> pruning_halfedges(void);
+            UNode& prune(void);
 
             /** 
             * Join prunable halfedge
@@ -293,6 +284,8 @@ namespace city
             * @return the adjacency matrix of facets
             */
             std::vector<bool> facet_adjacency_matrix(void) const;
+
+            UNode& transform(const Affine_transformation_3 & affine_transformation);
         private:
             /** Node name */
             std::string name;
@@ -331,5 +324,40 @@ namespace city
         };
 
         void swap(UNode & lhs, UNode & rhs);
+
+        /*! Computes border length*/
+        double border_length(UNode const& unode);
+
+        /*! Applies affine transformations to unodes*/
+        UNode & affine_transform(UNode & unode, const Affine_transformation_3 &);
+        /*! Translate unodes*/
+        UNode & translate(UNode & unode, const Vector_3 &);
+        /*! Scale unodes*/
+        UNode & scale(UNode & unode, double);
+        /*! Rotate unodes*/
+        UNode & rotate(UNode & unode, const Vector_3 &, double);
+        /*! Rotate unodes*/
+        UNode & rotate(UNode & unode, const std::map<double, Vector_3> &);
+
+        /**
+         * Prunes surfaces of unode.
+         * @param unode the surface to prune
+         * @return the surface with pruned facets
+         */
+        UNode & prune(UNode & unode);
+
+        /**
+         * Computes the unode surface area
+         * @param unode surface of which the area is computed
+         * @return the surface area
+        */
+        double area(UNode const& unode);
+
+        /**
+         * Computes the unode surface total edge length
+         * @param unode surface of which the total edge length is computed
+         * @return the unode surface total edge length
+        */
+        double total_edge_length(UNode const& unode);
     }
 }

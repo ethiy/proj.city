@@ -14,7 +14,6 @@ set(Projection_SRC
     "${proj.city_SOURCE_DIR}/src/lib/projection/utilities.cpp"
 )
 set(Algorithms_SRC
-    "${proj.city_SOURCE_DIR}/src/lib/algorithms/unode_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/algorithms/util_algorithms.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/algorithms/test_utils.cpp"
     "${proj.city_SOURCE_DIR}/src/lib/algorithms/scene_algorithms.cpp"

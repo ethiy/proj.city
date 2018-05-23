@@ -1,5 +1,6 @@
 #include <scene/unode.h>
 
+#include <algorithms/util_algorithms.h>
 #include <scene/utilities.h>
 
 #include <CGAL/Polygon_mesh_processing/bbox.h>
@@ -15,7 +16,17 @@
 #include <CGAL/IO/Polyhedron_geomview_ostream.h>
 #endif // CGAL_USE_GEOMVIEW
 
+#include <CGAL/aff_transformation_tags.h>
+#include <CGAL/squared_distance_3.h>
+
+#include <stdexcept>
+
 #include <vector>
+#include <iterator>
+#include <algorithm>
+#include <numeric>
+
+#include <cmath>
 
 
 namespace city
@@ -272,6 +283,11 @@ namespace city
             return surface.planes_end();
         }
 
+        bool UNode::empty(void) const
+        {
+            return surface.empty();
+        }
+
         UNode::Halfedge_iterator UNode::prunable(void)
         {
             return std::find_if(
@@ -287,58 +303,18 @@ namespace city
                 }
             );
         }
-        std::vector<UNode::Halfedge_handle> UNode::combinable(Facet & facet) const
+        UNode& UNode::prune(void)
         {
-            std::vector<UNode::Halfedge_handle> combining_edges;
-            combining_edges.reserve(facet.facet_degree());
+            auto halfedge_handle = prunable();
 
-            Polyhedron::Halfedge_around_facet_circulator facet_circulator = facet.facet_begin();
-            do
+            while(halfedge_handle != halfedges_end())
             {
-                if(!facet_circulator->is_border_edge())
-                {
-                    Point_3 A(facet_circulator->vertex()->point()),
-                            B(facet_circulator->next()->vertex()->point()),
-                            C(facet_circulator->next()->next()->vertex()->point()),
-                            D(facet_circulator->opposite()->next()->vertex()->point());
-                    if(CGAL::determinant(B - A, C - A, D - A) == Kernel::FT(0))
-                        combining_edges.push_back(facet_circulator->opposite());
-                }
-            }while(++facet_circulator != facet.facet_begin());
+                join_facet(halfedge_handle);
+                halfedge_handle = prunable();
+            }
+            stitch_borders();
 
-            return combining_edges;
-        }
-        std::vector<UNode::Halfedge_handle> UNode::pruning_halfedges(void)
-        {
-            std::vector<UNode::Halfedge_handle> combining_edges;
-
-            std::for_each(
-                facets_begin(),
-                facets_end(),
-                [&combining_edges, this](Facet & facet)
-                {
-                    auto buffer = combinable(facet);
-                    std::copy_if(
-                        std::begin(buffer),
-                        std::end(buffer),
-                        std::back_inserter(combining_edges),
-                        [&combining_edges](UNode::Halfedge_handle const& h)
-                        {
-                            return std::none_of(
-                                std::begin(combining_edges),
-                                std::end(combining_edges),
-                                [&h](UNode::Halfedge_handle const& present)
-                                {
-                                    return  (present->vertex()->point() == h->vertex()->point() && present->opposite()->vertex()->point() == h->opposite()->vertex()->point())
-                                            ||
-                                            (present->opposite()->vertex()->point() == h->vertex()->point() && present->vertex()->point() == h->opposite()->vertex()->point());
-                                }
-                            );
-                        }
-                    );
-                }
-            );
-            return combining_edges;
+            return *this;
         }
         UNode & UNode::join_facet(UNode::Halfedge_handle & h)
         {
@@ -470,6 +446,25 @@ namespace city
             return matrix;
         }
 
+        UNode& UNode::transform(const Affine_transformation_3 & affine_transformation)
+        {
+            std::transform(
+                points_begin(),
+                points_end(),
+                points_begin(),
+                [& affine_transformation](Point_3 & point)
+                {
+                    return affine_transformation.transform(point);
+                }
+            );
+            reference_point = shadow::Point(
+                affine_transformation.transform(
+                    reference_point.to_cgal()
+                )
+            );
+            return *this;
+        }
+
         std::ostream & operator <<(std::ostream &os, UNode const& unode)
         {
             os  << "# Name: " << unode.name << std::endl
@@ -506,6 +501,90 @@ namespace city
         void swap(UNode & lhs, UNode & rhs)
         {
             lhs.swap(rhs);
+        }
+
+        double border_length(UNode const& unode)
+        {
+            return std::accumulate(
+                unode.border_halfedges_begin(),
+                unode.halfedges_end(),
+                .0,
+                [](double & length, const Polyhedron::Halfedge & halfedge)
+                {
+                    return length + std::sqrt(to_double(Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point()) * Vector_3(halfedge.next()->vertex()->point(), halfedge.vertex()->point())));
+                }
+            );
+        }
+
+        UNode& affine_transform(UNode & unode, const Affine_transformation_3 & affine_transformation)
+        {
+            unode.transform(affine_transformation);
+            return unode;
+        }
+
+        UNode& translate(UNode & unode, const Vector_3 & offset)
+        {
+            Affine_transformation_3 translation(CGAL::TRANSLATION, offset);
+            return affine_transform(unode, translation);
+        }
+
+        UNode& scale(UNode & unode, double scale)
+        {
+            Affine_transformation_3 scaling(CGAL::SCALING, scale);
+            return affine_transform(unode, scaling);
+        }
+
+        UNode& rotate(UNode & unode, const Vector_3 & axis, double angle)
+        {
+            std::map<double, Vector_3> _rotation{{angle, axis}};
+            Affine_transformation_3 rotation(rotation_transform(_rotation));
+            return affine_transform(unode, rotation);
+        }
+
+        UNode& rotate(UNode & unode, const std::map<double, Vector_3> & _rotations)
+        {
+            Affine_transformation_3 rotation(rotation_transform(_rotations));
+            return affine_transform(unode, rotation);
+        }
+
+        UNode& prune(UNode & unode)
+        {
+            return unode.prune();
+        }
+
+        double area(UNode const& unode)
+        {
+            return std::accumulate(
+                unode.facets_begin(),
+                unode.facets_end(),
+                .0,
+                [&unode](double area, UNode::Facet const& facet)
+                {
+                    return area + unode.area(facet.halfedge()->facet());
+                }
+            );
+        }
+
+        double total_edge_length(UNode const& unode)
+        {
+            return std::accumulate(
+                unode.halfedges_begin(),
+                unode.halfedges_end(),
+                .0,
+                [](double total_length, Polyhedron::Halfedge const& halfedge)
+                {
+                    return  total_length
+                            +
+                            std::sqrt(
+                                to_double(
+                                    CGAL::squared_distance(
+                                        halfedge.vertex()->point(),
+                                        halfedge.opposite()->vertex()->point()
+                                    )
+                                )
+                            );
+                }
+            );
         }
     }
 }
