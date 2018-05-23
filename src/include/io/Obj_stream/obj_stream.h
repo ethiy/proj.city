@@ -245,9 +245,11 @@ namespace city
             {
                 std::vector<shadow::Face> object_faces(number_of_facets);
 
+                using size_type = std::vector<std::string>::iterator::difference_type;
+
                 std::transform(
-                    std::next(std::begin(lines), static_cast<long>(index)),
-                    std::next(std::begin(lines), static_cast<long>(index) + static_cast<long>(number_of_facets)),
+                    std::next(std::begin(lines), static_cast<size_type>(index)),
+                    std::next(std::begin(lines), static_cast<size_type>(index) + static_cast<size_type>(number_of_facets)),
                     std::begin(object_faces),
                     [&index_map, this](std::string const& facet_line)
                     {

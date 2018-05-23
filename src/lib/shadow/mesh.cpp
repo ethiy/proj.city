@@ -265,10 +265,12 @@ namespace city
                 points.insert(std::end(points), std::begin(other.points), std::end(other.points));
                 faces.insert(std::end(faces), std::begin(other.faces), std::end(other.faces));
 
+                using size_type = std::vector<Face>::iterator::difference_type;
+
                 std::transform(
-                    std::next(std::begin(faces), static_cast<long>(shift)),
+                    std::next(std::begin(faces), static_cast<size_type>(shift)),
                     std::end(faces),
-                    std::next(std::begin(faces), static_cast<long>(shift)),
+                    std::next(std::begin(faces), static_cast<size_type>(shift)),
                     [diff](Face & face)
                     {
                         return face.offset(diff);

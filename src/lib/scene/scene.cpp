@@ -1,7 +1,6 @@
 #include <scene/scene.h>
 
 #include <algorithms/util_algorithms.h>
-#include <algorithms/unode_algorithms.h>
 
 namespace city
 {
@@ -165,7 +164,7 @@ namespace city
             lhs.swap(rhs);
         }
 
-        Scene & Scene::prune(bool const _terrain)
+        Scene& Scene::prune(bool const _terrain)
         {
             std::transform(
                 std::begin(buildings),
@@ -173,13 +172,63 @@ namespace city
                 std::begin(buildings),
                 [](scene::UNode & building)
                 {
-                    return ::city::prune(building);
+                    return building.prune();
                 }
             );
             if(_terrain)
-                terrain = ::city::prune(terrain);
+                terrain = terrain.prune();
 
             return *this;
+        }
+
+        bool Scene::empty(void) const noexcept
+        {
+            return buildings.empty() && terrain.empty();
+        }
+
+        Scene& Scene::operator +=(Scene const& other)
+        {
+            if(empty())
+            {
+                *this = operator =(other);
+            }
+            else
+            {
+                if(epsg_index != other.epsg_index)
+                    throw std::logic_error("Not yet implemented");
+
+                buildings.insert(std::begin(buildings), std::begin(other.buildings), std::end(other.buildings));
+                
+                std::transform(
+                    std::begin(buildings),
+                    std::next(
+                        std::begin(buildings),
+                        static_cast<std::vector<UNode>::iterator::difference_type>(other.buildings.size())
+                    ),
+                    std::begin(buildings),
+                    [this, &other](UNode & building)
+                    {
+                        return translate(building, pivot.to_cgal() - other.pivot.to_cgal());
+                    }
+                );
+                auto o_terrain = other.terrain;
+                terrain = UNode(
+                    shadow::Mesh(terrain)
+                    +
+                    shadow::Mesh(
+                        translate(o_terrain, pivot.to_cgal() - other.pivot.to_cgal())
+                    ),
+                    terrain.get_reference_point(),
+                    terrain.get_epsg()
+                );
+            }
+            return *this;
+        }
+
+        Scene operator +(Scene const& lhs, Scene const& rhs)
+        {
+            auto result = lhs;
+            return result += rhs;
         }
     }
 

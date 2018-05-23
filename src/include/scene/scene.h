@@ -123,7 +123,11 @@ namespace city
 
             std::size_t size(void) const noexcept;
 
-            Scene & prune(bool const terrain);
+            bool empty(void) const noexcept;
+
+            Scene& prune(bool const terrain);
+
+            Scene& operator +=(Scene const& other);
         private:
             /** Pivot */
             city::shadow::Point pivot;
@@ -142,6 +146,8 @@ namespace city
          @see void swap(Scene & other);
          */
         void swap(Scene & lhs, Scene & rhs);
+
+        Scene operator +(Scene const& lhs, Scene const& rhs);
     }
 
     scene::Scene & prune(scene::Scene & scene, bool const terrain = false);
