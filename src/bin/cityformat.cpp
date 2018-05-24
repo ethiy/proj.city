@@ -10,7 +10,7 @@ static const char USAGE[]=
 R"(cityformat.
 
     Usage:
-      cityformat output --output-format=<output_format> <output_path> [--graphs --write-xml] <scene>... --input-format=<input_frmt> [--read-xml --prune --terrain]
+      cityformat <scene>... --input-format=<input_frmt> [--read-xml --prune --terrain] --output=<output_path> --output-format=<output_format> [--graphs --write-xml] 
       cityformat --formats
       cityformat (-h | --help)
       cityformat --version
@@ -22,8 +22,9 @@ R"(cityformat.
       --input-format=<input_frmt>           Specify input format.
       --graphs                              Save the building facets dual graph.
       --terrain                             Taking care of terrain.
-      --write-xml                           Write XML scene tree file.
+      --output=<output_path>                Specify output path.
       --output-format=<output_frmt>         Specify output format.
+      --write-xml                           Write XML scene tree file.
       --formats                             Give all possible formats.
 )";
 
@@ -37,7 +38,7 @@ struct Arguments
         bool prune = false;
         bool terrain = false;
     };
-    struct SaveArguments
+    struct OuputArguments
     {
         boost::filesystem::path output_path;
         bool xml = true;
@@ -68,7 +69,7 @@ struct Arguments
             scene_args.prune = docopt_args.at("--prune").asBool();
             scene_args.terrain = docopt_args.at("--terrain").asBool();
             
-            save_args.output_path = docopt_args.at("<output_path>").asString();
+            save_args.output_path = docopt_args.at("--output").asString();
             save_args.xml = docopt_args.at("--write-xml").asBool();
             save_args.graphs = docopt_args.at("--graphs").asBool();
             save_args.output_format = docopt_args.at("--output-format").asString();
@@ -81,7 +82,7 @@ struct Arguments
 
     bool formats;
     SceneArguments scene_args;
-    SaveArguments save_args;
+    OuputArguments save_args;
 };
 
 inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
@@ -93,7 +94,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
         os << "Arguments:" << std::endl
            << "  Input paths: " << std::endl;
         for(auto const& path : arguments.scene_args.input_paths)
-            os << "  " << path.string() << std::endl;
+            os << "    " << path.string() << std::endl;
         os << "  Input format: " << arguments.scene_args.input_format << std::endl
            << "  Read Scene tree: " << arguments.scene_args.xml << std::endl
            << "  Pruning faces: " << arguments.scene_args.prune << std::endl
@@ -106,7 +107,7 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
     return os;
 }
 
-city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::SaveArguments const& save_args)
+city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::OuputArguments const& save_args)
 {
     auto scene = std::accumulate(
         std::begin(scene_args.input_paths),
