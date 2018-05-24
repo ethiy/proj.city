@@ -1,6 +1,6 @@
 #include <config.h>
 
-#include <urban.h>
+#include <city.h>
 
 #include <docopt.h>
 
@@ -106,6 +106,37 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
     return os;
 }
 
+city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::SaveArguments const& save_args)
+{
+    auto scene = std::accumulate(
+        std::begin(scene_args.input_paths),
+        std::end(scene_args.input_paths),
+        city::scene::Scene(),
+        [&scene_args](city::scene::Scene const& whole_scene, boost::filesystem::path const& scene_path)
+        {
+            return  whole_scene
+                    +
+                    city::io::SceneHandler(
+                        scene_path,
+                        std::map<std::string, bool>{{"read", true}},
+                        scene_args.input_format,
+                        scene_args.xml
+                    ).read();
+        }
+    );
+
+    if(scene_args.prune)
+        scene = scene.prune(scene_args.terrain);
+    
+    if(save_args.graphs)
+        city::save_building_duals(
+            save_args.output_path.parent_path(),
+            scene
+        );
+    
+    return scene;
+}
+
 int main(int argc, const char** argv)
 {
     try
@@ -121,52 +152,17 @@ int main(int argc, const char** argv)
         std::cout << std::boolalpha << arguments << std::endl;
 
         if(arguments.formats)
-        {
-            std::cout << "Possible formats are: ";
-            std::copy(
-                std::begin(city::io::SceneHandler::supported_formats),
-                std::prev(std::end(city::io::SceneHandler::supported_formats)),
-                std::ostream_iterator<std::string>(std::cout, ", ")
-            );
-            std::cout << city::io::SceneHandler::supported_formats.back() << std::endl;
-        }
+            city::print_possible_scene_formats();
         else
-        {
-            auto scene = std::accumulate(
-                std::begin(arguments.scene_args.input_paths),
-                std::end(arguments.scene_args.input_paths),
-                city::scene::Scene(),
-                [&arguments](city::scene::Scene const& whole_scene, boost::filesystem::path const& scene_path)
-                {
-                    return  whole_scene
-                            +
-                            city::io::SceneHandler(
-                                scene_path,
-                                std::map<std::string, bool>{{"read", true}},
-                                arguments.scene_args.input_format,
-                                arguments.scene_args.xml
-                            ).read();
-                }
-            );
-
-            if(arguments.scene_args.prune)
-                scene = scene.prune(arguments.scene_args.terrain);
-            
-            if(arguments.save_args.graphs)
-                city::save_building_duals(
-                    arguments.save_args.output_path.parent_path(),
-                    scene
-                );
-
-            city::io::SceneHandler scene_writer(
+            city::io::SceneHandler(
                 arguments.save_args.output_path,
                 std::map<std::string, bool>{{"write", true}},
                 arguments.save_args.output_format,
                 arguments.save_args.xml
 
+            ).write(
+                input_scene(arguments.scene_args, arguments.save_args)
             );
-            scene_writer.write(scene);
-        }
     }
     catch(std::exception const& except)
     {
