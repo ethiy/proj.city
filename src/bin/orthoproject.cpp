@@ -1,6 +1,6 @@
 #include <config.h>
 
-#include <urban.h>
+#include <city.h>
 
 #include <docopt.h>
 

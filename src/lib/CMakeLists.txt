@@ -35,30 +35,30 @@ set(IO_SRC
     "${proj.city_SOURCE_DIR}/src/lib/io/io_vector.cpp"
 )
 set(CITY_SRC
-    "${proj.city_SOURCE_DIR}/src/lib/urban.cpp"
+    "${proj.city_SOURCE_DIR}/src/lib/city.cpp"
 )
 
 # Shadow
-add_library(city_shadow ${Shadow_SRC})
-target_link_libraries(city_shadow ${LIBS})
+add_library(city.shadow ${Shadow_SRC})
+target_link_libraries(city.shadow ${LIBS})
 
 # Scene
-add_library(city_scene ${Scene_SRC})
-target_link_libraries(city_scene city_shadow city_projection ${LIBS})
+add_library(city.scene ${Scene_SRC})
+target_link_libraries(city.scene city.shadow city.projection ${LIBS})
 
 # Algorithms
-add_library(city_algorithms ${Algorithms_SRC})
-target_link_libraries(city_algorithms city_scene city_shadow city_io ${LIBS})
+add_library(city.algorithms ${Algorithms_SRC})
+target_link_libraries(city.algorithms city.scene city.shadow city.io ${LIBS})
 
 # Projections
-add_library(city_projection ${Projection_SRC})
-target_link_libraries(city_projection city_algorithms ${LIBS})
+add_library(city.projection ${Projection_SRC})
+target_link_libraries(city.projection city.algorithms ${LIBS})
  
 # Input/Output
-add_library(city_io ${IO_SRC})
-target_link_libraries(city_io city_shadow city_projection ${LIBS})
+add_library(city.io ${IO_SRC})
+target_link_libraries(city.io city.shadow city.projection ${LIBS})
 
 # city
-add_library(proj.city SHARED ${CITY_SRC})
+add_library(proj.city ${CITY_SRC})
 link_directories(proj.city ${LIBS_DIRS})
-target_link_libraries(proj.city city_shadow city_io city_scene city_projection city_algorithms ${LIBS})
+target_link_libraries(proj.city city.shadow city.io city.scene city.projection city.algorithms ${LIBS})

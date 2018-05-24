@@ -17,3 +17,8 @@
 #include <projection/projection.h>
 
 #include <algorithms/algorithms.h>
+
+namespace city
+{
+    void print_possible_scene_formats(void);
+}
