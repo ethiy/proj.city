@@ -50,48 +50,6 @@ namespace city
              bounding_box(std::move(other.bounding_box))
         {}
         UNode::UNode(
-            std::string const& node_id,
-            std::vector<shadow::Mesh> const& meshes,
-            shadow::Point const& _reference_point,
-            unsigned short const _epsg_index
-        )
-            :name(node_id), reference_point(_reference_point), epsg_index(_epsg_index)
-        {
-            std::vector<Polyhedron> polyhedrons(meshes.size());
-            std::transform(
-                std::begin(meshes),
-                std::end(meshes),
-                std::begin(polyhedrons),
-                [](shadow::Mesh const& mesh)
-                {
-                    std::vector<Point_3> points = mesh.get_cgal_points();
-                    std::vector< std::vector<std::size_t> > polygons = mesh.get_cgal_faces();
-
-                    auto polyhedron = polyhedron_from_polygon_soup(points, polygons);
-
-                    std::vector<Polyhedron::Facet_handle>  patch_facets;
-                    for(auto it = polyhedron.halfedges_begin(); it != polyhedron.halfedges_end(); ++it)
-                        if(it->is_border())
-                            CGAL::Polygon_mesh_processing::triangulate_hole(polyhedron, it, std::back_inserter(patch_facets));
-
-                    std::cout << patch_facets.size() << std::endl;
-
-                    return polyhedron;
-                }
-            );
-
-            Nef_Polyhedron N;
-            for(auto polyhedron : polyhedrons)
-                N += Nef_Polyhedron(polyhedron);
-            std::cout << N;
-            if(N.is_simple())
-                N.convert_to_polyhedron(surface);
-            std::cout << surface << std::endl;
-
-            if(!surface.empty())
-                bounding_box = CGAL::Polygon_mesh_processing::bbox(surface);
-        }
-        UNode::UNode(
             shadow::Mesh const& mesh,
             shadow::Point const& _reference_point,
             unsigned short const _epsg_index

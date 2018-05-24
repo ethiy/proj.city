@@ -29,12 +29,6 @@ namespace city
                 city::shadow::Point const& _pivot = shadow::Point(),
                 unsigned short _epsg_index = 2154
             );
-            Scene(
-                std::map<std::string, std::vector<shadow::Mesh> > const& building_meshes,
-                std::vector<shadow::Mesh> const& terrain_meshes,
-                city::shadow::Point const& _pivot = shadow::Point(),
-                unsigned short _epsg_index = 2154
-            );
             /**
              * Copy Constructor.
              * @param other Scene to copy
