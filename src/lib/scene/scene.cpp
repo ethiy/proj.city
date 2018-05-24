@@ -170,7 +170,7 @@ namespace city
         {
             if(empty())
             {
-                *this = operator =(other);
+                operator =(other);
             }
             else
             {
@@ -188,7 +188,7 @@ namespace city
                     std::begin(buildings),
                     [this, &other](UNode & building)
                     {
-                        return translate(building, pivot.to_cgal() - other.pivot.to_cgal());
+                        return translate(building, other.pivot.to_cgal() -  pivot.to_cgal());
                     }
                 );
                 auto o_terrain = other.terrain;
@@ -196,7 +196,7 @@ namespace city
                     shadow::Mesh(terrain)
                     +
                     shadow::Mesh(
-                        translate(o_terrain, pivot.to_cgal() - other.pivot.to_cgal())
+                        translate(o_terrain, other.pivot.to_cgal() -  pivot.to_cgal())
                     ),
                     terrain.get_reference_point(),
                     terrain.get_epsg()
