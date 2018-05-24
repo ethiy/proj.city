@@ -10,7 +10,7 @@ static const char USAGE[]=
 R"(cityformat.
 
     Usage:
-      cityformat <scene>... --input-format=<input_frmt> [--read-xml --prune --terrain] [output <path> --graphs --write-xml --output-format=<output_format>]
+      cityformat output --output-format=<output_format> <output_path> [--graphs --write-xml] <scene>... --input-format=<input_frmt> [--read-xml --prune --terrain]
       cityformat --formats
       cityformat (-h | --help)
       cityformat --version
@@ -68,7 +68,7 @@ struct Arguments
             scene_args.prune = docopt_args.at("--prune").asBool();
             scene_args.terrain = docopt_args.at("--terrain").asBool();
             
-            save_args.output_path = docopt_args.at("<path>").asString();
+            save_args.output_path = docopt_args.at("<output_path>").asString();
             save_args.xml = docopt_args.at("--write-xml").asBool();
             save_args.graphs = docopt_args.at("--graphs").asBool();
             save_args.output_format = docopt_args.at("--output-format").asString();
