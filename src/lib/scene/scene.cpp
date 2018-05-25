@@ -26,6 +26,18 @@ namespace city
                 }
             );
 
+            buildings.erase(
+                std::remove_if(
+                    std::begin(buildings),
+                    std::end(buildings),
+                    [](UNode const& building)
+                    {
+                        return building.empty();
+                    }
+                ),
+                std::end(buildings)
+            );
+
             terrain = UNode(terrain_mesh, pivot, epsg_index);
         }
         Scene::Scene(Scene const& other)
