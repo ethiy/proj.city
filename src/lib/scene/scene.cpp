@@ -193,11 +193,13 @@ namespace city
                 );
                 auto o_terrain = other.terrain;
                 terrain = UNode(
+                    (
                     shadow::Mesh(terrain)
                     +
                     shadow::Mesh(
-                        translate(o_terrain, other.pivot.to_cgal() -  pivot.to_cgal())
-                    ),
+                            translate(o_terrain, other.pivot -  pivot)
+                        )
+                    ).set_name("terrain"),
                     terrain.get_reference_point(),
                     terrain.get_epsg()
                 );
