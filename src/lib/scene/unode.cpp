@@ -51,7 +51,7 @@ namespace city
         {}
         UNode::UNode(
             shadow::Mesh const& mesh,
-            shadow::Point const& _reference_point,
+            Point_3 const& _reference_point,
             unsigned short const _epsg_index
         )
             : UNode(mesh.get_name(), mesh.get_cgal_points(), mesh.get_cgal_faces(), _reference_point, _epsg_index)
@@ -60,7 +60,7 @@ namespace city
             std::string const& building_id,
             std::vector<Point_3> points,
             std::vector< std::vector<std::size_t> > polygons,
-            shadow::Point const& _reference_point,
+            Point_3 const& _reference_point,
             unsigned short const _epsg_index
         )
             : name(building_id),
@@ -126,7 +126,7 @@ namespace city
             return epsg_index;
         }
 
-        shadow::Point const& UNode::get_reference_point(void) const noexcept
+        Point_3 const& UNode::get_reference_point(void) const noexcept
         {
             return reference_point;
         }
@@ -415,11 +415,7 @@ namespace city
                     return affine_transformation.transform(point);
                 }
             );
-            reference_point = shadow::Point(
-                affine_transformation.transform(
-                    reference_point.to_cgal()
-                )
-            );
+            reference_point = affine_transformation.transform(reference_point);
             return *this;
         }
 
