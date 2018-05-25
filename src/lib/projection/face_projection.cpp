@@ -235,7 +235,7 @@ namespace city
         {
             return supporting_plane.c() == 0;
         }
-        bool FacePrint::is_empty(void) const
+        bool FacePrint::empty(void) const
         {
             return border.outer_boundary().is_empty();
         }

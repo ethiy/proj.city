@@ -134,7 +134,7 @@ namespace city
 
         FootPrint & FootPrint::operator +=(FootPrint const& other)
         {
-            if(projection.is_empty())
+            if(projection.empty())
                 *this = other;
             else
             {

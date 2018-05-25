@@ -69,7 +69,7 @@ namespace city
             */
             bool is_degenerate(void) const;
             bool is_perpendicular(void) const;
-            bool is_empty(void) const;
+            bool empty(void) const;
 
             bool contains(Point_2 const& point) const;
             bool contains(InexactPoint_2 const& inexact_point) const;

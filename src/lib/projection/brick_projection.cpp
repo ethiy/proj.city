@@ -103,7 +103,7 @@ namespace city
         {
             return projected_facets.cend();
         }
-        bool BrickPrint::is_empty(void) const noexcept
+        bool BrickPrint::empty(void) const noexcept
         {
             return projected_facets.empty();
         }
@@ -283,7 +283,7 @@ namespace city
                     std::end(projected_facets),
                     [](FacePrint const& facet)
                     {
-                        return facet.is_empty() || facet.is_degenerate();
+                        return facet.empty() || facet.is_degenerate();
                     }
                 ),
                 std::end(projected_facets)
@@ -327,7 +327,7 @@ namespace city
 
             for(auto const& facet : other.projected_facets)
             {
-                if(!facet.is_empty() && !facet.is_degenerate())
+                if(!facet.empty() && !facet.is_degenerate())
                     operator +=(facet);
             }
 

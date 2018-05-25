@@ -176,9 +176,9 @@ namespace city
         {
             return faces.cend();
         }
-        bool Mesh::is_empty(void) const noexcept
+        bool Mesh::empty(void) const noexcept
         {
-            return points.empty();
+            return points.empty() && faces.empty();
         }
 
 
@@ -252,7 +252,7 @@ namespace city
 
         Mesh & Mesh::operator +=(Mesh const& other)
         {
-            if(is_empty())
+            if(empty())
                 *this = other;
             else
             {

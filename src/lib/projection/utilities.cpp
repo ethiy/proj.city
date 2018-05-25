@@ -44,7 +44,7 @@ namespace city
                     std::end(prints),
                     [](FacePrint const& facet)
                     {
-                        return facet.is_empty() || facet.is_degenerate();
+                        return facet.empty() || facet.is_degenerate();
                     }
                 ),
                 std::end(prints)

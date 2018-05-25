@@ -40,7 +40,7 @@ namespace city
             const_iterator end(void) const noexcept;
             const_iterator cbegin(void) const noexcept;
             const_iterator cend(void) const noexcept;
-            bool is_empty(void) const noexcept;
+            bool empty(void) const noexcept;
 
             bool in_domain(Point_2 const& point) const;
             bool contains(Point_2 const& point) const;
