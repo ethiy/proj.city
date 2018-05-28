@@ -164,7 +164,15 @@ namespace city
                 std::begin(buildings),
                 [](scene::UNode & building)
                 {
-                    return building.prune();
+                    try
+                    {
+                        return building.prune();
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << std::endl;
+                        return building;
+                    }
                 }
             );
             if(_terrain)
