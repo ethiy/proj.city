@@ -164,6 +164,26 @@ namespace city
                 )
             );
         }
+        bool is_union_coplanar_simple(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs)
+        {
+            Polygon_with_holes joint_facet;
+            auto local_transformer = reference_transform(polyhedron, lhs);            
+            CGAL::join(
+                local_transform(
+                    local_transformer,
+                    polyhedron,
+                    lhs
+                ),
+                local_transform(
+                    local_transformer,
+                    polyhedron,
+                    rhs,
+                    opposite_normals(polyhedron, lhs, rhs)
+                ),
+                joint_facet
+            );
+            return joint_facet.outer_boundary().is_simple();
+        }
 
         Polyhedron polyhedron_from_polygon_soup(std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons)
         {

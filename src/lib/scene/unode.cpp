@@ -257,7 +257,9 @@ namespace city
                             &&
                             coplanar(surface, halfedge.facet(), halfedge.opposite()->facet())
                             &&
-                            !do_open_coplanar_intersect(surface, halfedge.facet(), halfedge.opposite()->facet());
+                            !do_open_coplanar_intersect(surface, halfedge.facet(), halfedge.opposite()->facet())
+                            &&
+                            is_union_coplanar_simple(surface, halfedge.facet(), halfedge.opposite()->facet());
                 }
             );
         }

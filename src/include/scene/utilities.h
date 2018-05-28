@@ -22,6 +22,7 @@ namespace city
         bool opposite_normals(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs);
         std::vector<Polygon_with_holes> open_coplanar_intersection(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs);
         bool do_open_coplanar_intersect(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs);
+        bool is_union_coplanar_simple(Polyhedron const& polyhedron, Polyhedron::Facet_handle const& lhs, Polyhedron::Facet_handle const& rhs);
 
         Polyhedron polyhedron_from_polygon_soup(std::vector<Point_3> & points, std::vector< std::vector<std::size_t> > & polygons);
     }
