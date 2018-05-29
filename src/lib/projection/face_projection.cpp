@@ -114,6 +114,11 @@ namespace city
             return border.bbox();
         }
 
+        CGAL::Orientation FacePrint::orientation(void) const
+        {
+            return border.outer_boundary().orientation();
+        }
+
         double FacePrint::get_plane_height(Point_2 const& point) const
         {
             if( supporting_plane.c() == 0)

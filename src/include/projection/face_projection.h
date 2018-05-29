@@ -40,6 +40,8 @@ namespace city
             Vector_3 get_normal(void) const noexcept;
             Bbox_2 bbox(void) const;
 
+            CGAL::Orientation orientation(void) const;
+
             double get_plane_height(Point_2 const&) const;
             double get_plane_height(InexactPoint_2 const& inexact_point) const;
             double get_height(Point_2 const& point) const;
