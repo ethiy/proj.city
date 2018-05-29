@@ -140,6 +140,9 @@ int main(int argc, const char** argv)
         );
         std::cout << std::boolalpha << arguments << std::endl;
 
+        if(!boost::filesystem::is_directory(arguments.save_args.output_path))
+            boost::filesystem::create_directory(arguments.save_args.output_path);
+
         auto scene = input_scene(arguments.scene_args, arguments.save_args);
 
         auto projections = city::orthoproject(scene, arguments.scene_args.terrain);
