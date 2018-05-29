@@ -161,11 +161,9 @@ namespace city
         }
         bool BrickPrint::is_under(FacePrint const& facet) const
         {
-            bool under(false);
+            bool under(facet.is_perpendicular() || facet.is_degenerate());
 
-            if(facet.is_perpendicular() || facet.is_degenerate())
-                under = true;
-            else
+            if(!under)
             {
                 Point_2 point(
                     CGAL::centroid(
@@ -306,7 +304,6 @@ namespace city
                     {
                         std::vector<FacePrint> result;
                         BrickPrint lfacets(lfacet);
-
                         for(auto const& rfacet : projected_facets)
                         {
                             auto temp = lfacets.occlusion(rfacet);
