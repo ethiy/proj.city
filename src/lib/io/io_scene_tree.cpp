@@ -67,7 +67,7 @@ namespace city
             if(error != tinyxml2::XML_SUCCESS)
                 throw std::runtime_error("Could not read the bounding box");
             
-            return Bbox_3(x_min, x_max, y_min, y_max, z_min, z_max);
+            return Bbox_3(x_min, y_min, z_min, x_max, y_max, z_max);
         }
         Point_3 SceneTreeHandler::pivot(void) const
         {
@@ -90,9 +90,9 @@ namespace city
             else
             {
                 Bbox_3 _bbox = bbox();
-                x_offset = (_bbox.xmax() + _bbox.xmin()) / 2.;
-                y_offset = (_bbox.ymax() + _bbox.ymin()) / 2.;
-                z_offset = (_bbox.zmax() + _bbox.zmin()) / 2.;
+                x_offset = _bbox.xmax() / 2 + _bbox.xmin() / 2.;
+                y_offset = _bbox.ymax() / 2 + _bbox.ymin() / 2.;
+                z_offset = _bbox.zmax() / 2 + _bbox.zmin() / 2.;
             }
             
             return city::Point_3(x_offset, y_offset, z_offset);
