@@ -1,6 +1,7 @@
 #include <scene/scene.h>
 
 #include <algorithms/util_algorithms.h>
+#include <projection/scene_projection.h>
 
 namespace city
 {
@@ -179,6 +180,38 @@ namespace city
                 terrain = terrain.prune();
 
             return *this;
+        }
+
+        std::vector<projection::FootPrint> Scene::orthoproject(bool const _terrain) const
+        {
+            std::cout << "Projecting... " << std::flush;
+            std::vector<projection::FootPrint> ortho_projections(buildings.size() + static_cast<std::size_t>(_terrain));
+            std::transform(
+                std::begin(buildings),
+                std::end(buildings),
+                std::begin(ortho_projections),
+                [](UNode const& building)
+                {
+                    return projection::FootPrint(building);
+                }
+            );
+            ortho_projections.erase(
+                std::remove_if(
+                    std::begin(ortho_projections),
+                    std::end(ortho_projections),
+                    [](projection::FootPrint const& ortho_projection)
+                    {
+                        return ortho_projection.empty();
+                    }
+                ),
+                std::end(ortho_projections)
+            );
+            if(_terrain)
+                ortho_projections[buildings.size()] = projection::FootPrint(terrain);
+            
+            std::cout << "Done." << std::flush << std::endl;
+
+            return ortho_projections;
         }
 
         bool Scene::empty(void) const noexcept

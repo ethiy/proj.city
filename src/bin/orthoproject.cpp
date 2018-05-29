@@ -145,7 +145,7 @@ int main(int argc, const char** argv)
 
         auto scene = input_scene(arguments.scene_args, arguments.save_args);
 
-        auto projections = city::orthoproject(scene, arguments.scene_args.terrain);
+        auto projections = scene.orthoproject(arguments.scene_args.terrain);
 
         city::save_building_prints(arguments.save_args.output_path, projections, arguments.save_args.labels);
 

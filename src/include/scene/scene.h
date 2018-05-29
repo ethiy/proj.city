@@ -10,6 +10,11 @@
 
 namespace city
 {
+    namespace projection
+    {
+        class FootPrint;
+    }
+
     namespace scene
     {
         class Scene
@@ -120,6 +125,7 @@ namespace city
             bool empty(void) const noexcept;
 
             Scene& prune(bool const terrain);
+            std::vector<projection::FootPrint> orthoproject(bool const terrain = false) const;
 
             Scene& operator +=(Scene const& other);
         private:

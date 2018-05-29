@@ -30,6 +30,11 @@ namespace city
             Bbox_2 const& bbox(void) const noexcept;
             BrickPrint const& data(void) const noexcept;
 
+            inline bool empty(void) const noexcept
+            {
+                return projection.empty();
+            }
+
             std::vector<double> areas(void) const;
             double area(void) const;
             std::vector<double> edge_lengths(void) const;

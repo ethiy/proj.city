@@ -14,8 +14,10 @@ namespace city
         FootPrint::FootPrint(scene::UNode const& unode)
             : name(unode.get_name()), reference_point(unode.get_reference_point()), epsg_index(unode.get_epsg())
         {
+            std::cout << "Projecting node: " << unode.get_name() << std::endl;
             std::vector<FacePrint> prints = orthoprint(unode);
-
+            try
+            {
             projection = std::accumulate(
                 std::begin(prints),
                 std::end(prints),
@@ -25,6 +27,11 @@ namespace city
                     return proj + face_print;
                 }
             );
+        }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+            }   
         }
         FootPrint::FootPrint(std::string const& _name, OGRLayer* projection_layer)
             : name(_name), projection(projection_layer)
