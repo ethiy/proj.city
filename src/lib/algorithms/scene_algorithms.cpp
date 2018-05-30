@@ -16,12 +16,19 @@ namespace city
         boost::filesystem::create_directory(dual_dir);
         for(auto const& building : scene)
         {
-            std::fstream adjacency_file(
-                boost::filesystem::path(dual_dir / (building.get_name() + ".txt")).string(),
-                std::ios::out
-            );
-            io::Adjacency_stream as(adjacency_file);
-            as << building;
+            try
+            {
+                std::fstream adjacency_file(
+                    boost::filesystem::path(dual_dir / (building.get_name() + ".txt")).string(),
+                    std::ios::out
+                );
+                io::Adjacency_stream as(adjacency_file);
+                as << building;
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+            }
         }
         std::cout << " Done." << std::flush << std::endl;
     }
