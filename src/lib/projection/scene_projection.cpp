@@ -18,20 +18,20 @@ namespace city
             std::vector<FacePrint> prints = orthoprint(unode);
             try
             {
-            projection = std::accumulate(
-                std::begin(prints),
-                std::end(prints),
-                projection,
-                [](BrickPrint & proj, FacePrint const& face_print)
-                {
-                    return proj + face_print;
-                }
-            );
-        }
+                projection = std::accumulate(
+                    std::begin(prints),
+                    std::end(prints),
+                    projection,
+                    [](BrickPrint & proj, FacePrint const& face_print)
+                    {
+                        return proj + face_print;
+                    }
+                );
+            }
             catch(const std::exception& e)
             {
                 std::cerr << e.what() << std::endl;
-            }   
+            }
         }
         FootPrint::FootPrint(std::string const& _name, OGRLayer* projection_layer)
             : name(_name), projection(projection_layer)
@@ -191,6 +191,88 @@ namespace city
         {
             FootPrint result(lhs);
             return result += rhs;
+        }
+
+
+        ScenePrint::ScenePrint(void)
+        {}
+        ScenePrint::ScenePrint(scene::Scene const& scene)
+            : pivot(scene.get_pivot()), epsg_index(scene.get_epsg()), node_prints(scene.orthoproject())
+        {}
+        ScenePrint::ScenePrint(ScenePrint const& other)
+            : pivot(other.pivot), epsg_index(other.epsg_index), node_prints(other.node_prints)
+        {}
+        ScenePrint::ScenePrint(ScenePrint && other)
+            : pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), node_prints(std::move(other.node_prints))
+        {}
+        ScenePrint::~ScenePrint(void)
+        {}
+
+        void ScenePrint::swap(ScenePrint & other)
+        {
+            using std::swap;
+
+            swap(pivot, other.pivot);
+            swap(epsg_index, other.epsg_index);
+            swap(node_prints, other.node_prints);
+        }
+        ScenePrint& ScenePrint::operator =(ScenePrint const& other)
+        {
+            pivot = other.pivot;
+            epsg_index = other.epsg_index;
+            node_prints = other.node_prints;
+
+            return *this;
+        }
+        ScenePrint& ScenePrint::operator =(ScenePrint && other)
+        {
+            pivot = std::move(other.pivot);
+            epsg_index = std::move(other.epsg_index);
+            node_prints = std::move(other.node_prints);
+
+            return *this;
+        }
+
+        Bbox_2 ScenePrint::bbox(void) const
+        {
+            return std::accumulate(
+                std::begin(node_prints),
+                std::end(node_prints),
+                Bbox_2(),
+                [](Bbox_2 const& bb, FootPrint const& nodeprint)
+                {
+                    return bb + nodeprint.bbox();
+                }
+            );
+        }
+
+        std::vector<double> ScenePrint::areas(void) const
+        {
+            std::vector<double> _areas(node_prints.size());
+            std::transform(
+                std::begin(node_prints),
+                std::end(node_prints),
+                std::begin(_areas),
+                [](FootPrint const& nodeprint)
+                {
+                    return nodeprint.area();
+                }
+            );
+            return _areas;
+        }
+        std::vector<double> ScenePrint::circumferences(void) const
+        {
+            std::vector<double> _circumferences(node_prints.size());
+            std::transform(
+                std::begin(node_prints),
+                std::end(node_prints),
+                std::begin(_circumferences),
+                [](FootPrint const& nodeprint)
+                {
+                    return nodeprint.circumference();
+                }
+            );
+            return _circumferences;
         }
     }
 

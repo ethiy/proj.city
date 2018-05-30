@@ -3,6 +3,7 @@
 #include <projection/brick_projection.h>
 
 #include <scene/unode.h>
+#include <scene/scene.h>
 
 #include <gdal_priv.h>
 
@@ -65,6 +66,79 @@ namespace city
         };
         FootPrint operator +(FootPrint const& lhs, FootPrint const& rhs);
 
+        class ScenePrint
+        {
+        public:
+            ScenePrint(void);
+            ScenePrint(scene::Scene const& scene);
+            ScenePrint(ScenePrint const& other);
+            ScenePrint(ScenePrint && other);
+            ~ScenePrint(void);
+
+            void swap(ScenePrint & other);
+            ScenePrint & operator =(ScenePrint const& other);
+            ScenePrint & operator =(ScenePrint && other);
+
+            shadow::Point const& get_reference_point(void) const noexcept
+            {
+                return pivot;
+            }
+            inline unsigned short get_epsg(void) const noexcept
+            {
+                return epsg_index;
+            }
+            inline std::vector<FootPrint> const& data(void) const noexcept
+            {
+                return node_prints;
+            }
+            inline bool empty(void) const noexcept
+            {
+                return node_prints.empty();
+            }
+
+            Bbox_2 bbox(void) const;
+
+            std::vector<double> areas(void) const;
+            std::vector<double> circumferences(void) const;
+            
+            using iterator = std::vector<FootPrint>::iterator;
+            using const_iterator = std::vector<FootPrint>::const_iterator;
+
+            inline iterator begin(void) noexcept
+            {
+                return node_prints.begin();
+            }
+            inline iterator end(void) noexcept
+            {
+                return node_prints.end();
+            }
+            inline const_iterator begin(void) const noexcept
+            {
+                return node_prints.begin();
+            }
+            inline const_iterator end(void) const noexcept
+            {
+                return node_prints.end();
+            }
+            inline const_iterator cbegin(void) const noexcept
+            {
+                return node_prints.cbegin();
+            }
+            inline const_iterator cend(void) const noexcept
+            {
+                return node_prints.cend();
+            }
+
+            void to_ogr(GDALDataset* file, bool labels) const;
+        private:
+            Point_3 pivot;
+            unsigned short epsg_index = 2154;
+            std::vector<FootPrint> node_prints;
+            
+            friend std::ostream & operator <<(std::ostream & os, ScenePrint const& footprint);
+            friend bool operator ==(ScenePrint const& lhs, ScenePrint const& rhs);
+            friend bool operator !=(ScenePrint const& lhs, ScenePrint const& rhs);
+        };
     }
     void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
 
