@@ -3,6 +3,10 @@
 #include <algorithms/util_algorithms.h>
 #include <projection/scene_projection.h>
 
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+
+
 namespace city
 {
     namespace scene
@@ -159,21 +163,30 @@ namespace city
 
         Scene& Scene::prune(bool const _terrain)
         {
-            std::transform(
-                std::begin(buildings),
-                std::end(buildings),
-                std::begin(buildings),
-                [](scene::UNode & building)
+            tbb::parallel_for(
+                tbb::blocked_range<std::vector<UNode>::iterator>(
+                    std::begin(buildings),
+                    std::end(buildings)
+                ),
+                [](tbb::blocked_range<std::vector<UNode>::iterator> const& b_range)
                 {
-                    try
-                    {
-                        return building.prune();
-                    }
-                    catch(const std::exception& e)
-                    {
-                        std::cerr << e.what() << std::endl;
-                        return building;
-                    }
+                    return std::transform(
+                        std::begin(b_range),
+                        std::end(b_range),
+                        std::begin(b_range),
+                        [](UNode & building)
+                        {
+                            try
+                            {
+                                return building.prune();
+                            }
+                            catch(const std::exception& e)
+                            {
+                                std::cerr << e.what() << std::endl;
+                                return building;
+                            }
+                        }
+                    );
                 }
             );
             if(_terrain)

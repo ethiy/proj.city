@@ -6,6 +6,12 @@
 
 #include <boost/filesystem.hpp>
 
+#include <tbb/parallel_reduce.h>
+#include <tbb/blocked_range.h>
+
+#include <numeric>
+#include <functional>
+
 static const char USAGE[]=
 R"(cityformat.
 
@@ -107,24 +113,37 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
     return os;
 }
 
+city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::OuputArguments const& save_args);
+
 city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::OuputArguments const& save_args)
 {
-    auto scene = std::accumulate(
-        std::begin(scene_args.input_paths),
-        std::end(scene_args.input_paths),
+    auto scene = tbb::parallel_reduce(
+        tbb::blocked_range<std::vector<boost::filesystem::path>::const_iterator>(
+            std::begin(scene_args.input_paths),
+            std::end(scene_args.input_paths)
+        ),
         city::scene::Scene(),
-        [&scene_args](city::scene::Scene const& whole_scene, boost::filesystem::path const& scene_path)
+        [&scene_args](tbb::blocked_range<std::vector<boost::filesystem::path>::const_iterator> const& b_range, city::scene::Scene const& init)
         {
-            return  whole_scene
-                    +
-                    city::io::SceneHandler(
-                        scene_path,
-                        std::map<std::string, bool>{{"read", true}},
-                        scene_args.input_format,
-                        scene_args.xml
-                    ).read();
-        }
-    );
+            return std::accumulate(
+                std::begin(b_range),
+                std::end(b_range),
+                init,
+                [&scene_args](city::scene::Scene const& whole_scene, boost::filesystem::path const& scene_path)
+                {
+                    return  whole_scene
+                            +
+                            city::io::SceneHandler(
+                                scene_path,
+                                std::map<std::string, bool>{{"read", true}},
+                                scene_args.input_format,
+                                scene_args.xml
+                            ).read();
+                }
+            );
+        },
+        std::plus<city::scene::Scene>()
+    );    
 
     if(scene_args.prune)
         scene = scene.prune(scene_args.terrain);

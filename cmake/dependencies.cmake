@@ -26,7 +26,6 @@ list(APPEND LIBS ${GDAL_LIBRARY})
 
 # Find Lib3ds
 find_package(Lib3ds REQUIRED)
-
 include_directories(SYSTEM ${Lib3ds_INCLUDE_DIR})
 list(APPEND LIBS ${Lib3ds_LIBRARIES})
 
@@ -34,6 +33,11 @@ list(APPEND LIBS ${Lib3ds_LIBRARIES})
 find_package(TinyXML2 REQUIRED)
 include_directories(SYSTEM ${TINYXML2_INCLUDE_DIR})
 list(APPEND LIBS ${TINYXML2_LIBRARIES})
+
+# Find tbb
+find_package(TBB REQUIRED)
+include_directories(SYSTEM ${TBB_INCLUDE_DIR})
+list(APPEND LIBS ${TBB_LIBRARIES})
 
 # Find Docopt
 include(cmake/modules/docopt.cmake)
