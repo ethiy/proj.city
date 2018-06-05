@@ -322,7 +322,7 @@ namespace city
                                             0.
                                         )
                                     ),
-                                    width - i_min
+                                    width - j_min
                                 )
                             ),
                             h(
@@ -333,7 +333,7 @@ namespace city
                                             0.
                                         )
                                     ),
-                                    height - j_min
+                                    height - i_min
                                 )
                             );
 
