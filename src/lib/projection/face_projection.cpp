@@ -293,9 +293,9 @@ namespace city
             {
                 Bbox_2 bb = bbox();
                 std::size_t i_min(
-                                std::max(
+                                std::min(
                                     static_cast<std::size_t>(
-                                        std::min(
+                                        std::max(
                                             std::floor((top_left.y() - bb.ymax()) / pixel_size),
                                             0.
                                         )
@@ -304,9 +304,9 @@ namespace city
                                 )
                             ),
                             j_min(
-                                std::max(
+                                std::min(
                                     static_cast<std::size_t>(
-                                        std::min(
+                                        std::max(
                                             std::floor((bb.xmin() - top_left.x()) / pixel_size),
                                             0.
                                         )
@@ -322,7 +322,7 @@ namespace city
                                             0.
                                         )
                                     ),
-                                    height - i_min
+                                    width - i_min
                                 )
                             ),
                             h(
@@ -333,7 +333,7 @@ namespace city
                                             0.
                                         )
                                     ),
-                                    width - j_min
+                                    height - j_min
                                 )
                             );
 

@@ -53,7 +53,7 @@ namespace city
         {
             image_matrix = footprint.rasterize(
                 image_matrix,
-                shadow::Point(footprint.bbox().xmin(),footprint.bbox().ymax(), 0),
+                reference_point,
                 height,
                 width,
                 pixel_size
