@@ -8,6 +8,12 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <tbb/parallel_reduce.h>
+#include <tbb/blocked_range.h>
+
+#include <numeric>
+#include <functional>
+
 #include <ostream>
 #include <string>
 
@@ -15,7 +21,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene> --input-format=<input_frmt> [--prune --read-xml --terrain] save <output_path> [--graphs --scene --labels] [rasterize --pixel-size=<size>]
+      orthoproject <scene>... --input-format=<input_frmt> [--prune --read-xml --terrain] --save=<output_path> [--graphs --scene --labels] [rasterize --pixel-size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -26,6 +32,7 @@ R"(orthoproject.
       --read-xml                            Read using XML scene tree file.
       --graphs                              Save the building facets dual graph.
       --terrain                             Taking care of terrain.
+      --save=<output_path>                  Specify output path.
       --scene                               Sum and save the scene projection.
       --labels                              Save vector projections with error fields.
       --pixel-size=<size>                   Pixel size [default: 1].
@@ -35,7 +42,7 @@ struct Arguments
 {
     struct SceneArguments
     {
-        boost::filesystem::path input_path;
+        std::vector<boost::filesystem::path> input_paths;
         std::string input_format;
         bool prune = false;
         bool xml = false;
@@ -62,13 +69,23 @@ struct Arguments
     {
         std::cout << "Parsing arguments... " << std::flush;
         
-        scene_args.input_path = docopt_args.at("<scene>").asString();
+        auto path_strings = docopt_args.at("<scene>").asStringList();
+        scene_args.input_paths = std::vector<boost::filesystem::path>(path_strings.size());
+        std::transform(
+            std::begin(path_strings),
+            std::end(path_strings),
+            std::begin(scene_args.input_paths),
+            [](std::string const& string_path)
+            {
+                return boost::filesystem::path(string_path);
+            }
+        );
         scene_args.input_format = docopt_args.at("--input-format").asString();
         scene_args.prune = docopt_args.at("--prune").asBool();
         scene_args.xml = docopt_args.at("--read-xml").asBool();
         scene_args.terrain = docopt_args.at("--terrain").asBool();
         
-        save_args.output_path = docopt_args.at("<output_path>").asString();
+        save_args.output_path = docopt_args.at("--save").asString();
         save_args.graphs = docopt_args.at("--graphs").asBool();
         save_args.scene = docopt_args.at("--scene").asBool();
         save_args.labels = docopt_args.at("--labels").asBool();
@@ -89,8 +106,10 @@ struct Arguments
 inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
 {
     os << "Arguments:" << std::endl
-       << "  Input path: " << arguments.scene_args.input_path << std::endl
-       << "  Input format: " << arguments.scene_args.input_format << std::endl
+       << "  Input paths: " << std::endl;
+    for(auto const& path : arguments.scene_args.input_paths)
+        os << "    " << path.string() << std::endl;
+    os << "  Input format: " << arguments.scene_args.input_format << std::endl
        << "  Pruning faces: " << arguments.scene_args.prune << std::endl
        << "  Read Scene tree: " << arguments.scene_args.xml << std::endl
        << "  Taking care of terrain: " << arguments.scene_args.terrain << std::endl
@@ -105,14 +124,37 @@ inline std::ostream & operator <<(std::ostream & os, Arguments & arguments)
 }
 
 
+city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::SavingArguments const& save_args);
+
 city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Arguments::SavingArguments const& save_args)
 {
-    auto scene = city::io::SceneHandler(
-        scene_args.input_path,
-        std::map<std::string, bool>{{"read", true}},
-        scene_args.input_format,
-        scene_args.xml
-    ).read();
+    auto scene = tbb::parallel_reduce(
+        tbb::blocked_range<std::vector<boost::filesystem::path>::const_iterator>(
+            std::begin(scene_args.input_paths),
+            std::end(scene_args.input_paths)
+        ),
+        city::scene::Scene(),
+        [&scene_args](tbb::blocked_range<std::vector<boost::filesystem::path>::const_iterator> const& b_range, city::scene::Scene const& init)
+        {
+            return std::accumulate(
+                std::begin(b_range),
+                std::end(b_range),
+                init,
+                [&scene_args](city::scene::Scene const& whole_scene, boost::filesystem::path const& scene_path)
+                {
+                    return  whole_scene
+                            +
+                            city::io::SceneHandler(
+                                scene_path,
+                                std::map<std::string, bool>{{"read", true}},
+                                scene_args.input_format,
+                                scene_args.xml
+                            ).read();
+                }
+            );
+        },
+        std::plus<city::scene::Scene>()
+    );    
 
     if(scene_args.prune)
         scene = scene.prune(scene_args.terrain);
@@ -122,6 +164,7 @@ city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Argu
             save_args.output_path,
             scene
         );
+    
     return scene;
 }
 
@@ -152,7 +195,7 @@ int main(int argc, const char** argv)
         if(arguments.save_args.scene)
             city::save_scene_prints(
                 arguments.save_args.output_path,
-                arguments.scene_args.input_path.stem().string(),
+                "whole_scene",
                 projections,
                 arguments.raster_args.rasterizing(),
                 arguments.raster_args.pixel_size
