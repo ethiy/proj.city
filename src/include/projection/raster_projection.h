@@ -76,7 +76,7 @@ namespace city
             friend bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs);
         };
 
-        bool operator !=(RasterPrint & lhs, RasterPrint const& rhs);
+        bool operator !=(RasterPrint const& lhs, RasterPrint const& rhs);
     }
     void swap(projection::RasterPrint & lhs, projection::RasterPrint & rhs);
 }

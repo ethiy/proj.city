@@ -326,7 +326,7 @@ namespace city
             return result;
         }
         
-        bool operator !=(RasterPrint & lhs, RasterPrint const& rhs)
+        bool operator !=(RasterPrint const& lhs, RasterPrint const& rhs)
         {
             return !(lhs == rhs);
         }
