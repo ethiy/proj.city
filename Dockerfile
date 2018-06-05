@@ -9,7 +9,7 @@ RUN apt install -y build-essential gcc-5-base libgcc-5-dev g++ clang libboost-al
 
 RUN apt install -y cmake wget git
             
-RUN apt install -y libkml-dev libgdal-dev
+RUN apt install -y libkml-dev libgdal-dev libtbb-dev
 
 RUN apt install -y libgmp-dev libmpfr-dev libmpfrc++-dev lib3ds-dev libtinyxml2-dev
 
