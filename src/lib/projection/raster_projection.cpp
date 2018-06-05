@@ -23,18 +23,9 @@ namespace city
               height(static_cast<std::size_t>(std::ceil((footprint.bbox().ymax() - footprint.bbox().ymin()) / _pixel_size))),
               width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / _pixel_size))),
               pixel_size(_pixel_size),
-              image_matrix(height * width, 0.),
-              pixel_hits(height * width, 0)
+              image_matrix(height * width, 0.)
         {
-            image_matrix = std::accumulate(
-                std::begin(footprint),
-                std::end(footprint),
-                image_matrix,
-                [this, &footprint](std::vector<double> & image, projection::FacePrint const& face_projection)
-                {
-                    return face_projection.rasterize(image, pixel_hits, shadow::Point(footprint.bbox().xmin(), footprint.bbox().ymax(), 0), height, width, pixel_size);
-                }
-            );
+            footprint.rasterize(image_matrix, shadow::Point(footprint.bbox().xmin(), footprint.bbox().ymax(), 0), height, width, pixel_size);
             vertical_offset();
         }
         RasterPrint::RasterPrint(std::string const& filename, GDALDataset* raster_file)
@@ -42,7 +33,6 @@ namespace city
             : name(filename),
               height(static_cast<std::size_t>(raster_file->GetRasterYSize())),
               width(static_cast<std::size_t>(raster_file->GetRasterXSize())),
-              pixel_hits(height * width, 1),
               offset(true)
         {
             int epsg_buffer(2154);
@@ -79,7 +69,6 @@ namespace city
               width(other.width),
               pixel_size(other.pixel_size),
               image_matrix(other.image_matrix),
-              pixel_hits(other.pixel_hits),
               offset(other.offset)
         {}
         RasterPrint::RasterPrint(RasterPrint && other)
@@ -90,7 +79,6 @@ namespace city
               width(std::move(other.width)),
               pixel_size(std::move(other.pixel_size)),
               image_matrix(std::move(other.image_matrix)),
-              pixel_hits(std::move(other.pixel_hits)),
               offset(std::move(other.offset))
         {}
         RasterPrint::~RasterPrint(void)
@@ -150,7 +138,6 @@ namespace city
             swap(width, other.width);
             swap(pixel_size, other.pixel_size);
             swap(image_matrix, other.image_matrix);
-            swap(pixel_hits, other.pixel_hits);
             swap(offset, other.offset);
         }
 
@@ -165,18 +152,6 @@ namespace city
             if(i>height && j>width)
                 throw std::out_of_range("You iz out of rangez!!");
             return image_matrix.at(i * width + j);
-        }
-        short & RasterPrint::hit(std::size_t const& i, std::size_t const& j)
-        {
-            if(i>height && j>width)
-                throw std::out_of_range("You iz out of rangez!!");
-            return pixel_hits.at(i * width + j);
-        }
-        const short & RasterPrint::hit(std::size_t const& i, std::size_t const& j) const
-        {
-            if(i>height && j>width)
-                throw std::out_of_range("You iz out of rangez!!");
-            return pixel_hits.at(i * width + j);
         }
 
         RasterPrint::iterator RasterPrint::begin(void) noexcept
@@ -213,7 +188,6 @@ namespace city
             width = other.width;
             pixel_size = other.pixel_size;
             image_matrix = other.image_matrix;
-            pixel_hits = other.pixel_hits;
             offset = other.offset;
 
             return *this;
@@ -228,7 +202,6 @@ namespace city
             width = std::move(other.width);
             pixel_size = std::move(other.pixel_size);
             image_matrix = std::move(other.image_matrix);
-            pixel_hits = std::move(other.pixel_hits);
             offset = std::move(other.offset);
             
             return *this;
@@ -239,7 +212,7 @@ namespace city
             if(!offset)
             {
                 for(std::size_t index(0); index != height * width; ++index)
-                    image_matrix.at(index) += (pixel_hits.at(index) != 0) * reference_point.z();
+                    image_matrix.at(index) += reference_point.z();
 
                 offset = true;
             }

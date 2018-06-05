@@ -1,4 +1,5 @@
 #include <projection/scene_projection.h>
+#include <projection/raster_projection.h>
 
 #include <projection/utilities.h>
 
@@ -164,6 +165,21 @@ namespace city
                 throw std::runtime_error("GDAL could not create a projection layer!");
             projection.to_ogr(projection_layer, reference_point, labels);            
         }
+        
+        std::vector<double> & FootPrint::rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
+        {
+            std::vector<short> pixel_hits(height * width, 0);
+            image = std::accumulate(
+                std::begin(projection),
+                std::end(projection),
+                image,
+                [&pixel_hits, top_left, height, width, pixel_size](std::vector<double> & _image, projection::FacePrint const& face_projection)
+                {
+                    return face_projection.rasterize(_image, pixel_hits, top_left, height, width, pixel_size);
+                }
+            );
+            return image;
+        }
 
         std::ostream & operator <<(std::ostream & os, FootPrint const& footprint)
         {
@@ -197,13 +213,13 @@ namespace city
         ScenePrint::ScenePrint(void)
         {}
         ScenePrint::ScenePrint(scene::Scene const& scene)
-            : pivot(scene.get_pivot()), epsg_index(scene.get_epsg()), node_prints(scene.orthoproject())
+            : pivot(scene.get_pivot()), epsg_index(scene.get_epsg()), buildings(scene.orthoproject(false)), terrain(FootPrint(scene.get_terrain()))
         {}
         ScenePrint::ScenePrint(ScenePrint const& other)
-            : pivot(other.pivot), epsg_index(other.epsg_index), node_prints(other.node_prints)
+            : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}
         ScenePrint::ScenePrint(ScenePrint && other)
-            : pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), node_prints(std::move(other.node_prints))
+            : pivot(std::move(other.pivot)), epsg_index(std::move(other.epsg_index)), buildings(std::move(other.buildings)), terrain(std::move(other.terrain))
         {}
         ScenePrint::~ScenePrint(void)
         {}
@@ -214,13 +230,15 @@ namespace city
 
             swap(pivot, other.pivot);
             swap(epsg_index, other.epsg_index);
-            swap(node_prints, other.node_prints);
+            swap(buildings, other.buildings);
+            swap(terrain, other.terrain);
         }
         ScenePrint& ScenePrint::operator =(ScenePrint const& other)
         {
             pivot = other.pivot;
             epsg_index = other.epsg_index;
-            node_prints = other.node_prints;
+            buildings = other.buildings;
+            terrain = other.terrain;
 
             return *this;
         }
@@ -228,7 +246,8 @@ namespace city
         {
             pivot = std::move(other.pivot);
             epsg_index = std::move(other.epsg_index);
-            node_prints = std::move(other.node_prints);
+            buildings = std::move(other.buildings);
+            terrain = std::move(other.terrain);
 
             return *this;
         }
@@ -236,9 +255,9 @@ namespace city
         Bbox_2 ScenePrint::bbox(void) const
         {
             return std::accumulate(
-                std::begin(node_prints),
-                std::end(node_prints),
-                Bbox_2(),
+                std::begin(buildings),
+                std::end(buildings),
+                terrain.bbox(),
                 [](Bbox_2 const& bb, FootPrint const& nodeprint)
                 {
                     return bb + nodeprint.bbox();
@@ -248,10 +267,10 @@ namespace city
 
         std::vector<double> ScenePrint::areas(void) const
         {
-            std::vector<double> _areas(node_prints.size());
+            std::vector<double> _areas(buildings.size());
             std::transform(
-                std::begin(node_prints),
-                std::end(node_prints),
+                std::begin(buildings),
+                std::end(buildings),
                 std::begin(_areas),
                 [](FootPrint const& nodeprint)
                 {
@@ -262,10 +281,10 @@ namespace city
         }
         std::vector<double> ScenePrint::circumferences(void) const
         {
-            std::vector<double> _circumferences(node_prints.size());
+            std::vector<double> _circumferences(buildings.size());
             std::transform(
-                std::begin(node_prints),
-                std::end(node_prints),
+                std::begin(buildings),
+                std::end(buildings),
                 std::begin(_circumferences),
                 [](FootPrint const& nodeprint)
                 {
@@ -273,6 +292,12 @@ namespace city
                 }
             );
             return _circumferences;
+        }
+
+        std::vector<RasterPrint> ScenePrint::rasterize(double const pixel_size) const
+        {
+            std::vector<RasterPrint> rasterizations(buildings.size());
+            return rasterizations;
         }
     }
 

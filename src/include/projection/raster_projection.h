@@ -20,6 +20,7 @@ namespace city
         public:
             RasterPrint(void);
             RasterPrint(FootPrint const& footprint, double _pixel_size);
+            RasterPrint(FootPrint const& footprint, shadow::Point const& reference_point, std::size_t const width, std::size_t const _height, double _pixel_size);
             RasterPrint(std::string const& filename, GDALDataset* raster_file);
             RasterPrint(RasterPrint const& other);
             RasterPrint(RasterPrint && other);
@@ -42,8 +43,6 @@ namespace city
 
             double & at(std::size_t const& i, std::size_t const& j);
             const double & at(std::size_t const& i, std::size_t const& j) const;
-            short & hit(std::size_t const& i, std::size_t const& j);
-            const short & hit(std::size_t const& i, std::size_t const& j) const;
 
             using iterator = std::vector<double>::iterator;
             using const_iterator = std::vector<double>::const_iterator;
@@ -56,7 +55,12 @@ namespace city
 
             void vertical_offset(void);
 
+            void set_geotransform(GDALDataset* file) const;
+            void set_projection(GDALDataset* file) const;
+            void save_image(GDALDataset* file) const;
             void to_gdal(GDALDataset* file) const;
+
+            bool equal_metadata(RasterPrint const& other) const;
         private:
             std::string name;
             shadow::Point reference_point;
@@ -65,17 +69,11 @@ namespace city
             std::size_t width = 0;
             double pixel_size = .06;
             std::vector<double> image_matrix;
-            std::vector<short> pixel_hits;
             bool offset = false;
 
             friend std::ostream & operator <<(std::ostream & os, RasterPrint const& raster_projection);
 
-            bool equal_metadata(RasterPrint const& other) const;
             friend bool operator ==(RasterPrint const& lhs, RasterPrint const& rhs);
-
-            void set_geotransform(GDALDataset* file) const;
-            void set_projection(GDALDataset* file) const;
-            void save_image(GDALDataset* file) const;
         };
 
         bool operator !=(RasterPrint & lhs, RasterPrint const& rhs);

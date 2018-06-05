@@ -54,6 +54,8 @@ namespace city
             FootPrint & operator +=(FootPrint const& other);
 
             void to_ogr(GDALDataset* file, bool labels) const;
+
+            std::vector<double> & rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
         private:
             std::string name;
             shadow::Point reference_point;
@@ -87,13 +89,17 @@ namespace city
             {
                 return epsg_index;
             }
-            inline std::vector<FootPrint> const& data(void) const noexcept
+            inline std::vector<FootPrint> const& get_buildings(void) const noexcept
             {
-                return node_prints;
+                return buildings;
+            }
+            inline FootPrint const& get_terrain(void) const noexcept
+            {
+                return terrain;
             }
             inline bool empty(void) const noexcept
             {
-                return node_prints.empty();
+                return buildings.empty();
             }
 
             Bbox_2 bbox(void) const;
@@ -106,34 +112,37 @@ namespace city
 
             inline iterator begin(void) noexcept
             {
-                return node_prints.begin();
+                return buildings.begin();
             }
             inline iterator end(void) noexcept
             {
-                return node_prints.end();
+                return buildings.end();
             }
             inline const_iterator begin(void) const noexcept
             {
-                return node_prints.begin();
+                return buildings.begin();
             }
             inline const_iterator end(void) const noexcept
             {
-                return node_prints.end();
+                return buildings.end();
             }
             inline const_iterator cbegin(void) const noexcept
             {
-                return node_prints.cbegin();
+                return buildings.cbegin();
             }
             inline const_iterator cend(void) const noexcept
             {
-                return node_prints.cend();
+                return buildings.cend();
             }
 
             void to_ogr(GDALDataset* file, bool labels) const;
+
+            std::vector<RasterPrint> rasterize(double const pixel_size) const;
         private:
             Point_3 pivot;
             unsigned short epsg_index = 2154;
-            std::vector<FootPrint> node_prints;
+            std::vector<FootPrint> buildings;
+            FootPrint terrain;
             
             friend std::ostream & operator <<(std::ostream & os, ScenePrint const& footprint);
             friend bool operator ==(ScenePrint const& lhs, ScenePrint const& rhs);
