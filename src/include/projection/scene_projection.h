@@ -139,7 +139,7 @@ namespace city
 
             std::vector<RasterPrint> rasterize(double const pixel_size) const;
         private:
-            Point_3 pivot;
+            shadow::Point pivot;
             unsigned short epsg_index = 2154;
             std::vector<FootPrint> buildings;
             FootPrint terrain;
