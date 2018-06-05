@@ -79,5 +79,45 @@ namespace city
                 throw boost::filesystem::filesystem_error(error_message.str(), ec);
             }
         }
+
+
+        SceneVectorHandler::SceneVectorHandler(boost::filesystem::path const& _filepath)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"read", true}})
+        {}
+        SceneVectorHandler::SceneVectorHandler(boost::filesystem::path const& _filepath, projection::ScenePrint const& _scene_projection)
+            : FileHandler(_filepath, std::map<std::string, bool>{{"write", true}}), scene_projection(_scene_projection)
+        {}
+        SceneVectorHandler::~SceneVectorHandler(void)
+        {}
+            
+        SceneVectorHandler const& SceneVectorHandler::write(bool const labels) const
+        {
+            std::cout << "Saving vector projections... " << std::flush;
+            boost::filesystem::path vector_dir(filepath / "vectors");
+            boost::filesystem::create_directory(vector_dir);
+            for(auto const& projection : scene_projection)
+            {
+                VectorHandler(
+                    boost::filesystem::path(vector_dir / (projection.get_name() + ".shp")),
+                    std::map<std::string,bool>{{"write", true}}
+                ).write(projection, labels);
+
+                std::fstream attributes_file(
+                    boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(),
+                    std::ios::out
+                );
+
+                auto areas = city::areas(projection);
+                auto edges = city::edge_lengths(projection);
+
+                std::copy(std::begin(areas), std::end(areas), std::ostream_iterator<double>(attributes_file, " "));
+                attributes_file << std::endl;
+                std::copy(std::begin(edges), std::end(edges), std::ostream_iterator<double>(attributes_file, " "));
+                attributes_file << std::endl;
+                attributes_file.close();
+            }
+            std::cout << "Done." << std::flush << std::endl;
+            return *this;
+        }
     }
 }
