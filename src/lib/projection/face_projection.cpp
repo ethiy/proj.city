@@ -292,16 +292,50 @@ namespace city
             if(!is_degenerate())
             {
                 Bbox_2 bb = bbox();
-                std::size_t  i_min = static_cast<std::size_t>(std::floor((top_left.y() - bb.ymax()) / pixel_size)),
-                             j_min = static_cast<std::size_t>(std::floor((bb.xmin() - top_left.x()) / pixel_size));
-                std::size_t  w = static_cast<std::size_t>(std::ceil((bb.xmax() - bb.xmin()) / pixel_size)),
-                             h = static_cast<std::size_t>(std::ceil((bb.ymax() - bb.ymin()) / pixel_size));
-                if(i_min + h > height && j_min + w > width)
-                {
-                    std::stringstream error_message("Face out of bounds: ");
-                    error_message << i_min + h << " > " << height << " or " << j_min + w << " > " << width;
-                    throw std::runtime_error(error_message.str());
-                }
+                std::size_t i_min(
+                                std::max(
+                                    static_cast<std::size_t>(
+                                        std::min(
+                                            std::floor((top_left.y() - bb.ymax()) / pixel_size),
+                                            0.
+                                        )
+                                    ),
+                                    height
+                                )
+                            ),
+                            j_min(
+                                std::max(
+                                    static_cast<std::size_t>(
+                                        std::min(
+                                            std::floor((bb.xmin() - top_left.x()) / pixel_size),
+                                            0.
+                                        )
+                                    ),
+                                    width
+                                )
+                            );
+                std::size_t w(
+                                std::max(
+                                    static_cast<std::size_t>(
+                                        std::min(
+                                            std::ceil((bb.xmax() - top_left.x()) / pixel_size),
+                                            0.
+                                        )
+                                    ),
+                                    height - i_min
+                                )
+                            ),
+                            h(
+                                std::max(
+                                    static_cast<std::size_t>(
+                                        std::min(
+                                            std::ceil((top_left.y() - bb.ymin()) / pixel_size),
+                                            0.
+                                        )
+                                    ),
+                                    width - j_min
+                                )
+                            );
 
                 std::vector<std::size_t> indexes(w * h);
                 std::iota(std::begin(indexes), std::end(indexes), 0);

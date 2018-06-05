@@ -188,22 +188,13 @@ int main(int argc, const char** argv)
 
         auto scene = input_scene(arguments.scene_args, arguments.save_args);
 
-        auto projections = scene.orthoproject(arguments.scene_args.terrain);
+        city::projection::ScenePrint scene_projection(scene);
 
-        city::save_building_prints(arguments.save_args.output_path, projections, arguments.save_args.labels);
-
-        if(arguments.save_args.scene)
-            city::save_scene_prints(
-                arguments.save_args.output_path,
-                "whole_scene",
-                projections,
-                arguments.raster_args.rasterizing(),
-                arguments.raster_args.pixel_size
-            );
+        city::io::SceneVectorHandler(arguments.save_args.output_path, scene_projection).write(arguments.save_args.labels);
                 
         if(arguments.raster_args.rasterizing())
         {
-            auto raster_projections = city::rasterize_scene(projections, arguments.raster_args.pixel_size);
+            auto raster_projections = scene_projection.rasterize(arguments.raster_args.pixel_size);
             city::save_building_rasters(arguments.save_args.output_path, raster_projections);
         }
     }

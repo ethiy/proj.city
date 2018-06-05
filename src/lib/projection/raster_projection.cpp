@@ -16,17 +16,48 @@ namespace city
     {
         RasterPrint::RasterPrint(void)
         {}
-        RasterPrint::RasterPrint(FootPrint const& footprint, double const _pixel_size)
+        RasterPrint::RasterPrint(FootPrint const& footprint, double const _pixel_size, FootPrint const& terrain)
             : name(footprint.get_name()),
               reference_point(footprint.get_reference_point() + shadow::Vector(footprint.bbox().xmin(), footprint.bbox().ymax(), 0)),
               epsg_index(footprint.get_epsg()),
               height(static_cast<std::size_t>(std::ceil((footprint.bbox().ymax() - footprint.bbox().ymin()) / _pixel_size))),
               width(static_cast<std::size_t>(std::ceil((footprint.bbox().xmax() - footprint.bbox().xmin()) / _pixel_size))),
               pixel_size(_pixel_size),
+              image_matrix(
+                  RasterPrint(
+                      terrain,
+                      reference_point,
+                      height,
+                      width,
+                      pixel_size
+                  ).get_matrix()
+              )
+        {
+            image_matrix = footprint.rasterize(
+                image_matrix,
+                shadow::Point(footprint.bbox().xmin(),footprint.bbox().ymax(), 0),
+                height,
+                width,
+                pixel_size
+            );
+            vertical_offset();
+        }
+        RasterPrint::RasterPrint(FootPrint const& footprint, shadow::Point const& _reference_point, std::size_t const _height, std::size_t const _width, double _pixel_size)
+            : name(footprint.get_name()),
+              reference_point(_reference_point),
+              epsg_index(footprint.get_epsg()),
+              height(_height),
+              width(_width),
+              pixel_size(_pixel_size),
               image_matrix(height * width, 0.)
         {
-            footprint.rasterize(image_matrix, shadow::Point(footprint.bbox().xmin(), footprint.bbox().ymax(), 0), height, width, pixel_size);
-            vertical_offset();
+            image_matrix = footprint.rasterize(
+                image_matrix,
+                shadow::Point(footprint.bbox().xmin(),footprint.bbox().ymax(), 0),
+                height,
+                width,
+                pixel_size
+            );
         }
         RasterPrint::RasterPrint(std::string const& filename, GDALDataset* raster_file)
 

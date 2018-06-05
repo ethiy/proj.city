@@ -19,7 +19,7 @@ namespace city
         {
         public:
             RasterPrint(void);
-            RasterPrint(FootPrint const& footprint, double _pixel_size);
+            RasterPrint(FootPrint const& footprint, double _pixel_size, FootPrint const& terrain = FootPrint());
             RasterPrint(FootPrint const& footprint, shadow::Point const& reference_point, std::size_t const width, std::size_t const _height, double _pixel_size);
             RasterPrint(std::string const& filename, GDALDataset* raster_file);
             RasterPrint(RasterPrint const& other);
@@ -38,6 +38,10 @@ namespace city
             double const& get_pixel_size() const noexcept;
 
             std::size_t get_index(std::size_t const& i, std::size_t const& j) const noexcept;
+            inline std::vector<double> const& get_matrix(void) const noexcept
+            {
+                return image_matrix;
+            }
             double* data(void) noexcept;
             const double* data(void) const noexcept;
 

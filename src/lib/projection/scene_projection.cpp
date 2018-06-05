@@ -296,8 +296,19 @@ namespace city
 
         std::vector<RasterPrint> ScenePrint::rasterize(double const pixel_size) const
         {
-            std::vector<RasterPrint> rasterizations(buildings.size());
-            return rasterizations;
+            std::cout << "rasterizing projections... " << std::flush;
+            std::vector<projection::RasterPrint> raster_projections(buildings.size());
+            std::transform(
+                std::begin(buildings),
+                std::end(buildings),
+                std::begin(raster_projections),
+                [pixel_size, this](projection::FootPrint const& projection)
+                {
+                    return projection::RasterPrint(projection, pixel_size, terrain);
+                }
+            );
+            std::cout << "Done." << std::flush << std::endl;
+            return raster_projections;
         }
     }
 
