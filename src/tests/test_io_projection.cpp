@@ -77,5 +77,20 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 REQUIRE(read_proj == rasta);
             }
         }
+        WHEN("the projection is rasterized with fixed metadata and written to a GeoTIFF")
+        {
+            file_name << boost::uuids::random_generator()() << ".geotiff";
+            city::io::RasterHandler handler(
+                boost::filesystem::path(file_name.str()),
+                std::map<std::string,bool>{{"write", true}, {"read", true}}
+            );
+            city::projection::RasterPrint rasta(test_footprint, city::shadow::Point(-11., 8., 0), 5, 8, 1);
+            handler.write(rasta);
+            THEN("The output checks:")
+            {
+                city::projection::RasterPrint read_proj = handler.read();
+                REQUIRE(read_proj == rasta);
+            }
+        }
     }
 }
