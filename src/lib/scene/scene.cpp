@@ -199,13 +199,25 @@ namespace city
         {
             std::cout << "Projecting... " << std::flush;
             std::vector<projection::FootPrint> ortho_projections(buildings.size() + static_cast<std::size_t>(_terrain));
-            std::transform(
-                std::begin(buildings),
-                std::end(buildings),
-                std::begin(ortho_projections),
-                [](UNode const& building)
+            tbb::parallel_for(
+                tbb::blocked_range<std::vector<UNode>::const_iterator>(
+                    std::begin(buildings),
+                    std::end(buildings)
+                ),
+                [this, &ortho_projections](tbb::blocked_range<std::vector<UNode>::const_iterator> const& origin_range)
                 {
-                    return projection::FootPrint(building);
+                    return std::transform(
+                        std::begin(origin_range),
+                        std::end(origin_range),
+                        std::next(
+                            std::begin(ortho_projections),
+                            std::distance(std::begin(buildings), std::begin(origin_range))
+                        ),
+                        [](UNode const& building)
+                        {
+                            return projection::FootPrint(building);
+                        }
+                    );
                 }
             );
             ortho_projections.erase(
