@@ -73,7 +73,9 @@
         "__nullptr": "cpp",
         "future": "cpp",
         "string_view": "cpp",
-        "*.cuh": "cpp"
+        "*.cuh": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp"
     },
     "vsicons.presets.angular": true,
     "cmake.buildDirectory": "${workspaceRoot}/build/vscode",
