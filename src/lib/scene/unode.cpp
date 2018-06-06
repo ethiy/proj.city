@@ -432,10 +432,12 @@ namespace city
         {
             std::vector<Point_2> facet_trace(facet.facet_degree());
 
+            auto h = facet.facet_begin();
             auto iter = std::begin(facet_trace);
-            Halfedge h = *facet.halfedge();
-            for(auto const vertex : CGAL::vertices_around_face(&h, surface))
-                *iter++ = Point_2(vertex->point().x(), vertex->point().y());
+            do
+            {
+                *iter++ = Point_2(h->vertex()->point().x(), h->vertex()->point().y());
+            }while(++h != facet.facet_begin());
             
             Polygon facet_proj(std::begin(facet_trace), std::end(facet_trace));
 
