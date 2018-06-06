@@ -1,29 +1,12 @@
 #include <projection/utilities.h>
 
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+
 namespace city
 {
     namespace projection
     {
-        Polygon trace(scene::UNode::Facet const& facet, Plane_3 & plane)
-        {
-            std::vector<Point_2> facet_trace(facet.facet_degree());
-
-            auto h = facet.facet_begin();
-            auto iter = std::begin(facet_trace);
-            do
-            {
-                *iter = Point_2(h->vertex()->point().x(), h->vertex()->point().y());
-                ++iter;
-            }while(++h != facet.facet_begin());
-
-            plane = Plane_3(
-                h->vertex()->point(),
-                h->next()->vertex()->point(),
-                h->next()->next()->vertex()->point()
-            );
-
-            return Polygon(std::begin(facet_trace), std::end(facet_trace));
-        }
         std::vector<FacePrint> orthoprint(scene::UNode const& unode)
         {
             std::vector<FacePrint> prints(unode.facets_size());
@@ -32,9 +15,9 @@ namespace city
                 unode.facets_cbegin(),
                 unode.facets_cend(),
                 std::begin(prints),
-                [](scene::UNode::Facet const& facet)
+                [&unode](scene::UNode::Facet const& facet)
                 {
-                    return FacePrint(facet);
+                    return FacePrint(unode, facet);
                 }
             );
 
