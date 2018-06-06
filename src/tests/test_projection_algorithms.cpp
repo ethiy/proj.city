@@ -231,7 +231,7 @@ SCENARIO("Occlusion management")
                 "test_mesh",
                 points,
                 polygons,
-                city::Point_3(),
+                city::shadow::Point(),
                 2154
             )
         );

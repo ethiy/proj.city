@@ -69,7 +69,7 @@ namespace city
             
             return Bbox_3(x_min, y_min, z_min, x_max, y_max, z_max);
         }
-        Point_3 SceneTreeHandler::pivot(void) const
+        shadow::Point SceneTreeHandler::pivot(void) const
         {
             double  x_offset(0),
                     y_offset(0),
@@ -95,7 +95,7 @@ namespace city
                 z_offset = _bbox.zmax() / 2 + _bbox.zmin() / 2.;
             }
             
-            return city::Point_3(x_offset, y_offset, z_offset);
+            return city::shadow::Point(x_offset, y_offset, z_offset);
         }
         unsigned short SceneTreeHandler::epsg_index(void) const
         {
@@ -131,37 +131,37 @@ namespace city
             return *this;
         }
 
-        void SceneTreeHandler::set_bbox(tinyxml2::XMLNode* root, Point_3 const& pivot, Bbox_3 const& bbox)
+        void SceneTreeHandler::set_bbox(tinyxml2::XMLNode* root, shadow::Point const& pivot, Bbox_3 const& bbox)
         {
             auto p_xmin = scene_tree.NewElement("Xmin");
-            p_xmin->SetText(to_double(pivot.x() + bbox.xmin()));
+            p_xmin->SetText(pivot.x() + CGAL::to_double(bbox.xmin()));
             root->InsertEndChild(p_xmin);
             auto p_xmax = scene_tree.NewElement("Xmax");
-            p_xmax->SetText(to_double(pivot.x() + bbox.xmax()));
+            p_xmax->SetText(pivot.x() + CGAL::to_double(bbox.xmax()));
             root->InsertEndChild(p_xmax);
             auto p_ymin = scene_tree.NewElement("Ymin");
-            p_ymin->SetText(to_double(pivot.y() + bbox.ymin()));
+            p_ymin->SetText(pivot.y() + CGAL::to_double(bbox.ymin()));
             root->InsertEndChild(p_ymin);
             auto p_ymax = scene_tree.NewElement("Ymax");
-            p_ymax->SetText(to_double(pivot.y() + bbox.ymax()));
+            p_ymax->SetText(pivot.y() + CGAL::to_double(bbox.ymax()));
             root->InsertEndChild(p_ymax);
             auto p_zmin = scene_tree.NewElement("Zmin");
-            p_zmin->SetText(to_double(pivot.z() + bbox.zmin()));
+            p_zmin->SetText(pivot.z() + CGAL::to_double(bbox.zmin()));
             root->InsertEndChild(p_zmin);
             auto p_zmax = scene_tree.NewElement("Zmax");
-            p_zmax->SetText(to_double(pivot.z() + bbox.zmax()));
+            p_zmax->SetText(pivot.z() + CGAL::to_double(bbox.zmax()));
             root->InsertEndChild(p_zmax);
         }
-        void SceneTreeHandler::set_pivot(tinyxml2::XMLNode* root, Point_3 const& pivot)
+        void SceneTreeHandler::set_pivot(tinyxml2::XMLNode* root, shadow::Point const& pivot)
         {
             auto p_x = scene_tree.NewElement("offset_x");
-            p_x->SetText(to_double(pivot.x()));
+            p_x->SetText(pivot.x());
             root->InsertEndChild(p_x);
             auto p_y = scene_tree.NewElement("offset_y");
-            p_y->SetText(to_double(pivot.y()));
+            p_y->SetText(pivot.y());
             root->InsertEndChild(p_y);
             auto p_z = scene_tree.NewElement("offset_z");
-            p_z->SetText(to_double(pivot.z()));
+            p_z->SetText(pivot.z());
             root->InsertEndChild(p_z);
         }
         void SceneTreeHandler::set_epsg_index(tinyxml2::XMLNode* root, unsigned short const epsg_index)

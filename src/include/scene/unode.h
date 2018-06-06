@@ -26,14 +26,14 @@ namespace city
             UNode(UNode && other);
             UNode(
                 shadow::Mesh const& mesh,
-                Point_3 const& _reference_point=Point_3(),
+                shadow::Point const& _reference_point=shadow::Point(),
                 unsigned short const _epsg_index=2154
             );
             UNode(
                 std::string const& node_id,
                 std::vector<Point_3> points,
                 std::vector< std::vector<std::size_t> > polygons,
-                Point_3 const& _reference_point=Point_3(),
+                shadow::Point const& _reference_point=shadow::Point(),
                 unsigned short const _epsg_index=2154
             );
             ~UNode(void);
@@ -58,7 +58,7 @@ namespace city
             * Access urban node reference point.
             * @return urban node reference point
             */
-            Point_3 const& get_reference_point(void) const noexcept;
+            shadow::Point const& get_reference_point(void) const noexcept;
             /**
             * Access urban node surface.
             * @return urban node surface
@@ -289,7 +289,7 @@ namespace city
             /** Node name */
             std::string name;
             /** Reference Point */
-            Point_3 reference_point;
+            shadow::Point reference_point;
             /** Projection system EPSG code*/
             unsigned short epsg_index = 2154;
             /** The 3D surface*/

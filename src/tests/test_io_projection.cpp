@@ -41,7 +41,7 @@ SCENARIO("Input/Output from Shadow Mesh:")
                 "test_mesh",
                 points,
                 polygons,
-                city::Point_3(),
+                city::shadow::Point(),
                 2154
             )
         );

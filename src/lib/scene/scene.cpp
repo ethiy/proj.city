@@ -16,7 +16,7 @@ namespace city
         Scene::Scene(
             std::vector<shadow::Mesh> const& building_meshes,
             shadow::Mesh const& terrain_mesh,
-            Point_3 const& _pivot,
+            shadow::Point const& _pivot,
             unsigned short _epsg_index
         )
             : pivot(_pivot), epsg_index(_epsg_index), buildings(building_meshes.size())
@@ -82,7 +82,7 @@ namespace city
             return *this;
         }
 
-        Point_3 Scene::get_pivot(void) const noexcept
+        shadow::Point Scene::get_pivot(void) const noexcept
         {
             return pivot;
         }
@@ -266,7 +266,7 @@ namespace city
                     std::begin(buildings),
                     [this, &other](UNode & building)
                     {
-                        return translate(building, other.pivot -  pivot);
+                        return translate(building, other.pivot.to_cgal() -  pivot.to_cgal());
                     }
                 );
                 auto o_terrain = other.terrain;
@@ -275,7 +275,7 @@ namespace city
                     shadow::Mesh(terrain)
                     +
                     shadow::Mesh(
-                            translate(o_terrain, other.pivot -  pivot)
+                            translate(o_terrain, other.pivot.to_cgal() -  pivot.to_cgal())
                         )
                     ).set_name("terrain"),
                     terrain.get_reference_point(),

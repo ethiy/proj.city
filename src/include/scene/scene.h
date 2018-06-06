@@ -22,7 +22,7 @@ namespace city
         public:
             /**
              * Empty Constructor.
-             * @see Scene(Point_3 const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see Scene(Scene && other);
              * @see ~Scene(void);
@@ -31,14 +31,14 @@ namespace city
             Scene(
                 std::vector<shadow::Mesh> const& building_meshes,
                 shadow::Mesh const& terrain_mesh,
-                Point_3 const& _pivot = Point_3(),
+                shadow::Point const& _pivot = shadow::Point(),
                 unsigned short _epsg_index = 2154
             );
             /**
              * Copy Constructor.
              * @param other Scene to copy
              * @see Scene(void);
-             * @see Scene(Point_3 const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene && other);
              * @see ~Scene(void);
              */
@@ -47,7 +47,7 @@ namespace city
              * Move Constructor.
              * @param other Scene to move
              * @see Scene(void);
-             * @see Scene(Point_3 const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see ~Scene(void);
              */
@@ -55,7 +55,7 @@ namespace city
             /**
              * Destructor.
              * @see Scene(void);
-             * @see Scene(Point_3 const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
+             * @see Scene(shadow::Point const& _pivot, unsigned short _epsg_index, std::map<std::string, std::set<std::string> > const& _structure);
              * @see Scene(Scene const& other);
              * @see Scene(Scene && other);
              */
@@ -86,7 +86,7 @@ namespace city
              * Access pivot point
              * @return pivot points
              */
-            Point_3 get_pivot(void) const noexcept;
+            shadow::Point get_pivot(void) const noexcept;
             /**
              * Access the EPSG projection system code
              * @return the EPSG projection system code
@@ -130,7 +130,7 @@ namespace city
             Scene& operator +=(Scene const& other);
         private:
             /** Pivot */
-            Point_3 pivot;
+            shadow::Point pivot;
             /** EPSG projection system code */
             unsigned short epsg_index = 2154;
             /** Scene Buildings */
