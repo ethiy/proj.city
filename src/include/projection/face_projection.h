@@ -21,8 +21,8 @@ namespace city
         {
         public:
             FacePrint(void);
-            FacePrint(::city::scene::UNode::Facet const& facet);
             FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane);
+            FacePrint(::city::scene::UNode const& unode, ::city::scene::UNode::Facet const& facet);
             FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition);
             FacePrint(FacePrint const& other);
             FacePrint(FacePrint && other);

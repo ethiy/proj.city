@@ -8,9 +8,9 @@
 #include <CGAL/Polygon_mesh_processing/measure.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 #include <CGAL/Polygon_mesh_processing/stitch_borders.h>
+#include <CGAL/boost/graph/iterator.h>
 
 #include <CGAL/IO/Polyhedron_iostream.h>
-#include <CGAL/IO/Nef_polyhedron_iostream_3.h>
 
 #ifdef CGAL_USE_GEOMVIEW
 #include <CGAL/IO/Polyhedron_geomview_ostream.h>
@@ -336,11 +336,11 @@ namespace city
 
             return result;
         }
-        Plane_3 UNode::plane(UNode::Facet_const_handle facet) const
+        Plane_3 UNode::plane(UNode::Facet const& facet) const
         {
             return Plane_3(
-                facet->halfedge()->vertex()->point(),
-                normal(facet)
+                facet.halfedge()->vertex()->point(),
+                normal(&facet)
             );
         }
         
@@ -427,6 +427,24 @@ namespace city
             reference_point = affine_transformation.transform(reference_point);
             return *this;
         }
+
+        Polygon_with_holes UNode::facet_projection(UNode::Facet const& facet) const
+        {
+            std::vector<Point_2> facet_trace(facet.facet_degree());
+
+            auto iter = std::begin(facet_trace);
+            Halfedge h = *facet.halfedge();
+            for(auto const vertex : CGAL::vertices_around_face(&h, surface))
+                *iter++ = Point_2(vertex->point().x(), vertex->point().y());
+            
+            Polygon facet_proj(std::begin(facet_trace), std::end(facet_trace));
+
+            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
+                facet_proj.reverse_orientation();
+
+            return Polygon_with_holes(facet_proj);
+        }
+
 
         std::ostream & operator <<(std::ostream &os, UNode const& unode)
         {

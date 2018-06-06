@@ -13,7 +13,6 @@ namespace city
 {
     namespace projection
     {
-        Polygon trace(scene::UNode::Facet const& facet, Plane_3 & plane);
         std::vector<FacePrint> orthoprint(scene::UNode const& unode);
         std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, std::size_t const id, Plane_3 const& plane);
 

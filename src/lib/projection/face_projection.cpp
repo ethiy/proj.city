@@ -26,16 +26,9 @@ namespace city
         FacePrint::FacePrint(std::size_t const _id, Polygon_with_holes const& _border, Plane_3 const& _supporting_plane)
             : id(_id), border(_border), supporting_plane(_supporting_plane)
         {}
-        FacePrint::FacePrint(::city::scene::UNode::Facet const& facet)
-            : id(facet.id())
-        {
-            Polygon facet_proj = trace(facet, supporting_plane);
-
-            if(facet_proj.is_simple() && facet_proj.orientation() == CGAL::CLOCKWISE)
-                facet_proj.reverse_orientation();
-
-            border = Polygon_with_holes(facet_proj);
-        }
+        FacePrint::FacePrint(::city::scene::UNode const& unode, ::city::scene::UNode::Facet const& facet)
+            : FacePrint(facet.id(), unode.facet_projection(facet), unode.plane(facet))
+        {}
         FacePrint::FacePrint(OGRFeature* ogr_facet, OGRFeatureDefn* facet_definition)
         {
             if(facet_definition->GetFieldCount() < 5)
@@ -163,25 +156,16 @@ namespace city
 
         double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const
         {
-            double mean_height(0.);
-            auto pixel_inter = pixel_intersection(top_left_x, top_left_y, pixel_size, hit);
-
-            if(hit)
-            {
-                std::vector<double> mass(pixel_inter.size(), static_cast<double>(pixel_inter.size()));
-                mean_height = std::inner_product(
-                    std::begin(pixel_inter),
-                    std::end(pixel_inter),
-                    std::begin(mass),
-                    double(0.),
-                    std::plus<double>(),
-                    [this](Polygon_with_holes const& part, double const parts)
-                    {
-                        return get_plane_height(city::centroid(part)) / parts;
-                    }
-                );
-            }
-            return mean_height;
+            auto pixel_inters = pixel_intersection(top_left_x, top_left_y, pixel_size, hit);
+            return std::accumulate(
+                std::begin(pixel_inters),
+                std::end(pixel_inters),
+                double(0.),
+                [this, pixel_size](double const height, Polygon_with_holes const& part)
+                {
+                    return height + get_plane_height(city::centroid(part)) * city::area(part) / std::pow(pixel_size, 2);
+                }
+            );
         }
 
         InexactPoint_2 FacePrint::centroid(void) const
@@ -343,20 +327,18 @@ namespace city
                 {
                     bool hit = false;
                     double z = get_height(
-                        bb.xmin() + static_cast<double>(index%w) * pixel_size,
-                        bb.ymax() - static_cast<double>(index/w) * pixel_size,
+                        top_left.x() + (j_min + static_cast<double>(index%w)) * pixel_size,
+                        top_left.y() - (i_min + static_cast<double>(index/w)) * pixel_size,
                         pixel_size,
                         hit
                     );
                     if(hit)
                         image.at((i_min + index/w) * width + j_min + index%w)
                         =   (
-                                image.at((i_min + index/w) * width + j_min + index%w) * static_cast<double>(hits.at((i_min + index/w) * width + j_min + index%w))
+                                image.at((i_min + index/w) * width + j_min + index%w)
                                 +
                                 z
-                            )
-                            /
-                            static_cast<double>(++hits.at((i_min + index/w) * width + j_min + index%w));
+                            );
                 }
             }
             

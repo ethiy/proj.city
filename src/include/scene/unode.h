@@ -75,6 +75,7 @@ namespace city
             */
             std::size_t facets_size(void) const;
 
+            using Halfedge = Polyhedron::Halfedge;
             /** Halfedge handle */
             using Halfedge_handle = Polyhedron::Halfedge_handle;
             /** Halfedge constant handle */
@@ -246,7 +247,7 @@ namespace city
             */
             double circumference(UNode::Facet_const_handle facet) const;
 
-            Plane_3 plane(UNode::Facet_const_handle facet) const;
+            Plane_3 plane(UNode::Facet const& facet) const;
             
             UNode& set_face_ids(void);
 
@@ -282,6 +283,8 @@ namespace city
             std::vector<bool> facet_adjacency_matrix(void) const;
 
             UNode& transform(const Affine_transformation_3 & affine_transformation);
+
+            Polygon_with_holes facet_projection(UNode::Facet const& facet) const;
         private:
             /** Node name */
             std::string name;
