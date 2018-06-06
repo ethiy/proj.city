@@ -21,7 +21,7 @@ static const char USAGE[]=
 R"(orthoproject.
 
     Usage:
-      orthoproject <scene>... --input-format=<input_frmt> [--prune --read-xml --terrain] --save=<output_path> [--graphs --scene --labels] [rasterize --pixel-size=<size>]
+      orthoproject <scene>... --input-format=<input_frmt> [--prune --read-xml --terrain] --save=<output_path> [--graphs --scene --labels] [--rasterize --pixel-size=<size>]
       orthoproject (-h | --help)
       orthoproject --version
     Options:
@@ -35,6 +35,7 @@ R"(orthoproject.
       --save=<output_path>                  Specify output path.
       --scene                               Sum and save the scene projection.
       --labels                              Save vector projections with error fields.
+      --rasterize                           Rasterize projections.
       --pixel-size=<size>                   Pixel size [default: 1].
 )";
 
@@ -90,7 +91,7 @@ struct Arguments
         save_args.scene = docopt_args.at("--scene").asBool();
         save_args.labels = docopt_args.at("--labels").asBool();
 
-        if(docopt_args.at("rasterize").asBool())
+        if(docopt_args.at("--rasterize").asBool())
             raster_args.pixel_size = std::stod(docopt_args.at("--pixel-size").asString());
         
         std::cout << "Done." << std::flush << std::endl;
@@ -190,7 +191,7 @@ int main(int argc, const char** argv)
 
         city::projection::ScenePrint scene_projection(scene);
 
-        city::io::SceneVectorHandler(arguments.save_args.output_path, scene_projection).write(arguments.save_args.labels);
+        city::io::SceneVectorHandler(arguments.save_args.output_path / "vectors", scene_projection).write(arguments.save_args.labels);
                 
         if(arguments.raster_args.rasterizing())
         {

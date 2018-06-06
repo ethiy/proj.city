@@ -93,17 +93,17 @@ namespace city
         SceneVectorHandler const& SceneVectorHandler::write(bool const labels) const
         {
             std::cout << "Saving vector projections... " << std::flush;
-            boost::filesystem::path vector_dir(filepath / "vectors");
-            boost::filesystem::create_directory(vector_dir);
+            if(!boost::filesystem::is_directory(filepath))
+                boost::filesystem::create_directory(filepath);
             for(auto const& projection : scene_projection)
             {
                 VectorHandler(
-                    boost::filesystem::path(vector_dir / (projection.get_name() + ".shp")),
+                    boost::filesystem::path(filepath / (projection.get_name() + ".shp")),
                     std::map<std::string,bool>{{"write", true}}
                 ).write(projection, labels);
 
                 std::fstream attributes_file(
-                    boost::filesystem::path(vector_dir / (projection.get_name() + ".txt")).string(),
+                    boost::filesystem::path(filepath / (projection.get_name() + ".txt")).string(),
                     std::ios::out
                 );
 
