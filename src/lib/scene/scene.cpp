@@ -195,10 +195,10 @@ namespace city
             return *this;
         }
 
-        std::vector<projection::FootPrint> Scene::orthoproject(bool const _terrain) const
+        std::vector<projection::FootPrint> Scene::orthoproject(void) const
         {
             std::cout << "Projecting... " << std::flush;
-            std::vector<projection::FootPrint> ortho_projections(buildings.size() + static_cast<std::size_t>(_terrain));
+            std::vector<projection::FootPrint> ortho_projections(buildings.size());
             tbb::parallel_for(
                 tbb::blocked_range<std::vector<UNode>::const_iterator>(
                     std::begin(buildings),
@@ -231,8 +231,6 @@ namespace city
                 ),
                 std::end(ortho_projections)
             );
-            if(_terrain)
-                ortho_projections[buildings.size()] = projection::FootPrint(terrain);
             
             std::cout << "Done." << std::flush << std::endl;
 
