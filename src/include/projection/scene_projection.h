@@ -2,6 +2,8 @@
 
 #include <projection/brick_projection.h>
 
+#include <algorithms/util_algorithms.h>
+
 #include <scene/unode.h>
 #include <scene/scene.h>
 
@@ -16,6 +18,7 @@ namespace city
         public:
             FootPrint(void);
             FootPrint(scene::UNode const& unode);
+            FootPrint(scene::UNode const& unode, Bbox_2 const& mask);
             FootPrint(std::string const& _name, OGRLayer* projection_layer);
             FootPrint(FootPrint const& other);
             FootPrint(FootPrint && other);
@@ -93,7 +96,7 @@ namespace city
             {
                 return buildings;
             }
-            inline FootPrint const& get_terrain(void) const noexcept
+            inline std::vector<FootPrint> const& get_terrain(void) const noexcept
             {
                 return terrain;
             }
@@ -142,7 +145,7 @@ namespace city
             shadow::Point pivot;
             unsigned short epsg_index = 2154;
             std::vector<FootPrint> buildings;
-            FootPrint terrain;
+            std::vector<FootPrint> terrain;
             
             friend std::ostream & operator <<(std::ostream & os, ScenePrint const& footprint);
             friend bool operator ==(ScenePrint const& lhs, ScenePrint const& rhs);

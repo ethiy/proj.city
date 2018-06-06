@@ -5,7 +5,7 @@ namespace city
 {
     namespace projection
     {
-        std::vector<FacePrint> orthoprint(scene::UNode const& unode)
+        std::vector<FacePrint> orthoprint(scene::UNode const& unode, Bbox_2 const& mask)
         {
             std::vector<FacePrint> prints(unode.facets_size());
 
@@ -23,9 +23,9 @@ namespace city
                 std::remove_if(
                     std::begin(prints),
                     std::end(prints),
-                    [](FacePrint const& facet)
+                    [&mask](FacePrint const& facet)
                     {
-                        return facet.empty() || facet.is_degenerate();
+                        return facet.empty() || facet.is_degenerate() || !CGAL::do_overlap(facet.bbox(), mask);
                     }
                 ),
                 std::end(prints)

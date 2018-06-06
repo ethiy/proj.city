@@ -5,7 +5,9 @@
 
 #include <algorithm>
 #include <numeric>
+#include <iterator>
 
+#include <tbb/parallel_for.h>
 #include <tbb/parallel_reduce.h>
 #include <tbb/blocked_range.h>
 
@@ -17,31 +19,23 @@ namespace city
         FootPrint::FootPrint(void)
         {}
         FootPrint::FootPrint(scene::UNode const& unode)
+            : FootPrint(unode, orthobbox(unode.bbox()))
+        {}
+        FootPrint::FootPrint(scene::UNode const& unode, Bbox_2 const& mask)
             : name(unode.get_name()), reference_point(unode.get_reference_point()), epsg_index(unode.get_epsg())
         {
             std::cout << "Projecting node: " << unode.get_name() << std::endl;
-            std::vector<FacePrint> prints = orthoprint(unode);
+            std::vector<FacePrint> prints = orthoprint(unode, mask);
             try
             {
-                projection = tbb::parallel_reduce(
-                    tbb::blocked_range<std::vector<FacePrint>::iterator>(
-                        std::begin(prints),
-                        std::end(prints)
-                    ),
+                projection = std::accumulate(
+                    std::begin(prints),
+                    std::end(prints),
                     projection,
-                    [](tbb::blocked_range<std::vector<FacePrint>::iterator> const& b_range, BrickPrint const& init)
+                    [](BrickPrint const& proj, FacePrint const& face_print)
                     {
-                        return std::accumulate(
-                            std::begin(b_range),
-                            std::end(b_range),
-                            init,
-                            [](BrickPrint & proj, FacePrint const& face_print)
-                            {
-                                return proj + face_print;
-                            }
-                        );
-                    },
-                    std::plus<BrickPrint>()
+                        return proj + face_print;
+                    }
                 );
             }
             catch(const std::exception& e)
@@ -248,8 +242,31 @@ namespace city
         ScenePrint::ScenePrint(void)
         {}
         ScenePrint::ScenePrint(scene::Scene const& scene)
-            : pivot(scene.get_pivot()), epsg_index(scene.get_epsg()), buildings(scene.orthoproject(false)), terrain(FootPrint(scene.get_terrain()))
-        {}
+            : pivot(scene.get_pivot()), epsg_index(scene.get_epsg()), buildings(scene.orthoproject())
+        {
+            terrain = std::vector<FootPrint>(buildings.size());
+            tbb::parallel_for(
+                tbb::blocked_range<std::vector<FootPrint>::iterator>(
+                    std::begin(buildings),
+                    std::end(buildings)
+                ),
+                [this, scene](tbb::blocked_range<std::vector<FootPrint>::iterator> const& origin_range)
+                {
+                    return std::transform(
+                        std::begin(origin_range),
+                        std::end(origin_range),
+                        std::next(
+                            std::begin(terrain),
+                            std::distance(std::begin(buildings), std::begin(origin_range))
+                        ),
+                        [scene](FootPrint const& building)
+                        {
+                            return projection::FootPrint(scene.get_terrain(), building.bbox());
+                        }
+                    );
+                }
+            );
+        }
         ScenePrint::ScenePrint(ScenePrint const& other)
             : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}
@@ -292,7 +309,7 @@ namespace city
             return std::accumulate(
                 std::begin(buildings),
                 std::end(buildings),
-                terrain.bbox(),
+                Bbox_2(),
                 [](Bbox_2 const& bb, FootPrint const& nodeprint)
                 {
                     return bb + nodeprint.bbox();
@@ -336,10 +353,11 @@ namespace city
             std::transform(
                 std::begin(buildings),
                 std::end(buildings),
+                std::begin(terrain),
                 std::begin(raster_projections),
-                [pixel_size, this](projection::FootPrint const& projection)
+                [pixel_size, this](projection::FootPrint const& projection, projection::FootPrint const& _tr)
                 {
-                    return projection::RasterPrint(projection, pixel_size, terrain);
+                    return projection::RasterPrint(projection, pixel_size, _tr);
                 }
             );
             std::cout << "Done." << std::flush << std::endl;
