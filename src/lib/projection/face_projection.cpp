@@ -134,7 +134,7 @@ namespace city
             return !is_degenerate() * contains(inexact_point) * get_plane_height(inexact_point) ;
         }
 
-        std::vector<Polygon_with_holes> FacePrint::pixel_intersection(double const top_left_x, double const top_left_y, double const pixel_size, bool & hit) const
+        std::vector<Polygon_with_holes> FacePrint::pixel_intersection(double const top_left_x, double const top_left_y, double const pixel_size) const
         {
             InexactToExact to_exact;
             std::vector<Point_2> pixel_corners{{
@@ -150,13 +150,12 @@ namespace city
                 border,
                 std::back_inserter(pixel_inter)
             );
-            hit = !pixel_inter.empty();
             return pixel_inter;
         }
 
-        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const
+        double FacePrint::get_height(double top_left_x, double top_left_y, double pixel_size) const
         {
-            auto pixel_inters = pixel_intersection(top_left_x, top_left_y, pixel_size, hit);
+            auto pixel_inters = pixel_intersection(top_left_x, top_left_y, pixel_size);
             return std::accumulate(
                 std::begin(pixel_inters),
                 std::end(pixel_inters),
@@ -271,7 +270,7 @@ namespace city
             return feature;
         }
 
-        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
+        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
             if(!is_degenerate())
             {
@@ -325,20 +324,11 @@ namespace city
                 std::iota(std::begin(indexes), std::end(indexes), 0);
                 for(auto const& index : indexes)
                 {
-                    bool hit = false;
-                    double z = get_height(
+                    image.at((i_min + index/w) * width + j_min + index%w) += get_height(
                         top_left.x() + (j_min + static_cast<double>(index%w)) * pixel_size,
                         top_left.y() - (i_min + static_cast<double>(index/w)) * pixel_size,
-                        pixel_size,
-                        hit
+                        pixel_size
                     );
-                    if(hit)
-                        image.at((i_min + index/w) * width + j_min + index%w)
-                        =   (
-                                image.at((i_min + index/w) * width + j_min + index%w)
-                                +
-                                z
-                            );
                 }
             }
             

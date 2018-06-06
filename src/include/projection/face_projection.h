@@ -47,8 +47,8 @@ namespace city
             double get_height(Point_2 const& point) const;
             double get_height(InexactPoint_2 const& inexact_point) const;
             
-            std::vector<Polygon_with_holes> pixel_intersection(double const top_left_x, double const top_left_y, double const pixel_size, bool & hit) const;
-            double get_height(double top_left_x, double top_left_y, double pixel_size, bool & hit) const;
+            std::vector<Polygon_with_holes> pixel_intersection(double const top_left_x, double const top_left_y, double const pixel_size) const;
+            double get_height(double top_left_x, double top_left_y, double pixel_size) const;
 
             InexactPoint_2 centroid(void) const;
             double area(void) const;
@@ -78,7 +78,7 @@ namespace city
 
             OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const;
             
-            std::vector<double> & rasterize(std::vector<double> & image, std::vector<short> & hits, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
+            std::vector<double> & rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
         private:
             std::size_t id;
             Polygon_with_holes border;

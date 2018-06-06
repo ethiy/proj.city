@@ -168,14 +168,13 @@ namespace city
         
         std::vector<double> & FootPrint::rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
-            std::vector<short> pixel_hits(height * width, 0);
             image = std::accumulate(
                 std::begin(projection),
                 std::end(projection),
                 image,
-                [&pixel_hits, top_left, height, width, pixel_size](std::vector<double> & _image, projection::FacePrint const& face_projection)
+                [top_left, height, width, pixel_size](std::vector<double> & _image, projection::FacePrint const& face_projection)
                 {
-                    return face_projection.rasterize(_image, pixel_hits, top_left, height, width, pixel_size);
+                    return face_projection.rasterize(_image, top_left, height, width, pixel_size);
                 }
             );
             return image;
