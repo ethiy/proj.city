@@ -6,6 +6,10 @@
 #include <algorithm>
 #include <numeric>
 
+#include <tbb/parallel_reduce.h>
+#include <tbb/blocked_range.h>
+
+
 namespace city
 {
     namespace projection
@@ -19,14 +23,25 @@ namespace city
             std::vector<FacePrint> prints = orthoprint(unode);
             try
             {
-                projection = std::accumulate(
-                    std::begin(prints),
-                    std::end(prints),
+                projection = tbb::parallel_reduce(
+                    tbb::blocked_range<std::vector<FacePrint>::iterator>(
+                        std::begin(prints),
+                        std::end(prints)
+                    ),
                     projection,
-                    [](BrickPrint & proj, FacePrint const& face_print)
+                    [](tbb::blocked_range<std::vector<FacePrint>::iterator> const& b_range, BrickPrint const& init)
                     {
-                        return proj + face_print;
-                    }
+                        return std::accumulate(
+                            std::begin(b_range),
+                            std::end(b_range),
+                            init,
+                            [](BrickPrint & proj, FacePrint const& face_print)
+                            {
+                                return proj + face_print;
+                            }
+                        );
+                    },
+                    std::plus<BrickPrint>()
                 );
             }
             catch(const std::exception& e)
