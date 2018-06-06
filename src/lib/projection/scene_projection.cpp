@@ -178,37 +178,14 @@ namespace city
         std::vector<double> FootPrint::rasterize(std::vector<double> const& image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
             return std::accumulate(
-                        std::begin(projection),
-                        std::end(projection),
-                        image,
-                        [top_left, height, width, pixel_size](std::vector<double> const& _image, projection::FacePrint const& face_projection)
-                        {
-                            return face_projection.rasterize(_image, top_left, height, width, pixel_size);
-                        }
-                    );
-            // tbb::parallel_reduce(
-            //     tbb::blocked_range<BrickPrint::const_iterator>(
-            //         std::begin(projection),
-            //         std::end(projection)
-            //     ),
-            //     image,
-            //     [top_left, height, width, pixel_size](tbb::blocked_range<BrickPrint::const_iterator> const& b_range, std::vector<double> const& init)
-            //     {
-            //         return 
-            //     },
-            //     [](std::vector<double> const& lhs, std::vector<double> const& rhs)
-            //     {
-            //         std::vector<double> result(lhs.size());
-            //         std::transform(
-            //             std::begin(lhs),
-            //             std::end(lhs),
-            //             std::begin(rhs),
-            //             std::begin(result),
-            //             std::plus<double>()
-            //         );
-            //         return result;
-            //     }
-            // );
+                std::begin(projection),
+                std::end(projection),
+                image,
+                [top_left, height, width, pixel_size](std::vector<double> const& _image, projection::FacePrint const& face_projection)
+                {
+                    return face_projection.rasterize(_image, top_left, height, width, pixel_size);
+                }
+            );
         }
 
         std::ostream & operator <<(std::ostream & os, FootPrint const& footprint)
