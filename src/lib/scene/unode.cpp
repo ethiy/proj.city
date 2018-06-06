@@ -336,6 +336,13 @@ namespace city
 
             return result;
         }
+        Plane_3 UNode::plane(UNode::Facet_const_handle facet) const
+        {
+            return Plane_3(
+                facet->halfedge()->vertex()->point(),
+                normal(facet)
+            );
+        }
         
         UNode & UNode::set_face_ids(void)
         {

@@ -245,6 +245,8 @@ namespace city
             * @return circumference of the facet
             */
             double circumference(UNode::Facet_const_handle facet) const;
+
+            Plane_3 plane(UNode::Facet_const_handle facet) const;
             
             UNode& set_face_ids(void);
 
