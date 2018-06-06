@@ -104,6 +104,10 @@ namespace city
             {
                 return buildings.empty();
             }
+            inline std::size_t size(void) const noexcept
+            {
+                return buildings.size();
+            }
 
             Bbox_2 bbox(void) const;
 
@@ -136,6 +140,30 @@ namespace city
             inline const_iterator cend(void) const noexcept
             {
                 return buildings.cend();
+            }
+            inline iterator terrain_begin(void) noexcept
+            {
+                return terrain.begin();
+            }
+            inline iterator terrain_end(void) noexcept
+            {
+                return terrain.end();
+            }
+            inline const_iterator terrain_begin(void) const noexcept
+            {
+                return terrain.begin();
+            }
+            inline const_iterator terrain_end(void) const noexcept
+            {
+                return terrain.end();
+            }
+            inline const_iterator terrain_cbegin(void) const noexcept
+            {
+                return terrain.cbegin();
+            }
+            inline const_iterator terrain_cend(void) const noexcept
+            {
+                return terrain.cend();
             }
 
             void to_ogr(GDALDataset* file, bool labels) const;

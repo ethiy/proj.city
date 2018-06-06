@@ -177,37 +177,38 @@ namespace city
         
         std::vector<double> FootPrint::rasterize(std::vector<double> const& image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
-            return tbb::parallel_reduce(
-                tbb::blocked_range<BrickPrint::const_iterator>(
-                    std::begin(projection),
-                    std::end(projection)
-                ),
-                image,
-                [top_left, height, width, pixel_size](tbb::blocked_range<BrickPrint::const_iterator> const& b_range, std::vector<double> const& init)
-                {
-                    return std::accumulate(
-                        std::begin(b_range),
-                        std::end(b_range),
-                        init,
+            return std::accumulate(
+                        std::begin(projection),
+                        std::end(projection),
+                        image,
                         [top_left, height, width, pixel_size](std::vector<double> const& _image, projection::FacePrint const& face_projection)
                         {
                             return face_projection.rasterize(_image, top_left, height, width, pixel_size);
                         }
                     );
-                },
-                [](std::vector<double> const& lhs, std::vector<double> const& rhs)
-                {
-                    std::vector<double> result(lhs.size());
-                    std::transform(
-                        std::begin(lhs),
-                        std::end(lhs),
-                        std::begin(rhs),
-                        std::begin(result),
-                        std::plus<double>()
-                    );
-                    return result;
-                }
-            );
+            // tbb::parallel_reduce(
+            //     tbb::blocked_range<BrickPrint::const_iterator>(
+            //         std::begin(projection),
+            //         std::end(projection)
+            //     ),
+            //     image,
+            //     [top_left, height, width, pixel_size](tbb::blocked_range<BrickPrint::const_iterator> const& b_range, std::vector<double> const& init)
+            //     {
+            //         return 
+            //     },
+            //     [](std::vector<double> const& lhs, std::vector<double> const& rhs)
+            //     {
+            //         std::vector<double> result(lhs.size());
+            //         std::transform(
+            //             std::begin(lhs),
+            //             std::end(lhs),
+            //             std::begin(rhs),
+            //             std::begin(result),
+            //             std::plus<double>()
+            //         );
+            //         return result;
+            //     }
+            // );
         }
 
         std::ostream & operator <<(std::ostream & os, FootPrint const& footprint)
@@ -350,15 +351,22 @@ namespace city
         {
             std::cout << "rasterizing projections... " << std::flush;
             std::vector<projection::RasterPrint> raster_projections(buildings.size());
-            std::transform(
-                std::begin(buildings),
-                std::end(buildings),
-                std::begin(terrain),
-                std::begin(raster_projections),
-                [pixel_size, this](projection::FootPrint const& projection, projection::FootPrint const& _tr)
+            tbb::parallel_for(
+                tbb::blocked_range<std::size_t>(0, buildings.size()),
+                [this, &raster_projections, pixel_size](tbb::blocked_range<std::size_t> const& range)
                 {
-                    return projection::RasterPrint(projection, pixel_size, _tr);
-                }
+                    return std::transform(
+                        std::next(std::begin(buildings), range.begin()),
+                        std::next(std::begin(buildings), range.end()),
+                        std::next(std::begin(terrain), range.begin()),
+                        std::next(std::begin(raster_projections), range.begin()),
+                        [pixel_size, this](projection::FootPrint const& projection, projection::FootPrint const& _tr)
+                        {
+                            return projection::RasterPrint(projection, pixel_size, _tr);
+                        }
+                    );
+                },
+                tbb::simple_partitioner()
             );
             std::cout << "Done." << std::flush << std::endl;
             return raster_projections;
