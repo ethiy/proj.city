@@ -11,6 +11,8 @@
 
 namespace city
 {
+    Bbox_2 orthobbox(Bbox_3 const& bbox);
+
     /** Get the rotation transformation from a set of axis and angle couples*/
     Affine_transformation_3 rotation_transform(std::map<double, Vector_3> const& _rotations);
 

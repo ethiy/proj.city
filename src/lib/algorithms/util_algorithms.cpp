@@ -7,6 +7,16 @@
 
 namespace city
 {
+    Bbox_2 orthobbox(Bbox_3 const& bbox)
+    {
+        return Bbox_2(
+            bbox.xmin(),
+            bbox.ymin(),
+            bbox.xmax(),
+            bbox.ymax()
+        );
+    }
+
     Affine_transformation_3 rotation_transform(const std::map<double, Vector_3> & _rotations)
     {
         std::vector<Affine_transformation_3> rotations;
