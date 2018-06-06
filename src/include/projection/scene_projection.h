@@ -55,7 +55,7 @@ namespace city
 
             void to_ogr(GDALDataset* file, bool labels) const;
 
-            std::vector<double> & rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
+            std::vector<double> rasterize(std::vector<double> const& image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
         private:
             std::string name;
             shadow::Point reference_point;

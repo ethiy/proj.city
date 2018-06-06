@@ -78,7 +78,7 @@ namespace city
 
             OGRFeature* to_ogr(OGRFeatureDefn* feature_definition, shadow::Point const& reference_point, bool labels) const;
             
-            std::vector<double> & rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
+            std::vector<double> rasterize(std::vector<double> const& image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const;
         private:
             std::size_t id;
             Polygon_with_holes border;

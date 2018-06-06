@@ -181,18 +181,39 @@ namespace city
             projection.to_ogr(projection_layer, reference_point, labels);            
         }
         
-        std::vector<double> & FootPrint::rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
+        std::vector<double> FootPrint::rasterize(std::vector<double> const& image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
-            image = std::accumulate(
-                std::begin(projection),
-                std::end(projection),
+            return tbb::parallel_reduce(
+                tbb::blocked_range<BrickPrint::const_iterator>(
+                    std::begin(projection),
+                    std::end(projection)
+                ),
                 image,
-                [top_left, height, width, pixel_size](std::vector<double> & _image, projection::FacePrint const& face_projection)
+                [top_left, height, width, pixel_size](tbb::blocked_range<BrickPrint::const_iterator> const& b_range, std::vector<double> const& init)
                 {
-                    return face_projection.rasterize(_image, top_left, height, width, pixel_size);
+                    return std::accumulate(
+                        std::begin(b_range),
+                        std::end(b_range),
+                        init,
+                        [top_left, height, width, pixel_size](std::vector<double> const& _image, projection::FacePrint const& face_projection)
+                        {
+                            return face_projection.rasterize(_image, top_left, height, width, pixel_size);
+                        }
+                    );
+                },
+                [](std::vector<double> const& lhs, std::vector<double> const& rhs)
+                {
+                    std::vector<double> result(lhs.size());
+                    std::transform(
+                        std::begin(lhs),
+                        std::end(lhs),
+                        std::begin(rhs),
+                        std::begin(result),
+                        std::plus<double>()
+                    );
+                    return result;
                 }
             );
-            return image;
         }
 
         std::ostream & operator <<(std::ostream & os, FootPrint const& footprint)

@@ -270,8 +270,9 @@ namespace city
             return feature;
         }
 
-        std::vector<double> & FacePrint::rasterize(std::vector<double> & image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
+        std::vector<double> FacePrint::rasterize(std::vector<double> const& _image, shadow::Point const& top_left, std::size_t const height, std::size_t const width, double const pixel_size) const
         {
+            std::vector<double> image = _image;
             if(!is_degenerate())
             {
                 Bbox_2 bb = bbox();
