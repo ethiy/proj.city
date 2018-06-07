@@ -8,21 +8,6 @@ namespace city
 {
     namespace projection
     {
-        std::vector<FootPrint> terrain_projections(ScenePrint const& scene_projection)
-        {
-            std::vector<FootPrint> terrains(scene_projection.size());
-            std::transform(
-                std::begin(scene_projection),
-                std::end(scene_projection),
-                std::begin(terrains),
-                [&scene_projection](FootPrint const& building)
-                {
-                    return projection::FootPrint(scene_projection.get_terrain(), building.bbox());
-                }
-            );
-            return terrains;
-        }
-
         std::vector<FacePrint> orthoprint(scene::UNode const& unode, Bbox_2 const& mask)
         {
             std::vector<FacePrint> prints(unode.facets_size());
