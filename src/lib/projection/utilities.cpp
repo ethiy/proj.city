@@ -8,50 +8,6 @@ namespace city
 {
     namespace projection
     {
-        std::vector<FootPrint> terrain_projections(std::vector<FootPrint> const& buildings, scene::UNode const& terrain)
-        {
-            std::vector<FootPrint> terrains(buildings.size());
-            struct lambda
-            {
-                scene::UNode terrain_;
-                std::vector<FootPrint>::const_iterator bbegin;
-                std::vector<FootPrint>::iterator tbegin;
-
-                lambda(scene::UNode _terrain, std::vector<FootPrint>::const_iterator _bbegin, std::vector<FootPrint>::iterator _tbegin)
-                    : terrain_(_terrain), bbegin(_bbegin), tbegin(_tbegin)
-                {}
-                lambda(lambda const& other)
-                    : terrain_(other.terrain_), bbegin(other.bbegin), tbegin(other.tbegin)
-                {}
-                ~lambda(void)
-                {}
-
-                void operator()(tbb::blocked_range<std::vector<FootPrint>::const_iterator> const& origin_range) const
-                {
-                    std::transform(
-                        std::begin(origin_range),
-                        std::end(origin_range),
-                        std::next(
-                            tbegin,
-                            std::distance(bbegin, std::begin(origin_range))
-                        ),
-                        [this](FootPrint const& building)
-                        {
-                            return projection::FootPrint(terrain_, building.bbox());
-                        }
-                    );
-                }
-            };
-            tbb::parallel_for(
-                tbb::blocked_range<std::vector<FootPrint>::const_iterator>(
-                    std::begin(buildings),
-                    std::end(buildings)
-                ),
-                lambda(terrain, std::begin(buildings), std::begin(terrains))
-            );
-            return terrains;
-        }
-
         std::vector<FacePrint> orthoprint(scene::UNode const& unode, Bbox_2 const& mask)
         {
             std::vector<FacePrint> prints(unode.facets_size());

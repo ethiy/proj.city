@@ -223,12 +223,7 @@ namespace city
             : pivot(scene.get_pivot()),
               epsg_index(scene.get_epsg()),
               buildings(scene::orthoproject(scene)),
-              terrain(
-                  terrain_projections(
-                      buildings,
-                      scene.get_terrain()
-                  )
-              )
+              terrain(scene.get_terrain())
         {}
         ScenePrint::ScenePrint(ScenePrint const& other)
             : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
@@ -312,22 +307,49 @@ namespace city
         std::vector<RasterPrint> rasterize(ScenePrint const& scene_projection, double const pixel_size)
         {
             std::cout << "rasterizing projections... " << std::flush;
-            std::vector<projection::RasterPrint> raster_projections(scene_projection.size());
-            tbb::parallel_for(
-                tbb::blocked_range<std::size_t>(0, scene_projection.size()),
-                [scene_projection, &raster_projections, pixel_size](tbb::blocked_range<std::size_t> const& range)
+            std::vector<RasterPrint> raster_projections(scene_projection.size());
+            struct lambda
+            {
+                scene::UNode terrain_;
+                ScenePrint::const_iterator bbegin;
+                std::vector<RasterPrint>::iterator rbegin;
+                double pixel_size_;
+
+                lambda(scene::UNode _terrain, ScenePrint::const_iterator _bbegin, std::vector<RasterPrint>::iterator _rbegin, double const _pixel_size)
+                    : terrain_(_terrain), bbegin(_bbegin), rbegin(_rbegin), pixel_size_(_pixel_size)
+                {}
+                lambda(lambda const& other)
+                    : terrain_(other.terrain_), bbegin(other.bbegin), rbegin(other.rbegin), pixel_size_(other.pixel_size_)
+                {}
+                ~lambda(void)
+                {}
+
+                void operator()(tbb::blocked_range<ScenePrint::const_iterator> const& origin_range) const
                 {
                     std::transform(
-                        std::next(std::begin(scene_projection), range.begin()),
-                        std::next(std::begin(scene_projection), range.end()),
-                        std::next(scene_projection.terrain_begin(), range.begin()),
-                        std::next(std::begin(raster_projections), range.begin()),
-                        [pixel_size](projection::FootPrint const& projection, projection::FootPrint const& _tr)
+                        std::begin(origin_range),
+                        std::end(origin_range),
+                        std::next(
+                            rbegin,
+                            std::distance(bbegin, std::begin(origin_range))
+                        ),
+                        [this](FootPrint const& building)
                         {
-                            return projection::RasterPrint(projection, pixel_size, _tr);
+                            return projection::RasterPrint(
+                                building,
+                                pixel_size_,
+                                projection::FootPrint(terrain_, building.bbox())
+                            );
                         }
                     );
                 }
+            };
+            tbb::parallel_for(
+                tbb::blocked_range<ScenePrint::const_iterator>(
+                    std::begin(scene_projection),
+                    std::end(scene_projection)
+                ),
+                lambda(scene_projection.get_terrain(), std::begin(scene_projection), std::begin(raster_projections), pixel_size)
             );
             std::cout << "Done." << std::flush << std::endl;
             return raster_projections;

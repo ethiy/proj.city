@@ -96,7 +96,7 @@ namespace city
             {
                 return buildings;
             }
-            inline std::vector<FootPrint> const& get_terrain(void) const noexcept
+            inline scene::UNode const& get_terrain(void) const noexcept
             {
                 return terrain;
             }
@@ -141,37 +141,13 @@ namespace city
             {
                 return buildings.cend();
             }
-            inline iterator terrain_begin(void) noexcept
-            {
-                return terrain.begin();
-            }
-            inline iterator terrain_end(void) noexcept
-            {
-                return terrain.end();
-            }
-            inline const_iterator terrain_begin(void) const noexcept
-            {
-                return terrain.begin();
-            }
-            inline const_iterator terrain_end(void) const noexcept
-            {
-                return terrain.end();
-            }
-            inline const_iterator terrain_cbegin(void) const noexcept
-            {
-                return terrain.cbegin();
-            }
-            inline const_iterator terrain_cend(void) const noexcept
-            {
-                return terrain.cend();
-            }
 
             void to_ogr(GDALDataset* file, bool labels) const;
         private:
             shadow::Point pivot;
             unsigned short epsg_index = 2154;
             std::vector<FootPrint> buildings;
-            std::vector<FootPrint> terrain;
+            scene::UNode terrain;
             
             friend std::ostream & operator <<(std::ostream & os, ScenePrint const& footprint);
             friend bool operator ==(ScenePrint const& lhs, ScenePrint const& rhs);
