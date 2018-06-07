@@ -220,31 +220,16 @@ namespace city
         ScenePrint::ScenePrint(void)
         {}
         ScenePrint::ScenePrint(scene::Scene const& scene)
-            : pivot(scene.get_pivot()), epsg_index(scene.get_epsg()), buildings(scene.orthoproject())
-        {
-            terrain = std::vector<FootPrint>(buildings.size());
-            tbb::parallel_for(
-                tbb::blocked_range<std::vector<FootPrint>::iterator>(
-                    std::begin(buildings),
-                    std::end(buildings)
-                ),
-                [this, scene](tbb::blocked_range<std::vector<FootPrint>::iterator> const& origin_range)
-                {
-                    return std::transform(
-                        std::begin(origin_range),
-                        std::end(origin_range),
-                        std::next(
-                            std::begin(terrain),
-                            std::distance(std::begin(buildings), std::begin(origin_range))
-                        ),
-                        [scene](FootPrint const& building)
-                        {
-                            return projection::FootPrint(scene.get_terrain(), building.bbox());
-                        }
-                    );
-                }
-            );
-        }
+            : pivot(scene.get_pivot()),
+              epsg_index(scene.get_epsg()),
+              buildings(scene::orthoproject(scene)),
+              terrain(
+                  terrain_projections(
+                      buildings,
+                      scene.get_terrain()
+                  )
+              )
+        {}
         ScenePrint::ScenePrint(ScenePrint const& other)
             : pivot(other.pivot), epsg_index(other.epsg_index), buildings(other.buildings), terrain(other.terrain)
         {}
@@ -332,7 +317,7 @@ namespace city
                 tbb::blocked_range<std::size_t>(0, buildings.size()),
                 [this, &raster_projections, pixel_size](tbb::blocked_range<std::size_t> const& range)
                 {
-                    return std::transform(
+                    std::transform(
                         std::next(std::begin(buildings), range.begin()),
                         std::next(std::begin(buildings), range.end()),
                         std::next(std::begin(terrain), range.begin()),

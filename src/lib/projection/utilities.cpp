@@ -1,10 +1,41 @@
 #include <projection/utilities.h>
 
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
+
 
 namespace city
 {
     namespace projection
     {
+        std::vector<FootPrint> terrain_projections(std::vector<FootPrint> const& buildings, scene::UNode terrain)
+        {
+            std::vector<FootPrint> terrains(buildings.size());
+            tbb::parallel_for(
+                tbb::blocked_range<std::vector<FootPrint>::const_iterator>(
+                    std::begin(buildings),
+                    std::end(buildings)
+                ),
+                [terrain, buildings, &terrains](tbb::blocked_range<std::vector<FootPrint>::const_iterator> const& origin_range)
+                {
+                    scene::UNode _terrain(terrain);
+                    std::transform(
+                        std::begin(origin_range),
+                        std::end(origin_range),
+                        std::next(
+                            std::begin(terrains),
+                            std::distance(std::begin(buildings), std::begin(origin_range))
+                        ),
+                        [_terrain](FootPrint const& building)
+                        {
+                            return projection::FootPrint(_terrain, building.bbox());
+                        }
+                    );
+                }
+            );
+            return terrains;
+        }
+
         std::vector<FacePrint> orthoprint(scene::UNode const& unode, Bbox_2 const& mask)
         {
             std::vector<FacePrint> prints(unode.facets_size());

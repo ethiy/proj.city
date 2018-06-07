@@ -158,7 +158,7 @@ city::scene::Scene input_scene(Arguments::SceneArguments const& scene_args, Argu
     );    
 
     if(scene_args.prune)
-        scene = scene.prune(scene_args.terrain);
+        scene = city::scene::prune(scene);
     
     if(save_args.graphs)
         city::save_building_duals(

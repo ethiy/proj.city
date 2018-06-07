@@ -161,82 +161,6 @@ namespace city
             lhs.swap(rhs);
         }
 
-        Scene& Scene::prune(bool const _terrain)
-        {
-            tbb::parallel_for(
-                tbb::blocked_range<std::vector<UNode>::iterator>(
-                    std::begin(buildings),
-                    std::end(buildings)
-                ),
-                [](tbb::blocked_range<std::vector<UNode>::iterator> const& b_range)
-                {
-                    return std::transform(
-                        std::begin(b_range),
-                        std::end(b_range),
-                        std::begin(b_range),
-                        [](UNode & building)
-                        {
-                            try
-                            {
-                                return building.prune();
-                            }
-                            catch(const std::exception& e)
-                            {
-                                std::cerr << e.what() << std::endl;
-                                return building;
-                            }
-                        }
-                    );
-                }
-            );
-            if(_terrain)
-                terrain = terrain.prune();
-
-            return *this;
-        }
-
-        std::vector<projection::FootPrint> Scene::orthoproject(void) const
-        {
-            std::cout << "Projecting... " << std::flush;
-            std::vector<projection::FootPrint> ortho_projections(buildings.size());
-            tbb::parallel_for(
-                tbb::blocked_range<std::vector<UNode>::const_iterator>(
-                    std::begin(buildings),
-                    std::end(buildings)
-                ),
-                [this, &ortho_projections](tbb::blocked_range<std::vector<UNode>::const_iterator> const& origin_range)
-                {
-                    return std::transform(
-                        std::begin(origin_range),
-                        std::end(origin_range),
-                        std::next(
-                            std::begin(ortho_projections),
-                            std::distance(std::begin(buildings), std::begin(origin_range))
-                        ),
-                        [](UNode const& building)
-                        {
-                            return projection::FootPrint(building);
-                        }
-                    );
-                }
-            );
-            ortho_projections.erase(
-                std::remove_if(
-                    std::begin(ortho_projections),
-                    std::end(ortho_projections),
-                    [](projection::FootPrint const& ortho_projection)
-                    {
-                        return ortho_projection.empty();
-                    }
-                ),
-                std::end(ortho_projections)
-            );
-            
-            std::cout << "Done." << std::flush << std::endl;
-
-            return ortho_projections;
-        }
-
         bool Scene::empty(void) const noexcept
         {
             return buildings.empty() && terrain.empty();
@@ -288,10 +212,77 @@ namespace city
             auto result = lhs;
             return result += rhs;
         }
-    }
 
-    scene::Scene & prune(scene::Scene & scene, bool const terrain)
-    {
-        return scene.prune(terrain);
+        Scene & prune(Scene & scene)
+        {
+            tbb::parallel_for(
+                tbb::blocked_range<Scene::iterator>(
+                    std::begin(scene),
+                    std::end(scene)
+                ),
+                [](tbb::blocked_range<Scene::iterator> const& b_range)
+                {
+                    std::transform(
+                        std::begin(b_range),
+                        std::end(b_range),
+                        std::begin(b_range),
+                        [](UNode & building)
+                        {
+                            try
+                            {
+                                return building.prune();
+                            }
+                            catch(const std::exception& e)
+                            {
+                                std::cerr << e.what() << std::endl;
+                                return building;
+                            }
+                        }
+                    );
+                }
+            );
+            return scene;
+        }
+        std::vector<projection::FootPrint> orthoproject(Scene const& scene)
+        {
+            std::cout << "Projecting... " << std::flush;
+            std::vector<projection::FootPrint> ortho_projections(scene.size());
+            tbb::parallel_for(
+                tbb::blocked_range<Scene::const_iterator>(
+                    std::begin(scene),
+                    std::end(scene)
+                ),
+                [&scene, &ortho_projections](tbb::blocked_range<Scene::const_iterator> const& origin_range)
+                {
+                    std::transform(
+                        std::begin(origin_range),
+                        std::end(origin_range),
+                        std::next(
+                            std::begin(ortho_projections),
+                            std::distance(std::begin(scene), std::begin(origin_range))
+                        ),
+                        [](UNode const& building)
+                        {
+                            return projection::FootPrint(building);
+                        }
+                    );
+                }
+            );
+            ortho_projections.erase(
+                std::remove_if(
+                    std::begin(ortho_projections),
+                    std::end(ortho_projections),
+                    [](projection::FootPrint const& ortho_projection)
+                    {
+                        return ortho_projection.empty();
+                    }
+                ),
+                std::end(ortho_projections)
+            );
+            
+            std::cout << "Done." << std::flush << std::endl;
+
+            return ortho_projections;
+        }
     }
 }

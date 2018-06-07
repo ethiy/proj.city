@@ -121,11 +121,7 @@ namespace city
             const_iterator cend(void) const noexcept;
 
             std::size_t size(void) const noexcept;
-
             bool empty(void) const noexcept;
-
-            Scene& prune(bool const terrain);
-            std::vector<projection::FootPrint> orthoproject() const;
 
             Scene& operator +=(Scene const& other);
         private:
@@ -148,7 +144,8 @@ namespace city
         void swap(Scene & lhs, Scene & rhs);
 
         Scene operator +(Scene const& lhs, Scene const& rhs);
+    
+        Scene & prune(Scene & scene);
+        std::vector<projection::FootPrint> orthoproject(Scene const& scene);
     }
-
-    scene::Scene & prune(scene::Scene & scene, bool const terrain = false);
 }
