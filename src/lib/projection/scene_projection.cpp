@@ -309,26 +309,25 @@ namespace city
             return _circumferences;
         }
 
-        std::vector<RasterPrint> ScenePrint::rasterize(double const pixel_size) const
+        std::vector<RasterPrint> rasterize(ScenePrint const& scene_projection, double const pixel_size)
         {
             std::cout << "rasterizing projections... " << std::flush;
-            std::vector<projection::RasterPrint> raster_projections(buildings.size());
+            std::vector<projection::RasterPrint> raster_projections(scene_projection.size());
             tbb::parallel_for(
-                tbb::blocked_range<std::size_t>(0, buildings.size()),
-                [this, &raster_projections, pixel_size](tbb::blocked_range<std::size_t> const& range)
+                tbb::blocked_range<std::size_t>(0, scene_projection.size()),
+                [scene_projection, &raster_projections, pixel_size](tbb::blocked_range<std::size_t> const& range)
                 {
                     std::transform(
-                        std::next(std::begin(buildings), range.begin()),
-                        std::next(std::begin(buildings), range.end()),
-                        std::next(std::begin(terrain), range.begin()),
+                        std::next(std::begin(scene_projection), range.begin()),
+                        std::next(std::begin(scene_projection), range.end()),
+                        std::next(scene_projection.terrain_begin(), range.begin()),
                         std::next(std::begin(raster_projections), range.begin()),
-                        [pixel_size, this](projection::FootPrint const& projection, projection::FootPrint const& _tr)
+                        [pixel_size](projection::FootPrint const& projection, projection::FootPrint const& _tr)
                         {
                             return projection::RasterPrint(projection, pixel_size, _tr);
                         }
                     );
-                },
-                tbb::simple_partitioner()
+                }
             );
             std::cout << "Done." << std::flush << std::endl;
             return raster_projections;

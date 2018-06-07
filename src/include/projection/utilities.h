@@ -14,7 +14,7 @@ namespace city
 {
     namespace projection
     {
-        std::vector<FootPrint> terrain_projections(std::vector<FootPrint> const& buildings, scene::UNode terrain);
+        std::vector<FootPrint> terrain_projections(std::vector<FootPrint> const& buildings, scene::UNode const& terrain);
 
         std::vector<FacePrint> orthoprint(scene::UNode const& unode, Bbox_2 const& mask);
         std::vector<FacePrint> & unpack(std::vector<FacePrint> & facets, Polygon_set polygon_set, std::size_t const id, Plane_3 const& plane);

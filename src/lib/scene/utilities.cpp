@@ -37,9 +37,6 @@ namespace city
         }
         Affine_transformation_3 reference_transform(std::array<Vector_3, 3> const& reference_system)
         {
-//            if(is_orthonormal_direct(reference_system))
-//                throw std::runtime_error("The new reference system is not orthonormal and direct!");
-
             return Affine_transformation_3(
                 reference_system.at(0).x(),
                 reference_system.at(0).y(),

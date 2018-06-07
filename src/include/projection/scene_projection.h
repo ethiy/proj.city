@@ -167,8 +167,6 @@ namespace city
             }
 
             void to_ogr(GDALDataset* file, bool labels) const;
-
-            std::vector<RasterPrint> rasterize(double const pixel_size) const;
         private:
             shadow::Point pivot;
             unsigned short epsg_index = 2154;
@@ -179,6 +177,8 @@ namespace city
             friend bool operator ==(ScenePrint const& lhs, ScenePrint const& rhs);
             friend bool operator !=(ScenePrint const& lhs, ScenePrint const& rhs);
         };
+        
+        std::vector<RasterPrint> rasterize(ScenePrint const& scene_projection, double const pixel_size);
     }
     void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
 

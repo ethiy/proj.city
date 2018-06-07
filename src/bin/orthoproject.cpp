@@ -195,7 +195,7 @@ int main(int argc, const char** argv)
                 
         if(arguments.raster_args.rasterizing())
         {
-            auto raster_projections = scene_projection.rasterize(arguments.raster_args.pixel_size);
+            auto raster_projections = city::projection::rasterize(scene_projection, arguments.raster_args.pixel_size);
             city::save_building_rasters(arguments.save_args.output_path, raster_projections);
         }
     }
