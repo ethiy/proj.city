@@ -71,6 +71,26 @@ namespace city
         };
         FootPrint operator +(FootPrint const& lhs, FootPrint const& rhs);
 
+        class BuildingPrint{
+        public:
+            BuildingPrint(void);
+            BuildingPrint(scene::UNode const& building_surface, scene::UNode const& terrain_surface);
+            BuildingPrint(BuildingPrint const& other);
+            BuildingPrint(BuildingPrint && other);
+            ~BuildingPrint(void);
+
+            void swap(BuildingPrint & other);
+            BuildingPrint & operator =(BuildingPrint const& other);
+            BuildingPrint & operator =(BuildingPrint && other);
+
+            void to_ogr(GDALDataset* file, bool labels) const;
+
+            RasterPrint rasterize(double const pixel_size);
+        private:
+            FootPrint building;
+            FootPrint terrain;
+        };
+
         class ScenePrint
         {
         public:
@@ -155,6 +175,7 @@ namespace city
         };
         
         std::vector<RasterPrint> rasterize(ScenePrint const& scene_projection, double const pixel_size);
+        void rasterize_and_save(ScenePrint const& scene_projection, double const pixel_size, );
     }
     void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
 

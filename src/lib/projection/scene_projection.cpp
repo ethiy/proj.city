@@ -216,6 +216,51 @@ namespace city
             return result += rhs;
         }
 
+        BuildingPrint::BuildingPrint(void)
+        {}
+        BuildingPrint::BuildingPrint(scene::UNode const& building_surface, scene::UNode const& terrain_surface)
+            : building(building_surface), terrain(terrain_surface, building.bbox())
+        {}
+        BuildingPrint::BuildingPrint(BuildingPrint const& other)
+            : building(other.building), terrain(other.terrain)
+        {}
+        BuildingPrint::BuildingPrint(BuildingPrint && other)
+            : building(std::move(other.building)), terrain(std::move(other.terrain))
+        {}
+        BuildingPrint::~BuildingPrint(void)
+        {}
+
+        void BuildingPrint::swap(BuildingPrint & other)
+        {
+            using std::swap;
+
+            swap(building, other.building);
+            swap(terrain, other.terrain);
+        }
+        BuildingPrint & BuildingPrint::operator =(BuildingPrint const& other)
+        {
+            building = other.building;
+            terrain = other.terrain;
+
+            return *this;
+        }
+        BuildingPrint & BuildingPrint::operator =(BuildingPrint && other)
+        {
+            building = std::move(other.building);
+            terrain = std::move(other.terrain);
+
+            return *this;
+        }
+
+        void BuildingPrint::to_ogr(GDALDataset* file, bool labels) const
+        {
+            building.to_ogr(GDALDataset* file, bool labels)
+        }
+
+        RasterPrint BuildingPrint::rasterize(double const pixel_size) const
+        {
+            return RasterPrint(building, pixel_size, terrain);
+        }
 
         ScenePrint::ScenePrint(void)
         {}
