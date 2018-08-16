@@ -85,7 +85,7 @@ namespace city
 
             void to_ogr(GDALDataset* file, bool labels) const;
 
-            RasterPrint rasterize(double const pixel_size);
+            RasterPrint rasterize(double const pixel_size) const;
         private:
             FootPrint building;
             FootPrint terrain;
@@ -112,13 +112,9 @@ namespace city
             {
                 return epsg_index;
             }
-            inline std::vector<FootPrint> const& get_buildings(void) const noexcept
+            inline std::vector<BuildingPrint> const& get_buildings(void) const noexcept
             {
                 return buildings;
-            }
-            inline scene::UNode const& get_terrain(void) const noexcept
-            {
-                return terrain;
             }
             inline bool empty(void) const noexcept
             {
@@ -134,8 +130,8 @@ namespace city
             std::vector<double> areas(void) const;
             std::vector<double> circumferences(void) const;
             
-            using iterator = std::vector<FootPrint>::iterator;
-            using const_iterator = std::vector<FootPrint>::const_iterator;
+            using iterator = std::vector<BuildingPrint>::iterator;
+            using const_iterator = std::vector<BuildingPrint>::const_iterator;
 
             inline iterator begin(void) noexcept
             {
@@ -166,16 +162,15 @@ namespace city
         private:
             shadow::Point pivot;
             unsigned short epsg_index = 2154;
-            std::vector<FootPrint> buildings;
-            scene::UNode terrain;
+            std::vector<BuildingPrint> buildings;
             
-            friend std::ostream & operator <<(std::ostream & os, ScenePrint const& footprint);
+            friend std::ostream & operator <<(std::ostream & os, ScenePrint const& sceneprint);
             friend bool operator ==(ScenePrint const& lhs, ScenePrint const& rhs);
             friend bool operator !=(ScenePrint const& lhs, ScenePrint const& rhs);
         };
         
         std::vector<RasterPrint> rasterize(ScenePrint const& scene_projection, double const pixel_size);
-        void rasterize_and_save(ScenePrint const& scene_projection, double const pixel_size, );
+        // void rasterize_and_save(ScenePrint const& scene_projection, double const pixel_size, );
     }
     void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
 

@@ -254,7 +254,7 @@ namespace city
 
         void BuildingPrint::to_ogr(GDALDataset* file, bool labels) const
         {
-            building.to_ogr(GDALDataset* file, bool labels)
+            building.to_ogr(file, labels);
         }
 
         RasterPrint BuildingPrint::rasterize(double const pixel_size) const
@@ -267,7 +267,7 @@ namespace city
         ScenePrint::ScenePrint(scene::Scene const& scene)
             : pivot(scene.get_pivot()),
               epsg_index(scene.get_epsg()),
-              buildings(scene::orthoproject(scene)),
+              buildings(scene::orthoproject(scene), scene.get_terrain()),
               terrain(scene.get_terrain())
         {}
         ScenePrint::ScenePrint(ScenePrint const& other)
@@ -313,7 +313,7 @@ namespace city
                 std::begin(buildings),
                 std::end(buildings),
                 Bbox_2(),
-                [](Bbox_2 const& bb, FootPrint const& nodeprint)
+                [](Bbox_2 const& bb, BuildingPrint const& nodeprint)
                 {
                     return bb + nodeprint.bbox();
                 }
@@ -327,9 +327,9 @@ namespace city
                 std::begin(buildings),
                 std::end(buildings),
                 std::begin(_areas),
-                [](FootPrint const& nodeprint)
+                [](BuildingPrint const& building)
                 {
-                    return nodeprint.area();
+                    return building.area();
                 }
             );
             return _areas;
@@ -341,9 +341,9 @@ namespace city
                 std::begin(buildings),
                 std::end(buildings),
                 std::begin(_circumferences),
-                [](FootPrint const& nodeprint)
+                [](BuildingPrint const& building)
                 {
-                    return nodeprint.circumference();
+                    return building.circumference();
                 }
             );
             return _circumferences;
