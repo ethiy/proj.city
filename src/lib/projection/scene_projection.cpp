@@ -1,6 +1,8 @@
 #include <projection/scene_projection.h>
 #include <projection/raster_projection.h>
 
+#include <io/io_raster.h>
+
 #include <projection/utilities.h>
 
 #include <algorithm>
@@ -323,6 +325,26 @@ namespace city
             );
             std::cout << "Done." << std::flush << std::endl;
             return raster_projections;
+        }
+
+        void rasterize_and_save(ScenePrint const& scene_projection, double const pixel_size, boost::filesystem::path const& root_path)
+        {
+            std::cout << "rasterizing projections... " << std::endl;
+            boost::filesystem::path raster_dir(root_path / "rasters");
+            boost::filesystem::create_directory(raster_dir);
+            for(auto const& building : scene_projection)
+            {
+                RasterPrint raster(
+                    building,
+                    pixel_size,
+                    FootPrint(scene_projection.get_terrain(), building.bbox())
+                );
+                city::io::RasterHandler(
+                    boost::filesystem::path(raster_dir / (raster.get_name() + ".tiff")),
+                    std::map<std::string,bool>{{"write", true}}
+                ).write(raster);
+            }
+            std::cout << "Done." << std::flush << std::endl;
         }
     }
 

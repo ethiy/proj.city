@@ -194,10 +194,7 @@ int main(int argc, const char** argv)
         city::io::SceneVectorHandler(arguments.save_args.output_path / "vectors", scene_projection).write(arguments.save_args.labels);
                 
         if(arguments.raster_args.rasterizing())
-        {
-            auto raster_projections = city::projection::rasterize(scene_projection, arguments.raster_args.pixel_size);
-            city::save_building_rasters(arguments.save_args.output_path, raster_projections);
-        }
+            city::projection::rasterize_and_save(scene_projection, arguments.raster_args.pixel_size, arguments.save_args.output_path);
     }
     catch(std::exception const& except)
     {

@@ -9,6 +9,9 @@
 
 #include <gdal_priv.h>
 
+#include <boost/filesystem/path.hpp>
+
+
 namespace city
 {
     namespace projection
@@ -155,6 +158,7 @@ namespace city
         };
         
         std::vector<RasterPrint> rasterize(ScenePrint const& scene_projection, double const pixel_size);
+        void rasterize_and_save(ScenePrint const& scene_projection, double const pixel_size, boost::filesystem::path const& root_path);
     }
     void swap(projection::FootPrint & lhs, projection::FootPrint & rhs);
 
