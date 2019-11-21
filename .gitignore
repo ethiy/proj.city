@@ -5,6 +5,7 @@ CMakeLists.txt.user
 
 # Visual studio
 .vs
+.vscode
 
 # Build files
 build
